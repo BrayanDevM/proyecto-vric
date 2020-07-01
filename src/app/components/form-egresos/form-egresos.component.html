@@ -1,0 +1,83 @@
+<form ngNativeValidate [formGroup]="formEgreso" (ngSubmit)="reportarEgreso()">
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title text-danger">
+        <i class="fas fa-calendar-times"></i>
+        Reportar egreso
+      </h5>
+      <div class="row">
+        <div class="col-3">
+          <div class="form-group">
+            <label for="udsId">Seleccionar UDS</label>
+            <select
+              (change)="traerBeneficiarios($event.target.value)"
+              formControlName="udsId"
+              name="udsId"
+              id="udsId"
+              class="form-control selectpicker show-tick"
+              data-style="select-with-transition"
+              title="Seleccionar"
+              required
+            >
+              <option
+                *ngFor="let unidad of udsAsignadas"
+                [value]="unidad._id"
+                >{{ unidad.nombre }}</option
+              >
+            </select>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="form-group">
+            <label for="beneficiarioId">Beneficiario a desvincular</label>
+            <select
+              formControlName="beneficiarioId"
+              name="beneficiarioId"
+              class="form-control selectpicker show-tick"
+              data-style="select-with-transition"
+              title="Seleccionar"
+              data-live-search="true"
+              required
+            >
+              <option
+                *ngIf="!beneficiarios || beneficiarios.length === 0"
+                disabled
+                >No tienes beneficiarios vinculados</option
+              >
+              <option
+                *ngFor="let beneficiario of beneficiarios"
+                [attr.data-subtext]="beneficiario.estado"
+                [value]="beneficiario._id"
+                >{{ beneficiario.nombre1 }}
+                {{ beneficiario.nombre2 }}
+                {{ beneficiario.apellido1 }}
+                {{ beneficiario.apellido2 }}</option
+              >
+            </select>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="egreso">Fecha de desvinculación</label>
+            <input
+              formControlName="egreso"
+              name="egreso"
+              type="date"
+              class="form-control"
+              autocomplete="off"
+              required
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 text-right">
+          <button type="submit" class="btn btn-danger btn-sm">
+            <i class="fas fa-user-times mr-1"></i>
+            Reportar egreso
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

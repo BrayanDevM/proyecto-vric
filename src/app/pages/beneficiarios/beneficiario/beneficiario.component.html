@@ -1,0 +1,753 @@
+<div class="content">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <!------------------------------------------------------------------------------->
+    <!---------------------- Tabla de beneficiarios pendientes ---------------------->
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" data-tabs="tabs">
+              <li class="nav-item">
+                <a
+                  class="nav-link active"
+                  href="#beneficiario"
+                  data-toggle="tab"
+                >
+                  <i class="fas fa-pencil"></i>
+                  Editar beneficiario
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#responsable" data-toggle="tab">
+                  <i class="fas fa-pencil"></i>
+                  Editar responsable
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <div class="tab-content" id="myTabContent">
+              <div
+                *ngIf="beneficiario"
+                class="tab-pane fade show active"
+                id="beneficiario"
+                role="tabpanel"
+                aria-labelledby="beneficiario-tab"
+              >
+                <!--------------------------- Datos básicos -------------------------->
+                <!-------------------------------------------------------------------->
+                <div class="card card-body mb-3">
+                  <h5 class="card-title text-success">
+                    <i class="fas fa-clipboard-user mr-2"></i>Datos básicos
+                  </h5>
+                  <div class="row">
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="tipoDoc">Tipo de documento</label>
+                        <select
+                          [(ngModel)]="beneficiario.tipoDoc"
+                          name="tipoDoc"
+                          class="form-control"
+                          data-style="select-with-transition"
+                          title="Seleccionar"
+                          required
+                        >
+                          <optgroup label="Colombianos/as">
+                            <option data-icon="fad fa-id-card mr-1" value="RC">
+                              Registro civil
+                            </option>
+                            <option data-icon="fad fa-id-card mr-1" value="TI">
+                              Tarjeta de identidad
+                            </option>
+                            <option data-icon="fad fa-id-card mr-1" value="CC">
+                              Cédula de ciudadanía
+                            </option>
+                          </optgroup>
+                          <optgroup label="Extranjeros/as">
+                            <option
+                              data-icon="fad fa-user-clock mr-1"
+                              value="PEP"
+                            >
+                              Permiso especial de permanencia
+                            </option>
+                            <option
+                              data-icon="fad fa-question-square mr-1"
+                              value="SD"
+                            >
+                              Sin documento
+                            </option>
+                          </optgroup>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="documento">NUIP</label>
+                        <input
+                          #documento
+                          [(ngModel)]="beneficiario.documento"
+                          name="documento"
+                          type="text"
+                          class="form-control"
+                          placeholder="Número de NUIP"
+                          autocomplete="off"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="nombre1">Primer nombre</label>
+                        <input
+                          [(ngModel)]="beneficiario.nombre1"
+                          name="nombre1"
+                          type="text"
+                          class="form-control"
+                          placeholder="Escribe un nombre"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="nombre2">Segundo nombre</label>
+                        <input
+                          [(ngModel)]="beneficiario.nombre2"
+                          name="nombre2"
+                          type="text"
+                          class="form-control"
+                          placeholder="Escribe un nombre"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="apellido1">Primer apellido</label>
+                        <input
+                          [(ngModel)]="beneficiario.apellido1"
+                          name="apellido1"
+                          type="text"
+                          class="form-control"
+                          placeholder="Escribe un apellido"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="apellido2">Segundo apellido</label>
+                        <input
+                          [(ngModel)]="beneficiario.apellido2"
+                          name="apellido2"
+                          type="text"
+                          class="form-control"
+                          placeholder="Escribe un apellido"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="sexo">Sexo</label>
+                        <select
+                          [(ngModel)]="beneficiario.sexo"
+                          name="sexo"
+                          class="form-control"
+                          data-style="select-with-transition"
+                          title="Seleccionar"
+                          required
+                        >
+                          <option
+                            data-icon="fad fa-venus mr-1"
+                            value="Femenino"
+                          >
+                            Femenino
+                          </option>
+                          <option
+                            data-icon="fad fa-mars mr-1"
+                            value="Masculino"
+                          >
+                            Masculino
+                          </option>
+                          <option
+                            data-icon="fad fa-venus-mars mr-1"
+                            value="Otro"
+                            >Otro</option
+                          >
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label class="label-control" for="nacimiento"
+                          >Fecha nacimiento</label
+                        >
+                        <input
+                          [(ngModel)]="beneficiario.nacimiento"
+                          name="nacimiento"
+                          type="date"
+                          class="form-control"
+                          autocomplete="off"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="paisNacimiento">País de nacimiento</label>
+                        <select
+                          (change)="cambiarDepartamentos($event.target.value)"
+                          [(ngModel)]="beneficiario.paisNacimiento"
+                          name="paisNacimiento"
+                          class="form-control"
+                          data-style="select-with-transition"
+                          title="Seleccionar"
+                          data-size="7"
+                          required
+                        >
+                          <option value="Colombia">Colombia</option>
+                          <option value="Argentina">Argentina</option>
+                          <option value="Chile">Chile</option>
+                          <option value="Ecuador">Ecuador</option>
+                          <option value="México">México</option>
+                          <option value="Panama">Panama</option>
+                          <option value="Perú">Perú</option>
+                          <option value="Venezuela">Venezuela</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="dptoNacimiento">Dpto. de nacimiento</label>
+                        <select
+                          (change)="cambiarCiudades($event.target.value)"
+                          [(ngModel)]="beneficiario.dptoNacimiento"
+                          name="dptoNacimiento"
+                          class="form-control"
+                          data-style="select-with-transition"
+                          title="Seleccionar"
+                          data-live-search="true"
+                          data-size="5"
+                          required
+                        >
+                          <option
+                            *ngFor="let dpto of listaDepartamentos"
+                            [value]="dpto.departamento"
+                            >{{ dpto.departamento }}</option
+                          >
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="municipioNacimiento"
+                          >Municipio de nacimiento</label
+                        >
+                        <select
+                          [(ngModel)]="beneficiario.municipioNacimiento"
+                          name="municipioNacimiento"
+                          class="form-control"
+                          data-style="select-with-transition"
+                          title="Seleccionar"
+                          data-live-search="true"
+                          data-size="5"
+                          required
+                        >
+                          <option
+                            *ngFor="let municipio of listaMunicipios"
+                            [ngValue]="municipio"
+                            >{{ municipio }}</option
+                          >
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="autorreconocimiento"
+                          >Autorreconocimiento</label
+                        >
+                        <select
+                          [(ngModel)]="beneficiario.autorreconocimiento"
+                          name="autorreconocimiento"
+                          class="form-control"
+                          data-style="select-with-transition"
+                          title="Seleccionar"
+                          required
+                        >
+                          <option value="Afrocolombiano">Afrocolombiano</option>
+                          <option value="Comunidad negra"
+                            >Comunidad negra</option
+                          >
+                          <option value="Indigena">Indigena</option>
+                          <option value="Palenquero">Palenquero</option>
+                          <option value="RROM/Gitano">RROM/Gitano</option>
+                          <option value="Raizal archipielago San Andrés"
+                            >Raizal archipielago San Andrés</option
+                          >
+                          <option value="Ninguno">Ninguno</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="discapacidad">Discapacidad</label>
+                        <select
+                          [(ngModel)]="beneficiario.discapacidad"
+                          name="discapacidad"
+                          class="form-control"
+                          data-style="select-with-transition"
+                          title="Seleccionar"
+                          required
+                        >
+                          <option [ngValue]="true">Si</option>
+                          <option [ngValue]="false">No</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!------------------- Sección datos de ubicación --------------------->
+                <!-------------------------------------------------------------------->
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <h5 class="card-title text-success">
+                      <i class="fas fa-map-marked"></i> Datos de ubicación
+                    </h5>
+                    <div class="row">
+                      <div class="col-4">
+                        <div class="form-group">
+                          <label for="direccion">Dirección</label>
+                          <input
+                            [(ngModel)]="beneficiario.direccion"
+                            name="direccion"
+                            type="text"
+                            class="form-control"
+                            placeholder="Dirección exacta"
+                            autocomplete="off"
+                            required
+                          />
+                          <small class="form-text text-muted">
+                            <b>Ejemplo rural:</b> Subiendo por vía principal
+                            casa verde a lado de tienda Pepita
+                          </small>
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="barrio">Barrio</label>
+                          <input
+                            [(ngModel)]="beneficiario.barrio"
+                            name="barrio"
+                            type="text"
+                            class="form-control"
+                            placeholder="Barrio"
+                            autocomplete="off"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="telefono">Teléfono</label>
+                          <input
+                            [(ngModel)]="beneficiario.telefono"
+                            name="telefono"
+                            type="text"
+                            class="form-control"
+                            placeholder="Telefono"
+                            autocomplete="off"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="autorreconocimiento"
+                            >Criterio de atención</label
+                          >
+                          <select
+                            [(ngModel)]="beneficiario.criterio"
+                            (focusout)="validarCriterio($event.target.value)"
+                            name="criterio"
+                            class="form-control"
+                            data-style="select-with-transition"
+                            title="Seleccionar"
+                            required
+                          >
+                            <option value="Sisbén">Puntaje de sisbén</option>
+                            <option value="Carta"
+                              >Carta de vulnerabilidad</option
+                            >
+                            <option value="Otro">Otro</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="infoCriterio">{{
+                            labelInputInfoCriterio
+                          }}</label>
+                          <input
+                            [(ngModel)]="beneficiario.infoCriterio"
+                            name="infoCriterio"
+                            [attr.type]="tipoInputInfoCriterio"
+                            class="form-control"
+                            placeholder="Escriba"
+                            autocomplete="off"
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!--------------------- Sección UDS e Ingreso ----------------------->
+                <!------------------------------------------------------------------->
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <h5 class="card-title text-success">
+                      <i class="fas fa-address-book mr-2"></i>Datos de ingreso
+                    </h5>
+                    <div class="row">
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="codigo">Código UDS</label>
+                          <input
+                            [(ngModel)]="beneficiario.uds.codigo"
+                            name="codigo"
+                            type="text"
+                            class="form-control"
+                            disabled
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="udsId">Unidad De Servicio</label>
+                          <input
+                            [(ngModel)]="beneficiario.uds.nombre"
+                            name="codigo"
+                            type="text"
+                            class="form-control"
+                            disabled
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label class="label-control" for="ingreso"
+                            >Fecha de ingreso</label
+                          >
+                          <input
+                            [(ngModel)]="beneficiario.ingreso"
+                            name="ingreso"
+                            type="date"
+                            class="form-control"
+                            autocomplete="off"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <div class="form-group">
+                          <label for="comentario">Comentario (opcional)</label>
+                          <input
+                            [(ngModel)]="beneficiario.comentario"
+                            name="comentario"
+                            type="text"
+                            class="form-control"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label class="label-control text-danger" for="ingreso"
+                            >Fecha de egreso</label
+                          >
+                          <input
+                            [(ngModel)]="beneficiario.egreso"
+                            name="egreso"
+                            type="date"
+                            class="form-control"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12 text-right">
+                    <button
+                      (click)="actualizarBeneficiario()"
+                      type="button"
+                      class="btn btn-success btn-sm"
+                    >
+                      <i class="fas fa-sync mr-1"></i>
+                      Actualizar beneficiario
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div
+                *ngIf="responsable"
+                class="tab-pane fade"
+                id="responsable"
+                role="tabpanel"
+                aria-labelledby="responsable-tab"
+              >
+                <!------------------- Sección datos de acudiente ------------------->
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <h5 class="card-title text-success">
+                      <i class="fas fa-users mr-2"></i>Datos de acudiente
+                    </h5>
+                    <div class="row">
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="respTipoDoc">Tipo de documento</label>
+                          <input
+                            [(ngModel)]="responsable.tipoDoc"
+                            name="respDocumento"
+                            type="text"
+                            class="form-control"
+                            placeholder="Número de NUIP"
+                            autocomplete="off"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="documento">NUIP</label>
+                          <input
+                            [(ngModel)]="responsable.documento"
+                            name="respDocumento"
+                            type="text"
+                            class="form-control"
+                            placeholder="Número de NUIP"
+                            autocomplete="off"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="respNombre1">Primer nombre</label>
+                          <input
+                            [(ngModel)]="responsable.nombre1"
+                            name="respNombre1"
+                            type="text"
+                            class="form-control"
+                            placeholder="Escribe un nombre"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="respNombre2">Segundo nombre</label>
+                          <input
+                            [(ngModel)]="responsable.nombre2"
+                            name="respNombre2"
+                            type="text"
+                            class="form-control"
+                            placeholder="Escribe un nombre"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="respApellido1">Primer apellido</label>
+                          <input
+                            [(ngModel)]="responsable.apellido1"
+                            name="respApellido1"
+                            type="text"
+                            class="form-control"
+                            placeholder="Escribe un apellido"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="respApellido2">Segundo apellido</label>
+                          <input
+                            [(ngModel)]="responsable.apellido2"
+                            name="respApellido2"
+                            type="text"
+                            class="form-control"
+                            placeholder="Escribe un apellido"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="respSexo">Sexo</label>
+                          <select
+                            [(ngModel)]="responsable.sexo"
+                            name="respSexo"
+                            class="form-control"
+                            data-style="select-with-transition"
+                            title="Seleccionar"
+                            required
+                          >
+                            <option
+                              data-icon="fad fa-venus mr-1"
+                              value="Femenino"
+                            >
+                              Femenino
+                            </option>
+                            <option
+                              data-icon="fad fa-mars mr-1"
+                              value="Masculino"
+                            >
+                              Masculino
+                            </option>
+                            <option
+                              data-icon="fad fa-venus-mars mr-1"
+                              value="Otro"
+                              >Otro</option
+                            >
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label class="label-control" for="respNacimiento"
+                            >Fecha nacimiento</label
+                          >
+                          <input
+                            [(ngModel)]="responsable.nacimiento"
+                            name="respNacimiento"
+                            id="respNacimiento"
+                            type="date"
+                            class="form-control"
+                            autocomplete="off"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="respPaisNacimiento"
+                            >País de nacimiento</label
+                          >
+                          <select
+                            [(ngModel)]="responsable.paisNacimiento"
+                            (change)="
+                              cambiarDepartamentosResp($event.target.value)
+                            "
+                            name="respPaisNacimiento"
+                            class="form-control"
+                            title="Seleccionar"
+                            data-size="7"
+                            required
+                          >
+                            <option value="Colombia">Colombia</option>
+                            <option value="Argentina">Argentina</option>
+                            <option value="Chile">Chile</option>
+                            <option value="Ecuador">Ecuador</option>
+                            <option value="México">México</option>
+                            <option value="Panama">Panama</option>
+                            <option value="Perú">Perú</option>
+                            <option value="Venezuela">Venezuela</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="respDptoNacimiento"
+                            >Dpto. de nacimiento</label
+                          >
+                          <select
+                            [(ngModel)]="responsable.dptoNacimiento"
+                            (change)="cambiarCiudadesResp($event.target.value)"
+                            name="respDptoNacimiento"
+                            class="form-control"
+                            data-style="select-with-transition"
+                            title="Seleccionar"
+                            data-live-search="true"
+                            data-size="5"
+                            required
+                          >
+                            <option
+                              *ngFor="let dpto of listaDepartamentosResp"
+                              [value]="dpto.departamento"
+                              >{{ dpto.departamento }}</option
+                            >
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="respMunicipioNacimiento"
+                            >Municipio de nacimiento</label
+                          >
+                          <select
+                            [(ngModel)]="responsable.municipioNacimiento"
+                            name="respMunicipioNacimiento"
+                            class="form-control"
+                            data-style="select-with-transition"
+                            title="Seleccionar"
+                            data-live-search="true"
+                            data-size="5"
+                            required
+                          >
+                            <option
+                              *ngFor="let municipio of listaMunicipiosResp"
+                              [ngValue]="municipio"
+                              >{{ municipio }}</option
+                            >
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="tipoResponsable">Tipo de acudiente</label>
+                          <select
+                            [(ngModel)]="beneficiario.tipoResponsable"
+                            name="tipoResponsable"
+                            class="form-control"
+                            data-style="select-with-transition"
+                            title="Seleccionar"
+                            data-size="7"
+                            required
+                          >
+                            <option value="Madre">Madre</option>
+                            <option value="Padre">Padre</option>
+                            <option value="Tio/a">Tia/o</option>
+                            <option value="Abuelo/a">Abuelo/a</option>
+                            <option value="Conyugue">Conyugue</option>
+                            <option value="Otro">Otro</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12 text-right">
+                    <button
+                      (click)="actualizarResponsable()"
+                      type="button"
+                      class="btn btn-success btn-sm"
+                    >
+                      <i class="fas fa-sync mr-1"></i>
+                      Actualizar responsable
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

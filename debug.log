@@ -1,0 +1,12 @@
+[0605/193812.885:ERROR:process_reader_win.cc(188)] ResumeThread: El parámetro no es correcto. (0x57)
+[0605/193812.887:ERROR:process_reader_win.cc(151)] SuspendThread: Acceso denegado. (0x5)
+[0605/193812.887:ERROR:process_reader_win.cc(151)] SuspendThread: Acceso denegado. (0x5)
+[0605/193812.887:ERROR:process_reader_win.cc(123)] NtOpenThread: Se ha especificado un identificador de cliente no válido. (0xc000000b)
+[0605/193812.889:ERROR:process_reader_win.cc(123)] NtOpenThread: Se ha especificado un identificador de cliente no válido. (0xc000000b)
+[0605/193812.890:ERROR:process_reader_win.cc(123)] NtOpenThread: Se ha especificado un identificador de cliente no válido. (0xc000000b)
+[0605/193812.890:ERROR:process_reader_win.cc(123)] NtOpenThread: Se ha especificado un identificador de cliente no válido. (0xc000000b)
+[0605/193812.890:ERROR:process_reader_win.cc(123)] NtOpenThread: Se ha especificado un identificador de cliente no válido. (0xc000000b)
+[0605/193812.890:ERROR:process_reader_win.cc(123)] NtOpenThread: Se ha especificado un identificador de cliente no válido. (0xc000000b)
+[0605/193812.890:ERROR:process_memory_win.cc(73)] ReadMemory at 0x62eb4c of 8 bytes failed: Solo se completó una parte de una solicitud ReadProcessMemory o WriteProcessMemory. (0x12B)
+[0605/193812.890:ERROR:exception_snapshot_win.cc(195)] EXCEPTION_POINTERS read failed
+[0605/193812.890:ERROR:scoped_process_suspend.cc(40)] NtResumeProcess: Se intentó obtener acceso a un proceso que está cerrándose. (0xc000010a)

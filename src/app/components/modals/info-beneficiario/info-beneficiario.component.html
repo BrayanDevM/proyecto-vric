@@ -1,0 +1,197 @@
+<!-- MODAL -->
+<div class="modal fade" id="infoBeneficiario" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="exampleModalLabel">
+          Información de beneficiario
+        </h6>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div *ngIf="beneficiarioInfo" class="modal-body">
+        <h5 class="text-center">
+          <i class="fas fa-user mr-1"></i>
+          {{ beneficiarioInfo.nombre1 }} {{ beneficiarioInfo.nombre2 }}
+          {{ beneficiarioInfo.apellido1 }} {{ beneficiarioInfo.apellido2 }}
+        </h5>
+        <h6 class="text-muted text-center">
+          <i class="fad fa-id-card mr-1"></i>
+          {{ beneficiarioInfo.tipoDoc }}.
+          {{ beneficiarioInfo.documento }}
+        </h6>
+        <hr />
+        <div class="row">
+          <div class="col-6">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <i class="fad fa-calendar-day"></i>
+                Nacimiento: {{ beneficiarioInfo.nacimiento }}
+              </li>
+              <li class="list-group-item">
+                <i class="fad fa-venus-mars"></i>
+                Sexo: {{ beneficiarioInfo.sexo }}
+              </li>
+              <li class="list-group-item">
+                <i class="fad fa-stethoscope"></i>
+                Discapacidad:
+                <span *ngIf="beneficiarioInfo.discapacidad">Si</span
+                ><span *ngIf="!beneficiarioInfo.discapacidad">No</span>
+              </li>
+              <li class="list-group-item">
+                <i class="fas fa-globe-americas"></i>
+                Autorreconocimiento: {{ beneficiarioInfo.autorreconocimiento }}
+              </li>
+            </ul>
+          </div>
+          <div class="col-6">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <i class="fad fa-map-marker-alt"></i>
+                Dirección: {{ beneficiarioInfo.direccion }},
+                {{ beneficiarioInfo.barrio }}
+              </li>
+              <li class="list-group-item">
+                <i class="fad fa-phone-alt"></i>
+                Teléfono: {{ beneficiarioInfo.telefono }}
+              </li>
+              <li class="list-group-item">
+                <i class="fad fa-tag"></i>
+                Estado: {{ beneficiarioInfo.estado }}
+              </li>
+              <li class="list-group-item">
+                <span *ngIf="beneficiarioInfo.estado !== 'Desvinculado'">
+                  <i class="fad fa-calendar-check"></i>
+                  Ingreso: {{ beneficiarioInfo.ingreso }}
+                </span>
+                <span *ngIf="beneficiarioInfo.estado === 'Desvinculado'">
+                  <i class="fad fa-calendar-times"></i>
+                  Egreso: {{ beneficiarioInfo.egreso }}
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div class="col-12 mt-3">
+            <h6 class="card-subtitle mb-0">
+              Comentario
+              <button
+                (click)="editarComentario = !editarComentario"
+                class="btn btn-light btn-sm"
+                data-toggle="popover"
+                data-placement="right"
+                data-content="Editar comentario"
+              >
+                <i class="fa fa-pencil"></i>
+              </button>
+            </h6>
+            <div
+              class="alert mt-1"
+              [ngClass]="{
+                'alert-primary': beneficiarioInfo.comentario !== null,
+                'alert-secondary': beneficiarioInfo.comentario === null
+              }"
+            >
+              <span *ngIf="beneficiarioInfo.comentario === null"
+                >No tiene un comentario</span
+              >
+              <span *ngIf="!editarComentario">{{
+                beneficiarioInfo.comentario
+              }}</span>
+              <!-- Editar comentario -->
+              <textarea
+                *ngIf="editarComentario"
+                [(ngModel)]="beneficiarioInfo.comentario"
+                class="form-control"
+                rows="3"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+        <p>
+          <a
+            class="btn btn-sm btn-light mt-3"
+            data-toggle="collapse"
+            href="#multiCollapseExample1"
+            role="button"
+            aria-expanded="false"
+            aria-controls="multiCollapseExample1"
+            >Ver información de acudiente</a
+          >
+        </p>
+        <div class="row">
+          <div class="col-12">
+            <div class="collapse multi-collapse" id="multiCollapseExample1">
+              <div class="card card-body mb-2">
+                <div class="row">
+                  <div class="col-6">
+                    <p class="mb-0">
+                      <i class="fas fa-users"></i>
+                      {{ beneficiarioInfo.responsableId.nombre1 }}
+                      {{ beneficiarioInfo.responsableId.nombre2 }}
+                      {{ beneficiarioInfo.responsableId.apellido1 }}
+                      {{ beneficiarioInfo.responsableId.apellido2 }} ({{
+                        beneficiarioInfo.tipoResponsable
+                      }})
+                      <br />
+                      <i class="fas fa-id-card"></i>
+                      {{ beneficiarioInfo.responsableId.tipoDoc }}.
+                      {{ beneficiarioInfo.responsableId.documento }}
+                      <br />
+                      <i class="fas fa-calendar-day"></i>
+                      Nacimiento:
+                      {{ beneficiarioInfo.responsableId.nacimiento }}
+                    </p>
+                  </div>
+                  <div class="col-6">
+                    <p>
+                      <i class="fas fa-map-marker-alt"></i>
+                      Lugar de nacimiento:
+                      {{ beneficiarioInfo.responsableId.paisNacimiento }},
+                      {{ beneficiarioInfo.responsableId.dptoNacimiento }} -
+                      {{ beneficiarioInfo.responsableId.municipioNacimiento }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="card bg-light">
+              <div class="card-body">
+                <span class="text-muted">
+                  <b>Reportado por: </b>
+                  {{ beneficiarioInfo.creadoPor.nombre }}
+                  ({{ beneficiarioInfo.creadoPor.correo }})
+                  <br />
+                  <b>Reportado el: </b>{{ beneficiarioInfo.creadoEl }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          *ngIf="editarComentario"
+          (click)="actualizarComentario()"
+          type="button"
+          class="btn btn-success"
+        >
+          <i class="fa fa-sync"></i>
+          Actualizar
+        </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

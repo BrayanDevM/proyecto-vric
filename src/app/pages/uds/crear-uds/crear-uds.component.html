@@ -1,0 +1,185 @@
+<div class="content">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="row">
+      <div class="col-12">
+        <div class="card BDM_fadeInUp">
+          <div class="card-header">
+            Crear Unidad de Servicio
+          </div>
+          <div class="card-body ">
+            <form
+              ngNativeValidate
+              [formGroup]="formCrearUds"
+              (ngSubmit)="crear()"
+            >
+              <div class="row">
+                <div class="col-2">
+                  <div class="form-group">
+                    <label for="codigo">Código</label>
+                    <input
+                      formControlName="codigo"
+                      name="codigo"
+                      type="number"
+                      class="form-control"
+                      placeholder="Código..."
+                      required
+                    />
+                    <small class="form-text text-muted"
+                      >El código debe ser único.</small
+                    >
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input
+                      formControlName="nombre"
+                      name="nombre"
+                      type="text"
+                      class="form-control"
+                      placeholder="Nombre..."
+                      autocomplete="off"
+                      required
+                    />
+                    <div
+                      *ngIf="f.nombre.errors?.minlength"
+                      class="invalid-feedback"
+                    >
+                      No es un nombre corto?, al menos 5 letras 😀
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="form-group">
+                    <label for="cupos">Cupos asignados</label>
+                    <input
+                      formControlName="cupos"
+                      name="cupos"
+                      type="number"
+                      class="form-control"
+                      placeholder="Cupos..."
+                    />
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="form-group">
+                    <label for="ubicacion">Ubicación</label>
+                    <input
+                      formControlName="ubicacion"
+                      name="ubicacion"
+                      type="text"
+                      class="form-control"
+                      placeholder="Ubicación..."
+                    />
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="form-group">
+                    <label for="arriendo">Arrendamiento</label>
+                    <select
+                      formControlName="arriendo"
+                      name="arriendo"
+                      class="form-control selectpicker"
+                      data-style="select-with-transition"
+                      title="Seleccionar"
+                      data-size="3"
+                    >
+                      <option disabled selected>Seleccionar estado.</option>
+                      <option [ngValue]="false">Sin Arriendo</option>
+                      <option [ngValue]="true">Con Arriendo</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-3">
+                  <div class="form-group">
+                    <label for="coordinador">Coordinador</label>
+                    <select
+                      formControlName="coordinador"
+                      name="coordinador"
+                      class="form-control selectpicker"
+                      data-style="select-with-transition"
+                      title="Seleccionar coord."
+                      data-size="7"
+                    >
+                      <option disabled>Seleccionar coordinador.</option>
+                      <option
+                        *ngFor="let coordinador of coordinadores"
+                        [ngValue]="coordinador._id"
+                        >{{ coordinador.nombre }}</option
+                      >
+                    </select>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="form-group">
+                    <label for="gestor">Gestor</label>
+                    <select
+                      formControlName="gestor"
+                      name="gestor"
+                      class="form-control selectpicker"
+                      data-style="select-with-transition"
+                      title="Seleccionar gestor"
+                      data-size="7"
+                    >
+                      <option disabled>Seleccionar gestor.</option>
+                      <option
+                        *ngFor="let gestor of gestores"
+                        [ngValue]="gestor._id"
+                        >{{ gestor.nombre }}</option
+                      >
+                    </select>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="docentes">Docentes</label>
+                    <select
+                      formControlName="docentes"
+                      name="docentes"
+                      class="form-control selectpicker"
+                      data-style="select-with-transition"
+                      title="Seleccionar docentes"
+                      data-size="7"
+                      multiple
+                      data-max-options="2"
+                    >
+                      <option disabled>Seleccionar docentes.</option>
+                      <option
+                        *ngFor="let docente of docentes"
+                        [ngValue]="docente._id"
+                        >{{ docente.nombre }}</option
+                      >
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 text-right">
+                  <button
+                    *ngIf="!cargando"
+                    type="submit"
+                    class="btn btn-success btn-sm"
+                  >
+                    <i class="fad fa-save"></i>
+                    Crear
+                  </button>
+                  <button
+                    *ngIf="cargando"
+                    type="button"
+                    class="btn btn-success btn-sm disabled"
+                  >
+                    <i class="fad fa-spinner-third fa-spin"></i>
+                    Creando
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

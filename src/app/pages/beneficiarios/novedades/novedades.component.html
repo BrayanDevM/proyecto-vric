@@ -1,0 +1,61 @@
+<div class="content">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="row">
+      <div class="col-12">
+        <div class="card BDM_fadeInUp">
+          <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" data-tabs="tabs">
+              <li class="nav-item">
+                <a class="nav-link active" href="#ingreso" data-toggle="tab">
+                  <i class="fas fa-user-plus"></i>
+                  Reportar ingreso
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#egreso" data-toggle="tab">
+                  <i class="fas fa-user-times"></i>
+                  Reportar egreso
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#nacimiento" data-toggle="tab">
+                  <i class="fad fa-baby"></i>
+                  Reportar nacimiento
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body ">
+            <div class="tab-content">
+              <!-------------------------------------------- 
+                Formulario para ingreso de participantes
+               --------------------------------------------->
+              <div class="tab-pane active" id="ingreso">
+                <app-form-ingresos
+                  [udsAsignadas]="udsAsignadas"
+                ></app-form-ingresos>
+              </div>
+              <!-------------------------------------------- 
+                Formulario para egreso de participantes
+               --------------------------------------------->
+              <div class="tab-pane" id="egreso">
+                <app-form-egresos
+                  [udsAsignadas]="udsAsignadas"
+                ></app-form-egresos>
+              </div>
+              <!-------------------------------------------- 
+                Formulario para nacimientos de participantes
+               --------------------------------------------->
+              <div class="tab-pane" id="nacimiento">
+                <app-form-cambios
+                  [udsAsignadas]="udsAsignadas"
+                ></app-form-cambios>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

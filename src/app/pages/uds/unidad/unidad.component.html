@@ -1,0 +1,239 @@
+<div class="content">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="row">
+      <div class="col-12">
+        <div class="card BDM_fadeInUp">
+          <div class="card-header">
+            Detalles de Unidad de Servicio
+          </div>
+          <div *ngIf="uds != null" class="card-body ">
+            <form
+              ngNativeValidate
+              [formGroup]="formActualizarUds"
+              (ngSubmit)="actualizar()"
+            >
+              <div class="row">
+                <div class="col-2">
+                  <div class="form-group">
+                    <label for="codigo">Código</label>
+                    <input
+                      [ngModel]="uds.codigo"
+                      formControlName="codigo"
+                      name="codigo"
+                      type="number"
+                      class="form-control"
+                      placeholder="Código..."
+                      required
+                    />
+                    <small id="emailHelp" class="form-text text-muted"
+                      >El código debe ser único.</small
+                    >
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input
+                      [ngModel]="uds.nombre"
+                      formControlName="nombre"
+                      name="nombre"
+                      type="text"
+                      class="form-control"
+                      placeholder="Número..."
+                      autocomplete="off"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="col-1">
+                  <div class="form-group">
+                    <label for="cupos">Cupos</label>
+                    <input
+                      [ngModel]="uds.cupos"
+                      formControlName="cupos"
+                      name="cupos"
+                      type="number"
+                      class="form-control"
+                      placeholder="Cupos..."
+                    />
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="form-group">
+                    <label for="ubicacion">Ubicación</label>
+                    <input
+                      [ngModel]="uds.ubicacion"
+                      formControlName="ubicacion"
+                      name="ubicacion"
+                      type="text"
+                      class="form-control"
+                      placeholder="Ubicación..."
+                    />
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="form-group">
+                    <label for="creadoEl">Creada el</label>
+                    <input
+                      [ngModel]="uds.creadoEl"
+                      formControlName="creadoEl"
+                      name="creadoEl"
+                      type="date"
+                      class="form-control"
+                      placeholder="Fecha de creación..."
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="form-group">
+                    <label for="arriendo">Arrendamiento</label>
+                    <select
+                      [ngModel]="uds.arriendo"
+                      formControlName="arriendo"
+                      name="arriendo"
+                      class="form-control"
+                      data-style="select-with-transition"
+                      title="Seleccionar"
+                      data-size="3"
+                    >
+                      <option [ngValue]="true">Con Arriendo</option>
+                      <option [ngValue]="false">Sin Arriendo</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-3">
+                  <div class="form-group">
+                    <label for="coordinador">Coordinador</label>
+                    <select
+                      [ngModel]="uds.coordinador._id"
+                      formControlName="coordinador"
+                      name="coordinador"
+                      class="form-control"
+                      id="coordinador"
+                      data-style="select-with-transition"
+                      title="Coordinador"
+                      data-size="7"
+                      required
+                    >
+                      <option disabled>Seleccionar coordinador.</option>
+                      <option [ngValue]="null">No asignar</option>
+                      <option
+                        *ngFor="let coordinador of coordinadores"
+                        [ngValue]="coordinador._id"
+                        >{{ coordinador.nombre }}</option
+                      >
+                    </select>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="form-group">
+                    <label for="gestor">Gestor</label>
+                    <select
+                      [ngModel]="uds.gestor._id"
+                      formControlName="gestor"
+                      name="gestor"
+                      class="form-control"
+                      id="gestor"
+                      data-style="select-with-transition"
+                      title="Gestor"
+                      data-size="7"
+                      required
+                    >
+                      <option disabled>Seleccionar gestor.</option>
+                      <option [ngValue]="null">No asignar</option>
+                      <option
+                        *ngFor="let gestor of gestores"
+                        [ngValue]="gestor._id"
+                        >{{ gestor.nombre }}</option
+                      >
+                    </select>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="docentes">Docentes</label>
+                    <select
+                      [(ngModel)]="docentesEnUds"
+                      formControlName="docentes"
+                      name="docentes"
+                      class="form-control selectpicker"
+                      id="docentes"
+                      data-style="select-with-transition"
+                      title="Docentes"
+                      data-size="7"
+                      multiple
+                      data-max-options="2"
+                      required
+                    >
+                      <option disabled>Seleccionar docentes.</option>
+                      <option
+                        *ngFor="let docente of docentes"
+                        [ngValue]="docente._id"
+                        >{{ docente.nombre }}</option
+                      >
+                    </select>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="form-group">
+                    <label for="activa">Estado</label>
+                    <select
+                      [ngModel]="uds.activa"
+                      formControlName="activa"
+                      name="activa"
+                      class="form-control"
+                      data-style="select-with-transition"
+                      title="Seleccionar"
+                    >
+                      <option [ngValue]="true">Activa</option>
+                      <option [ngValue]="false">Inactiva</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <span class="text-muted"
+                    >UDS creada por: {{ uds.creadoPor.nombre }}</span
+                  >
+                  <br />
+                  <span class="text-muted">
+                    Contrato asignado:
+                    <span *ngIf="uds.enContrato === null">No asignado</span>
+                    <span *ngIf="uds.enContrato !== null">
+                      {{ uds.enContrato.codigo }}</span
+                    >
+                  </span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 text-right">
+                  <button
+                    *ngIf="!cargando"
+                    type="submit"
+                    class="btn btn-success btn-sm"
+                  >
+                    <i class="far fa-sync"></i>
+                    Actualizar
+                  </button>
+                  <button
+                    *ngIf="cargando"
+                    type="submit"
+                    class="btn btn-success btn-sm"
+                  >
+                    <i class="far fa-sync fa-spin"></i>
+                    Actualizando
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

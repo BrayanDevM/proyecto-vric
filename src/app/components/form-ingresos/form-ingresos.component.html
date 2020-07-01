@@ -1,0 +1,700 @@
+<form
+  ngNativeValidate
+  [formGroup]="formIngreso"
+  (ngSubmit)="ingresarBeneficiario()"
+>
+  <!------------------- Sección datos básicos ------------------->
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title text-success">
+        <i class="fas fa-clipboard-user mr-2"></i>Datos básicos
+      </h5>
+      <div class="row">
+        <div class="col-2">
+          <div class="form-group">
+            <label for="tipoDoc">Tipo de documento</label>
+            <select
+              #tipoDoc
+              (change)="comprobarSD($event.target.value)"
+              formControlName="tipoDoc"
+              name="tipoDoc"
+              class="form-control selectpicker show-tick"
+              data-style="select-with-transition"
+              title="Seleccionar"
+              required
+            >
+              <optgroup label="Colombianos/as">
+                <option data-icon="fad fa-id-card mr-1" value="RC">
+                  Registro civil
+                </option>
+                <option data-icon="fad fa-id-card mr-1" value="TI">
+                  Tarjeta de identidad
+                </option>
+                <option data-icon="fad fa-id-card mr-1" value="CC">
+                  Cédula de ciudadanía
+                </option>
+              </optgroup>
+              <optgroup label="Extranjeros/as">
+                <option data-icon="fad fa-user-clock mr-1" value="PEP">
+                  Permiso especial de permanencia
+                </option>
+                <option data-icon="fad fa-question-square mr-1" value="SD">
+                  Sin documento
+                </option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="documento">NUIP</label>
+            <input
+              #documento
+              [ngModel]="formIngreso.value.documento | documento"
+              (ngModelChange)="formIngreso.value.documento = $event"
+              formControlName="documento"
+              name="documento"
+              type="text"
+              class="form-control"
+              placeholder="Número de NUIP"
+              autocomplete="off"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="nombre1">Primer nombre</label>
+            <input
+              #nombre1
+              formControlName="nombre1"
+              name="nombre1"
+              type="text"
+              class="form-control"
+              placeholder="Escribe un nombre"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="nombre2">Segundo nombre</label>
+            <input
+              #nombre2
+              formControlName="nombre2"
+              name="nombre2"
+              type="text"
+              class="form-control"
+              placeholder="Escribe un nombre"
+            />
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="apellido1">Primer apellido</label>
+            <input
+              #apellido1
+              formControlName="apellido1"
+              name="apellido1"
+              type="text"
+              class="form-control"
+              placeholder="Escribe un apellido"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="apellido2">Segundo apellido</label>
+            <input
+              #apellido2
+              formControlName="apellido2"
+              name="apellido2"
+              type="text"
+              class="form-control"
+              placeholder="Escribe un apellido"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-2">
+          <div class="form-group">
+            <label for="sexo">Sexo</label>
+            <select
+              #sexo
+              formControlName="sexo"
+              name="sexo"
+              class="form-control selectpicker"
+              data-style="select-with-transition"
+              title="Seleccionar"
+              required
+            >
+              <option data-icon="fad fa-venus mr-1" value="Femenino">
+                Femenino
+              </option>
+              <option data-icon="fad fa-mars mr-1" value="Masculino">
+                Masculino
+              </option>
+              <option data-icon="fad fa-venus-mars mr-1" value="Otro"
+                >Otro</option
+              >
+            </select>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label class="label-control" for="nacimiento"
+              >Fecha nacimiento</label
+            >
+            <input
+              formControlName="nacimiento"
+              name="nacimiento"
+              type="date"
+              class="form-control"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="paisNacimiento">País de nacimiento</label>
+            <select
+              #paisNacimiento
+              (change)="cambiarDepartamentos($event.target.value)"
+              formControlName="paisNacimiento"
+              name="paisNacimiento"
+              class="form-control selectpicker show-tick"
+              data-style="select-with-transition"
+              title="Seleccionar"
+              data-size="7"
+              required
+            >
+              <option value="Colombia">Colombia</option>
+              <option value="Argentina">Argentina</option>
+              <option value="Chile">Chile</option>
+              <option value="Ecuador">Ecuador</option>
+              <option value="México">México</option>
+              <option value="Panama">Panama</option>
+              <option value="Perú">Perú</option>
+              <option value="Venezuela">Venezuela</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="dptoNacimiento">Dpto. de nacimiento</label>
+            <select
+              #dptoNacimiento
+              (change)="cambiarCiudades($event.target.value)"
+              formControlName="dptoNacimiento"
+              name="dptoNacimiento"
+              class="form-control selectpicker show-tick"
+              data-style="select-with-transition"
+              title="Seleccionar"
+              data-live-search="true"
+              data-size="5"
+              required
+            >
+              <option
+                *ngFor="let dpto of listaDepartamentos"
+                [value]="dpto.departamento"
+                >{{ dpto.departamento }}</option
+              >
+            </select>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="municipioNacimiento">Municipio de nacimiento</label>
+            <select
+              #municipioNacimiento
+              formControlName="municipioNacimiento"
+              name="municipioNacimiento"
+              class="form-control selectpicker show-tick"
+              data-style="select-with-transition"
+              title="Seleccionar"
+              data-live-search="true"
+              data-size="5"
+              required
+            >
+              <option
+                *ngFor="let municipio of listaMunicipios"
+                [ngValue]="municipio"
+                >{{ municipio }}</option
+              >
+            </select>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="autorreconocimiento">Autorreconocimiento</label>
+            <select
+              #autorreconocimiento
+              formControlName="autorreconocimiento"
+              name="autorreconocimiento"
+              class="form-control selectpicker"
+              data-style="select-with-transition"
+              title="Seleccionar"
+              required
+            >
+              <option value="Afrocolombiano">Afrocolombiano</option>
+              <option value="Comunidad negra">Comunidad negra</option>
+              <option value="Indigena">Indigena</option>
+              <option value="Palenquero">Palenquero</option>
+              <option value="RROM/Gitano">RROM/Gitano</option>
+              <option value="Raizal archipielago San Andrés"
+                >Raizal archipielago San Andrés</option
+              >
+              <option value="Ninguno">Ninguno</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-2">
+          <div class="form-group">
+            <label for="discapacidad">Discapacidad</label>
+            <select
+              #discapacidad
+              formControlName="discapacidad"
+              name="discapacidad"
+              class="form-control selectpicker"
+              data-style="select-with-transition"
+              title="Seleccionar"
+              required
+            >
+              <option [ngValue]="true">Si</option>
+              <option [ngValue]="false">No</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!------------------- Sección datos de ubicación ------------------->
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title text-success">
+        <i class="fas fa-map-marked"></i> Datos de ubicación
+      </h5>
+      <div class="row">
+        <div class="col-4">
+          <div class="form-group">
+            <label for="direccion">Dirección</label>
+            <input
+              #direccion
+              formControlName="direccion"
+              name="direccion"
+              type="text"
+              class="form-control"
+              placeholder="Dirección exacta"
+              autocomplete="off"
+              required
+            />
+            <small class="form-text text-muted">
+              <b>Ejemplo rural:</b> Subiendo por vía principal casa verde a lado
+              de tienda Pepita
+            </small>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="barrio">Barrio</label>
+            <input
+              #barrio
+              formControlName="barrio"
+              name="barrio"
+              type="text"
+              class="form-control"
+              placeholder="Barrio"
+              autocomplete="off"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="telefono">Teléfono</label>
+            <input
+              #telefono
+              formControlName="telefono"
+              name="telefono"
+              type="text"
+              class="form-control"
+              placeholder="Telefono"
+              autocomplete="off"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="autorreconocimiento">Criterio de atención</label>
+            <select
+              #criterio
+              (change)="validarCriterio($event.target.value)"
+              formControlName="criterio"
+              name="criterio"
+              class="form-control selectpicker"
+              data-style="select-with-transition"
+              title="Seleccionar"
+              required
+            >
+              <option value="Sisbén">Puntaje de sisbén</option>
+              <option value="Carta">Carta de vulnerabilidad</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="infoCriterio">{{ labelInputInfoCriterio }}</label>
+            <input
+              #infoCriterio
+              formControlName="infoCriterio"
+              name="infoCriterio"
+              [attr.type]="tipoInputInfoCriterio"
+              class="form-control"
+              placeholder="Escriba"
+              autocomplete="off"
+              required
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!------------------- Sección datos de acudiente ------------------->
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title text-success">
+        <i class="fas fa-users mr-2"></i>Datos de acudiente
+      </h5>
+      <div class="row">
+        <div class="col-2">
+          <div class="form-group">
+            <label for="respTipoDoc">Tipo de documento</label>
+            <select
+              #respTipoDoc
+              (change)="comprobarRespSD($event.target.value)"
+              formControlName="respTipoDoc"
+              name="respTipoDoc"
+              class="form-control selectpicker show-tick"
+              data-style="select-with-transition"
+              title="Seleccionar"
+              required
+            >
+              <optgroup label="Colombianos/as">
+                <!-- <option data-icon="fad fa-id-card mr-1" value="RC">
+                  Registro civil
+                </option> -->
+                <option data-icon="fad fa-id-card mr-1" value="TI">
+                  Tarjeta de identidad
+                </option>
+                <option data-icon="fad fa-id-card mr-1" value="CC">
+                  Cédula de ciudadanía
+                </option>
+              </optgroup>
+              <optgroup label="Extranjeros/as">
+                <option data-icon="fad fa-user-clock mr-1" value="PEP">
+                  Permiso especial de permanencia
+                </option>
+                <option data-icon="fad fa-question-square mr-1" value="SD">
+                  Sin documento
+                </option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="documento">NUIP</label>
+            <input
+              #respDocumento
+              [ngModel]="formIngreso.value.respDocumento | documento"
+              (ngModelChange)="formIngreso.value.respDocumento = $event"
+              (focusout)="buscarRespBeneficiario($event.target.value)"
+              formControlName="respDocumento"
+              name="respDocumento"
+              type="text"
+              class="form-control"
+              [ngClass]="{ 'is-valid': respExiste }"
+              placeholder="Número de NUIP"
+              autocomplete="off"
+              required
+            />
+            <div *ngIf="respExiste" class="valid-feedback">
+              Responsable existente
+            </div>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="respNombre1">Primer nombre</label>
+            <input
+              #respNombre1
+              formControlName="respNombre1"
+              name="respNombre1"
+              type="text"
+              class="form-control"
+              placeholder="Escribe un nombre"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="respNombre2">Segundo nombre</label>
+            <input
+              #respNombre2
+              formControlName="respNombre2"
+              name="respNombre2"
+              type="text"
+              class="form-control"
+              placeholder="Escribe un nombre"
+            />
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="respApellido1">Primer apellido</label>
+            <input
+              #respApellido1
+              formControlName="respApellido1"
+              name="respApellido1"
+              type="text"
+              class="form-control"
+              placeholder="Escribe un apellido"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="respApellido2">Segundo apellido</label>
+            <input
+              #respApellido2
+              formControlName="respApellido2"
+              name="respApellido2"
+              type="text"
+              class="form-control"
+              placeholder="Escribe un apellido"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-2">
+          <div class="form-group">
+            <label for="respSexo">Sexo</label>
+            <select
+              #respSexo
+              formControlName="respSexo"
+              name="respSexo"
+              class="form-control selectpicker"
+              data-style="select-with-transition"
+              title="Seleccionar"
+              required
+            >
+              <option data-icon="fad fa-venus mr-1" value="Femenino">
+                Femenino
+              </option>
+              <option data-icon="fad fa-mars mr-1" value="Masculino">
+                Masculino
+              </option>
+              <option data-icon="fad fa-venus-mars mr-1" value="Otro"
+                >Otro</option
+              >
+            </select>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label class="label-control" for="respNacimiento"
+              >Fecha nacimiento</label
+            >
+            <input
+              #respNacimiento
+              formControlName="respNacimiento"
+              name="respNacimiento"
+              id="respNacimiento"
+              type="date"
+              class="form-control"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="respPaisNacimiento">País de nacimiento</label>
+            <select
+              #respPaisNac
+              (change)="cambiarDepartamentosResp($event.target.value)"
+              formControlName="respPaisNacimiento"
+              name="respPaisNacimiento"
+              class="form-control selectpicker show-tick"
+              title="Seleccionar"
+              data-size="7"
+              required
+            >
+              <option value="Colombia">Colombia</option>
+              <option value="Argentina">Argentina</option>
+              <option value="Chile">Chile</option>
+              <option value="Ecuador">Ecuador</option>
+              <option value="México">México</option>
+              <option value="Panama">Panama</option>
+              <option value="Perú">Perú</option>
+              <option value="Venezuela">Venezuela</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="respDptoNacimiento">Dpto. de nacimiento</label>
+            <select
+              #respDptoNac
+              (change)="cambiarCiudadesResp($event.target.value)"
+              formControlName="respDptoNacimiento"
+              name="respDptoNacimiento"
+              class="form-control selectpicker show-tick"
+              data-style="select-with-transition"
+              title="Seleccionar"
+              data-live-search="true"
+              data-size="5"
+              required
+            >
+              <option
+                *ngFor="let dpto of listaDepartamentosResp"
+                [value]="dpto.departamento"
+                >{{ dpto.departamento }}</option
+              >
+            </select>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="respMunicipioNacimiento">Municipio de nacimiento</label>
+            <select
+              #respMunicipioNac
+              formControlName="respMunicipioNacimiento"
+              name="respMunicipioNacimiento"
+              class="form-control selectpicker show-tick"
+              data-style="select-with-transition"
+              title="Seleccionar"
+              data-live-search="true"
+              data-size="5"
+              required
+            >
+              <option
+                *ngFor="let municipio of listaMunicipiosResp"
+                [ngValue]="municipio"
+                >{{ municipio }}</option
+              >
+            </select>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="tipoResponsable">Tipo de acudiente</label>
+            <select
+              #respTipoResp
+              formControlName="tipoResponsable"
+              name="tipoResponsable"
+              class="form-control selectpicker show-tick"
+              data-style="select-with-transition"
+              title="Seleccionar"
+              data-size="7"
+              required
+            >
+              <option value="Madre">Madre</option>
+              <option value="Padre">Padre</option>
+              <option value="Tio/a">Tia/o</option>
+              <option value="Abuelo/a">Abuelo/a</option>
+              <option value="Conyugue">Conyugue</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!------------------- Sección UDS e Ingreso ------------------->
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title text-success">
+        <i class="fas fa-address-book mr-2"></i>Datos de ingreso
+      </h5>
+      <div class="row">
+        <div class="col-2">
+          <div class="form-group">
+            <label for="codigo">Código UDS</label>
+            <input
+              [ngModel]="codigoUdsSeleccionada"
+              formControlName="codigo"
+              name="codigo"
+              type="text"
+              class="form-control"
+              disabled
+              required
+            />
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label for="udsId">Unidad De Servicio</label>
+            <select
+              (change)="cambiarCodigoUds($event.target.value)"
+              formControlName="udsId"
+              name="udsId"
+              class="form-control selectpicker show-tick"
+              data-style="select-with-transition"
+              title="Seleccionar UDS"
+              data-size="5"
+              required
+            >
+              <option
+                *ngFor="let unidad of udsAsignadas"
+                [value]="unidad._id"
+                >{{ unidad.nombre }}</option
+              >
+            </select>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+            <label class="label-control" for="ingreso">Fecha de ingreso</label>
+            <input
+              formControlName="ingreso"
+              name="ingreso"
+              type="date"
+              class="form-control"
+              autocomplete="off"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="form-group">
+            <label for="comentario">Comentario (opcional)</label>
+            <input
+              formControlName="comentario"
+              name="comentario"
+              type="text"
+              class="form-control"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 text-right">
+      <button type="submit" class="btn btn-success btn-sm">
+        <i class="fas fa-user-plus mr-1"></i>
+        Reportar ingreso
+      </button>
+    </div>
+  </div>
+</form>

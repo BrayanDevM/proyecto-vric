@@ -1,0 +1,205 @@
+<div class="content">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="BDM_fadeInUp">
+      <div class="row mb-4">
+        <div class="col-3">
+          <div class="card card-body text-center" style="position: relative;">
+            <h5 class="card-subtitle">Cobertura Cali</h5>
+            <app-pie-chart
+              [pieChartData]="[
+                totalCaliVinculados + totalCaliDS,
+                cuposCali - (totalCaliVinculados + totalCaliDS)
+              ]"
+            ></app-pie-chart>
+
+            <div class="card-graphic-info">
+              <i class="fas fa-user" style="color: #4de2b8;"></i>
+              <span class="graphic-number">{{
+                totalCaliVinculados + totalCaliDS
+              }}</span>
+              <span class="text-muted data-desc">Beneficiarios</span>
+            </div>
+            <span class="text-muted mt-3 .card-graphic-sub-info"
+              >Faltantes:
+              {{ cuposCali - (totalCaliVinculados + totalCaliDS) }}</span
+            >
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="card card-body text-center" style="position: relative;">
+            <h5 class="card-subtitle">Cobertura Dagua</h5>
+            <app-pie-chart
+              [pieChartData]="[
+                totalDaguaVinculados + totalDaguaDS,
+                cuposDagua - (totalDaguaVinculados + totalDaguaDS)
+              ]"
+              [bgColors]="['#f6da6d', '#eee']"
+            ></app-pie-chart>
+            <div class="card-graphic-info">
+              <i class="fas fa-user" style="color: #f6da6d;"></i>
+              <span class="graphic-number">{{
+                totalDaguaVinculados + totalDaguaDS
+              }}</span>
+              <span class="text-muted data-desc">Beneficiarios</span>
+            </div>
+            <span class="text-muted mt-3 .card-graphic-sub-info"
+              >Faltantes:
+              {{ cuposDagua - (totalDaguaVinculados + totalDaguaDS) }}</span
+            >
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="card card-body text-center" style="position: relative;">
+            <h5 class="card-subtitle">Cobertura total</h5>
+            <app-pie-chart
+              [pieChartData]="[
+                totalVinculados + totalDatosSensibles,
+                cuposTotal - totalVinculados
+              ]"
+              [bgColors]="['#70bbfe', '#eee']"
+            ></app-pie-chart>
+            <div class="card-graphic-info">
+              <i class="fas fa-users" style="color: #70bbfe;"></i>
+              <span class="graphic-number">{{
+                totalVinculados + totalDatosSensibles
+              }}</span>
+              <span class="text-muted data-desc">Beneficiarios</span>
+            </div>
+            <span class="text-muted mt-3 .card-graphic-sub-info"
+              >Faltantes:
+              {{ cuposTotal - (totalVinculados + totalDatosSensibles) }}</span
+            >
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="card card-body text-center" style="position: relative;">
+            <h5 class="card-subtitle">Datos sensibles</h5>
+            <app-pie-chart
+              [pieChartData]="[
+                totalDatosSensibles,
+                cuposTotal - totalVinculados
+              ]"
+              [bgColors]="['#fd4962', '#eee']"
+            ></app-pie-chart>
+            <div class="card-graphic-info">
+              <i class="fas fa-user-edit" style="color: #fd4962;"></i>
+              <span class="graphic-number">{{ totalDatosSensibles }}</span>
+              <span class="text-muted data-desc">Beneficiarios</span>
+            </div>
+            <span class="text-muted mt-3 .card-graphic-sub-info"
+              >Con calidad: {{ cuposTotal - totalDatosSensibles }}</span
+            >
+          </div>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col-8">
+          <div class="card card-body">
+            <h5 class="card-title">Novedades</h5>
+            <!-- <div class="text-right">
+              <div class="btn-group btn-group-toggle mb-2" data-toggle="buttons">
+                <label class="btn btn-light btn-sm active">
+                  <input type="radio" name="options" id="option1" checked /> Cali
+                </label>
+                <label class="btn btn-light btn-sm">
+                  <input type="radio" name="options" id="option2" /> Dagua
+                </label>
+              </div>
+            </div> -->
+            <app-line-chart
+              *ngIf="mostrarGraficaLinea"
+              [ingresos]="ingresosPorMes"
+              [egresos]="egresosPorMes"
+              [meses]="meses"
+            ></app-line-chart>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="card card-body pb-5">
+            <h5 class="card-title">Población</h5>
+            <app-pie-chart
+              [pieChartData]="[
+                this.totalMG,
+                this.totalFemenino,
+                this.totalMasculino,
+                this.totalextranjeros
+              ]"
+              [bgColors]="['#70bbfe', '#fd4962', '#f6da6d', '#4de2b8']"
+              [holeSize]="70"
+              [legendDisplay]="true"
+            ></app-pie-chart>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-4">
+          <div class="card card-body mb-1">
+            <h5 class="card-title mb-0">Datos especiales</h5>
+          </div>
+          <ul class="list-group">
+            <li
+              class="list-group-item d-flex justify-content-between align-items-center"
+            >
+              Mujeres gestantes adolescentes
+              <span class="badge badge-primary badge-pill">{{
+                mgAdolescente
+              }}</span>
+            </li>
+            <li
+              class="list-group-item d-flex justify-content-between align-items-center"
+            >
+              Beneficiarios con discapacidad
+              <span class="badge badge-primary badge-pill">{{
+                conDiscapacidad
+              }}</span>
+            </li>
+            <li
+              class="list-group-item d-flex justify-content-between align-items-center"
+            >
+              Beneficiarios en concurrencia
+              <span class="badge badge-danger badge-pill">{{
+                enConcurrencia
+              }}</span>
+            </li>
+          </ul>
+        </div>
+        <!----------------- DATOS UNIDADES DAGUA ----------------->
+        <div class="col-4">
+          <div class="card card-body mb-1">
+            <h5 class="card-title mb-0">Estado de atención en Dagua</h5>
+          </div>
+          <ul class="list-group">
+            <li
+              *ngFor="let unidad of udsDagua"
+              class="list-group-item d-flex justify-content-between align-items-center"
+            >
+              {{ unidad.nombre }}
+              {{ unidad.beneficiarios }}
+              <span class="badge badge-info">
+                {{ unidad.beneficiarios.length }}/{{ unidad.cupos }}
+              </span>
+            </li>
+          </ul>
+        </div>
+        <!----------------- DATOS UNIDADES CALI ----------------->
+        <div class="col-4">
+          <div class="card card-body mb-1">
+            <h5 class="card-title mb-0">Estado de atención en Cali</h5>
+          </div>
+          <ul class="list-group">
+            <li
+              *ngFor="let unidad of udsCali"
+              class="list-group-item d-flex justify-content-between align-items-center"
+            >
+              {{ unidad.nombre }}
+              <span class="badge badge-info">
+                {{ unidad.beneficiarios.length }}/{{ unidad.cupos }}
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

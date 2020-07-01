@@ -1,0 +1,159 @@
+<div
+  class="sidebar"
+  data-color="purple"
+  data-background-color="white"
+  data-image="src/assets/img/sidebar-1.jpg"
+>
+  <!--
+    Tip 1: cambiamos el color usando: data-color="purple | azure | green | orange | danger"
+
+    Tip 2: podemos agregar imagen usando: data-image tag
+-->
+  <div class="logo">
+    <a class="simple-text logo-normal">
+      Proyecto VRIC
+    </a>
+  </div>
+  <div class="sidebar-wrapper">
+    <ul class="nav">
+      <li
+        *ngFor="let menuItem of menu"
+        class="nav-item"
+        routerLinkActive="active"
+      >
+        <a class="nav-link" [routerLink]="menuItem.url">
+          <i class="material-icons">{{ menuItem.gIcon }}</i>
+          <p>{{ menuItem.titulo }}</p>
+        </a>
+      </li>
+      <li class="nav-item nav-collapse" routerLinkActive="active">
+        <a
+          class="nav-link collapsed"
+          data-toggle="collapse"
+          href="#beneficiarios"
+          aria-expanded="false"
+        >
+          <i class="material-icons">assignment_ind</i>
+          <p>Beneficiarios <b class="caret"></b></p>
+          <div class="collapse" id="beneficiarios">
+            <ul class="nav">
+              <li
+                *ngIf="usuarioRol === 'DOCENTE'"
+                class="nav-item"
+                routerLinkActive="active"
+              >
+                <a class="nav-link" routerLink="/beneficiarios/novedades">
+                  <span class="sidebar-mini"></span>
+                  <span class="sidebar-normal">Novedades</span>
+                </a>
+              </li>
+              <li class="nav-item" routerLinkActive="active">
+                <a
+                  class="nav-link"
+                  routerLink="/beneficiarios/mis-beneficiarios"
+                >
+                  <span class="sidebar-mini"></span>
+                  <span class="sidebar-normal">Mis beneficiarios</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </a>
+      </li>
+      <!-- Fijado al final -->
+      <li class="nav-item active-pro ">
+        <a class="nav-link" data-toggle="modal" data-target="#modal-reporte">
+          <i class="material-icons">sms_failed</i>
+          <p>Reportar fallo</p>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="modal-reporte"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          <i class="fa fa-exclamation-triangle text-warning mr-2"></i> Reportar
+          fallo
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <div class="row">
+            <div class="col-12">
+              <p>Qué tipo de reporte quieres hacer?</p>
+              <div class="form-check form-check-inline">
+                <input
+                  [(ngModel)]="reporte.tipo"
+                  class="form-check-input"
+                  type="radio"
+                  name="tipoReporte"
+                  id="fallo"
+                  value="Fallo"
+                />
+                <label class="form-check-label" for="fallo">Fallo</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  [(ngModel)]="reporte.tipo"
+                  class="form-check-input"
+                  type="radio"
+                  name="tipoReporte"
+                  id="sugerencia"
+                  value="Sugerencia"
+                />
+                <label class="form-check-label" for="sugerencia"
+                  >Sugerencia</label
+                >
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  [(ngModel)]="reporte.tipo"
+                  class="form-check-input"
+                  type="radio"
+                  name="tipoReporte"
+                  id="mensaje"
+                  value="Mensaje"
+                />
+                <label class="form-check-label" for="mensaje">Mensaje</label>
+              </div>
+              <textarea
+                [(ngModel)]="reporte.descripcion"
+                name="descripción"
+                class="form-control"
+                rows="5"
+              ></textarea>
+              <small class="text-muted"
+                ><i class="fa fa-info-circle"></i> Por favor, sé lo más claro
+                posible en la redacción de tu observación</small
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button (click)="crearReporte()" type="button" class="btn btn-primary">
+          Reportar a administrador
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

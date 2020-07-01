@@ -1,0 +1,199 @@
+<div class="content">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="BDM_fadeInUp">
+      <form
+        ngNativeValidate
+        [formGroup]="formActualizarContrato"
+        (ngSubmit)="actualizar()"
+      >
+        <div class="row">
+          <div class="col-7">
+            <div class="card">
+              <div class="card-header">
+                Detalles de contrato
+              </div>
+              <div class="card-body ">
+                <div class="row">
+                  <div class="col-3">
+                    <div class="form-group">
+                      <label for="codigo">Cód. de Contrato</label>
+                      <input
+                        [ngModel]="contrato.codigo"
+                        formControlName="codigo"
+                        name="codigo"
+                        type="number"
+                        class="form-control"
+                        placeholder="Número..."
+                      />
+                    </div>
+                  </div>
+                  <div class="col-2">
+                    <div class="form-group">
+                      <label for="cupos">Cupos</label>
+                      <input
+                        [ngModel]="contrato.cupos"
+                        formControlName="cupos"
+                        name="cupos"
+                        type="number"
+                        class="form-control"
+                        placeholder="Cupos..."
+                      />
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label for="regional">Regional</label>
+                      <input
+                        [ngModel]="contrato.regional"
+                        formControlName="regional"
+                        name="regional"
+                        type="text"
+                        class="form-control"
+                        placeholder="Regional..."
+                      />
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <div class="form-group">
+                      <label for="cz">Centro Zonal</label>
+                      <input
+                        [ngModel]="contrato.cz"
+                        formControlName="cz"
+                        name="cz"
+                        type="text"
+                        class="form-control"
+                        placeholder="CZ..."
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-5">
+                    <div class="form-group">
+                      <label for="eas">Nombre de EAS</label>
+                      <input
+                        [ngModel]="contrato.eas"
+                        formControlName="eas"
+                        name="eas"
+                        type="text"
+                        class="form-control"
+                        placeholder="Nombre de EAS..."
+                      />
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label for="nit">NIT</label>
+                      <input
+                        [ngModel]="contrato.nit"
+                        formControlName="nit"
+                        name="nit"
+                        type="text"
+                        class="form-control"
+                        placeholder="NIT..."
+                      />
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <div class="form-group">
+                      <label for="coordinador">Estado de contrato</label>
+                      <select
+                        [ngModel]="contrato.activo"
+                        formControlName="activo"
+                        name="activo"
+                        class="form-control selectpicker"
+                        data-style="select-with-transition"
+                        title="Seleccionar estado"
+                        data-size="7"
+                        required
+                      >
+                        <option disabled>Seleccionar estado.</option>
+                        <option [ngValue]="false">Inactivo</option>
+                        <option [ngValue]="true">Activo</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12 mt-3 text-right">
+                    <span class="text-muted"
+                      >Creado el: {{ contrato.creadoEl }}</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div class="card mb-4">
+              <div class="card-header">
+                UDS asignadas en contrato
+              </div>
+              <div class="card-body">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Codigo</th>
+                      <th>Nombre</th>
+                      <th>Cupos</th>
+                      <th class="text-right">Remover</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let unidad of contrato.uds; index as i">
+                      <td>{{ unidad.codigo }}</td>
+                      <td>{{ unidad.nombre }}</td>
+                      <td>{{ unidad.cupos }}</td>
+                      <td class="text-right">
+                        <button
+                          (click)="sacarUdsContrato(i, unidad._id)"
+                          class="btn btn-sm btn-danger"
+                        >
+                          <i class="far fa-minus"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="form-group">
+                  <label for="uds">Agregar UDS</label>
+                  <select
+                    (change)="agregarUdsContrato($event)"
+                    class="form-control selectpicker"
+                    data-style="select-with-transition"
+                    title="Seleccionar Unidad de servicio"
+                    data-size="7"
+                    data-live-search="true"
+                  >
+                    <option *ngIf="udsDisponibles.length === 0" disabled>
+                      No hay UDS disponibles
+                    </option>
+                    <option
+                      *ngFor="let unidad of udsDisponibles"
+                      [value]="unidad._id"
+                      [attr.data-subtext]="' Cupos ' + unidad.cupos"
+                      >{{ unidad.nombre }}</option
+                    >
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 text-right">
+            <div class="card">
+              <div class="card-body">
+                <button type="submit" class="btn btn-success btn-sm mr-2">
+                  <i class="far fa-sync"></i>
+                  Actualizar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,229 @@
+<div class="content">
+  <div class="container-fluid">
+    <app-breadcrumb></app-breadcrumb>
+    <div class="BDM_fadeInUp">
+      <!------------------------------------------------------------------------------->
+      <!---------------------- Tabla de beneficiarios pendientes ---------------------->
+      <div class="row">
+        <div class="col-12">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-category text-danger">
+                <i class="material-icons">explore</i> Explorar
+              </h5>
+              <div class="row">
+                <div class="col-3">
+                  <div class="form-group">
+                    <label for="unidad">Filtrar por UDS</label>
+                    <select
+                      #selectUds
+                      [(ngModel)]="unidadSeleccionada"
+                      (change)="traerBeneficiariosUds($event.target.value)"
+                      class="form-control selectpicker"
+                      name="unidad"
+                      title="Seleccionar UDS"
+                    >
+                      <option *ngIf="udsAsignadas.length === 0" disabled
+                        >No tienes UDS asignadas</option
+                      >
+                      <option
+                        *ngFor="let unidad of udsAsignadas"
+                        [value]="unidad._id"
+                        >{{ unidad.nombre }}</option
+                      >
+                    </select>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="form-group">
+                    <label for="unidad">Filtrar por estado</label>
+                    <select
+                      #selectEstado
+                      (change)="
+                        traerBeneficiariosPorEstado($event.target.value)
+                      "
+                      class="form-control selectpicker"
+                      name="unidad"
+                      title="Seleccionar estado"
+                      [disabled]="
+                        usuario.rol === 'DOCENTE' ||
+                        usuario.rol === 'COORDINADOR'
+                      "
+                    >
+                      <option value="Pendiente vincular"
+                        >Pendiente vincular</option
+                      >
+                      <option value="Pendiente desvincular"
+                        >Pendiente desvincular</option
+                      >
+                      <option value="Vinculado">Vinculado</option>
+                      <option value="Dato sensible">Dato sensible</option>
+                      <option value="Concurrencia">Concurrencia</option>
+                      <option value="Desvinculado">Desvinculado</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        *ngIf="!mostrarPorEstado && !mostrarPorUds; else beneficiarios"
+        class="row"
+      >
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body text-center">
+              <img src="assets/img/empty_state.jpg" alt="Sin UDS" />
+              <h4 class="text-muted mb-4">
+                Selecciona un flitro en las opciones de arriba
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template #beneficiarios>
+        <!------------------------------------------------------------------------------->
+        <!------------------------ Tabla de beneficiarios Pendientes ------------------------>
+        <div *ngIf="mostrarPorUds" class="row">
+          <div class="col-12">
+            <div class="card mb-4">
+              <h5 class="card-header bg-warning text-white">
+                Beneficiarios pendientes
+              </h5>
+              <div class="card-body">
+                <h6
+                  *ngIf="beneficiariosPendientes.length === 0; else pendientes"
+                  class="text-center text-muted"
+                >
+                  No tienes nada pendiente
+                </h6>
+                <!-- <h5 class="card-title">Special title treatment</h5> -->
+                <ng-template #pendientes>
+                  <app-tabla-beneficiarios
+                    [beneficiarios]="beneficiariosPendientes"
+                    (realizoCambios)="actualizarListado($event)"
+                    (beneficiarioInfo)="verInfoBeneficiario($event)"
+                  ></app-tabla-beneficiarios>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!------------------------------------------------------------------------------->
+        <!------------------------ Tabla de beneficiarios con DS ------------------------>
+        <div *ngIf="mostrarPorUds" class="row">
+          <div class="col-12">
+            <div class="card mb-4">
+              <h5 class="card-header bg-info text-white">
+                Beneficiarios con datos sensibles
+              </h5>
+              <div class="card-body">
+                <h6
+                  *ngIf="beneficiariosDS.length === 0; else DatosSensibles"
+                  class="text-center text-muted"
+                >
+                  No tienes datos sensibles
+                </h6>
+                <!-- <h5 class="card-title">Special title treatment</h5> -->
+                <ng-template #DatosSensibles>
+                  <app-tabla-beneficiarios
+                    [beneficiarios]="beneficiariosDS"
+                    (realizoCambios)="actualizarListado($event)"
+                    (beneficiarioInfo)="verInfoBeneficiario($event)"
+                  ></app-tabla-beneficiarios>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!------------------------------------------------------------------------------->
+        <!---------------------- Tabla de beneficiarios vinculados ---------------------->
+        <div *ngIf="mostrarPorUds" class="row">
+          <div class="col-12">
+            <div class="card mb-4">
+              <h5 class="card-header bg-success text-white">
+                Beneficiarios Vinculados
+              </h5>
+              <div class="card-body">
+                <h6
+                  *ngIf="beneficiariosVinculados.length === 0; else vinculados"
+                  class="text-center text-muted"
+                >
+                  No tienes beneficiarios vinculados
+                </h6>
+                <!-- <h5 class="card-title">Special title treatment</h5> -->
+                <ng-template #vinculados>
+                  <app-tabla-beneficiarios
+                    [beneficiarios]="beneficiariosVinculados"
+                    (realizoCambios)="actualizarListado($event)"
+                    (beneficiarioInfo)="verInfoBeneficiario($event)"
+                  ></app-tabla-beneficiarios>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!------------------------------------------------------------------------------->
+        <!--------------------- Tabla de beneficiarios desvinculados -------------------->
+        <div *ngIf="mostrarPorUds" class="row">
+          <div class="col-12">
+            <div class="card mb-4">
+              <h5 class="card-header bg-danger text-white">
+                Beneficiarios desvinculados
+              </h5>
+              <div class="card-body">
+                <h6
+                  *ngIf="
+                    beneficiariosDesvinculados.length === 0;
+                    else desvinculados
+                  "
+                  class="text-center text-muted"
+                >
+                  No tienes beneficiarios desvinculados
+                </h6>
+                <!-- <h5 class="card-title">Special title treatment</h5> -->
+                <ng-template #desvinculados>
+                  <app-tabla-beneficiarios
+                    [beneficiarios]="beneficiariosDesvinculados"
+                    (realizoCambios)="actualizarListado($event)"
+                    (beneficiarioInfo)="verInfoBeneficiario($event)"
+                  ></app-tabla-beneficiarios>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="mostrarPorEstado" class="row">
+          <div class="col-12">
+            <div class="card mb-4">
+              <h5 class="card-header bg-primary text-white">
+                Filtro por estado
+              </h5>
+              <div class="card-body">
+                <h6
+                  *ngIf="beneficiariosPorEstado.length === 0; else porEstado"
+                  class="text-center text-muted"
+                >
+                  No tienes beneficiarios con el estado seleccionado
+                </h6>
+                <ng-template #porEstado>
+                  <app-tabla-beneficiarios
+                    [beneficiarios]="beneficiariosPorEstado"
+                    (realizoCambios)="actualizarListado($event)"
+                    (beneficiarioInfo)="verInfoBeneficiario($event)"
+                  ></app-tabla-beneficiarios>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<app-info-beneficiario
+  [beneficiarioInfo]="verBeneficiario"
+></app-info-beneficiario>

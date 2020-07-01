@@ -1,0 +1,44 @@
+.table tbody {
+  display: block;
+  max-height: 250px;
+  overflow-y: scroll;
+}
+
+.table thead,
+tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+/* Tamaño del scroll */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/* Estilos barra (thumb) de scroll */
+*::-webkit-scrollbar-thumb {
+  background: #dddddd;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background-color: #cccccc;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #dbdbdb;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos track de scroll */
+*::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-track:hover,
+*::-webkit-scrollbar-track:active {
+  background: #e9e9e9;
+}
