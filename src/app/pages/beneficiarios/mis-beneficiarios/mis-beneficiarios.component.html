@@ -28,7 +28,7 @@
                           #selectUds
                           [(ngModel)]="unidadSeleccionada"
                           (change)="traerBeneficiariosUds($event.target.value)"
-                          class="form-control selectpicker show-tick"
+                          class="form-control"
                           name="unidad"
                           title="Seleccionar UDS"
                         >
@@ -51,7 +51,7 @@
                           (change)="
                             traerBeneficiariosPorEstado($event.target.value)
                           "
-                          class="form-control selectpicker"
+                          class="form-control"
                           name="unidad"
                           title="Seleccionar estado"
                           [disabled]="

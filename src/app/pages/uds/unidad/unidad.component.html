@@ -94,9 +94,7 @@
                       formControlName="arriendo"
                       name="arriendo"
                       class="form-control"
-                      data-style="select-with-transition"
                       title="Seleccionar"
-                      data-size="3"
                     >
                       <option [ngValue]="true">Con Arriendo</option>
                       <option [ngValue]="false">Sin Arriendo</option>
@@ -114,9 +112,7 @@
                       name="coordinador"
                       class="form-control"
                       id="coordinador"
-                      data-style="select-with-transition"
                       title="Coordinador"
-                      data-size="7"
                       required
                     >
                       <option disabled>Seleccionar coordinador.</option>
@@ -138,9 +134,7 @@
                       name="gestor"
                       class="form-control"
                       id="gestor"
-                      data-style="select-with-transition"
                       title="Gestor"
-                      data-size="7"
                       required
                     >
                       <option disabled>Seleccionar gestor.</option>
@@ -160,13 +154,10 @@
                       [(ngModel)]="docentesEnUds"
                       formControlName="docentes"
                       name="docentes"
-                      class="form-control selectpicker"
+                      class="form-control"
                       id="docentes"
-                      data-style="select-with-transition"
                       title="Docentes"
-                      data-size="7"
                       multiple
-                      data-max-options="2"
                       required
                     >
                       <option disabled>Seleccionar docentes.</option>
@@ -186,7 +177,6 @@
                       formControlName="activa"
                       name="activa"
                       class="form-control"
-                      data-style="select-with-transition"
                       title="Seleccionar"
                     >
                       <option [ngValue]="true">Activa</option>

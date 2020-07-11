@@ -23,7 +23,6 @@
             "styles": [
               "src/assets/css/bootstrap.min.css",
               "src/assets/css/sweetalert2-material-ui.css",
-              "src/assets/css/bootstrap-select.min.css",
               "node_modules/animate.css/animate.min.css",
               "src/styles.css"
             ],
@@ -31,7 +30,6 @@
               "src/assets/js/core/jquery-3.5.1.slim.min.js",
               "src/assets/js/core/popper.min.js",
               "src/assets/js/bootstrap.min.js",
-              "src/assets/js/plugins/bootstrap-select.min.js",
               "src/assets/js/plugins/moment.min.js",
               "src/assets/js/plugins/moment-with-locales.min.js",
               "src/assets/js/plugins/bootstrap-datetimepicker.js",

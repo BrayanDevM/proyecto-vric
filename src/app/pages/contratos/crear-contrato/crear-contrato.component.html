@@ -100,10 +100,8 @@
                       <select
                         formControlName="activo"
                         name="activo"
-                        class="form-control selectpicker"
-                        data-style="select-with-transition"
+                        class="form-control"
                         title="Seleccionar"
-                        data-size="7"
                         required
                       >
                         <option disabled>Seleccionar estado.</option>
@@ -152,10 +150,8 @@
                   <label for="uds">Agregar UDS</label>
                   <select
                     (change)="agregarUdsContrato($event)"
-                    class="form-control selectpicker"
-                    data-style="select-with-transition"
+                    class="form-control"
                     title="Seleccionar Unidad de servicio"
-                    data-size="7"
                     data-live-search="true"
                   >
                     <option *ngIf="udsDisponibles.length === 0" disabled>

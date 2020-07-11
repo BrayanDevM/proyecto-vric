@@ -13,7 +13,6 @@
               name="udsId"
               id="udsId"
               class="form-control"
-              data-style="select-with-transition"
               title="Seleccionar"
               required
             >
@@ -34,9 +33,7 @@
               formControlName="beneficiarioId"
               name="beneficiarioId"
               class="form-control"
-              data-style="select-with-transition"
               title="Seleccionar"
-              data-live-search="true"
               required
             >
               <option
@@ -75,8 +72,7 @@
                 (change)="comprobarSD($event.target.value)"
                 formControlName="tipoDoc"
                 name="tipoDoc"
-                class="form-control selectpicker show-tick"
-                data-style="select-with-transition"
+                class="form-control show-tick"
                 title="Seleccionar"
                 required
               >
@@ -175,8 +171,7 @@
                 #sexo
                 formControlName="sexo"
                 name="sexo"
-                class="form-control selectpicker"
-                data-style="select-with-transition"
+                class="form-control"
                 title="Seleccionar"
                 required
               >
@@ -214,10 +209,8 @@
                 (change)="cambiarDepartamentos($event.target.value)"
                 formControlName="paisNacimiento"
                 name="paisNacimiento"
-                class="form-control selectpicker show-tick"
-                data-style="select-with-transition"
+                class="form-control show-tick"
                 title="Seleccionar"
-                data-size="7"
                 required
               >
                 <option value="Colombia">Colombia</option>
@@ -239,11 +232,8 @@
                 (change)="cambiarCiudades($event.target.value)"
                 formControlName="dptoNacimiento"
                 name="dptoNacimiento"
-                class="form-control selectpicker show-tick"
-                data-style="select-with-transition"
+                class="form-control show-tick"
                 title="Seleccionar"
-                data-live-search="true"
-                data-size="5"
                 required
               >
                 <option
@@ -261,11 +251,8 @@
                 #municipioNacimiento
                 formControlName="municipioNacimiento"
                 name="municipioNacimiento"
-                class="form-control selectpicker show-tick"
-                data-style="select-with-transition"
+                class="form-control show-tick"
                 title="Seleccionar"
-                data-live-search="true"
-                data-size="5"
                 required
               >
                 <option
@@ -283,8 +270,7 @@
                 #autorreconocimiento
                 formControlName="autorreconocimiento"
                 name="autorreconocimiento"
-                class="form-control selectpicker"
-                data-style="select-with-transition"
+                class="form-control"
                 title="Seleccionar"
                 required
               >
@@ -309,8 +295,7 @@
                 #discapacidad
                 formControlName="discapacidad"
                 name="discapacidad"
-                class="form-control selectpicker"
-                data-style="select-with-transition"
+                class="form-control"
                 title="Seleccionar"
                 required
               >
@@ -420,9 +405,7 @@
                 formControlName="udsId"
                 name="udsId"
                 class="form-control"
-                data-style="select-with-transition"
                 title="Seleccionar UDS"
-                data-size="5"
                 required
               >
                 <option selected disabled>Seleccionar UDS</option>
