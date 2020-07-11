@@ -4,14 +4,15 @@
     <div class="row">
       <div class="col-12">
         <div class="card BDM_fadeInUp">
-          <!-- <div class="card-header card-header-icon card-header-rose">
-            <div class="card-icon">
-              <i class="material-icons">language</i>
-            </div>
-          </div> -->
           <div class="card-body">
-            <!-- <h4 class="card-title">Here is the Icon</h4> -->
-            <div class="row">
+            <!------------------- Spiner cargando información ------------------->
+            <div *ngIf="cargando" class="d-flex justify-content-center">
+              <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+            <!------------------- Imágen de datos vacíos ------------------->
+            <div *ngIf="!cargando" class="row">
               <div class="col-12 text-right">
                 <button
                   (click)="crearUds()"
@@ -21,74 +22,88 @@
                   Crear UDS
                 </button>
               </div>
-            </div>
-            <div *ngIf="uds.length === 0" class="col-12 text-center">
-              <img src="assets/img/empty_state.jpg" alt="No hay UDS" />
-              <h4 class="text-muted mb-5">No hay Unidades de Servicio :D</h4>
-            </div>
-            <div *ngIf="uds.length > 0" class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Código</th>
-                    <th>Nombre</th>
-                    <th>Ubicación</th>
-                    <th>Cupos</th>
-                    <th>Estado</th>
-                    <th>Arriendo</th>
-                    <th>Contrato asignado</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let unidad of uds">
-                    <td>{{ unidad.codigo }}</td>
-                    <td>{{ unidad.nombre }}</td>
-                    <td>{{ unidad.ubicacion }}</td>
-                    <td>{{ unidad.cupos }}</td>
-                    <td class="text-center">
-                      <span *ngIf="unidad.activa" class="badge badge-success"
-                        >Activa</span
-                      >
-                      <span *ngIf="!unidad.activa" class="badge badge-danger"
-                        >Inactiva</span
-                      >
-                    </td>
-                    <td class="text-center">
-                      <span *ngIf="unidad.arriendo" class="badge badge-info"
-                        >Con arriendo</span
-                      >
-                      <span
-                        *ngIf="!unidad.arriendo"
-                        class="badge badge-secondary"
-                        >Sin arriendo</span
-                      >
-                    </td>
-                    <td>
-                      <span *ngIf="unidad.enContrato !== null">{{
-                        unidad.enContrato.codigo
-                      }}</span>
-                      <span *ngIf="unidad.enContrato === null"
-                        >No asignado</span
-                      >
-                    </td>
-                    <td class="text-right">
-                      <button
-                        [routerLink]="['/uds/unidad', unidad._id]"
-                        class="btn btn-info btn-sm mr-1"
-                      >
-                        <i class="fas fa-pencil"></i>
-                      </button>
-                      <button
-                        (click)="eliminarUds(unidad)"
-                        class="btn btn-danger btn-sm mr-1"
-                      >
-                        <i class="fas fa-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="col-12">
+                <div
+                  *ngIf="!cargando && uds.length === 0"
+                  class="col-12 text-center"
+                >
+                  <img src="assets/img/empty_state.jpg" alt="No hay UDS" />
+                  <h4 class="text-muted mb-5">
+                    No hay Unidades de Servicio :D
+                  </h4>
+                </div>
+                <div
+                  *ngIf="!cargando && uds.length > 0"
+                  class="table-responsive"
+                >
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Ubicación</th>
+                        <th>Cupos</th>
+                        <th>Estado</th>
+                        <th>Arriendo</th>
+                        <th>Contrato asignado</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let unidad of uds">
+                        <td>{{ unidad.codigo }}</td>
+                        <td>{{ unidad.nombre }}</td>
+                        <td>{{ unidad.ubicacion }}</td>
+                        <td>{{ unidad.cupos }}</td>
+                        <td class="text-center">
+                          <span
+                            *ngIf="unidad.activa"
+                            class="badge badge-success"
+                            >Activa</span
+                          >
+                          <span
+                            *ngIf="!unidad.activa"
+                            class="badge badge-danger"
+                            >Inactiva</span
+                          >
+                        </td>
+                        <td class="text-center">
+                          <span *ngIf="unidad.arriendo" class="badge badge-info"
+                            >Con arriendo</span
+                          >
+                          <span
+                            *ngIf="!unidad.arriendo"
+                            class="badge badge-secondary"
+                            >Sin arriendo</span
+                          >
+                        </td>
+                        <td>
+                          <span *ngIf="unidad.enContrato !== null">{{
+                            unidad.enContrato.codigo
+                          }}</span>
+                          <span *ngIf="unidad.enContrato === null"
+                            >No asignado</span
+                          >
+                        </td>
+                        <td class="text-right">
+                          <button
+                            [routerLink]="['/uds/unidad', unidad._id]"
+                            class="btn btn-info btn-sm mr-1"
+                          >
+                            <i class="fas fa-pencil"></i>
+                          </button>
+                          <button
+                            (click)="eliminarUds(unidad)"
+                            class="btn btn-danger btn-sm mr-1"
+                          >
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
         </div>

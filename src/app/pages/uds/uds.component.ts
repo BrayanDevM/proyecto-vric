@@ -12,6 +12,7 @@ import Swal from 'sweetalert2/src/sweetalert2.js';
 export class UdsComponent implements OnInit {
   uds: Uds[] = [];
   registros: number;
+  cargando = false;
 
   constructor(public uds$: UdsService, private router: Router) {}
 
@@ -20,10 +21,16 @@ export class UdsComponent implements OnInit {
   }
 
   obtenerUds() {
+    this.cargando = true;
     this.uds$.obtenerUds().subscribe((resp: any) => {
-      this.uds = resp.uds;
-      this.registros = resp.registros;
-      // console.log(this.uds);
+      if (resp.ok) {
+        this.cargando = false;
+        this.uds = resp.uds;
+        this.registros = resp.registros;
+        // console.log(this.uds);
+      } else {
+        this.cargando = false;
+      }
     });
   }
 

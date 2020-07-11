@@ -63,6 +63,25 @@ a,
   padding: 4.6px;
 }
 
+.sidebar > .logo {
+  background-image: url('./assets/img/Logo.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  margin: 0 1rem 0;
+  padding-bottom: 4.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.navbar .logo {
+  background-image: url('./assets/img/Logo.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  height: 40px;
+  width: 200px;
+}
+
 .btn > i {
   font-size: 1rem;
 }

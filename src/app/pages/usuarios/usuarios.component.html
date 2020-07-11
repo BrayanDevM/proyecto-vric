@@ -11,7 +11,6 @@
                 <span class="sr-only">Cargando...</span>
               </div>
             </div>
-            <!----------------- FIN Spiner cargando información ----------------->
             <div
               *ngIf="!cargando"
               class="row animate__animated animate__fadeIn"
@@ -25,95 +24,99 @@
                   Crear usuario
                 </button>
               </div>
-            </div>
-            <div
-              *ngIf="!cargando"
-              class="table-responsive animate__animated animate__fadeIn"
-            >
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Nombre</th>
-                    <th>Documento</th>
-                    <th>Activo</th>
-                    <th>Acceso/Rol</th>
-                    <th class="text-center">Tipo de cuenta</th>
-                    <th>Telefono</th>
-                    <th>Creado</th>
-                    <th class="text-right">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let usuario of usuarios">
-                    <td>
-                      <b>{{ usuario.nombre }}</b>
-                      <br />
-                      <span class="text-muted">{{ usuario.correo }}</span>
-                    </td>
-                    <td>{{ usuario.documento }}</td>
-                    <td>
-                      <div class="custom-control custom-switch">
-                        <input
-                          [(ngModel)]="usuario.activo"
-                          type="checkbox"
-                          [id]="usuario._id"
-                          class="custom-control-input"
-                        />
-                        <label class="custom-control-label" [for]="usuario._id">
-                        </label>
-                      </div>
-                    </td>
-                    <td>
-                      <select
-                        [(ngModel)]="usuario.rol"
-                        name="usuarioRol"
-                        class="form-control"
-                        title="Seleccionar"
-                      >
-                        <option value="ADMIN">Administrador</option>
-                        <option value="GESTOR">Gestor</option>
-                        <option value="COORDINADOR">Coordinador</option>
-                        <option value="DOCENTE">Docente</option>
-                      </select>
-                    </td>
-                    <td class="text-center">
-                      <span *ngIf="usuario.google" class="badge badge-success"
-                        >Google</span
-                      >
-                      <span
-                        *ngIf="!usuario.google"
-                        class="badge badge-secondary"
-                        >Normal</span
-                      >
-                    </td>
-                    <td>
-                      {{ usuario.telefono }}
-                      <span *ngIf="usuario.telefono === ''">No tiene</span>
-                    </td>
-                    <td>{{ usuario.creadoEl }}</td>
-                    <td class="text-right">
-                      <button
-                        (click)="actualizarUsuario(usuario)"
-                        class="btn btn-success btn-sm mr-1"
-                      >
-                        <i class="fas fa-save"></i>
-                      </button>
-                      <button
-                        (click)="editarUsuario(usuario)"
-                        class="btn btn-info btn-sm mr-1"
-                      >
-                        <i class="fas fa-pencil"></i>
-                      </button>
-                      <button
-                        (click)="eliminarUsuario(usuario)"
-                        class="btn btn-danger btn-sm mr-1"
-                      >
-                        <i class="fas fa-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="col-12">
+                <div class="table-responsive animate__animated animate__fadeIn">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Nombre</th>
+                        <th>Documento</th>
+                        <th>Activo</th>
+                        <th>Acceso/Rol</th>
+                        <th class="text-center">Tipo de cuenta</th>
+                        <th>Telefono</th>
+                        <th>Creado</th>
+                        <th class="text-right">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let usuario of usuarios">
+                        <td>
+                          <b>{{ usuario.nombre }}</b>
+                          <br />
+                          <span class="text-muted">{{ usuario.correo }}</span>
+                        </td>
+                        <td>{{ usuario.documento }}</td>
+                        <td>
+                          <div class="custom-control custom-switch">
+                            <input
+                              [(ngModel)]="usuario.activo"
+                              type="checkbox"
+                              [id]="usuario._id"
+                              class="custom-control-input"
+                            />
+                            <label
+                              class="custom-control-label"
+                              [for]="usuario._id"
+                            >
+                            </label>
+                          </div>
+                        </td>
+                        <td>
+                          <select
+                            [(ngModel)]="usuario.rol"
+                            name="usuarioRol"
+                            class="form-control"
+                            title="Seleccionar"
+                          >
+                            <option value="ADMIN">Administrador</option>
+                            <option value="GESTOR">Gestor</option>
+                            <option value="COORDINADOR">Coordinador</option>
+                            <option value="DOCENTE">Docente</option>
+                          </select>
+                        </td>
+                        <td class="text-center">
+                          <span
+                            *ngIf="usuario.google"
+                            class="badge badge-success"
+                            >Google</span
+                          >
+                          <span
+                            *ngIf="!usuario.google"
+                            class="badge badge-secondary"
+                            >Normal</span
+                          >
+                        </td>
+                        <td>
+                          {{ usuario.telefono }}
+                          <span *ngIf="usuario.telefono === ''">No tiene</span>
+                        </td>
+                        <td>{{ usuario.creadoEl }}</td>
+                        <td class="text-right">
+                          <button
+                            (click)="actualizarUsuario(usuario)"
+                            class="btn btn-success btn-sm mr-1"
+                          >
+                            <i class="fas fa-save"></i>
+                          </button>
+                          <button
+                            (click)="editarUsuario(usuario)"
+                            class="btn btn-info btn-sm mr-1"
+                          >
+                            <i class="fas fa-pencil"></i>
+                          </button>
+                          <button
+                            (click)="eliminarUsuario(usuario)"
+                            class="btn btn-danger btn-sm mr-1"
+                          >
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
         </div>

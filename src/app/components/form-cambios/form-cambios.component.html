@@ -10,14 +10,14 @@
             <label for="udsId">Seleccionar UDS</label>
             <select
               (change)="traerMadres($event.target.value)"
-              formControlName="udsId"
               name="udsId"
               id="udsId"
-              class="form-control selectpicker show-tick"
+              class="form-control"
               data-style="select-with-transition"
               title="Seleccionar"
               required
             >
+              <option selected disabled>Seleccionar UDS</option>
               <option
                 *ngFor="let unidad of udsAsignadas"
                 [value]="unidad._id"
@@ -33,7 +33,7 @@
               (change)="mostrarInfoMadre($event.target.value)"
               formControlName="beneficiarioId"
               name="beneficiarioId"
-              class="form-control selectpicker show-tick"
+              class="form-control"
               data-style="select-with-transition"
               title="Seleccionar"
               data-live-search="true"
@@ -419,12 +419,13 @@
                 (change)="cambiarCodigoUds($event.target.value)"
                 formControlName="udsId"
                 name="udsId"
-                class="form-control selectpicker show-tick"
+                class="form-control"
                 data-style="select-with-transition"
                 title="Seleccionar UDS"
                 data-size="5"
                 required
               >
+                <option selected disabled>Seleccionar UDS</option>
                 <option
                   *ngFor="let unidad of udsAsignadas"
                   [value]="unidad._id"

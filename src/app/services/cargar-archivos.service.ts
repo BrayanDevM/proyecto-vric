@@ -38,7 +38,7 @@ export class CargarArchivosService {
         if (!err.ok) {
           Swal.fire({
             title: 'Importar beneficiarios',
-            html: `${err.error.mensaje}`,
+            html: `${err.message}`,
             icon: 'error'
           });
         }

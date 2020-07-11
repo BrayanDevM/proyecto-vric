@@ -23,6 +23,8 @@ export class MisBeneficiariosComponent implements OnInit {
   beneficiariosDesvinculados: Beneficiario[] = [];
   beneficiariosPorEstado: Beneficiario[] = [];
   verBeneficiario: Beneficiario = null;
+  cargando = false;
+  cargandoListado = false;
 
   mostrarPorUds = false;
   mostrarPorEstado = false;
@@ -43,28 +45,36 @@ export class MisBeneficiariosComponent implements OnInit {
   }
 
   obtenerUds() {
+    console.log('cargando...');
+    this.cargando = true;
     const arregloUds: Uds[] = [];
     let contador = 0;
     this.usuario.uds.forEach(unidad => {
       this.uds$.obtenerUnidad(unidad).subscribe((resp: any) => {
-        arregloUds.push(resp.unidad);
+        if (resp.ok) {
+          console.log('UDS obtenida!');
+          arregloUds.push(resp.unidad);
+          contador += 1;
+        }
+        if (contador === this.usuario.uds.length) {
+          console.log('termina carga');
+          this.udsAsignadas = arregloUds;
+          this.cargando = false;
+          this.refrescarSelect(50);
+        }
       });
-      contador += 1;
-      if (contador === this.usuario.uds.length) {
-        this.udsAsignadas = arregloUds;
-        this.refrescarSelect(550);
-      }
     });
   }
 
   traerBeneficiariosUds(udsId: string) {
+    this.cargandoListado = true;
     // Vaciamos los arreglos con beneficiarios
     this.beneficiariosPendientes = [];
     this.beneficiariosDS = [];
     this.beneficiariosVinculados = [];
     this.beneficiariosDesvinculados = [];
     this.beneficiariosPorEstado = [];
-    this.selectEstado.nativeElement.value = null;
+    // this.selectEstado.nativeElement.value = null;
     // Traemos y guaramos en arreglos
     this.uds$.obtenerUnidad(udsId).subscribe((resp: any) => {
       resp.unidad.beneficiarios.forEach((beneficiario: Beneficiario) => {
@@ -88,6 +98,7 @@ export class MisBeneficiariosComponent implements OnInit {
             this.beneficiariosDesvinculados.push(beneficiario);
             break;
         }
+        this.cargandoListado = false;
       });
       this.mostrarPorEstado = false;
       this.mostrarPorUds = true;

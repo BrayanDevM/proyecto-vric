@@ -108,20 +108,6 @@ export class LineChartComponent implements OnInit {
 
   ngOnInit() {
     if (this.lineChart) {
-      // for (let i = 0; i < this.ingresos.length; i++) {
-      //   // const ingresos = this.ingresos[i];
-      //   if (this.ingresos[i] === 0 && this.egresos[i] === 0) {
-      //     this.meses.splice(i, 0);
-      //     this.ingresos.splice(i, 0);
-      //     this.egresos.splice(i, 0);
-      //     console.log(`ingreso y egresos en pos ${i}, están en 0, removido`);
-      //     console.log(`mes en pos ${i}: ${this.meses[i]} removido`);
-      //   }
-      // }
-
-      // console.log(this.meses, 'meses');
-      // console.log(this.ingresos, 'ingresos');
-      // console.log(this.egresos, 'egresos');
       this.lineChartData[0].data = this.egresos;
       this.lineChartData[1].data = this.ingresos;
       this.lineChartLabels = this.meses;

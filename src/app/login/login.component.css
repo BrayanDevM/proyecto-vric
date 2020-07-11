@@ -3,6 +3,12 @@
   padding: 1.1em 0.2em 0.5em;
 }
 
+.btn-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .btn-google {
   text-transform: capitalize;
   font-size: 1rem;

@@ -33,13 +33,14 @@ export class UsuariosComponent implements OnInit {
   obtenerUsuarios() {
     this.cargando = true;
     this.ususarios$.obtenerUsuarios().subscribe((resp: any) => {
-      if (resp.ok === true) {
+      if (resp.ok) {
         this.usuarios = resp.usuarios;
+        this.cargando = false;
         // console.log(resp.usuarios);
       } else {
+        this.cargando = false;
         console.log('Error al traer usuarios', resp);
       }
-      this.cargando = false;
     });
   }
 

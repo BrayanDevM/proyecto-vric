@@ -1,7 +1,8 @@
 export const Config = {
   REST: {
     PRINCIPAL: {
-      URL: 'http://localhost:3000'
+      URL: 'https://p-vric.herokuapp.com'
+      // URL: 'http://localhost:8080'
     },
     OTRAS: {
       REST_COUNTRIES: 'https://restcountries.eu/rest/v2/'

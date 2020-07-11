@@ -12,8 +12,8 @@ import Swal from 'sweetalert2';
 })
 export class AdministrarComponent implements OnInit {
   reportes: Reporte[] = [];
-
-  // variables para improtar beneficiarios
+  cargando = false;
+  // variables para importar beneficiarios
   archivo: FileItem;
   formData: FormData;
   archivoPlaceholder = 'Seleccionar archivo';
@@ -35,11 +35,14 @@ export class AdministrarComponent implements OnInit {
   }
 
   obtenerReportes() {
+    this.cargando = true;
     this.reporte$.obtenerReportes().subscribe((resp: any) => {
       if (resp.ok) {
         // console.log(resp);
         this.reportes = resp.reportes;
+        this.cargando = false;
       } else {
+        this.cargando = false;
         console.log('error al traer reportes', resp.error);
       }
     });

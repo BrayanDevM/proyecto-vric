@@ -70,6 +70,11 @@ export class TablaBeneficiariosComponent implements OnInit {
     this.beneficiarios$
       .actualizarBeneficiario(beneficiario)
       .subscribe((resp: any) => {
+        Swal.fire({
+          title: 'Beneficiario actualizado',
+          text: 'Beneficiario actualizado correctamente',
+          icon: 'success'
+        });
         this.realizoCambios.emit(true);
       });
   }

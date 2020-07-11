@@ -147,21 +147,6 @@
   width: 26px;
 }
 
-.sidebar .logo-tim {
-  border-radius: 50%;
-  border: 1px solid #333;
-  display: block;
-  height: 61px;
-  width: 61px;
-  float: left;
-  overflow: hidden;
-}
-
-.sidebar .logo-tim img {
-  width: 60px;
-  height: 60px;
-}
-
 .sidebar .nav {
   margin-top: 20px;
   display: block;
@@ -308,61 +293,6 @@
   display: block;
   background: #ffffff;
   opacity: 0.93;
-}
-
-.sidebar .logo {
-  padding: 15px 0px;
-  margin: 0;
-  display: block;
-  position: relative;
-  z-index: 4;
-}
-
-.sidebar .logo:after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  right: 15px;
-  height: 1px;
-  width: calc(100% - 30px);
-  background-color: rgba(180, 180, 180, 0.3);
-}
-
-.sidebar .logo p {
-  float: left;
-  font-size: 20px;
-  margin: 10px 10px;
-  color: #fff;
-  line-height: 20px;
-}
-
-.sidebar .logo .simple-text {
-  text-transform: uppercase;
-  padding: 5px 0px;
-  display: inline-block;
-  font-size: 18px;
-  color: #3c4858;
-  white-space: nowrap;
-  font-weight: 400;
-  line-height: 30px;
-  overflow: hidden;
-  text-align: center;
-  display: block;
-}
-
-.sidebar .logo-tim {
-  border-radius: 50%;
-  border: 1px solid #333;
-  display: block;
-  height: 61px;
-  width: 61px;
-  float: left;
-  overflow: hidden;
-}
-
-.sidebar .logo-tim img {
-  width: 60px;
-  height: 60px;
 }
 
 .nav-link {

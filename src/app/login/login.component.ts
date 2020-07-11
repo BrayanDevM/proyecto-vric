@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
   usuario: Usuario;
   formLogin: FormGroup;
-  cargando: boolean;
+  cargando = false;
   recordar = false;
   recordarCorreo: string;
 
@@ -22,7 +22,6 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.cargando = false;
     this.formLogin = this.fb.group({
       correo: [null, Validators.required],
       password: [null, Validators.required],
@@ -35,7 +34,9 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
+    this.cargando = true;
     if (this.formLogin.invalid) {
+      this.cargando = false;
       return;
     }
     this.cargando = true;
@@ -49,10 +50,13 @@ export class LoginComponent implements OnInit {
     this.usuarioService
       .login(this.usuario, this.formLogin.value.recuerdame)
       .subscribe(
-        () => {
+        resp => {
           this.cargando = false;
         },
-        error => (this.cargando = false)
+        (error: any) => {
+          this.cargando = false;
+          console.log(error);
+        }
       );
   }
 

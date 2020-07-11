@@ -8,56 +8,69 @@
             Debuggin
           </div>
           <div class="card-body">
-            <div
-              *ngFor="let reporte of reportes"
-              class="card shadow-sm mb-4 position-relative"
-            >
-              <div
-                class="form-check position-absolute"
-                style="top: 15px; right: 10px; z-index: 1;"
-              >
-                <input
-                  (change)="actualizarReporte(reporte)"
-                  class="form-check-input"
-                  type="checkbox"
-                  [(ngModel)]="reporte.completado"
-                  [id]="'completado' + reporte._id"
-                />
-                <label
-                  class="form-check-label"
-                  [for]="'completado' + reporte._id"
-                >
-                  Completado
-                </label>
-              </div>
-              <div
-                class="card-body"
-                [ngClass]="{ 'texto-tachado': reporte.completado }"
-              >
-                <h6 class="card-title mb-1">
-                  Reporte de {{ reporte.reportadoPor.nombre }}
-                  <span
-                    class="badge"
-                    style="font-size: .7rem;"
-                    [ngClass]="{
-                      'badge-danger': reporte.tipo === 'Fallo',
-                      'badge-primary': reporte.tipo === 'Sugerencia',
-                      'badge-info': reporte.tipo === 'Mensaje'
-                    }"
-                  >
-                    {{ reporte.tipo }}
-                  </span>
-                </h6>
-                <p class="card-subtitle text-muted">
-                  {{ reporte.reportadoPor.correo }}
-                </p>
-                <p class="card-text mt-2">{{ reporte.descripcion }}</p>
-
-                <small class="text-muted"
-                  >creado el: {{ reporte.creadoEl }}</small
-                >
+            <div *ngIf="cargando" class="d-flex justify-content-center">
+              <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
               </div>
             </div>
+            <div
+              *ngIf="!cargando && reportes.length === 0; else listaReportes"
+              class="text-muted"
+            >
+              <h4>No tienes reportes</h4>
+            </div>
+            <ng-template #listaReportes>
+              <div
+                *ngFor="let reporte of reportes"
+                class="card shadow-sm mb-4 position-relative"
+              >
+                <div
+                  class="form-check position-absolute"
+                  style="top: 15px; right: 10px; z-index: 1;"
+                >
+                  <input
+                    (change)="actualizarReporte(reporte)"
+                    class="form-check-input"
+                    type="checkbox"
+                    [(ngModel)]="reporte.completado"
+                    [id]="'completado' + reporte._id"
+                  />
+                  <label
+                    class="form-check-label"
+                    [for]="'completado' + reporte._id"
+                  >
+                    Completado
+                  </label>
+                </div>
+                <div
+                  class="card-body"
+                  [ngClass]="{ 'texto-tachado': reporte.completado }"
+                >
+                  <h6 class="card-title mb-1">
+                    Reporte de {{ reporte.reportadoPor.nombre }}
+                    <span
+                      class="badge"
+                      style="font-size: .7rem;"
+                      [ngClass]="{
+                        'badge-danger': reporte.tipo === 'Fallo',
+                        'badge-primary': reporte.tipo === 'Sugerencia',
+                        'badge-info': reporte.tipo === 'Mensaje'
+                      }"
+                    >
+                      {{ reporte.tipo }}
+                    </span>
+                  </h6>
+                  <p class="card-subtitle text-muted">
+                    {{ reporte.reportadoPor.correo }}
+                  </p>
+                  <p class="card-text mt-2">{{ reporte.descripcion }}</p>
+
+                  <small class="text-muted"
+                    >creado el: {{ reporte.creadoEl }}</small
+                  >
+                </div>
+              </div>
+            </ng-template>
           </div>
         </div>
       </div>

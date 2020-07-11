@@ -40,8 +40,8 @@ export class PieChartComponent implements OnInit {
   pieChartLabels: Label[] = [
     'Mujeres gestantes',
     'Niñas',
-    'Niños',
-    'Extranjeros'
+    'Niños'
+    // 'Extranjeros'
   ];
   @Input() pieChartData: number[] = [1250, 1688];
   pieChartType: ChartType = 'doughnut';

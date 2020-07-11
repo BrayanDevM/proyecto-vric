@@ -95,6 +95,9 @@ export class UsuarioService {
     this.cookie$.delete('token');
     this.cookie$.delete('usuario');
     this.cookie$.delete('menu');
+    // cookies desde el back-end para Google sign-in
+    this.cookie$.delete('express:sess.sig');
+    this.cookie$.delete('express:sess');
     this.router.navigate(['/login']);
   }
 
@@ -198,6 +201,28 @@ export class UsuarioService {
           text: err.error.mensaje,
           icon: 'error'
         });
+        return throwError(err);
+      })
+    );
+  }
+
+  renovarToken() {
+    const URL = this.API_URL + `/renuevaToken?token=${this.token}`;
+    return this.http.get(URL).pipe(
+      map((resp: any) => {
+        if (resp.ok) {
+          this.token = resp.nuevoToken;
+          this.crearCookieSesion(this.token, this.usuario, this.menu);
+          return true;
+        }
+      }),
+      catchError(err => {
+        Swal.fire({
+          title: 'Su sesión ha expirado',
+          html: `Ha expirado tu sesión o no ha sido posible renovar la misma, por favor intenta ingresar nuevamente`,
+          icon: 'info'
+        });
+        this.logout();
         return throwError(err);
       })
     );

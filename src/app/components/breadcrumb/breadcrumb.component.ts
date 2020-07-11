@@ -23,7 +23,7 @@ export class BreadcrumbComponent implements OnInit {
       });
       this.paginaActiva = data.paginaActiva;
       this.gIcono = data.gIcono;
-      this.tituloPagina.setTitle(this.paginaActiva);
+      this.tituloPagina.setTitle('VRIC | ' + this.paginaActiva);
     });
   }
 

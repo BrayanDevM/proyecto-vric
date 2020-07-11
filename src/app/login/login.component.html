@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container">
-    <a class="navbar-brand" href="#">Proyecto VRIC</a>
+    <div class="logo"></div>
     <button
       class="navbar-toggler"
       type="button"
@@ -16,8 +16,13 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto"></ul>
       <div class="form-inline">
-        <button class="btn btn-outline-danger my-2 my-sm-0" type="button">
-          Comprar
+        <button
+          class="btn btn-outline-info btn-sm my-2 my-sm-0"
+          type="button"
+          data-toggle="modal"
+          data-target="#exampleModal"
+        >
+          Acerca de
         </button>
       </div>
     </div>
@@ -30,7 +35,7 @@
     (ngSubmit)="login()"
     class="form-signin"
   >
-    <div class="text-center mt-4">
+    <div class="text-center mt-4 mb-4">
       <p class="description text-center">Iniciar sesión con</p>
       <a (click)="googleLogin()" class="btn btn-light btn-google">
         <img src="assets/img/iconos/google.png" width="12" />
@@ -78,26 +83,43 @@
         Recordarme
       </label>
     </div>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">
+    <button
+      *ngIf="!cargando"
+      class="btn btn-lg btn-primary btn-block btn-login"
+      type="submit"
+    >
       Inciar sesión
+    </button>
+    <button
+      *ngIf="cargando"
+      class="btn btn-lg btn-primary btn-block btn-login"
+      type="button"
+      disabled
+    >
+      <span
+        class="spinner-border spinner-border-sm mr-1"
+        role="status"
+        aria-hidden="true"
+      ></span>
+      Iniciando sesión...
     </button>
     <p class="mt-5 mb-3 text-muted">© 2020-2022</p>
   </form>
 </div>
 
-<!-- Modal Acerca de -->
+<!-- Modal -->
 <div
   class="modal fade"
-  id="acerca"
+  id="exampleModal"
   tabindex="-1"
   role="dialog"
-  aria-labelledby="Acerca de"
+  aria-labelledby="acercaDe"
   aria-hidden="true"
 >
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Acerca de</h5>
+        <h5 class="modal-title" id="acercaDe">Acerca de</h5>
         <button
           type="button"
           class="close"
@@ -108,16 +130,32 @@
         </button>
       </div>
       <div class="modal-body">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit
-        similique tempore error quas id consectetur quaerat voluptates
-        consequuntur placeat. Temporibus repudiandae autem praesentium animi
-        eum, accusamus voluptate necessitatibus ullam illum.
+        <p>
+          Esta aplicación permite a las Entidades Administradoras de Servicicio
+          (Aliados estratégicos del Insituto Colombiano del Bienestar Familiar)
+          a administrar la información de sus servicios, las personas
+          autorizadas al uso de esta aplicación reconocen que se manipula la
+          información personal de sus beneficiarios y se comprometen a registrar
+          sólo la información solicitada.
+        </p>
+        <p>
+          Es importante resaltar que esta herramienta amplía las herramientas
+          básicas para la manipulación de la información de sus beneficiarios,
+          la información aquí consignada perdurará hasta la fecha que la EAS
+          tenga contratada con ICBF, posterior a la fecha de finalización de
+          contrato se eliminará toda la información relacionada a los
+          beneficiarios sin copia de seguridad alguna para garantizar la
+          privacidad de los mismos.
+        </p>
+        <p>
+          Esta aplicación hace uso de Cookies para almacenar datos se sesión,
+          actualmente se encuentra en fase de desarrollo.
+        </p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-sm btn-info" data-dismiss="modal">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">
           Entendido
         </button>
-        <!-- <button type="button" class="btn btn-primary">Guardar</button> -->
       </div>
     </div>
   </div>

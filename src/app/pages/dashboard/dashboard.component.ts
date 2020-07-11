@@ -28,8 +28,8 @@ export class DashboardComponent implements OnInit {
   totalDatosSensibles = 0;
 
   // Segregado por población
-  totalFemenino = 0;
-  totalMasculino = 0;
+  totalMujeres = 0;
+  totalHombres = 0;
   totalMG = 0;
   totalextranjeros = 0;
 
@@ -164,25 +164,25 @@ export class DashboardComponent implements OnInit {
     const nacimiento = moment(beneficiario.nacimiento, 'DD/MM/YYYY');
     const edadAnios = this.hoy.diff(nacimiento, 'years');
     if (
-      (beneficiario.sexo === 'Masculino' &&
+      (beneficiario.sexo === 'Hombre' &&
         edadAnios <= 5 &&
         beneficiario.estado === 'Vinculado') ||
-      (beneficiario.sexo === 'Masculino' &&
+      (beneficiario.sexo === 'Hombre' &&
         edadAnios <= 5 &&
         beneficiario.estado === 'Dato sensible')
     ) {
-      this.totalMasculino += 1;
+      this.totalHombres += 1;
       // console.log(beneficiario);
     }
     if (
-      (beneficiario.sexo === 'Femenino' &&
+      (beneficiario.sexo === 'Mujer' &&
         edadAnios <= 5 &&
         beneficiario.estado === 'Vinculado') ||
-      (beneficiario.sexo === 'Femenino' &&
+      (beneficiario.sexo === 'Mujer' &&
         edadAnios <= 5 &&
         beneficiario.estado === 'Dato sensible')
     ) {
-      this.totalFemenino += 1;
+      this.totalMujeres += 1;
       // console.log(beneficiario);
     }
     if (

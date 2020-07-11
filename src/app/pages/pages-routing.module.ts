@@ -18,11 +18,15 @@ import { UsuariosComponent } from './usuarios/usuarios.component';
 import { CrearUsuarioComponent } from './usuarios/crear-usuario/crear-usuario.component';
 import { BusquedaComponent } from './busqueda/busqueda.component';
 import { AdministrarComponent } from './administrar/administrar.component';
+
+// Guards
 import { AdminGuard } from '../services/guards/admin.guard';
+import { VerificaTokenGuard } from '../services/guards/verifica-token.guard';
 
 const routes: Routes = [
   {
     path: 'dashboard',
+    canActivate: [VerificaTokenGuard],
     component: DashboardComponent,
     data: {
       paginaActiva: 'Dashboard',
@@ -38,7 +42,7 @@ const routes: Routes = [
   {
     path: 'contratos',
     component: ContratosComponent,
-    canActivate: [AdminGuard],
+    canActivate: [AdminGuard, VerificaTokenGuard],
     data: {
       paginaActiva: 'Contratos',
       partes: [
@@ -52,7 +56,7 @@ const routes: Routes = [
   },
   {
     path: 'contratos/contrato/:id',
-    canActivate: [AdminGuard],
+    canActivate: [AdminGuard, VerificaTokenGuard],
     component: ContratoComponent,
     data: {
       paginaActiva: 'Ver contrato',
@@ -71,7 +75,7 @@ const routes: Routes = [
   },
   {
     path: 'contratos/crear',
-    canActivate: [AdminGuard],
+    canActivate: [AdminGuard, VerificaTokenGuard],
     component: CrearContratoComponent,
     data: {
       paginaActiva: 'Crear contrato',
@@ -91,7 +95,7 @@ const routes: Routes = [
   {
     path: 'uds',
     component: UdsComponent,
-    canActivate: [AdminGuard],
+    canActivate: [AdminGuard, VerificaTokenGuard],
     data: {
       paginaActiva: 'Unidades De Servicio',
       partes: [
@@ -106,7 +110,7 @@ const routes: Routes = [
   {
     path: 'uds/unidad/:id',
     component: UnidadComponent,
-    canActivate: [AdminGuard],
+    canActivate: [AdminGuard, VerificaTokenGuard],
     data: {
       paginaActiva: 'Ver unidad',
       partes: [
@@ -125,7 +129,7 @@ const routes: Routes = [
   {
     path: 'uds/crear',
     component: CrearUdsComponent,
-    canActivate: [AdminGuard],
+    canActivate: [AdminGuard, VerificaTokenGuard],
     data: {
       paginaActiva: 'Crear unidad',
       partes: [
@@ -143,6 +147,7 @@ const routes: Routes = [
   },
   {
     path: 'beneficiarios',
+    canActivate: [VerificaTokenGuard],
     component: BeneficiariosComponent,
     data: {
       paginaActiva: 'Beneficiarios',
@@ -157,6 +162,7 @@ const routes: Routes = [
   },
   {
     path: 'beneficiarios/mis-beneficiarios',
+    canActivate: [VerificaTokenGuard],
     component: MisBeneficiariosComponent,
     data: {
       paginaActiva: 'Mis Beneficiarios',
@@ -175,6 +181,7 @@ const routes: Routes = [
   },
   {
     path: 'beneficiarios/novedades',
+    canActivate: [VerificaTokenGuard],
     component: NovedadesComponent,
     data: {
       paginaActiva: 'Novedades',
@@ -193,6 +200,7 @@ const routes: Routes = [
   },
   {
     path: 'beneficiarios/:id',
+    canActivate: [VerificaTokenGuard],
     component: BeneficiarioComponent,
     data: {
       paginaActiva: 'Ver beneficiario',
@@ -212,7 +220,7 @@ const routes: Routes = [
   {
     path: 'administrar',
     component: AdministrarComponent,
-    canActivate: [AdminGuard],
+    canActivate: [AdminGuard, VerificaTokenGuard],
     data: {
       paginaActiva: 'Administrar',
       partes: [
@@ -227,7 +235,7 @@ const routes: Routes = [
   {
     path: 'usuarios',
     component: UsuariosComponent,
-    canActivate: [AdminGuard],
+    canActivate: [AdminGuard, VerificaTokenGuard],
     data: {
       paginaActiva: 'Usuarios',
       partes: [
@@ -242,7 +250,7 @@ const routes: Routes = [
   {
     path: 'usuarios/crear',
     component: CrearUsuarioComponent,
-    canActivate: [AdminGuard],
+    canActivate: [AdminGuard, VerificaTokenGuard],
     data: {
       paginaActiva: 'Crear usuario',
       partes: [
@@ -260,6 +268,7 @@ const routes: Routes = [
   },
   {
     path: 'perfil',
+    canActivate: [VerificaTokenGuard],
     component: PerfilComponent,
     data: {
       paginaActiva: 'Perfil de usuario',
@@ -274,6 +283,7 @@ const routes: Routes = [
   },
   {
     path: 'buscar/:criterio',
+    canActivate: [VerificaTokenGuard],
     component: BusquedaComponent,
     data: {
       paginaActiva: 'Buscar',

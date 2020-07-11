@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UdsService } from 'src/app/services/uds.service';
 import { Uds } from 'src/app/models/uds.model';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { Usuario } from 'src/app/models/usuario.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -26,6 +26,7 @@ export class UnidadComponent implements OnInit {
     private usuarios$: UsuarioService,
     private uds$: UdsService,
     private rutaActual: ActivatedRoute,
+    private router: Router,
     private fb: FormBuilder
   ) {}
 
@@ -52,9 +53,7 @@ export class UnidadComponent implements OnInit {
       creadoEl: null
     });
 
-    setTimeout(() => {
-      jQuery('.selectpicker').selectpicker('refresh');
-    }, 800);
+    setTimeout(() => jQuery('.selectpicker').selectpicker('refresh'), 2500);
   }
 
   obtenerUnidad() {
@@ -135,8 +134,8 @@ export class UnidadComponent implements OnInit {
       this.uds.enContrato = this.uds.enContrato._id;
     }
     this.uds$.actualizarUds(this.uds).subscribe(resp => {
-      console.log(resp);
-      this.obtenerUnidad();
+      // console.log(resp);
+      this.router.navigate(['/uds']);
     });
     this.cargando = false;
     this.docentesEnUds = [];

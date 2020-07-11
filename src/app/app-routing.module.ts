@@ -18,7 +18,6 @@ const routes: Routes = [
     component: PagesComponent,
     canActivate: [LoginGuard],
     loadChildren: () => import('./pages/pages.module').then(m => m.PagesModule)
-    // loadChildren: './pages/pages.module#PagesModule'
   },
   { path: '**', pathMatch: 'full', redirectTo: 'login' }
 ];

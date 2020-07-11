@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 })
 export class ContratosComponent implements OnInit {
   contratos: Contrato[] = [];
+  cargando = false;
 
   constructor(public contratos$: ContratosService, private router: Router) {}
 
@@ -19,8 +20,14 @@ export class ContratosComponent implements OnInit {
   }
 
   obtenerContratos() {
+    this.cargando = true;
     this.contratos$.obtenerContratos().subscribe((resp: any) => {
-      this.contratos = resp.contratos;
+      if (resp.ok) {
+        this.cargando = false;
+        this.contratos = resp.contratos;
+      } else {
+        this.cargando = false;
+      }
     });
   }
 
