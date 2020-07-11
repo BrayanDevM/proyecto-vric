@@ -52,12 +52,10 @@ export class MisBeneficiariosComponent implements OnInit {
     this.usuario.uds.forEach(unidad => {
       this.uds$.obtenerUnidad(unidad).subscribe((resp: any) => {
         if (resp.ok) {
-          console.log('UDS obtenida!');
           arregloUds.push(resp.unidad);
           contador += 1;
         }
         if (contador === this.usuario.uds.length) {
-          console.log('termina carga');
           this.udsAsignadas = arregloUds;
           this.cargando = false;
           this.refrescarSelect(50);

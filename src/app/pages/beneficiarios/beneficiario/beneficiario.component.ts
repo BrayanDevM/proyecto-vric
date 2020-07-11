@@ -44,6 +44,7 @@ export class BeneficiarioComponent implements OnInit {
         .obtenerBeneficiario(resp.id)
         .subscribe((respBen: any) => {
           this.beneficiario = respBen.beneficiario;
+          this.obtenerResponsable(this.beneficiario.responsableId._id);
           this.beneficiario.nacimiento = moment(
             this.beneficiario.nacimiento,
             'DD/MM/YYYY'
@@ -54,7 +55,6 @@ export class BeneficiarioComponent implements OnInit {
           ).format('YYYY-MM-DD');
           this.cambiarDepartamentos(this.beneficiario.paisNacimiento);
           this.cambiarCiudades(this.beneficiario.dptoNacimiento);
-          this.obtenerResponsable(this.beneficiario.responsableId._id);
         });
     });
   }

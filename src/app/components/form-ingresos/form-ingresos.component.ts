@@ -349,7 +349,7 @@ export class FormIngresosComponent implements OnInit {
   ingresarBeneficiario() {
     Swal.fire({
       title: 'Reportar ingreso',
-      html: `¿Los datos son del beneficiario <b>
+      html: `¿Los datos del beneficiario <b>
         ${this.formIngreso.value.nombre1}
         ${this.formIngreso.value.nombre2}
         ${this.formIngreso.value.apellido1}
