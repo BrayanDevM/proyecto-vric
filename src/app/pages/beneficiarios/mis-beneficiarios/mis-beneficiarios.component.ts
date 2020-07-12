@@ -6,6 +6,7 @@ import { Beneficiario } from 'src/app/models/beneficiario.model';
 import { Uds } from 'src/app/models/uds.model';
 import Swal from 'sweetalert2/src/sweetalert2.js';
 import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
+import { NgOption } from '@ng-select/ng-select';
 declare var jQuery: any;
 
 @Component({
@@ -14,16 +15,29 @@ declare var jQuery: any;
   styleUrls: ['./mis-beneficiarios.component.css']
 })
 export class MisBeneficiariosComponent implements OnInit {
+  // ng-select -----------------
+  estados: NgOption = [
+    { value: 'Pendiente vincular', label: 'Pendiente vincular' },
+    { value: 'Pendiente desvincular', label: 'Pendiente desvincular' },
+    // { value: 'Vinculado', label: 'Vinculado' },
+    { value: 'Dato sensible', label: 'Dato sensible' },
+    { value: 'Concurrencia', label: 'Concurrencia' },
+    { value: 'Desvinculado', label: 'Desvinculado' }
+  ];
+  disableRol = false;
+  // ---------------------------
   usuario: Usuario;
   udsAsignadas: Uds[] = [];
+  cargandoUdsAsignadas = false;
   unidadSeleccionada: string;
+  // Segregación de beneficiarios
   beneficiariosPendientes: Beneficiario[] = [];
   beneficiariosDS: Beneficiario[] = [];
   beneficiariosVinculados: Beneficiario[] = [];
   beneficiariosDesvinculados: Beneficiario[] = [];
   beneficiariosPorEstado: Beneficiario[] = [];
+
   verBeneficiario: Beneficiario = null;
-  cargando = false;
   cargandoListado = false;
 
   mostrarPorUds = false;
@@ -41,12 +55,14 @@ export class MisBeneficiariosComponent implements OnInit {
 
   ngOnInit() {
     this.usuario = this.usuario$.usuario;
+    if (this.usuario.rol === 'DOCENTE') {
+      this.disableRol = true;
+    }
     this.obtenerUds();
   }
 
   obtenerUds() {
-    console.log('cargando...');
-    this.cargando = true;
+    this.cargandoUdsAsignadas = true;
     const arregloUds: Uds[] = [];
     let contador = 0;
     this.usuario.uds.forEach(unidad => {
@@ -57,14 +73,13 @@ export class MisBeneficiariosComponent implements OnInit {
         }
         if (contador === this.usuario.uds.length) {
           this.udsAsignadas = arregloUds;
-          this.cargando = false;
-          this.refrescarSelect(50);
+          this.cargandoUdsAsignadas = false;
         }
       });
     });
   }
 
-  traerBeneficiariosUds(udsId: string) {
+  traerBeneficiariosUds($event: any) {
     this.cargandoListado = true;
     // Vaciamos los arreglos con beneficiarios
     this.beneficiariosPendientes = [];
@@ -74,7 +89,7 @@ export class MisBeneficiariosComponent implements OnInit {
     this.beneficiariosPorEstado = [];
     // this.selectEstado.nativeElement.value = null;
     // Traemos y guaramos en arreglos
-    this.uds$.obtenerUnidad(udsId).subscribe((resp: any) => {
+    this.uds$.obtenerUnidad($event._id).subscribe((resp: any) => {
       resp.unidad.beneficiarios.forEach((beneficiario: Beneficiario) => {
         switch (beneficiario.estado) {
           case 'Pendiente vincular':
@@ -107,26 +122,30 @@ export class MisBeneficiariosComponent implements OnInit {
     // console.log('Desvinculados', this.beneficiariosDesvinculados);
   }
 
-  traerBeneficiariosPorEstado(estado: string) {
+  traerBeneficiariosPorEstado($event: any) {
+    this.cargandoListado = true;
+    let contador = 0;
     // Vaciamos los arreglos con beneficiarios
-    this.estadoSeleccionado = estado;
+    this.estadoSeleccionado = $event.value;
     this.beneficiariosPendientes = [];
     this.beneficiariosDS = [];
     this.beneficiariosVinculados = [];
     this.beneficiariosDesvinculados = [];
     this.beneficiariosPorEstado = [];
-    this.selectUds.nativeElement.value = null;
     this.uds$.obtenerUds().subscribe((resp: any) => {
       resp.uds.forEach((unidad: Uds) => {
         unidad.beneficiarios.forEach((beneficiario: Beneficiario) => {
-          if (beneficiario.estado === estado) {
+          if (beneficiario.estado === $event.value) {
             this.beneficiariosPorEstado.push(beneficiario);
+          }
+          contador++;
+          if (contador === unidad.beneficiarios.length) {
+            this.cargandoListado = false;
           }
         });
       });
       this.mostrarPorEstado = true;
       this.mostrarPorUds = false;
-      this.refrescarSelect(500);
     });
   }
 
@@ -145,9 +164,5 @@ export class MisBeneficiariosComponent implements OnInit {
     jQuery('#infoBeneficiario').modal({
       show: true
     });
-  }
-
-  refrescarSelect(ms: number) {
-    setTimeout(() => jQuery('.selectpicker').selectpicker('refresh'), ms);
   }
 }

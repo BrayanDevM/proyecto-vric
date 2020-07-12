@@ -27,6 +27,7 @@ import { MisBeneficiariosComponent } from './beneficiarios/mis-beneficiarios/mis
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { CrearUsuarioComponent } from './usuarios/crear-usuario/crear-usuario.component';
 import { BusquedaComponent } from './busqueda/busqueda.component';
+import { UsuarioComponent } from './usuarios/usuario/usuario.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { BusquedaComponent } from './busqueda/busqueda.component';
     MisBeneficiariosComponent,
     UsuariosComponent,
     CrearUsuarioComponent,
-    BusquedaComponent
+    BusquedaComponent,
+    UsuarioComponent
   ],
   imports: [
     CommonModule,

@@ -1,12 +1,11 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Contrato } from 'src/app/models/contrato.model';
 import { ContratosService } from 'src/app/services/contratos.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UdsService } from 'src/app/services/uds.service';
 import { Uds } from 'src/app/models/uds.model';
-import { UsuarioService } from 'src/app/services/usuario.service';
-declare var jQuery: any;
+import { NgOption } from '@ng-select/ng-select';
 declare var moment: any;
 
 @Component({
@@ -14,32 +13,36 @@ declare var moment: any;
   templateUrl: './contrato.component.html',
   styleUrls: ['./contrato.component.css']
 })
-export class ContratoComponent implements OnInit, AfterViewInit {
+export class ContratoComponent implements OnInit {
+  // datos ng-select -----------------------------
+  estadoContrato: NgOption[] = [
+    { value: true, label: 'Activo' },
+    { value: false, label: 'Inactivo' }
+  ];
+  // ----------------------------------------------
   contrato: Contrato;
-  udsEnContrato: any;
+  // Arreglo de uds enContrato = contrato._id || null
   udsDisponibles: Uds[] = [];
+  // IDs para pasar por formulario
+  IdUdsSeleccionadas: string[] = [];
+  // Uds seleccionadas para mostrar en tabla
+  udsEnContrato = [];
+  // --------------------------------
+  cargandoUdsDisponibles = false;
   formActualizarContrato: FormGroup;
 
   constructor(
     private rutaActual: ActivatedRoute,
     public contrato$: ContratosService,
     public uds$: UdsService,
-    private usuario$: UsuarioService,
     private fb: FormBuilder
   ) {}
 
-  ngAfterViewInit() {
-    jQuery('.selectpicker').selectpicker();
-  }
-
   ngOnInit() {
-    this.contrato = new Contrato(0, 0, '', '', '', '', '');
-    // obtengo id de la ruta
     this.obtenerContrato();
-    this.obtenerUds();
 
     this.formActualizarContrato = this.fb.group({
-      codigo: [this.contrato.codigo, Validators.required],
+      codigo: [null, Validators.required],
       cupos: [null, Validators.required],
       regional: [null, Validators.required],
       cz: [null, Validators.required],
@@ -47,76 +50,81 @@ export class ContratoComponent implements OnInit, AfterViewInit {
       nit: [null, Validators.required],
       activo: null
     });
-
-    setTimeout(() => {
-      jQuery('.selectpicker').selectpicker('refresh');
-    }, 350);
   }
 
   obtenerContrato() {
     this.rutaActual.params.subscribe((resp: Params) => {
       this.contrato$.obtenerContrato(resp.id).subscribe((contrato: any) => {
+        // asigno contrato
         this.contrato = contrato.contrato;
-        const arreglo = [];
+        // asigno datos de uds en contrato para la vista
+        this.udsEnContrato = this.contrato.uds;
         this.contrato.uds.forEach((unidad: Uds) => {
-          arreglo.push(unidad._id);
+          // Tomo ids para actualizar
+          this.IdUdsSeleccionadas.push(unidad._id);
         });
-        this.udsEnContrato = arreglo;
+        this.obtenerUdsDisponibles();
       });
     });
   }
 
-  obtenerUds() {
-    this.uds$.obtenerUds().subscribe((resp: any) => {
-      // obtengo todas las UDS para mostrar en <select>
-      const unidadesDisponibles = [];
-      resp.uds.forEach((unidad: Uds) => {
-        // Omito slas unidades que tienen otros contratos
-        if (
-          unidad.enContrato === this.contrato._id ||
-          unidad.enContrato === null
-        ) {
-          unidadesDisponibles.push(unidad);
+  obtenerUdsDisponibles() {
+    this.cargandoUdsDisponibles = true;
+    this.uds$
+      .obtenerUdsDisponiblesPorContrato(this.contrato._id)
+      .subscribe((resp: any) => {
+        if (resp.ok) {
+          // Obtengo todas las UDS disponibles (las del contrato y null);
+          this.udsDisponibles = resp.udsDisponibles;
+          // Para cada unidad que está en contrato ['_id']
+          this.IdUdsSeleccionadas.forEach(udsId => {
+            // obtengo index en disponibles
+            const i = this.udsDisponibles.findIndex(
+              unidad => unidad._id === udsId
+            );
+            if (i > -1) {
+              // Elimino uds ya en contrato de las disponibles
+              this.udsDisponibles.splice(i, 1);
+            }
+          });
+          this.cargandoUdsDisponibles = false;
+        } else {
+          this.cargandoUdsDisponibles = false;
         }
       });
-      this.udsDisponibles = unidadesDisponibles;
-      // Tomo cada UDS dentro del contrato
-      this.contrato.uds.forEach((unidad: Uds) => {
-        const index: number = this.udsDisponibles.findIndex(
-          (uds: any) => uds._id === unidad._id
-        );
-        /**
-         * Toma el índice y lo elimina de todas las UDS
-         * Así el <select> mostrará todas las UDS menos las
-         * que ya están dentro del constrato
-         */
-        this.udsDisponibles.splice(index, 1);
-      });
-      // console.log('UDS Disponibles', this.udsDisponibles);
-    });
   }
 
   agregarUdsContrato(event: any) {
-    // Agrego _id de UDS seleccionada para enviar en PUT
-    this.udsEnContrato.push(event.target.value);
-    // Busco el objeto en las UDS disponibles y lo agrego al contrato.uds para visualizar en DOM
-    const agregarUds: any = this.udsDisponibles.find(
-      (unidad: any) => unidad._id === event.target.value
+    // obtengo datos de la Unidad en arreglo
+    const UdsSeleccionada: any = this.udsDisponibles.find(
+      (unidad: Uds) => unidad._id === event._id
     );
-    this.contrato.uds.push(agregarUds);
-    // Pendiente construír objeto para enviar a actualizar
-    this.refrescarSelect();
+    const i = this.udsDisponibles.findIndex(
+      (unidad: Uds) => unidad._id === event._id
+    );
+    // Agrego id a selección
+    this.IdUdsSeleccionadas.push(event._id);
+    // Agrego datos de UDS para mostrar
+    this.udsEnContrato.push(UdsSeleccionada);
+    // Elimino de las disponibles
+    this.udsDisponibles.splice(i, 1);
+    // Refreso arreglo para el select
+    this.udsDisponibles = [...this.udsDisponibles];
   }
 
   sacarUdsContrato(index: number, unidadId: string) {
-    // splice me permite borrar el indice que indique y la cantidad de elementos
-    this.contrato.uds.splice(index, 1);
-    // Busco ese id en el arreglo independiente y lo elimino también
-    const posicion: number = this.udsEnContrato.findIndex(
+    // Obtengo indice de la Unidad en las seleccionadas
+    const i = this.IdUdsSeleccionadas.findIndex(
       (unidad: any) => unidad === unidadId
     );
-    this.udsEnContrato.splice(posicion, 1);
-    this.refrescarSelect();
+    // La agrego nuevamente como disponible en listado
+    this.udsDisponibles.push(this.udsEnContrato[index]);
+    // Refreso arreglo para el select
+    this.udsDisponibles = [...this.udsDisponibles];
+    // La elimino de la vista
+    this.udsEnContrato.splice(index, 1);
+    // La elimino de las seleccionadas
+    this.IdUdsSeleccionadas.splice(i, 1);
   }
 
   actualizar() {
@@ -135,13 +143,5 @@ export class ContratoComponent implements OnInit, AfterViewInit {
       this.contrato._id
     );
     this.contrato$.actualizarContrato(contrato).subscribe();
-  }
-
-  refrescarSelect() {
-    // Vuelvo a obtenerlas todas para que esté disponible en <select>
-    this.obtenerUds();
-    setTimeout(() => {
-      jQuery('.selectpicker').selectpicker('refresh');
-    }, 350);
   }
 }

@@ -77,16 +77,15 @@
                 <div class="col-2">
                   <div class="form-group">
                     <label for="arriendo">Arrendamiento</label>
-                    <select
+                    <ng-select
+                      [items]="estadoArriendo"
+                      bindValue="value"
+                      bindLabel="label"
+                      placeholder="Seleccionar"
+                      [searchable]="false"
                       formControlName="arriendo"
                       name="arriendo"
-                      class="form-control"
-                      title="Seleccionar"
-                    >
-                      <option disabled selected>Seleccionar estado.</option>
-                      <option [ngValue]="false">Sin Arriendo</option>
-                      <option [ngValue]="true">Con Arriendo</option>
-                    </select>
+                    ></ng-select>
                   </div>
                 </div>
               </div>
@@ -94,57 +93,47 @@
                 <div class="col-3">
                   <div class="form-group">
                     <label for="coordinador">Coordinador</label>
-                    <select
+                    <ng-select
+                      [items]="coordinadores"
+                      bindValue="_id"
+                      bindLabel="nombre"
+                      placeholder="Seleccionar coordinador"
+                      [loading]="cargandoCoords"
                       formControlName="coordinador"
                       name="coordinador"
-                      class="form-control"
-                      title="Seleccionar coord."
-                    >
-                      <option disabled>Seleccionar coordinador.</option>
-                      <option
-                        *ngFor="let coordinador of coordinadores"
-                        [ngValue]="coordinador._id"
-                        >{{ coordinador.nombre }}</option
-                      >
-                    </select>
+                    ></ng-select>
                   </div>
                 </div>
                 <div class="col-3">
                   <div class="form-group">
                     <label for="gestor">Gestor</label>
-                    <select
+                    <ng-select
+                      [items]="gestores"
+                      bindValue="_id"
+                      bindLabel="nombre"
+                      placeholder="Seleccionar gestor"
+                      [loading]="cargandoGestores"
                       formControlName="gestor"
                       name="gestor"
-                      class="form-control"
-                      title="Seleccionar gestor"
-                    >
-                      <option disabled>Seleccionar gestor.</option>
-                      <option
-                        *ngFor="let gestor of gestores"
-                        [ngValue]="gestor._id"
-                        >{{ gestor.nombre }}</option
-                      >
-                    </select>
+                    ></ng-select>
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
                     <label for="docentes">Docentes</label>
-                    <select
+                    <ng-select
+                      [items]="docentes"
+                      bindValue="_id"
+                      bindLabel="nombre"
+                      placeholder="Seleccionar docentes"
+                      [multiple]="true"
+                      [hideSelected]="true"
+                      [closeOnSelect]="false"
+                      [maxSelectedItems]="2"
+                      [loading]="cargandoDocentes"
                       formControlName="docentes"
                       name="docentes"
-                      class="form-control"
-                      title="Seleccionar docentes"
-                      multiple
-                      data-max-options="2"
-                    >
-                      <option disabled>Seleccionar docentes.</option>
-                      <option
-                        *ngFor="let docente of docentes"
-                        [ngValue]="docente._id"
-                        >{{ docente.nombre }}</option
-                      >
-                    </select>
+                    ></ng-select>
                   </div>
                 </div>
               </div>

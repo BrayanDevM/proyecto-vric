@@ -30,6 +30,14 @@ export class UdsService {
     return this.http.get(this.API_URL + `?token=${this.token}`);
   }
 
+  obtenerUdsDisponibles() {
+    return this.http.get(this.API_URL + `/disponibles`);
+  }
+
+  obtenerUdsDisponiblesPorContrato(contratoId: string = null) {
+    return this.http.get(this.API_URL + `/disponibles/${contratoId}`);
+  }
+
   obtenerUnidad(id: string) {
     return this.http.get(this.API_URL + `/unidad/${id}?token=${this.token}`);
   }

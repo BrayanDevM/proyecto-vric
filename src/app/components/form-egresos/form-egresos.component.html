@@ -9,49 +9,37 @@
         <div class="col-3">
           <div class="form-group">
             <label for="udsId">Seleccionar UDS</label>
-            <select
-              (change)="traerBeneficiarios($event.target.value)"
+            <ng-select
+              [items]="udsAsignadas"
+              bindValue="_id"
+              bindLabel="nombre"
+              placeholder="Seleccionar Unidad de Servicio"
+              (change)="traerBeneficiarios($event)"
               formControlName="udsId"
               name="udsId"
-              id="udsId"
-              class="form-control"
-              title="Seleccionar"
               required
             >
-              <option
-                *ngFor="let unidad of udsAsignadas"
-                [value]="unidad._id"
-                >{{ unidad.nombre }}</option
-              >
-            </select>
+            </ng-select>
           </div>
         </div>
         <div class="col-3">
           <div class="form-group">
             <label for="beneficiarioId">Beneficiario a desvincular</label>
-            <select
+            <ng-select
+              [items]="beneficiarios"
+              bindValue="_id"
+              bindLabel="nombre1"
+              placeholder="Seleccionar beneficiario"
+              [loading]="cargandoBeneficiarios"
               formControlName="beneficiarioId"
               name="beneficiarioId"
-              class="form-control"
-              title="Seleccionar"
-              data-live-search="true"
               required
             >
-              <option
-                *ngIf="!beneficiarios || beneficiarios.length === 0"
-                disabled
-                >No tienes beneficiarios vinculados</option
-              >
-              <option
-                *ngFor="let beneficiario of beneficiarios"
-                [attr.data-subtext]="beneficiario.estado"
-                [value]="beneficiario._id"
-                >{{ beneficiario.nombre1 }}
-                {{ beneficiario.nombre2 }}
-                {{ beneficiario.apellido1 }}
-                {{ beneficiario.apellido2 }}</option
-              >
-            </select>
+              <ng-template ng-option-tmp let-item="item">
+                {{ item.nombre1 }} {{ item.nombre2 }} {{ item.apellido1 }}
+                {{ item.apellido2 }}
+              </ng-template>
+            </ng-select>
           </div>
         </div>
         <div class="col-2">

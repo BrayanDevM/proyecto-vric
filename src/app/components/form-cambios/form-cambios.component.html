@@ -8,49 +8,39 @@
         <div class="col-3">
           <div class="form-group">
             <label for="udsId">Seleccionar UDS</label>
-            <select
-              (change)="traerMadres($event.target.value)"
-              name="udsId"
-              id="udsId"
-              class="form-control"
-              title="Seleccionar"
+            <ng-select
+              [items]="udsAsignadas"
+              bindValue="_id"
+              bindLabel="nombre"
+              placeholder="Seleccionar Unidad de Servicio"
+              (change)="traerMadres($event)"
+              formControlName="selectUds"
+              name="selectUds"
               required
             >
-              <option selected disabled>Seleccionar UDS</option>
-              <option
-                *ngFor="let unidad of udsAsignadas"
-                [value]="unidad._id"
-                >{{ unidad.nombre }}</option
-              >
-            </select>
+            </ng-select>
           </div>
         </div>
         <div class="col-3">
           <div class="form-group">
             <label for="beneficiarioId">Seleccionar Madre de bebé</label>
-            <select
-              (change)="mostrarInfoMadre($event.target.value)"
+            <ng-select
+              [items]="beneficiarios"
+              bindValue="_id"
+              bindLabel="nombre1"
+              placeholder="Seleccionar beneficiario"
+              [loading]="cargandoBeneficiarios"
+              [closeOnSelect]="true"
+              (change)="mostrarInfoMadre($event)"
               formControlName="beneficiarioId"
               name="beneficiarioId"
-              class="form-control"
-              title="Seleccionar"
               required
             >
-              <option
-                *ngIf="!beneficiarios || beneficiarios.length === 0"
-                disabled
-                >No hay mujeres gestantes</option
-              >
-              <option
-                *ngFor="let beneficiario of beneficiarios"
-                [attr.data-subtext]="beneficiario.tipoDoc"
-                [value]="beneficiario._id"
-                >{{ beneficiario.nombre1 }}
-                {{ beneficiario.nombre2 }}
-                {{ beneficiario.apellido1 }}
-                {{ beneficiario.apellido2 }}</option
-              >
-            </select>
+              <ng-template ng-option-tmp let-item="item">
+                {{ item.nombre1 }} {{ item.nombre2 }} {{ item.apellido1 }}
+                {{ item.apellido2 }}
+              </ng-template>
+            </ng-select>
           </div>
         </div>
       </div>
@@ -67,29 +57,23 @@
           <div class="col-2">
             <div class="form-group">
               <label for="tipoDoc">Tipo de documento</label>
-              <select
+              <ng-select
                 #tipoDoc
-                (change)="comprobarSD($event.target.value)"
+                [items]="tiposDeDocumento"
+                bindValue="value"
+                bindLabel="label"
+                groupBy="group"
+                placeholder="Seleccionar tipo de documento"
+                (change)="comprobarSD($event)"
                 formControlName="tipoDoc"
                 name="tipoDoc"
-                class="form-control show-tick"
-                title="Seleccionar"
                 required
               >
-                <optgroup label="Colombianos/as">
-                  <option data-icon="fad fa-id-card mr-1" value="RC">
-                    Registro civil
-                  </option>
-                </optgroup>
-                <optgroup label="Extranjeros/as">
-                  <option data-icon="fad fa-user-clock mr-1" value="PEP">
-                    Permiso especial de permanencia
-                  </option>
-                  <option data-icon="fad fa-question-square mr-1" value="SD">
-                    Sin documento
-                  </option>
-                </optgroup>
-              </select>
+                <ng-template ng-label-tmp let-item="item">
+                  <i [class]="item.icon"></i>
+                  {{ item.label }}
+                </ng-template>
+              </ng-select>
             </div>
           </div>
           <div class="col-2">
@@ -167,24 +151,21 @@
           <div class="col-2">
             <div class="form-group">
               <label for="sexo">Sexo</label>
-              <select
+              <ng-select
                 #sexo
+                [items]="sexos"
+                bindValue="value"
+                bindLabel="label"
+                placeholder="Seleccionar sexo"
                 formControlName="sexo"
                 name="sexo"
-                class="form-control"
-                title="Seleccionar"
                 required
               >
-                <option data-icon="fad fa-venus mr-1" value="Mujer">
-                  Mujer
-                </option>
-                <option data-icon="fad fa-mars mr-1" value="Hombre">
-                  Hombre
-                </option>
-                <option data-icon="fad fa-venus-mars mr-1" value="Otro"
-                  >Otro</option
-                >
-              </select>
+                <ng-template ng-label-tmp let-item="item">
+                  <i [class]="item.icon"></i>
+                  {{ item.label }}
+                </ng-template>
+              </ng-select>
             </div>
           </div>
           <div class="col-2">
@@ -204,86 +185,67 @@
           <div class="col-2">
             <div class="form-group">
               <label for="paisNacimiento">País de nacimiento</label>
-              <select
+              <ng-select
                 #paisNacimiento
-                (change)="cambiarDepartamentos($event.target.value)"
+                [items]="paises"
+                bindValue="value"
+                bindLabel="label"
+                placeholder="Seleccionar país"
+                (change)="cambiarDepartamentos($event)"
                 formControlName="paisNacimiento"
                 name="paisNacimiento"
-                class="form-control show-tick"
-                title="Seleccionar"
                 required
               >
-                <option value="Colombia">Colombia</option>
-                <option value="Argentina">Argentina</option>
-                <option value="Chile">Chile</option>
-                <option value="Ecuador">Ecuador</option>
-                <option value="México">México</option>
-                <option value="Panama">Panama</option>
-                <option value="Perú">Perú</option>
-                <option value="Venezuela">Venezuela</option>
-              </select>
+              </ng-select>
             </div>
           </div>
           <div class="col-2">
             <div class="form-group">
               <label for="dptoNacimiento">Dpto. de nacimiento</label>
-              <select
+              <ng-select
                 #dptoNacimiento
-                (change)="cambiarCiudades($event.target.value)"
+                [items]="listaDepartamentos"
+                bindValue="departamento"
+                bindLabel="departamento"
+                placeholder="Seleccionar departamento"
+                (change)="cambiarCiudades($event)"
                 formControlName="dptoNacimiento"
                 name="dptoNacimiento"
-                class="form-control show-tick"
-                title="Seleccionar"
                 required
               >
-                <option
-                  *ngFor="let dpto of listaDepartamentos"
-                  [value]="dpto.departamento"
-                  >{{ dpto.departamento }}</option
-                >
-              </select>
+              </ng-select>
             </div>
           </div>
           <div class="col-2">
             <div class="form-group">
               <label for="municipioNacimiento">Municipio de nacimiento</label>
-              <select
+              <ng-select
                 #municipioNacimiento
+                [items]="listaMunicipios"
+                bindValue="municipio"
+                bindLabel="municipio"
+                placeholder="Seleccionar municipio"
                 formControlName="municipioNacimiento"
                 name="municipioNacimiento"
-                class="form-control show-tick"
-                title="Seleccionar"
                 required
               >
-                <option
-                  *ngFor="let municipio of listaMunicipios"
-                  [ngValue]="municipio"
-                  >{{ municipio }}</option
-                >
-              </select>
+              </ng-select>
             </div>
           </div>
           <div class="col-2">
             <div class="form-group">
               <label for="autorreconocimiento">Autorreconocimiento</label>
-              <select
+              <ng-select
                 #autorreconocimiento
+                [items]="reconocimientos"
+                bindValue="value"
+                bindLabel="label"
+                placeholder="Seleccionar autorreconocimiento"
                 formControlName="autorreconocimiento"
                 name="autorreconocimiento"
-                class="form-control"
-                title="Seleccionar"
                 required
               >
-                <option value="Afrocolombiano">Afrocolombiano</option>
-                <option value="Comunidad negra">Comunidad negra</option>
-                <option value="Indigena">Indigena</option>
-                <option value="Palenquero">Palenquero</option>
-                <option value="RROM/Gitano">RROM/Gitano</option>
-                <option value="Raizal archipielago San Andrés"
-                  >Raizal archipielago San Andrés</option
-                >
-                <option value="Ninguno">Ninguno</option>
-              </select>
+              </ng-select>
             </div>
           </div>
         </div>
@@ -291,17 +253,17 @@
           <div class="col-2">
             <div class="form-group">
               <label for="discapacidad">Discapacidad</label>
-              <select
+              <ng-select
                 #discapacidad
+                [items]="discapacidades"
+                bindValue="value"
+                bindLabel="label"
+                placeholder="Seleccionar autorreconocimiento"
                 formControlName="discapacidad"
                 name="discapacidad"
-                class="form-control"
-                title="Seleccionar"
                 required
               >
-                <option [ngValue]="true">Si</option>
-                <option [ngValue]="false">No</option>
-              </select>
+              </ng-select>
             </div>
           </div>
         </div>
@@ -400,21 +362,17 @@
           <div class="col-2">
             <div class="form-group">
               <label for="udsId">Unidad De Servicio</label>
-              <select
-                (change)="cambiarCodigoUds($event.target.value)"
+              <ng-select
+                [items]="udsAsignadas"
+                bindValue="_id"
+                bindLabel="nombre"
+                placeholder="Seleccionar Unidad de Servicio"
+                (change)="cambiarCodigoUds($event)"
                 formControlName="udsId"
                 name="udsId"
-                class="form-control"
-                title="Seleccionar UDS"
                 required
               >
-                <option selected disabled>Seleccionar UDS</option>
-                <option
-                  *ngFor="let unidad of udsAsignadas"
-                  [value]="unidad._id"
-                  >{{ unidad.nombre }}</option
-                >
-              </select>
+              </ng-select>
             </div>
           </div>
           <div class="col-2">

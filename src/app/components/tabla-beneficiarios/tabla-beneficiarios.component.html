@@ -23,21 +23,30 @@
       <td>{{ beneficiario.apellido1 }}</td>
       <td>{{ beneficiario.apellido2 }}</td>
       <td>{{ beneficiario.nacimiento }}</td>
-      <td class="text-center">
-        <span
-          *ngIf="!puedeEditar"
-          [ngClass]="{
-            'badge-info': beneficiario.estado === 'Pendiente vincular',
-            'badge-danger': beneficiario.estado === 'Pendiente desvincular',
-            'badge-warning': beneficiario.estado === 'Dato Sensible',
-            'badge-secondary': beneficiario.estado === 'Concurrencia',
-            'badge-success': beneficiario.estado === 'Vinculado',
-            'badge-dark': beneficiario.estado === 'Desvinculado'
-          }"
-          class="badge badge-success"
-          >{{ beneficiario.estado }}</span
-        >
-        <select
+      <td>
+        <div *ngIf="!puedeEditar" class="text center">
+          <span
+            [ngClass]="{
+              'badge-info': beneficiario.estado === 'Pendiente vincular',
+              'badge-danger': beneficiario.estado === 'Pendiente desvincular',
+              'badge-warning': beneficiario.estado === 'Dato Sensible',
+              'badge-secondary': beneficiario.estado === 'Concurrencia',
+              'badge-success': beneficiario.estado === 'Vinculado',
+              'badge-dark': beneficiario.estado === 'Desvinculado'
+            }"
+            class="badge badge-success"
+            >{{ beneficiario.estado }}</span
+          >
+        </div>
+        <ng-select
+          *ngIf="puedeEditar"
+          [items]="estados"
+          bindValue="value"
+          bindLabel="label"
+          placeholder="Seleccionar estado"
+          [(ngModel)]="beneficiario.estado"
+        ></ng-select>
+        <!-- <select
           *ngIf="puedeEditar"
           [(ngModel)]="beneficiario.estado"
           class="form-control"
@@ -49,7 +58,7 @@
           <option value="Dato sensible">Dato sensible</option>
           <option value="Concurrencia">Concurrencia</option>
           <option value="Desvinculado">Desvinculado</option>
-        </select>
+        </select> -->
       </td>
       <td>{{ beneficiario.ingreso }}</td>
       <td>{{ beneficiario.creadoEl }}</td>

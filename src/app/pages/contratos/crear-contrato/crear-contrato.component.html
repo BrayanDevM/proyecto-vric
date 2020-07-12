@@ -97,17 +97,16 @@
                   <div class="col-3">
                     <div class="form-group">
                       <label for="coordinador">Estado de contrato</label>
-                      <select
+                      <ng-select
+                        [items]="estadoContrato"
+                        bindLabel="label"
+                        bindValue="value"
+                        placeholder="Seleccionar estado"
+                        [searchable]="false"
                         formControlName="activo"
                         name="activo"
-                        class="form-control"
-                        title="Seleccionar"
                         required
-                      >
-                        <option disabled>Seleccionar estado.</option>
-                        <option [ngValue]="false">Inactivo</option>
-                        <option [ngValue]="true">Activo</option>
-                      </select>
+                      ></ng-select>
                     </div>
                   </div>
                 </div>
@@ -120,7 +119,10 @@
                 UDS asignadas a contrato
               </div>
               <div class="card-body">
-                <table class="table table-hover">
+                <table
+                  *ngIf="IdUdsSeleccionadas.length > 0"
+                  class="table table-hover"
+                >
                   <thead>
                     <tr>
                       <th>Codigo</th>
@@ -130,7 +132,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let unidad of vistaUdsEnContrato; index as i">
+                    <tr *ngFor="let unidad of UdsEnContrato; index as i">
                       <td>{{ unidad.codigo }}</td>
                       <td>{{ unidad.nombre }}</td>
                       <td>{{ unidad.cupos }}</td>
@@ -148,22 +150,14 @@
                 </table>
                 <div class="form-group">
                   <label for="uds">Agregar UDS</label>
-                  <select
+                  <ng-select
+                    [items]="udsDisponibles"
+                    bindLabel="nombre"
+                    bindValue="_id"
+                    placeholder="Seleccionar Unidad de Servicio"
+                    [loading]="cargandoUdsDisponibles"
                     (change)="agregarUdsContrato($event)"
-                    class="form-control"
-                    title="Seleccionar Unidad de servicio"
-                    data-live-search="true"
-                  >
-                    <option *ngIf="udsDisponibles.length === 0" disabled>
-                      No hay UDS disponibles
-                    </option>
-                    <option
-                      *ngFor="let unidad of udsDisponibles"
-                      [value]="unidad._id"
-                      [attr.data-subtext]="' Cupos ' + unidad.cupos"
-                      >{{ unidad.nombre }}</option
-                    >
-                  </select>
+                  ></ng-select>
                 </div>
               </div>
             </div>

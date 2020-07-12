@@ -5,6 +5,7 @@ import Swal from 'sweetalert2/src/sweetalert2.js';
 import { Router } from '@angular/router';
 import { Contrato } from 'src/app/models/contrato.model';
 import { ContratosService } from 'src/app/services/contratos.service';
+import { NgOption } from '@ng-select/ng-select';
 declare var jQuery: any;
 
 @Component({
@@ -13,6 +14,22 @@ declare var jQuery: any;
   styleUrls: ['./usuarios.component.css']
 })
 export class UsuariosComponent implements OnInit {
+  // data ng-select
+  roles: NgOption = [
+    {
+      value: 'ADMIN',
+      label: 'Administrador',
+      icon: 'fas fa-user-shield text-danger'
+    },
+    { value: 'GESTOR', label: 'Gestor', icon: 'fas fa-user text-success' },
+    {
+      value: 'COORDINADOR',
+      label: 'Coordinador',
+      icon: 'fas fa-user text-primary'
+    },
+    { value: 'DOCENTE', label: 'Docente', icon: 'fas fa-user text-secondary' }
+  ];
+  // ---------------------
   usuarios: Usuario[] = [];
   contratosDisponibles: Contrato[] = [];
   usuarioInfo: Usuario = null;
@@ -26,8 +43,7 @@ export class UsuariosComponent implements OnInit {
 
   ngOnInit() {
     this.obtenerUsuarios();
-    // Pendiente selectpicker, no toma los valores ni refrescando (remuevo clase)
-    // this.refrescarSelect(200);
+    this.obtenerContratos();
   }
 
   obtenerUsuarios() {
@@ -40,6 +56,14 @@ export class UsuariosComponent implements OnInit {
       } else {
         this.cargando = false;
         console.log('Error al traer usuarios', resp);
+      }
+    });
+  }
+
+  obtenerContratos() {
+    this.contratos$.obtenerContratos().subscribe((resp: any) => {
+      if (resp.ok === true) {
+        this.contratosDisponibles = resp.contratos;
       }
     });
   }
@@ -58,17 +82,7 @@ export class UsuariosComponent implements OnInit {
   }
 
   editarUsuario(usuario: Usuario) {
-    usuario.password = '';
-    this.contratos$.obtenerContratos().subscribe((resp: any) => {
-      if (resp.ok === true) {
-        this.contratosDisponibles = resp.contratos;
-        this.usuarioInfo = usuario;
-        jQuery('#infoUsuario').modal({
-          show: true
-        });
-        this.refrescarSelect(150);
-      }
-    });
+    this.router.navigate(['/usuarios', usuario._id]);
   }
 
   eliminarUsuario(usuario: Usuario) {
@@ -97,11 +111,5 @@ export class UsuariosComponent implements OnInit {
         });
       }
     });
-  }
-
-  refrescarSelect(ms: number) {
-    setTimeout(() => {
-      jQuery('.selectpicker').selectpicker('refresh');
-    }, ms);
   }
 }

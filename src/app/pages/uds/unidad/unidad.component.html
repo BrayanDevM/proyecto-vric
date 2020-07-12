@@ -89,16 +89,16 @@
                 <div class="col-2">
                   <div class="form-group">
                     <label for="arriendo">Arrendamiento</label>
-                    <select
-                      [ngModel]="uds.arriendo"
+                    <ng-select
+                      [items]="estadoArriendo"
+                      bindValue="value"
+                      bindLabel="label"
+                      placeholder="Seleccionar"
+                      [searchable]="false"
+                      [(ngModel)]="uds.arriendo"
                       formControlName="arriendo"
                       name="arriendo"
-                      class="form-control"
-                      title="Seleccionar"
-                    >
-                      <option [ngValue]="true">Con Arriendo</option>
-                      <option [ngValue]="false">Sin Arriendo</option>
-                    </select>
+                    ></ng-select>
                   </div>
                 </div>
               </div>
@@ -106,82 +106,65 @@
                 <div class="col-3">
                   <div class="form-group">
                     <label for="coordinador">Coordinador</label>
-                    <select
-                      [ngModel]="uds.coordinador._id"
+                    <ng-select
+                      [items]="coordinadores"
+                      bindValue="_id"
+                      bindLabel="nombre"
+                      placeholder="Seleccionar coordinador"
+                      [loading]="cargandoCoords"
+                      [(ngModel)]="uds.coordinador._id"
                       formControlName="coordinador"
                       name="coordinador"
-                      class="form-control"
-                      id="coordinador"
-                      title="Coordinador"
-                      required
-                    >
-                      <option disabled>Seleccionar coordinador.</option>
-                      <option [ngValue]="null">No asignar</option>
-                      <option
-                        *ngFor="let coordinador of coordinadores"
-                        [ngValue]="coordinador._id"
-                        >{{ coordinador.nombre }}</option
-                      >
-                    </select>
+                    ></ng-select>
                   </div>
                 </div>
                 <div class="col-3">
                   <div class="form-group">
                     <label for="gestor">Gestor</label>
-                    <select
-                      [ngModel]="uds.gestor._id"
+                    <ng-select
+                      [items]="gestores"
+                      bindValue="_id"
+                      bindLabel="nombre"
+                      placeholder="Seleccionar gestor"
+                      [loading]="cargandoGestores"
+                      [(ngModel)]="uds.gestor._id"
                       formControlName="gestor"
                       name="gestor"
-                      class="form-control"
-                      id="gestor"
-                      title="Gestor"
-                      required
-                    >
-                      <option disabled>Seleccionar gestor.</option>
-                      <option [ngValue]="null">No asignar</option>
-                      <option
-                        *ngFor="let gestor of gestores"
-                        [ngValue]="gestor._id"
-                        >{{ gestor.nombre }}</option
-                      >
-                    </select>
+                    ></ng-select>
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
                     <label for="docentes">Docentes</label>
-                    <select
+                    <ng-select
+                      [items]="docentes"
+                      bindValue="_id"
+                      bindLabel="nombre"
+                      placeholder="Seleccionar docentes"
+                      [multiple]="true"
+                      [hideSelected]="true"
+                      [closeOnSelect]="false"
+                      [maxSelectedItems]="2"
+                      [loading]="cargandoDocentes"
                       [(ngModel)]="docentesEnUds"
                       formControlName="docentes"
                       name="docentes"
-                      class="form-control"
-                      id="docentes"
-                      title="Docentes"
-                      multiple
-                      required
-                    >
-                      <option disabled>Seleccionar docentes.</option>
-                      <option
-                        *ngFor="let docente of docentes"
-                        [ngValue]="docente._id"
-                        >{{ docente.nombre }}</option
-                      >
-                    </select>
+                    ></ng-select>
                   </div>
                 </div>
                 <div class="col-2">
                   <div class="form-group">
                     <label for="activa">Estado</label>
-                    <select
-                      [ngModel]="uds.activa"
+                    <ng-select
+                      [items]="estadoUds"
+                      bindValue="value"
+                      bindLabel="label"
+                      placeholder="Seleccionar estado"
+                      [searchable]="false"
+                      [(ngModel)]="uds.activa"
                       formControlName="activa"
                       name="activa"
-                      class="form-control"
-                      title="Seleccionar"
-                    >
-                      <option [ngValue]="true">Activa</option>
-                      <option [ngValue]="false">Inactiva</option>
-                    </select>
+                    ></ng-select>
                   </div>
                 </div>
               </div>

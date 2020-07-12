@@ -133,6 +133,10 @@ export class UsuarioService {
     return this.http.get(this.API_URL + `/usuarios?token=${this.token}`);
   }
 
+  obtenerUsuario(id: string) {
+    return this.http.get(this.API_URL + `/usuarios/${id}?token=${this.token}`);
+  }
+
   crearUsuario(form: any) {
     return this.http
       .post(this.API_URL + `/usuarios?token=${this.token}`, form)

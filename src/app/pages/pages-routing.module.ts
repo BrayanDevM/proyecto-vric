@@ -22,6 +22,7 @@ import { AdministrarComponent } from './administrar/administrar.component';
 // Guards
 import { AdminGuard } from '../services/guards/admin.guard';
 import { VerificaTokenGuard } from '../services/guards/verifica-token.guard';
+import { UsuarioComponent } from './usuarios/usuario/usuario.component';
 
 const routes: Routes = [
   {
@@ -241,6 +242,25 @@ const routes: Routes = [
       partes: [
         {
           titulo: 'Usuarios',
+          url: ''
+        }
+      ],
+      gIcono: 'book'
+    }
+  },
+  {
+    path: 'usuarios/:id',
+    component: UsuarioComponent,
+    canActivate: [AdminGuard, VerificaTokenGuard],
+    data: {
+      paginaActiva: 'Editar usuario',
+      partes: [
+        {
+          titulo: 'Usuarios',
+          url: '/usuarios'
+        },
+        {
+          titulo: 'Editar usuario',
           url: ''
         }
       ],

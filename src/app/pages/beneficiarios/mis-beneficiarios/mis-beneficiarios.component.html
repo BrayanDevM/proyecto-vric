@@ -8,14 +8,7 @@
         <div class="col-12">
           <div class="card mb-4">
             <div class="card-body">
-              <div
-                *ngIf="cargando"
-                class="spinner-border text-primary d-flex justify-content-center"
-                role="status"
-              >
-                <span class="sr-only">Loading...</span>
-              </div>
-              <div *ngIf="!cargando" class="row">
+              <div class="row">
                 <div class="col-12">
                   <h5 class="card-category text-danger">
                     <i class="material-icons">explore</i> Explorar
@@ -24,52 +17,30 @@
                     <div class="col-3">
                       <div class="form-group">
                         <label for="unidad">Filtrar por UDS</label>
-                        <select
+                        <ng-select
                           #selectUds
-                          [(ngModel)]="unidadSeleccionada"
-                          (change)="traerBeneficiariosUds($event.target.value)"
-                          class="form-control"
+                          [items]="udsAsignadas"
+                          bindValue="_id"
+                          bindLabel="nombre"
+                          [loading]="cargandoUdsAsignadas"
+                          placeholder="Seleccionar Unidad de Servicio"
+                          (change)="traerBeneficiariosUds($event)"
                           name="unidad"
-                          title="Seleccionar UDS"
-                        >
-                          <option *ngIf="udsAsignadas.length === 0" disabled
-                            >No tienes UDS asignadas</option
-                          >
-                          <option
-                            *ngFor="let unidad of udsAsignadas"
-                            [value]="unidad._id"
-                            >{{ unidad.nombre }}</option
-                          >
-                        </select>
+                        ></ng-select>
                       </div>
                     </div>
                     <div class="col-2">
                       <div class="form-group">
                         <label for="unidad">Filtrar por estado</label>
-                        <select
-                          #selectEstado
-                          (change)="
-                            traerBeneficiariosPorEstado($event.target.value)
-                          "
-                          class="form-control"
-                          name="unidad"
-                          title="Seleccionar estado"
-                          [disabled]="
-                            usuario.rol === 'DOCENTE' ||
-                            usuario.rol === 'COORDINADOR'
-                          "
-                        >
-                          <option value="Pendiente vincular"
-                            >Pendiente vincular</option
-                          >
-                          <option value="Pendiente desvincular"
-                            >Pendiente desvincular</option
-                          >
-                          <option value="Vinculado">Vinculado</option>
-                          <option value="Dato sensible">Dato sensible</option>
-                          <option value="Concurrencia">Concurrencia</option>
-                          <option value="Desvinculado">Desvinculado</option>
-                        </select>
+                        <ng-select
+                          [items]="estados"
+                          bindValue="value"
+                          bindLabel="label"
+                          [searchable]="false"
+                          placeholder="Seleccionar por estado"
+                          (change)="traerBeneficiariosPorEstado($event)"
+                          [readonly]="disableRol"
+                        ></ng-select>
                       </div>
                     </div>
                   </div>
