@@ -19,6 +19,7 @@ export class FormEgresosComponent implements OnInit {
   usuario: any;
   @Input() udsAsignadas: Uds[];
   beneficiarios: Beneficiario[];
+  cargandoBeneficiarios = false;
   beneficiarioEgreso: Beneficiario;
 
   constructor(
@@ -38,19 +39,28 @@ export class FormEgresosComponent implements OnInit {
     });
   }
 
-  traerBeneficiarios(udsId: string) {
+  traerBeneficiarios($event: any) {
+    this.cargandoBeneficiarios = true;
     this.beneficiarios = [];
-    this.uds$.obtenerUnidad(udsId).subscribe((resp: any) => {
-      const beneficiariosVinculados = [];
-      this.beneficiarios = resp.unidad.beneficiarios;
-      this.beneficiarios.forEach((beneficiario: Beneficiario) => {
-        if (beneficiario.estado === 'Vinculado') {
-          beneficiariosVinculados.push(beneficiario);
-        }
-      });
-      this.beneficiarios = beneficiariosVinculados;
+    let contador = 0;
+    this.uds$.obtenerUnidad($event._id).subscribe((resp: any) => {
+      if (resp.ok) {
+        const beneficiariosVinculados = [];
+        this.beneficiarios = resp.unidad.beneficiarios;
+        this.beneficiarios.forEach((beneficiario: Beneficiario) => {
+          if (beneficiario.estado === 'Vinculado') {
+            beneficiariosVinculados.push(beneficiario);
+          }
+          contador++;
+          if (contador === this.beneficiarios.length) {
+            this.beneficiarios = beneficiariosVinculados;
+            this.cargandoBeneficiarios = false;
+          }
+        });
+      } else {
+        this.cargandoBeneficiarios = false;
+      }
     });
-    this.refrescarSelect();
   }
 
   reportarEgreso() {
@@ -90,16 +100,9 @@ export class FormEgresosComponent implements OnInit {
                 icon: 'success'
               });
               this.formEgreso.reset();
-              this.refrescarSelect();
             }
           });
       }
     });
-  }
-
-  refrescarSelect() {
-    setTimeout(() => {
-      jQuery('.selectpicker').selectpicker('refresh');
-    }, 800);
   }
 }

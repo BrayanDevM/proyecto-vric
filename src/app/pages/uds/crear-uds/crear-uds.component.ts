@@ -1,10 +1,10 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Usuario } from 'src/app/models/usuario.model';
 import { Uds } from 'src/app/models/uds.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { UdsService } from 'src/app/services/uds.service';
-declare var jQuery: any;
+import { NgOption } from '@ng-select/ng-select';
 declare function moment(): any;
 
 @Component({
@@ -12,11 +12,20 @@ declare function moment(): any;
   templateUrl: './crear-uds.component.html',
   styleUrls: ['./crear-uds.component.css']
 })
-export class CrearUdsComponent implements OnInit, AfterViewInit {
+export class CrearUdsComponent implements OnInit {
+  // valores ng-select
+  estadoArriendo: NgOption = [
+    { value: true, label: 'Con arriendo' },
+    { value: false, label: 'Sin arriendo' }
+  ];
+  // ------------------------
   uds: Uds;
   coordinadores: Usuario[];
+  cargandoCoords = false;
   gestores: Usuario[];
+  cargandoGestores = false;
   docentes: Usuario[];
+  cargandoDocentes = false;
   docentesEnUds: [string, string];
   cargando = false;
   formCrearUds: FormGroup;
@@ -26,10 +35,6 @@ export class CrearUdsComponent implements OnInit, AfterViewInit {
     private uds$: UdsService,
     private fb: FormBuilder
   ) {}
-
-  ngAfterViewInit() {
-    jQuery('.selectpicker').selectpicker();
-  }
 
   ngOnInit() {
     // Obtener datos
@@ -49,45 +54,59 @@ export class CrearUdsComponent implements OnInit, AfterViewInit {
       creadoEl: null,
       arriendo: null
     });
-
-    setTimeout(() => {
-      jQuery('.selectpicker').selectpicker('refresh');
-    }, 300);
   }
 
   obtenerDocentes() {
+    this.cargandoDocentes = true;
     this.usuarios$.obtenerUsuarios().subscribe((resp: any) => {
-      const arreglo = [];
-      resp.usuarios.forEach((usuario: Usuario) => {
-        if (usuario.rol === 'DOCENTE') {
-          arreglo.push(usuario);
-        }
-      });
-      this.docentes = arreglo;
+      if (resp.ok) {
+        const arreglo = [];
+        resp.usuarios.forEach((usuario: Usuario) => {
+          if (usuario.rol === 'DOCENTE') {
+            arreglo.push(usuario);
+          }
+        });
+        this.docentes = arreglo;
+        this.cargandoDocentes = false;
+      } else {
+        this.cargandoDocentes = false;
+      }
     });
   }
 
   obtenerCoordinadores() {
+    this.cargandoCoords = true;
     this.usuarios$.obtenerUsuarios().subscribe((resp: any) => {
-      const arreglo = [];
-      resp.usuarios.forEach((usuario: Usuario) => {
-        if (usuario.rol === 'COORDINADOR') {
-          arreglo.push(usuario);
-        }
-      });
-      this.coordinadores = arreglo;
+      if (resp.ok) {
+        const arreglo = [];
+        resp.usuarios.forEach((usuario: Usuario) => {
+          if (usuario.rol === 'COORDINADOR') {
+            arreglo.push(usuario);
+          }
+        });
+        this.coordinadores = arreglo;
+        this.cargandoCoords = false;
+      } else {
+        this.cargandoCoords = false;
+      }
     });
   }
 
   obtenerGestores() {
+    this.cargandoGestores = true;
     this.usuarios$.obtenerUsuarios().subscribe((resp: any) => {
-      const arreglo = [];
-      resp.usuarios.forEach((usuario: Usuario) => {
-        if (usuario.rol === 'ADMIN') {
-          arreglo.push(usuario);
-        }
-      });
-      this.gestores = arreglo;
+      if (resp.ok) {
+        const arreglo = [];
+        resp.usuarios.forEach((usuario: Usuario) => {
+          if (usuario.rol === 'ADMIN') {
+            arreglo.push(usuario);
+          }
+        });
+        this.gestores = arreglo;
+        this.cargandoGestores = false;
+      } else {
+        this.cargandoGestores = false;
+      }
     });
   }
 
@@ -115,7 +134,6 @@ export class CrearUdsComponent implements OnInit, AfterViewInit {
       this.formCrearUds.value.gestor,
       false
     );
-    console.log(this.uds);
     this.uds$.crearUds(this.uds).subscribe();
     this.cargando = false;
     this.formCrearUds.reset();

@@ -10,7 +10,7 @@ import Swal from 'sweetalert2/src/sweetalert2.js';
 import { Usuario } from 'src/app/models/usuario.model';
 import { RespBeneficiario } from 'src/app/models/respBeneficiario.model';
 import { Beneficiario } from 'src/app/models/beneficiario.model';
-declare var jQuery: any;
+import { NgOption } from '@ng-select/ng-select';
 declare var moment: any;
 
 @Component({
@@ -19,13 +19,105 @@ declare var moment: any;
   styleUrls: ['./form-cambios.component.css']
 })
 export class FormCambiosComponent implements OnInit {
+  // ng-select -------------------
+  tiposDeDocumento: NgOption = [
+    {
+      value: 'RC',
+      label: 'Registro Civil',
+      group: 'Colombianas/os',
+      icon: 'fad fa-id-card'
+    },
+    // {
+    //   value: 'TI',
+    //   label: 'Tarjeta de Identidad',
+    //   group: 'Colombianas/os',
+    //   icon: 'fad fa-id-card'
+    // },
+    // {
+    //   value: 'CC',
+    //   label: 'Cédula de Ciudadanía',
+    //   group: 'Colombianas/os',
+    //   icon: 'fad fa-id-card'
+    // },
+    {
+      value: 'PEP',
+      label: 'Permiso Especial de Permanencia',
+      group: 'Extranjeras/os',
+      icon: 'fas fa-user-clock'
+    },
+    {
+      value: 'SD',
+      label: 'Sin Documento',
+      group: 'Extranjeras/os',
+      icon: 'fas fa-question-square'
+    }
+  ];
+  sexos: NgOption = [
+    {
+      value: 'Mujer',
+      label: 'Mujer',
+      icon: 'fad fa-venus'
+    },
+    {
+      value: 'Hombre',
+      label: 'Hombre',
+      icon: 'fad fa-mars'
+    },
+    {
+      value: 'Otro',
+      label: 'Otro',
+      icon: 'fad fa-venus-mars'
+    }
+  ];
+  paises: NgOption = [
+    { value: 'Colombia', label: 'Colombia' },
+    { value: 'Argentina', label: 'Argentina' },
+    { value: 'Chile', label: 'Chile' },
+    { value: 'Ecuador', label: 'Ecuador' },
+    { value: 'México', label: 'México' },
+    { value: 'Panamá', label: 'Panamá' },
+    { value: 'Perú', label: 'Chile' },
+    { value: 'Venezuela', label: 'Venezuela' }
+  ];
+  reconocimientos: NgOption = [
+    { value: 'Afrocolombiano', label: 'Afrocolombiano' },
+    { value: 'Comunidad negra', label: 'Comunidad negra' },
+    { value: 'Indigena', label: 'Indigena' },
+    { value: 'Palenquero', label: 'Palenquero' },
+    { value: 'RROM/Gitano', label: 'RROM/Gitano' },
+    {
+      value: 'Raizal archipielago San Andrés',
+      label: 'Raizal archipielago San Andrés'
+    },
+    { value: 'Ninguno', label: 'Ninguno' }
+  ];
+  discapacidades: NgOption = [
+    { value: true, label: 'Si' },
+    { value: false, label: 'No' }
+  ];
+  criterios: NgOption = [
+    { value: 'Sisbén', label: 'Puntaje de sisbén' },
+    { value: 'Carta de vulnerabilidad', label: 'Carta de vulnerabilidad' },
+    { value: 'Otro', label: 'Otro' }
+  ];
+  tipoResponsables: NgOption = [
+    { value: 'Madre', label: 'Madre' },
+    { value: 'Padre', label: 'Padre' },
+    { value: 'Tio/a', label: 'Madre' },
+    { value: 'Abuelo/a', label: 'Abuelo/a' },
+    { value: 'Conyugue', label: 'Conyugue' },
+    { value: 'Si misma', label: 'Si misma' },
+    { value: 'Otro', label: 'Otro' }
+  ];
+  // -----------------------------
   usuario: any;
   formCambio: FormGroup;
   @Input() udsAsignadas: Uds[];
   beneficiarios: Beneficiario[];
+  cargandoBeneficiarios = false;
   madreSeleccionada: Beneficiario = null;
-  datosColombia: any = listaDatosColombia;
-  listaDepartamentos: any = [{ departamento: 'Extranjero' }];
+
+  listaDepartamentos: any = listaDatosColombia;
   listaMunicipios = ['Extranjero'];
   codigoUdsSeleccionada: any;
 
@@ -46,6 +138,7 @@ export class FormCambiosComponent implements OnInit {
 
     this.formCambio = this.fb.group({
       // Información de beneficiario
+      selectUds: null,
       beneficiarioId: null,
       tipoDoc: [null, Validators.required],
       documento: [null, Validators.required],
@@ -87,44 +180,55 @@ export class FormCambiosComponent implements OnInit {
     });
   }
 
-  cambiarCodigoUds(udsId: any) {
-    this.formCambio.value.codigo = udsId;
+  cambiarCodigoUds($event: any) {
+    this.formCambio.value.codigo = $event._id;
     const index = this.udsAsignadas.findIndex(
-      (unidad: Uds) => unidad._id === udsId
+      (unidad: Uds) => unidad._id === $event._id
     );
     this.codigoUdsSeleccionada = this.udsAsignadas[index].codigo;
   }
 
-  traerMadres(udsId: string) {
+  traerMadres($event: any) {
+    this.cargandoBeneficiarios = true;
     this.beneficiarios = [];
-    this.uds$.obtenerUnidad(udsId).subscribe((resp: any) => {
-      const mujeresGestantesVinculadas = [];
-      this.beneficiarios = resp.unidad.beneficiarios;
-      this.beneficiarios.forEach((beneficiario: Beneficiario) => {
-        if (beneficiario.estado === 'Vinculado') {
-          if (beneficiario.tipoDoc === 'CC' || beneficiario.tipoDoc === 'TI') {
-            mujeresGestantesVinculadas.push(beneficiario);
+    let contador = 0;
+    this.uds$.obtenerUnidad($event._id).subscribe((resp: any) => {
+      if (resp.ok) {
+        const mujeresGestantesVinculadas = [];
+        this.beneficiarios = resp.unidad.beneficiarios;
+        this.beneficiarios.forEach((beneficiario: Beneficiario) => {
+          if (beneficiario.estado === 'Vinculado') {
+            if (
+              beneficiario.tipoDoc === 'CC' ||
+              beneficiario.tipoDoc === 'TI'
+            ) {
+              mujeresGestantesVinculadas.push(beneficiario);
+            }
+            const hoy = moment(moment().format('DD/MM/YYYY'), 'DD/MM/YYYY');
+            const nacimiento = moment(beneficiario.nacimiento, 'DD/MM/YYYY');
+            const edadAnios = hoy.diff(nacimiento, 'years');
+            // Si es extranjero y mayor de 10 años
+            if (beneficiario.tipoDoc === 'SD' && edadAnios > 10) {
+              mujeresGestantesVinculadas.push(beneficiario);
+            }
           }
-          const hoy = moment(moment().format('DD/MM/YYYY'), 'DD/MM/YYYY');
-          const nacimiento = moment(beneficiario.nacimiento, 'DD/MM/YYYY');
-          const edadAnios = hoy.diff(nacimiento, 'years');
-          // Si es extranjero y mayor de 10 años
-          if (beneficiario.tipoDoc === 'SD' && edadAnios > 10) {
-            mujeresGestantesVinculadas.push(beneficiario);
+          contador++;
+          if (contador === this.beneficiarios.length) {
+            this.beneficiarios = mujeresGestantesVinculadas;
+            this.cargandoBeneficiarios = false;
           }
-        }
-      });
-      this.beneficiarios = mujeresGestantesVinculadas;
+        });
+      } else {
+        this.cargandoBeneficiarios = false;
+      }
     });
-    this.refrescarSelect();
   }
 
-  mostrarInfoMadre(id: string) {
+  mostrarInfoMadre($event: any) {
     const index = this.beneficiarios.findIndex(
-      (mg: Beneficiario) => mg._id === id
+      (mg: Beneficiario) => mg._id === $event._id
     );
     this.madreSeleccionada = this.beneficiarios[index];
-    this.refrescarSelect();
   }
 
   reemplazarInfoForm(madre: Beneficiario) {
@@ -182,8 +286,8 @@ export class FormCambiosComponent implements OnInit {
     });
   }
 
-  comprobarSD(tipoDoc: string) {
-    if (tipoDoc === 'SD') {
+  comprobarSD($event: any) {
+    if ($event.value === 'SD') {
       const documentoAleatorio = this.generarDocumento(15);
       this.inputDocumento.nativeElement.value = documentoAleatorio;
       this.formCambio.value.documento = documentoAleatorio;
@@ -206,43 +310,63 @@ export class FormCambiosComponent implements OnInit {
     return resultado;
   }
 
-  cambiarDepartamentos(pais: string) {
+  cambiarDepartamentos(pais: any) {
+    if (pais === undefined) {
+      return;
+    }
     /**
      * Si selecciona un país diferente a colombia, por defecto deja
      * los departamentos y municipios como están: 'Extranjero'
      * Si no, agrega la lista de datos del json directamente y el
      * select realiza un *ngFor de la lista.departamentos
      */
-    if (pais !== 'Colombia') {
-      this.listaDepartamentos = [{ departamento: 'Extranjero' }];
+    // Si recibo un string (directo desde la BD)
+    if (typeof pais !== 'string') {
+      if (pais.value !== 'Colombia') {
+        this.listaDepartamentos = [{ departamento: 'Extranjero' }];
+      } else {
+        this.listaDepartamentos = listaDatosColombia;
+      }
     } else {
-      this.listaDepartamentos = this.datosColombia;
+      // Sino, lo recibí de un select
+      if (pais !== 'Colombia') {
+        this.listaDepartamentos = [{ departamento: 'Extranjero' }];
+      } else {
+        this.listaDepartamentos = listaDatosColombia;
+      }
     }
     // console.log(this.listaDepartamentos);
-    this.refrescarSelect();
   }
 
-  cambiarCiudades(departamento: string) {
+  cambiarCiudades(departamento: any) {
+    if (departamento === undefined) {
+      return;
+    }
     /**
      * Si el departamento está por defecto 'extranjero' lo dejamos
      * igual, si es diferente (Dpto de colombia), este toma el valor
      * (nombre), busca y toma el id dentro de la lista completa y
      * asigna las ciudades del municipio
      */
-    if (departamento === 'Extranjero') {
-      this.listaMunicipios = ['Extranjero'];
+    if (typeof departamento !== 'string') {
+      if (departamento.departamento === 'Extranjero') {
+        this.listaMunicipios = ['Extranjero'];
+      } else {
+        const i = this.listaDepartamentos.findIndex(
+          (data: any) => data.departamento === departamento.departamento
+        );
+        this.listaMunicipios = this.listaDepartamentos[i].ciudades;
+      }
     } else {
-      const index = this.datosColombia.findIndex(
-        (municipio: any) => municipio.departamento === departamento
-      );
-      this.listaMunicipios = this.datosColombia[index].ciudades;
+      if (departamento === 'Extranjero') {
+        this.listaMunicipios = ['Extranjero'];
+      } else {
+        // trim() elimina espacion en blando en los extremos de un string
+        const i = this.listaDepartamentos.findIndex(
+          (data: any) => data.departamento === departamento.trim()
+        );
+        this.listaMunicipios = this.listaDepartamentos[i].ciudades;
+      }
     }
-    this.refrescarSelect();
-  }
-
-  refrescarSelect() {
-    setTimeout(() => {
-      jQuery('.selectpicker').selectpicker('refresh');
-    }, 300);
   }
 }

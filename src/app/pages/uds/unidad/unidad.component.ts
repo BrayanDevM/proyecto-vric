@@ -5,7 +5,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { Usuario } from 'src/app/models/usuario.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-declare var jQuery: any;
+import { NgOption } from '@ng-select/ng-select';
 declare var moment: any;
 
 @Component({
@@ -14,10 +14,23 @@ declare var moment: any;
   styleUrls: ['./unidad.component.css']
 })
 export class UnidadComponent implements OnInit {
+  // valores ng-select
+  estadoArriendo: NgOption = [
+    { value: true, label: 'Con arriendo' },
+    { value: false, label: 'Sin arriendo' }
+  ];
+  estadoUds: NgOption = [
+    { value: true, label: 'Activa' },
+    { value: false, label: 'Inactiva' }
+  ];
+  // ------------------------
   uds: Uds;
   coordinadores: Usuario[];
+  cargandoCoords = false;
   gestores: Usuario[];
+  cargandoGestores = false;
   docentes: Usuario[];
+  cargandoDocentes = false;
   docentesEnUds = [];
   cargando = false;
   formActualizarUds: FormGroup;
@@ -52,8 +65,6 @@ export class UnidadComponent implements OnInit {
       activa: false,
       creadoEl: null
     });
-
-    setTimeout(() => jQuery('.selectpicker').selectpicker('refresh'), 2500);
   }
 
   obtenerUnidad() {
@@ -82,37 +93,54 @@ export class UnidadComponent implements OnInit {
 
   obtenerDocentes() {
     this.usuarios$.obtenerUsuarios().subscribe((resp: any) => {
-      const arreglo = [];
-      resp.usuarios.forEach((usuario: Usuario) => {
-        if (usuario.rol === 'DOCENTE') {
-          arreglo.push(usuario);
-        }
-      });
-      this.docentes = arreglo;
+      if (resp.ok) {
+        const arreglo = [];
+        resp.usuarios.forEach((usuario: Usuario) => {
+          if (usuario.rol === 'DOCENTE') {
+            arreglo.push(usuario);
+          }
+        });
+        this.docentes = arreglo;
+        this.cargandoDocentes = false;
+      } else {
+        this.cargandoDocentes = false;
+      }
     });
   }
 
   obtenerCoordinadores() {
+    this.cargandoCoords = true;
     this.usuarios$.obtenerUsuarios().subscribe((resp: any) => {
-      const arreglo = [];
-      resp.usuarios.forEach((usuario: Usuario) => {
-        if (usuario.rol === 'COORDINADOR') {
-          arreglo.push(usuario);
-        }
-      });
-      this.coordinadores = arreglo;
+      if (resp.ok) {
+        const arreglo = [];
+        resp.usuarios.forEach((usuario: Usuario) => {
+          if (usuario.rol === 'COORDINADOR') {
+            arreglo.push(usuario);
+          }
+        });
+        this.coordinadores = arreglo;
+        this.cargandoCoords = false;
+      } else {
+        this.cargandoCoords = false;
+      }
     });
   }
 
   obtenerGestores() {
+    this.cargandoGestores = true;
     this.usuarios$.obtenerUsuarios().subscribe((resp: any) => {
-      const arreglo = [];
-      resp.usuarios.forEach((usuario: Usuario) => {
-        if (usuario.rol === 'ADMIN') {
-          arreglo.push(usuario);
-        }
-      });
-      this.gestores = arreglo;
+      if (resp.ok) {
+        const arreglo = [];
+        resp.usuarios.forEach((usuario: Usuario) => {
+          if (usuario.rol === 'ADMIN') {
+            arreglo.push(usuario);
+          }
+        });
+        this.gestores = arreglo;
+        this.cargandoGestores = false;
+      } else {
+        this.cargandoGestores = false;
+      }
     });
   }
 

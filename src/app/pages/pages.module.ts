@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Módulos externos
@@ -26,6 +27,7 @@ import { MisBeneficiariosComponent } from './beneficiarios/mis-beneficiarios/mis
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { CrearUsuarioComponent } from './usuarios/crear-usuario/crear-usuario.component';
 import { BusquedaComponent } from './busqueda/busqueda.component';
+import { UsuarioComponent } from './usuarios/usuario/usuario.component';
 
 @NgModule({
   declarations: [
@@ -44,12 +46,14 @@ import { BusquedaComponent } from './busqueda/busqueda.component';
     MisBeneficiariosComponent,
     UsuariosComponent,
     CrearUsuarioComponent,
-    BusquedaComponent
+    BusquedaComponent,
+    UsuarioComponent
   ],
   imports: [
     CommonModule,
     PagesRoutingModule,
     ComponentsModule,
+    NgSelectModule,
     FormsModule,
     ReactiveFormsModule
   ],

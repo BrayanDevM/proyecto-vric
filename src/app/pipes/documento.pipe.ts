@@ -8,8 +8,27 @@ export class DocumentoPipe implements PipeTransform {
     if (documento === null || documento === undefined) {
       return;
     }
-    documento = this.formatearDocumento(documento, '');
-    return documento;
+
+    const esExtranjero = this.comprobarDocumentoExtranjero(documento);
+    if (esExtranjero) {
+      return documento;
+    } else {
+      documento = this.formatearDocumento(documento, '');
+      return documento;
+    }
+  }
+
+  comprobarDocumentoExtranjero(valor: string) {
+    const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+    valor = valor.toUpperCase();
+    for (let i = 0; i < valor.length; i++) {
+      if (letras.indexOf(valor.charAt(i), 0) !== -1) {
+        // Si tiene letras lo devuelvo como está
+        return true;
+      }
+    }
+    return false;
   }
 
   formatearDocumento(numero: any, prefijo: string) {

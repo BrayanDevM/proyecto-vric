@@ -5,8 +5,8 @@ import { Beneficiario } from 'src/app/models/beneficiario.model';
 import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
 import Swal from 'sweetalert2/src/sweetalert2.js';
 import { Router } from '@angular/router';
+import { NgOption } from '@ng-select/ng-select';
 declare var jQuery: any;
-declare var moment: any;
 
 @Component({
   selector: 'app-tabla-beneficiarios',
@@ -16,6 +16,18 @@ declare var moment: any;
 export class TablaBeneficiariosComponent implements OnInit {
   usuario: Usuario;
   puedeEditar = false;
+
+  // ng-select -------------------
+  estados: NgOption = [
+    { value: 'Vinculado', label: 'Vinculado' },
+    { value: 'Dato sensible', label: 'Dato sensible' },
+    { value: 'Concurrencia', label: 'Concurrencia' },
+    { value: 'Desvinculado', label: 'Desvinculado' },
+    { value: 'Pendiente vincular', label: 'Pendiente vincular' },
+    { value: 'Pendiente desvincular', label: 'Pendiente desvincular' }
+  ];
+  // -----------------------------
+
   @Input() beneficiarios = [];
   @Output() realizoCambios: EventEmitter<boolean> = new EventEmitter();
   @Output() beneficiarioInfo: EventEmitter<Beneficiario> = new EventEmitter();
@@ -37,7 +49,6 @@ export class TablaBeneficiariosComponent implements OnInit {
     jQuery('[data-toggle="popover"]').popover({
       trigger: 'focus'
     });
-    this.refrescarSelect(200);
   }
 
   eliminarBeneficiario(beneficiario: Beneficiario) {
@@ -81,11 +92,5 @@ export class TablaBeneficiariosComponent implements OnInit {
 
   editarBeneficiario(beneficiario: Beneficiario) {
     this.router.navigate(['/beneficiarios', beneficiario._id]);
-  }
-
-  refrescarSelect(ms: number) {
-    setTimeout(() => {
-      jQuery('.selectpicker').selectpicker('refresh');
-    }, ms);
   }
 }

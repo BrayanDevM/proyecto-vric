@@ -26,7 +26,7 @@
               </li>
             </ul>
           </div>
-          <div class="card-body">
+          <div ngi class="card-body">
             <div class="tab-content" id="myTabContent">
               <div
                 *ngIf="beneficiario"
@@ -45,40 +45,21 @@
                     <div class="col-2">
                       <div class="form-group">
                         <label for="tipoDoc">Tipo de documento</label>
-                        <select
+                        <ng-select
+                          [items]="tiposDeDocumento"
+                          bindValue="value"
+                          bindLabel="label"
+                          groupBy="group"
+                          placeholder="Seleccionar tipo de documento"
                           [(ngModel)]="beneficiario.tipoDoc"
                           name="tipoDoc"
-                          class="form-control"
-                          data-style="select-with-transition"
-                          title="Seleccionar"
                           required
                         >
-                          <optgroup label="Colombianos/as">
-                            <option data-icon="fad fa-id-card mr-1" value="RC">
-                              Registro civil
-                            </option>
-                            <option data-icon="fad fa-id-card mr-1" value="TI">
-                              Tarjeta de identidad
-                            </option>
-                            <option data-icon="fad fa-id-card mr-1" value="CC">
-                              Cédula de ciudadanía
-                            </option>
-                          </optgroup>
-                          <optgroup label="Extranjeros/as">
-                            <option
-                              data-icon="fad fa-user-clock mr-1"
-                              value="PEP"
-                            >
-                              Permiso especial de permanencia
-                            </option>
-                            <option
-                              data-icon="fad fa-question-square mr-1"
-                              value="SD"
-                            >
-                              Sin documento
-                            </option>
-                          </optgroup>
-                        </select>
+                          <ng-template ng-label-tmp let-item="item">
+                            <i [class]="item.icon"></i>
+                            {{ item.label }}
+                          </ng-template>
+                        </ng-select>
                       </div>
                     </div>
                     <div class="col-2">
@@ -151,26 +132,20 @@
                     <div class="col-2">
                       <div class="form-group">
                         <label for="sexo">Sexo</label>
-                        <select
+                        <ng-select
+                          [items]="sexos"
+                          bindValue="value"
+                          bindLabel="label"
+                          placeholder="Seleccionar sexo"
                           [(ngModel)]="beneficiario.sexo"
                           name="sexo"
-                          class="form-control"
-                          data-style="select-with-transition"
-                          title="Seleccionar"
                           required
                         >
-                          <option data-icon="fad fa-venus mr-1" value="Mujer">
-                            Mujer
-                          </option>
-                          <option data-icon="fad fa-mars mr-1" value="Hombre">
-                            Hombre
-                          </option>
-                          <option
-                            data-icon="fad fa-venus-mars mr-1"
-                            value="Otro"
-                            >Otro</option
-                          >
-                        </select>
+                          <ng-template ng-label-tmp let-item="item">
+                            <i [class]="item.icon"></i>
+                            {{ item.label }}
+                          </ng-template>
+                        </ng-select>
                       </div>
                     </div>
                     <div class="col-2">
@@ -190,47 +165,33 @@
                     <div class="col-2">
                       <div class="form-group">
                         <label for="paisNacimiento">País de nacimiento</label>
-                        <select
-                          (change)="cambiarDepartamentos($event.target.value)"
+                        <ng-select
+                          [items]="paises"
+                          bindValue="value"
+                          bindLabel="label"
+                          placeholder="Seleccionar país"
                           [(ngModel)]="beneficiario.paisNacimiento"
+                          (change)="cambiarDepartamentos($event)"
                           name="paisNacimiento"
-                          class="form-control"
-                          data-style="select-with-transition"
-                          title="Seleccionar"
-                          data-size="7"
                           required
                         >
-                          <option value="Colombia">Colombia</option>
-                          <option value="Argentina">Argentina</option>
-                          <option value="Chile">Chile</option>
-                          <option value="Ecuador">Ecuador</option>
-                          <option value="México">México</option>
-                          <option value="Panama">Panama</option>
-                          <option value="Perú">Perú</option>
-                          <option value="Venezuela">Venezuela</option>
-                        </select>
+                        </ng-select>
                       </div>
                     </div>
                     <div class="col-2">
                       <div class="form-group">
                         <label for="dptoNacimiento">Dpto. de nacimiento</label>
-                        <select
-                          (change)="cambiarCiudades($event.target.value)"
+                        <ng-select
+                          [items]="listaDepartamentos"
+                          bindValue="departamento"
+                          bindLabel="departamento"
+                          placeholder="Seleccionar departamento"
                           [(ngModel)]="beneficiario.dptoNacimiento"
+                          (change)="cambiarCiudades($event)"
                           name="dptoNacimiento"
-                          class="form-control"
-                          data-style="select-with-transition"
-                          title="Seleccionar"
-                          data-live-search="true"
-                          data-size="5"
                           required
                         >
-                          <option
-                            *ngFor="let dpto of listaDepartamentos"
-                            [value]="dpto.departamento"
-                            >{{ dpto.departamento }}</option
-                          >
-                        </select>
+                        </ng-select>
                       </div>
                     </div>
                     <div class="col-2">
@@ -238,22 +199,16 @@
                         <label for="municipioNacimiento"
                           >Municipio de nacimiento</label
                         >
-                        <select
+                        <ng-select
+                          [items]="listaMunicipios"
+                          bindValue="municipio"
+                          bindLabel="municipio"
+                          placeholder="Seleccionar municipio"
                           [(ngModel)]="beneficiario.municipioNacimiento"
                           name="municipioNacimiento"
-                          class="form-control"
-                          data-style="select-with-transition"
-                          title="Seleccionar"
-                          data-live-search="true"
-                          data-size="5"
                           required
                         >
-                          <option
-                            *ngFor="let municipio of listaMunicipios"
-                            [ngValue]="municipio"
-                            >{{ municipio }}</option
-                          >
-                        </select>
+                        </ng-select>
                       </div>
                     </div>
                     <div class="col-2">
@@ -261,26 +216,16 @@
                         <label for="autorreconocimiento"
                           >Autorreconocimiento</label
                         >
-                        <select
+                        <ng-select
+                          [items]="reconocimientos"
+                          bindValue="value"
+                          bindLabel="label"
+                          placeholder="Seleccionar autorreconocimiento"
                           [(ngModel)]="beneficiario.autorreconocimiento"
                           name="autorreconocimiento"
-                          class="form-control"
-                          data-style="select-with-transition"
-                          title="Seleccionar"
                           required
                         >
-                          <option value="Afrocolombiano">Afrocolombiano</option>
-                          <option value="Comunidad negra"
-                            >Comunidad negra</option
-                          >
-                          <option value="Indigena">Indigena</option>
-                          <option value="Palenquero">Palenquero</option>
-                          <option value="RROM/Gitano">RROM/Gitano</option>
-                          <option value="Raizal archipielago San Andrés"
-                            >Raizal archipielago San Andrés</option
-                          >
-                          <option value="Ninguno">Ninguno</option>
-                        </select>
+                        </ng-select>
                       </div>
                     </div>
                   </div>
@@ -288,17 +233,16 @@
                     <div class="col-2">
                       <div class="form-group">
                         <label for="discapacidad">Discapacidad</label>
-                        <select
+                        <ng-select
+                          [items]="discapacidades"
+                          bindValue="value"
+                          bindLabel="label"
+                          placeholder="Seleccionar autorreconocimiento"
                           [(ngModel)]="beneficiario.discapacidad"
                           name="discapacidad"
-                          class="form-control"
-                          data-style="select-with-transition"
-                          title="Seleccionar"
                           required
                         >
-                          <option [ngValue]="true">Si</option>
-                          <option [ngValue]="false">No</option>
-                        </select>
+                        </ng-select>
                       </div>
                     </div>
                   </div>
@@ -362,21 +306,17 @@
                           <label for="autorreconocimiento"
                             >Criterio de atención</label
                           >
-                          <select
+                          <ng-select
+                            [items]="criterios"
+                            bindValue="value"
+                            bindLabel="label"
+                            placeholder="Seleccionar criterio"
                             [(ngModel)]="beneficiario.criterio"
-                            (focusout)="validarCriterio($event.target.value)"
+                            (change)="validarCriterio($event)"
                             name="criterio"
-                            class="form-control"
-                            data-style="select-with-transition"
-                            title="Seleccionar"
                             required
                           >
-                            <option value="Sisbén">Puntaje de sisbén</option>
-                            <option value="Carta"
-                              >Carta de vulnerabilidad</option
-                            >
-                            <option value="Otro">Otro</option>
-                          </select>
+                          </ng-select>
                         </div>
                       </div>
                       <div class="col-2">
@@ -499,19 +439,25 @@
                     <h5 class="card-title text-success">
                       <i class="fas fa-users mr-2"></i>Datos de acudiente
                     </h5>
-                    <div class="row">
+                    <div *ngIf="responsable" class="row">
                       <div class="col-2">
                         <div class="form-group">
                           <label for="respTipoDoc">Tipo de documento</label>
-                          <input
+                          <ng-select
+                            [items]="tiposDeDocumento"
+                            bindValue="value"
+                            bindLabel="label"
+                            groupBy="group"
+                            placeholder="Seleccionar tipo de documento"
                             [(ngModel)]="responsable.tipoDoc"
-                            name="respDocumento"
-                            type="text"
-                            class="form-control"
-                            placeholder="Número de NUIP"
-                            autocomplete="off"
+                            name="respTipoDoc"
                             required
-                          />
+                          >
+                            <ng-template ng-label-tmp let-item="item">
+                              <i [class]="item.icon"></i>
+                              {{ item.label }}
+                            </ng-template>
+                          </ng-select>
                         </div>
                       </div>
                       <div class="col-2">
@@ -579,30 +525,24 @@
                         </div>
                       </div>
                     </div>
-                    <div class="row">
+                    <div *ngIf="responsable" class="row">
                       <div class="col-2">
                         <div class="form-group">
                           <label for="respSexo">Sexo</label>
-                          <select
+                          <ng-select
+                            [items]="sexos"
+                            bindValue="value"
+                            bindLabel="label"
+                            placeholder="Seleccionar sexo"
                             [(ngModel)]="responsable.sexo"
                             name="respSexo"
-                            class="form-control"
-                            data-style="select-with-transition"
-                            title="Seleccionar"
                             required
                           >
-                            <option data-icon="fad fa-venus mr-1" value="Mujer">
-                              Mujer
-                            </option>
-                            <option data-icon="fad fa-mars mr-1" value="Hombre">
-                              Hombre
-                            </option>
-                            <option
-                              data-icon="fad fa-venus-mars mr-1"
-                              value="Otro"
-                              >Otro</option
-                            >
-                          </select>
+                            <ng-template ng-label-tmp let-item="item">
+                              <i [class]="item.icon"></i>
+                              {{ item.label }}
+                            </ng-template>
+                          </ng-select>
                         </div>
                       </div>
                       <div class="col-2">
@@ -625,26 +565,17 @@
                           <label for="respPaisNacimiento"
                             >País de nacimiento</label
                           >
-                          <select
+                          <ng-select
+                            [items]="paises"
+                            bindValue="value"
+                            bindLabel="label"
+                            placeholder="Seleccionar país"
                             [(ngModel)]="responsable.paisNacimiento"
-                            (change)="
-                              cambiarDepartamentosResp($event.target.value)
-                            "
+                            (change)="cambiarDepartamentosResp($event)"
                             name="respPaisNacimiento"
-                            class="form-control"
-                            title="Seleccionar"
-                            data-size="7"
                             required
                           >
-                            <option value="Colombia">Colombia</option>
-                            <option value="Argentina">Argentina</option>
-                            <option value="Chile">Chile</option>
-                            <option value="Ecuador">Ecuador</option>
-                            <option value="México">México</option>
-                            <option value="Panama">Panama</option>
-                            <option value="Perú">Perú</option>
-                            <option value="Venezuela">Venezuela</option>
-                          </select>
+                          </ng-select>
                         </div>
                       </div>
                       <div class="col-2">
@@ -652,23 +583,17 @@
                           <label for="respDptoNacimiento"
                             >Dpto. de nacimiento</label
                           >
-                          <select
+                          <ng-select
+                            [items]="listaDepartamentosResp"
+                            bindValue="departamento"
+                            bindLabel="departamento"
+                            placeholder="Seleccionar departamento"
                             [(ngModel)]="responsable.dptoNacimiento"
-                            (change)="cambiarCiudadesResp($event.target.value)"
+                            (change)="cambiarCiudadesResp($event)"
                             name="respDptoNacimiento"
-                            class="form-control"
-                            data-style="select-with-transition"
-                            title="Seleccionar"
-                            data-live-search="true"
-                            data-size="5"
                             required
                           >
-                            <option
-                              *ngFor="let dpto of listaDepartamentosResp"
-                              [value]="dpto.departamento"
-                              >{{ dpto.departamento }}</option
-                            >
-                          </select>
+                          </ng-select>
                         </div>
                       </div>
                       <div class="col-2">
@@ -676,43 +601,31 @@
                           <label for="respMunicipioNacimiento"
                             >Municipio de nacimiento</label
                           >
-                          <select
+                          <ng-select
+                            [items]="listaMunicipiosResp"
+                            bindValue="municipio"
+                            bindLabel="municipio"
+                            placeholder="Seleccionar municipio"
                             [(ngModel)]="responsable.municipioNacimiento"
                             name="respMunicipioNacimiento"
-                            class="form-control"
-                            data-style="select-with-transition"
-                            title="Seleccionar"
-                            data-live-search="true"
-                            data-size="5"
                             required
                           >
-                            <option
-                              *ngFor="let municipio of listaMunicipiosResp"
-                              [ngValue]="municipio"
-                              >{{ municipio }}</option
-                            >
-                          </select>
+                          </ng-select>
                         </div>
                       </div>
                       <div class="col-2">
                         <div class="form-group">
                           <label for="tipoResponsable">Tipo de acudiente</label>
-                          <select
+                          <ng-select
+                            [items]="tipoResponsables"
+                            bindValue="value"
+                            bindLabel="label"
+                            placeholder="Seleccionar relación"
                             [(ngModel)]="beneficiario.tipoResponsable"
                             name="tipoResponsable"
-                            class="form-control"
-                            data-style="select-with-transition"
-                            title="Seleccionar"
-                            data-size="7"
                             required
                           >
-                            <option value="Madre">Madre</option>
-                            <option value="Padre">Padre</option>
-                            <option value="Tio/a">Tia/o</option>
-                            <option value="Abuelo/a">Abuelo/a</option>
-                            <option value="Conyugue">Conyugue</option>
-                            <option value="Otro">Otro</option>
-                          </select>
+                          </ng-select>
                         </div>
                       </div>
                     </div>
