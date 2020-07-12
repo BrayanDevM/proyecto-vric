@@ -17,7 +17,7 @@ import Swal from 'sweetalert2/src/sweetalert2.js';
 import { Usuario } from 'src/app/models/usuario.model';
 import { RespBeneficiario } from 'src/app/models/respBeneficiario.model';
 import { Beneficiario } from 'src/app/models/beneficiario.model';
-import { NgOption } from '@ng-select/ng-select';
+import { NgOption, NgSelectComponent } from '@ng-select/ng-select';
 declare var moment: any;
 
 @Component({
@@ -124,40 +124,36 @@ export class FormIngresosComponent implements OnInit {
   // Variables de formulario
   formIngreso: FormGroup;
   // Referencias a elementos de formulario beneficiario
-  @ViewChild('tipoDoc', { static: true }) iTipoDoc: ElementRef;
-  @ViewChild('documento', { static: true }) iDocumento: ElementRef;
-  @ViewChild('nombre1', { static: true }) iNombre1: ElementRef;
-  @ViewChild('nombre2', { static: true }) iNombre2: ElementRef;
-  @ViewChild('apellido1', { static: true }) iApellido1: ElementRef;
-  @ViewChild('apellido2', { static: true }) iApellido2: ElementRef;
-  @ViewChild('sexo', { static: true }) iSexo: ElementRef;
-  @ViewChild('nacimiento', { static: true }) iNacimiento: ElementRef;
-  @ViewChild('paisNacimiento', { static: true }) iPaisNacimiento: ElementRef;
-  @ViewChild('dptoNacimiento', { static: true }) iDptoNacimiento: ElementRef;
-  @ViewChild('municipioNacimiento', { static: true })
-  iMunicipioNacimiento: ElementRef;
-  @ViewChild('autorreconocimiento', { static: true })
-  iAutorreconocimiento: ElementRef;
-  @ViewChild('discapacidad', { static: true }) iDiscapacidad: ElementRef;
-  @ViewChild('direccion', { static: true }) iDireccion: ElementRef;
-  @ViewChild('barrio', { static: true }) iBarrio: ElementRef;
-  @ViewChild('telefono', { static: true }) iTelefono: ElementRef;
-  @ViewChild('criterio', { static: true }) iCriterio: ElementRef;
-  @ViewChild('infoCriterio', { static: true }) iInfoCriterio: ElementRef;
+  @ViewChild('documento') iDocumento: ElementRef;
+  @ViewChild('nombre1') iNombre1: ElementRef;
+  @ViewChild('nombre2') iNombre2: ElementRef;
+  @ViewChild('apellido1') iApellido1: ElementRef;
+  @ViewChild('apellido2') iApellido2: ElementRef;
+  @ViewChild('sexo') iSexo: ElementRef;
+  @ViewChild('nacimiento') iNacimiento: ElementRef;
+  @ViewChild('paisNacimiento') iPaisNacimiento: ElementRef;
+  @ViewChild('dptoNacimiento') iDptoNacimiento: ElementRef;
+  @ViewChild('municipioNacimiento') iMunicipioNacimiento: ElementRef;
+  @ViewChild('autorreconocimiento') iAutorreconocimiento: ElementRef;
+  @ViewChild('discapacidad') iDiscapacidad: ElementRef;
+  @ViewChild('direccion') iDireccion: ElementRef;
+  @ViewChild('barrio') iBarrio: ElementRef;
+  @ViewChild('telefono') iTelefono: ElementRef;
+  @ViewChild('criterio') iCriterio: ElementRef;
+  @ViewChild('infoCriterio') iInfoCriterio: ElementRef;
   // Referencias a elementos de formulario responsable
-  @ViewChild('respTipoDoc', { static: true }) iRespTipoDoc: ElementRef;
-  @ViewChild('respDocumento', { static: true }) iRespDocumento: ElementRef;
-  @ViewChild('respNombre1', { static: true }) iRespNombre1: ElementRef;
-  @ViewChild('respNombre2', { static: true }) iRespNombre2: ElementRef;
-  @ViewChild('respApellido1', { static: true }) iRespApellido1: ElementRef;
-  @ViewChild('respApellido2', { static: true }) iRespApellido2: ElementRef;
-  @ViewChild('respSexo', { static: true }) iRespSexo: ElementRef;
-  @ViewChild('respNacimiento', { static: true }) iRespNacimiento: ElementRef;
-  @ViewChild('respPaisNac', { static: true }) iRespPaisNac: ElementRef;
-  @ViewChild('respDptoNac', { static: true }) iRespDptoNac: ElementRef;
-  @ViewChild('respMunicipioNac')
-  iRespMunicipioNac: ElementRef;
-  @ViewChild('respTipoResp', { static: true }) iRespTipoResp: ElementRef;
+  @ViewChild('respTipoDoc') irespTipoDoc: NgSelectComponent;
+  @ViewChild('respDocumento') iRespDocumento: ElementRef;
+  @ViewChild('respNombre1') iRespNombre1: ElementRef;
+  @ViewChild('respNombre2') iRespNombre2: ElementRef;
+  @ViewChild('respApellido1') iRespApellido1: ElementRef;
+  @ViewChild('respApellido2') iRespApellido2: ElementRef;
+  @ViewChild('respSexo') iRespSexo: NgSelectComponent;
+  @ViewChild('respNacimiento') iRespNacimiento: ElementRef;
+  @ViewChild('respPaisNac') iRespPaisNac: NgSelectComponent;
+  @ViewChild('respDptoNac') iRespDptoNac: NgSelectComponent;
+  @ViewChild('respMunicipioNac') iRespMunicipioNac: NgSelectComponent;
+  @ViewChild('respTipoResp') iRespTipoResp: NgSelectComponent;
 
   // Configuración dinámica para criterio carta/puntaje
   tipoInputInfoCriterio = 'text';
@@ -394,79 +390,103 @@ export class FormIngresosComponent implements OnInit {
   }
 
   buscarRespBeneficiario(documento: string) {
-    let respExiste: RespBeneficiario;
+    let responsable: RespBeneficiario;
     this.beneficiarios$
       .buscarRespBeneficiario(documento)
       .subscribe((resp: any) => {
-        if (resp.responsable.length !== 0) {
-          respExiste = resp.responsable[0];
-          this.respExiste = true;
+        if (resp.ok) {
+          if (resp.responsable.length > 0) {
+            responsable = resp.responsable[0];
+            this.respExiste = true;
 
-          this.iRespTipoDoc.nativeElement.value = respExiste.tipoDoc;
-          this.iRespTipoDoc.nativeElement.disabled = true;
+            this.formIngreso.get('respTipoDoc').patchValue(responsable.tipoDoc);
+            this.irespTipoDoc.setDisabledState(true);
 
-          this.iRespNombre1.nativeElement.value = respExiste.nombre1;
-          this.iRespNombre1.nativeElement.disabled = true;
+            this.iRespNombre1.nativeElement.value = responsable.nombre1;
+            this.iRespNombre1.nativeElement.disabled = true;
 
-          this.iRespNombre2.nativeElement.value = respExiste.nombre2;
-          this.iRespNombre2.nativeElement.disabled = true;
+            this.iRespNombre2.nativeElement.value = responsable.nombre2;
+            this.iRespNombre2.nativeElement.disabled = true;
 
-          this.iRespApellido1.nativeElement.value = respExiste.apellido1;
-          this.iRespApellido1.nativeElement.disabled = true;
+            this.iRespApellido1.nativeElement.value = responsable.apellido1;
+            this.iRespApellido1.nativeElement.disabled = true;
 
-          this.iRespApellido2.nativeElement.value = respExiste.apellido2;
-          this.iRespApellido2.nativeElement.disabled = true;
+            this.iRespApellido2.nativeElement.value = responsable.apellido2;
+            this.iRespApellido2.nativeElement.disabled = true;
 
-          this.iRespNacimiento.nativeElement.value = moment(
-            respExiste.nacimiento,
-            'DD/MM/YYYY'
-          ).format('YYYY-MM-DD');
-          this.iRespNacimiento.nativeElement.disabled = true;
+            this.iRespNacimiento.nativeElement.value = moment(
+              responsable.nacimiento,
+              'DD/MM/YYYY'
+            ).format('YYYY-MM-DD');
+            this.iRespNacimiento.nativeElement.disabled = true;
 
-          this.iRespSexo.nativeElement.value = respExiste.sexo;
-          this.iRespSexo.nativeElement.disabled = true;
+            this.formIngreso.get('respSexo').patchValue(responsable.sexo);
+            this.iRespSexo.setDisabledState(true);
 
-          this.iRespNacimiento.nativeElement.disabled = true;
+            this.iRespNacimiento.nativeElement.disabled = true;
 
-          this.iRespPaisNac.nativeElement.value = respExiste.paisNacimiento;
-          this.iRespPaisNac.nativeElement.disabled = true;
-          this.cambiarDepartamentosResp(respExiste.paisNacimiento);
+            this.formIngreso
+              .get('respPaisNacimiento')
+              .patchValue(responsable.paisNacimiento);
+            this.iRespPaisNac.setDisabledState(true);
+            this.cambiarDepartamentosResp(responsable.paisNacimiento);
 
-          setTimeout(() => {
-            this.iRespDptoNac.nativeElement.value = respExiste.dptoNacimiento;
-            this.iRespDptoNac.nativeElement.disabled = true;
-            this.cambiarCiudadesResp(respExiste.dptoNacimiento);
-          }, 50);
+            this.formIngreso
+              .get('respDptoNacimiento')
+              .patchValue(responsable.dptoNacimiento);
+            this.iRespDptoNac.setDisabledState(true);
+            this.cambiarCiudadesResp(responsable.dptoNacimiento);
 
-          setTimeout(() => {
-            this.iRespMunicipioNac.nativeElement.value =
-              respExiste.municipioNacimiento;
-            this.iRespMunicipioNac.nativeElement.disabled = true;
-          }, 100);
+            this.formIngreso
+              .get('respMunicipioNacimiento')
+              .patchValue(responsable.municipioNacimiento);
+            this.iRespMunicipioNac.setDisabledState(true);
 
-          this.iRespTipoResp.nativeElement.focus();
+            this.iRespTipoResp.focus();
+            this.iRespTipoResp.open();
+          } else {
+            this.respExiste = false;
+            this.despejarCamposResponsable();
+          }
         } else {
           this.respExiste = false;
-          this.iRespNombre1.nativeElement.value = null;
-          this.iRespNombre1.nativeElement.disabled = false;
-
-          this.iRespNombre2.nativeElement.value = null;
-          this.iRespNombre2.nativeElement.disabled = false;
-
-          this.iRespApellido1.nativeElement.value = null;
-          this.iRespApellido1.nativeElement.disabled = false;
-
-          this.iRespApellido2.nativeElement.value = null;
-          this.iRespApellido2.nativeElement.disabled = false;
-
-          this.iRespNacimiento.nativeElement.value = null;
-          this.iRespNacimiento.nativeElement.disabled = false;
-
-          this.iRespPaisNac.nativeElement.disabled = false;
-          this.iRespDptoNac.nativeElement.disabled = false;
-          this.iRespMunicipioNac.nativeElement.disabled = false;
+          this.despejarCamposResponsable();
         }
       });
+  }
+
+  despejarCamposResponsable() {
+    this.iRespNombre1.nativeElement.value = null;
+    this.iRespNombre1.nativeElement.disabled = false;
+
+    this.iRespNombre2.nativeElement.value = null;
+    this.iRespNombre2.nativeElement.disabled = false;
+
+    this.iRespApellido1.nativeElement.value = null;
+    this.iRespApellido1.nativeElement.disabled = false;
+
+    this.iRespApellido2.nativeElement.value = null;
+    this.iRespApellido2.nativeElement.disabled = false;
+
+    this.iRespNacimiento.nativeElement.value = null;
+    this.iRespNacimiento.nativeElement.disabled = false;
+
+    this.formIngreso.get('respTipoDoc').patchValue([]);
+    this.irespTipoDoc.setDisabledState(false);
+
+    this.formIngreso.get('respSexo').patchValue([]);
+    this.iRespSexo.setDisabledState(false);
+
+    this.formIngreso.get('respPaisNacimiento').patchValue([]);
+    this.iRespPaisNac.setDisabledState(false);
+    this.cambiarDepartamentosResp([]);
+
+    this.formIngreso.get('respDptoNacimiento').patchValue([]);
+    this.iRespDptoNac.setDisabledState(false);
+    this.cambiarCiudadesResp([]);
+
+    this.formIngreso.get('respMunicipioNacimiento').patchValue([]);
+    this.iRespMunicipioNac.setDisabledState(false);
   }
 
   ingresarBeneficiario() {
