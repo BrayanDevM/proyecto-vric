@@ -490,6 +490,9 @@ export class FormIngresosComponent implements OnInit {
   }
 
   ingresarBeneficiario() {
+    if (this.formIngreso.invalid) {
+      console.log(this.formIngreso);
+    }
     Swal.fire({
       title: 'Reportar ingreso',
       html: `¿Los datos del beneficiario <b>

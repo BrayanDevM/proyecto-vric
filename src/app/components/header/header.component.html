@@ -1,6 +1,11 @@
 <header class="navbar navbar-expand-lg navbar-light bg-light">
   <!-- <a class="navbar-brand" href="#">Navbar</a> -->
   <div class="form-inline my-2 my-lg-0 ml-3">
+    <div (click)="minimizarSidebar()" id="nav-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
     <input
       #buscador
       (keyup.enter)="buscar(buscador.value)"

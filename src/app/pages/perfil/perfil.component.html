@@ -73,7 +73,7 @@
                   >
                     <div class="row">
                       <div class="form-group col-3">
-                        <label for="nombre">Nombre completo</label>
+                        <label for="nombre">Nombre completo*</label>
                         <input
                           [ngModel]="usuario.nombre"
                           formControlName="nombre"
@@ -85,7 +85,7 @@
                         />
                       </div>
                       <div class="form-group col-3">
-                        <label for="documento">Documento</label>
+                        <label for="documento">Documento*</label>
                         <input
                           [ngModel]="usuario.documento"
                           formControlName="documento"
@@ -97,7 +97,7 @@
                         />
                       </div>
                       <div class="form-group col-3">
-                        <label for="correo">Correo</label>
+                        <label for="correo">Correo*</label>
                         <input
                           #correo
                           [ngModel]="usuario.correo"
@@ -219,6 +219,7 @@
                               type="password"
                               class="form-control"
                               placeholder="Confirmar contraseña..."
+                              required
                             />
                             <div
                               *ngIf="
@@ -236,6 +237,7 @@
                           <div class="col-12 text-right">
                             <button
                               *ngIf="!cargando"
+                              [disabled]="formPassword.invalid"
                               type="submit"
                               class="btn btn-success btn-sm"
                             >

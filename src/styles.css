@@ -5,6 +5,7 @@
   font-family: Roboto, 'Sans-serif';
 }
 
+html,
 body {
   font-size: 14px;
 }
@@ -28,40 +29,147 @@ input.form-control::placeholder {
 }
 
 .app-wrapper {
-  width: 100%;
   height: 100vh;
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  grid-template-rows: 100%;
-  grid-template-areas: 'sidebar pages' 'sidebar pages';
+  display: flex;
+  transition: all 0.2s ease;
 }
 
 .app-sidebar {
-  grid-area: sidebar;
+  width: 260px;
   background-color: rgb(68, 68, 68);
   height: 100%;
+  transition: all 0.2s ease;
 }
 
+.app-sidebar-min {
+  margin-left: -260px;
+  /* transform: translateX(-260px); */
+}
+
+/***************************** ESTILOS SIDEBAR **************************************/
+/************************************************************************************/
+
+/*************************** FIN ESTILOS SIDEBAR ************************************/
+/************************************************************************************/
+
 .app-pages {
-  display: grid;
-  grid-area: pages;
-  grid-template-rows: 60px 1fr;
-  grid-template-columns: 100%;
-  grid-template-areas: 'header' 'page';
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
 }
 
 .page-navbar {
-  grid-area: header;
+  /* flex: 1; */
+}
+
+#nav-icon {
+  width: 25px;
+  height: 20px;
+  position: relative;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: 0.5s ease-in-out;
+  -moz-transition: 0.5s ease-in-out;
+  -o-transition: 0.5s ease-in-out;
+  transition: 0.5s ease-in-out;
+  cursor: pointer;
+  margin-left: -10px;
+  margin-right: 15px;
+}
+
+#nav-icon span {
+  display: block;
+  position: absolute;
+  height: 3px;
+  width: 100%;
+  background: #017cff;
+  border-radius: 9px;
+  opacity: 1;
+  left: 0;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: 0.25s ease-in-out;
+  -moz-transition: 0.25s ease-in-out;
+  -o-transition: 0.25s ease-in-out;
+  transition: 0.25s ease-in-out;
+}
+
+#nav-icon span:nth-child(1) {
+  top: 0%;
+}
+
+#nav-icon span:nth-child(2) {
+  top: calc(50% - 1.5px);
+}
+
+#nav-icon span:nth-child(3) {
+  top: calc(100% - 3px);
+}
+
+#nav-icon.open span:nth-child(1) {
+  top: 9px;
+  -webkit-transform: rotate(135deg);
+  -moz-transform: rotate(135deg);
+  -o-transform: rotate(135deg);
+  transform: rotate(135deg);
+}
+
+#nav-icon.open span:nth-child(2) {
+  opacity: 0;
+  left: -60px;
+}
+
+#nav-icon.open span:nth-child(3) {
+  top: 9px;
+  -webkit-transform: rotate(-135deg);
+  -moz-transform: rotate(-135deg);
+  -o-transform: rotate(-135deg);
+  transform: rotate(-135deg);
+}
+
+.page-navbar .btn-menu {
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  margin-left: -15px;
+  transition: all 0.2s ease;
+}
+
+.page-navbar .btn-menu div {
+  height: 2px;
+  background-color: #000;
+  margin-bottom: 2px;
+}
+
+.page-navbar .menu-open {
+  transition: all 0.2s ease;
+}
+
+.page-navbar .menu-open div:first-child {
+  transform: rotate(-45deg) translate(-4px, 2px);
+}
+
+.page-navbar .menu-open div:nth-child(2) {
+  opacity: 0;
+}
+
+.page-navbar .menu-open div:last-child {
+  transform: rotate(45deg) translate(-3px, -2px);
 }
 
 .page-content {
-  grid-area: page;
+  flex: 1;
   background-color: #eee;
+  overflow-y: scroll;
 }
 
 .page-content .content {
-  padding: 30px 15px;
-  height: 100%;
+  padding: 1rem 1rem 2rem;
 }
 
 /* Estilos para los íconos de FontAwesome en sidebar*/
@@ -108,6 +216,10 @@ input.form-control::placeholder {
   border: none;
 }
 
+.bdm-btn-circle {
+  border-radius: 50%;
+}
+
 .bootstrap-select {
   border: 1px solid #ced4da !important;
   border-radius: 4px;
@@ -152,6 +264,36 @@ input.form-control::placeholder {
   content: '>';
 }
 /***************** Fin breadcrumbs v2 *****************/
+.card-graphic-info {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.card-graphic-info svg {
+  font-size: 1.3rem;
+}
+
+.card-graphic-info .graphic-number {
+  font-size: 36px;
+  font-weight: 400;
+  color: #646777;
+  margin-bottom: -10px;
+}
+
+.card-graphic-info .data-desc {
+  font-size: 0.7rem;
+}
+
+.card-graphic-sub-info {
+  font-size: 0.8rem;
+}
 
 .table thead th {
   font-weight: lighter;
@@ -205,5 +347,31 @@ input.form-control::placeholder {
     opacity: 1;
     -webkit-transform: translate3d(0, 40px, 0);
     transform: translate3d(0, 40px, 0);
+  }
+}
+
+@media screen and (max-width: 1280px) {
+  html {
+    font-size: 12px;
+  }
+
+  .sidebar > .logo {
+    margin: 0 1rem 1rem;
+    padding-bottom: 3.5rem;
+    padding-top: 1rem;
+    background-size: 80%;
+  }
+
+  .card-graphic-info .graphic-number {
+    font-size: 1.7rem;
+    margin-bottom: -8px;
+  }
+
+  .card-graphic-info .data-desc {
+    font-size: 0.7rem;
+  }
+
+  .card-graphic-sub-info {
+    font-size: 0.6rem;
   }
 }

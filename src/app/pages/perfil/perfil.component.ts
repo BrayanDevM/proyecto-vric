@@ -92,7 +92,7 @@ export class PerfilComponent implements OnInit {
 
   actualizarPassword() {
     if (this.formPassword.invalid) {
-      console.log(this.formPassword);
+      // console.log(this.formPassword);
       return;
     }
     this.cargando = true;
