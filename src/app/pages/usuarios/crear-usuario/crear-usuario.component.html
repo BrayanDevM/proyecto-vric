@@ -60,36 +60,29 @@
               <div class="row">
                 <div class="form-group col-6">
                   <label for="rol">Rol</label>
-                  <select
+                  <ng-select
+                    [items]="roles"
+                    bindValue="value"
+                    bindLabel="label"
+                    placeholder="Seleccionar rol"
+                    [searchable]="false"
                     formControlName="rol"
                     name="rol"
-                    class="form-control"
-                    title="Seleccionar"
-                    required
-                  >
-                    <option value="ADMIN">Gestor</option>
-                    <option value="COORDINADOR">Coordinador</option>
-                    <option value="DOCENTE">Docente</option>
-                  </select>
+                  ></ng-select>
                 </div>
                 <div class="form-group col-6">
                   <label for="contratos">Contratos</label>
-                  <select
+                  <ng-select
+                    [items]="contratosDisponibles"
+                    bindValue="_id"
+                    bindLabel="codigo"
+                    placeholder="Seleccionar rol"
+                    [multiple]="true"
+                    [searchable]="false"
+                    [loading]="cargandoContratos"
                     formControlName="contratos"
                     name="contratos"
-                    class="form-control"
-                    title="Seleccionar"
-                    multiple
-                  >
-                    <option *ngIf="contratosDisponibles.length === 0" disabled
-                      >No hay contratos</option
-                    >
-                    <option
-                      *ngFor="let contrato of contratosDisponibles"
-                      [value]="contrato._id"
-                      >{{ contrato.codigo }}</option
-                    >
-                  </select>
+                  ></ng-select>
                 </div>
                 <div class="form-group col-12">
                   <label for="password">Contraseña</label>
@@ -126,14 +119,14 @@
               <div class="row">
                 <div class="col-12 text-right mt-2">
                   <button
-                    *ngIf="!cargando"
+                    *ngIf="!creandoUsuario"
                     type="submit"
                     class="btn btn-success btn-sm"
                   >
                     <i class="fas fa-save"></i> Crear
                   </button>
                   <button
-                    *ngIf="cargando"
+                    *ngIf="creandoUsuario"
                     type="submit"
                     class="btn btn-success btn-sm disabled"
                   >

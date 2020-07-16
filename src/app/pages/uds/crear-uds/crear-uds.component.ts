@@ -134,8 +134,13 @@ export class CrearUdsComponent implements OnInit {
       this.formCrearUds.value.gestor,
       false
     );
-    this.uds$.crearUds(this.uds).subscribe();
-    this.cargando = false;
-    this.formCrearUds.reset();
+    this.uds$.crearUds(this.uds).subscribe((resp: any) => {
+      if (resp.ok) {
+        this.cargando = false;
+        this.formCrearUds.reset();
+      } else {
+        this.cargando = false;
+      }
+    });
   }
 }

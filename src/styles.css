@@ -63,6 +63,19 @@ input.form-control::placeholder {
   /* flex: 1; */
 }
 
+.option-menu {
+  margin-top: -9.6px;
+  margin-bottom: -9.6px;
+  margin-left: -27px;
+  background-color: #f1f1f1;
+  height: 56px;
+  width: 56px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 1rem;
+}
+
 #nav-icon {
   width: 25px;
   height: 20px;
@@ -76,8 +89,6 @@ input.form-control::placeholder {
   -o-transition: 0.5s ease-in-out;
   transition: 0.5s ease-in-out;
   cursor: pointer;
-  margin-left: -10px;
-  margin-right: 15px;
 }
 
 #nav-icon span {
@@ -164,7 +175,7 @@ input.form-control::placeholder {
 
 .page-content {
   flex: 1;
-  background-color: #eee;
+  background-color: #f6f7fb;
   overflow-y: scroll;
 }
 

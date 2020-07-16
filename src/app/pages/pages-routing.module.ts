@@ -249,25 +249,6 @@ const routes: Routes = [
     }
   },
   {
-    path: 'usuarios/:id',
-    component: UsuarioComponent,
-    canActivate: [AdminGuard, VerificaTokenGuard],
-    data: {
-      paginaActiva: 'Editar usuario',
-      partes: [
-        {
-          titulo: 'Usuarios',
-          url: '/usuarios'
-        },
-        {
-          titulo: 'Editar usuario',
-          url: ''
-        }
-      ],
-      gIcono: 'book'
-    }
-  },
-  {
     path: 'usuarios/crear',
     component: CrearUsuarioComponent,
     canActivate: [AdminGuard, VerificaTokenGuard],
@@ -280,6 +261,25 @@ const routes: Routes = [
         },
         {
           titulo: 'Crear usuario',
+          url: ''
+        }
+      ],
+      gIcono: 'book'
+    }
+  },
+  {
+    path: 'usuarios/:id',
+    component: UsuarioComponent,
+    canActivate: [AdminGuard, VerificaTokenGuard],
+    data: {
+      paginaActiva: 'Editar usuario',
+      partes: [
+        {
+          titulo: 'Usuarios',
+          url: '/usuarios'
+        },
+        {
+          titulo: 'Editar usuario',
           url: ''
         }
       ],

@@ -18,6 +18,7 @@ import { Usuario } from 'src/app/models/usuario.model';
 import { RespBeneficiario } from 'src/app/models/respBeneficiario.model';
 import { Beneficiario } from 'src/app/models/beneficiario.model';
 import { NgOption, NgSelectComponent } from '@ng-select/ng-select';
+import { RespBeneficiariosService } from 'src/app/services/resp-beneficiarios.service';
 declare var moment: any;
 
 @Component({
@@ -172,8 +173,7 @@ export class FormIngresosComponent implements OnInit {
     private fb: FormBuilder,
     private usuario$: UsuarioService,
     private beneficiarios$: BeneficiariosService,
-    private uds$: UdsService,
-    private renderer: Renderer2
+    private respBen$: RespBeneficiariosService
   ) {
     this.usuario = this.usuario$.usuario;
   }
@@ -391,68 +391,67 @@ export class FormIngresosComponent implements OnInit {
 
   buscarRespBeneficiario(documento: string) {
     let responsable: RespBeneficiario;
-    this.beneficiarios$
-      .buscarRespBeneficiario(documento)
-      .subscribe((resp: any) => {
-        if (resp.ok) {
-          if (resp.responsable.length > 0) {
-            responsable = resp.responsable[0];
-            this.respExiste = true;
+    this.respBen$.buscarRespBeneficiario(documento).subscribe((resp: any) => {
+      if (resp.ok) {
+        console.log(resp);
+        if (resp.responsable.length > 0) {
+          responsable = resp.responsable[0];
+          this.respExiste = true;
 
-            this.formIngreso.get('respTipoDoc').patchValue(responsable.tipoDoc);
-            this.irespTipoDoc.setDisabledState(true);
+          this.formIngreso.get('respTipoDoc').patchValue(responsable.tipoDoc);
+          this.irespTipoDoc.setDisabledState(true);
 
-            this.iRespNombre1.nativeElement.value = responsable.nombre1;
-            this.iRespNombre1.nativeElement.disabled = true;
+          this.iRespNombre1.nativeElement.value = responsable.nombre1;
+          this.iRespNombre1.nativeElement.disabled = true;
 
-            this.iRespNombre2.nativeElement.value = responsable.nombre2;
-            this.iRespNombre2.nativeElement.disabled = true;
+          this.iRespNombre2.nativeElement.value = responsable.nombre2;
+          this.iRespNombre2.nativeElement.disabled = true;
 
-            this.iRespApellido1.nativeElement.value = responsable.apellido1;
-            this.iRespApellido1.nativeElement.disabled = true;
+          this.iRespApellido1.nativeElement.value = responsable.apellido1;
+          this.iRespApellido1.nativeElement.disabled = true;
 
-            this.iRespApellido2.nativeElement.value = responsable.apellido2;
-            this.iRespApellido2.nativeElement.disabled = true;
+          this.iRespApellido2.nativeElement.value = responsable.apellido2;
+          this.iRespApellido2.nativeElement.disabled = true;
 
-            this.iRespNacimiento.nativeElement.value = moment(
-              responsable.nacimiento,
-              'DD/MM/YYYY'
-            ).format('YYYY-MM-DD');
-            this.iRespNacimiento.nativeElement.disabled = true;
+          this.iRespNacimiento.nativeElement.value = moment(
+            responsable.nacimiento,
+            'DD/MM/YYYY'
+          ).format('YYYY-MM-DD');
+          this.iRespNacimiento.nativeElement.disabled = true;
 
-            this.formIngreso.get('respSexo').patchValue(responsable.sexo);
-            this.iRespSexo.setDisabledState(true);
+          this.formIngreso.get('respSexo').patchValue(responsable.sexo);
+          this.iRespSexo.setDisabledState(true);
 
-            this.iRespNacimiento.nativeElement.disabled = true;
+          this.iRespNacimiento.nativeElement.disabled = true;
 
-            this.formIngreso
-              .get('respPaisNacimiento')
-              .patchValue(responsable.paisNacimiento);
-            this.iRespPaisNac.setDisabledState(true);
-            this.cambiarDepartamentosResp(responsable.paisNacimiento);
+          this.formIngreso
+            .get('respPaisNacimiento')
+            .patchValue(responsable.paisNacimiento);
+          this.iRespPaisNac.setDisabledState(true);
+          this.cambiarDepartamentosResp(responsable.paisNacimiento);
 
-            this.formIngreso
-              .get('respDptoNacimiento')
-              .patchValue(responsable.dptoNacimiento);
-            this.iRespDptoNac.setDisabledState(true);
-            this.cambiarCiudadesResp(responsable.dptoNacimiento);
+          this.formIngreso
+            .get('respDptoNacimiento')
+            .patchValue(responsable.dptoNacimiento);
+          this.iRespDptoNac.setDisabledState(true);
+          this.cambiarCiudadesResp(responsable.dptoNacimiento);
 
-            this.formIngreso
-              .get('respMunicipioNacimiento')
-              .patchValue(responsable.municipioNacimiento);
-            this.iRespMunicipioNac.setDisabledState(true);
+          this.formIngreso
+            .get('respMunicipioNacimiento')
+            .patchValue(responsable.municipioNacimiento);
+          this.iRespMunicipioNac.setDisabledState(true);
 
-            this.iRespTipoResp.focus();
-            this.iRespTipoResp.open();
-          } else {
-            this.respExiste = false;
-            this.despejarCamposResponsable();
-          }
+          this.iRespTipoResp.focus();
+          this.iRespTipoResp.open();
         } else {
           this.respExiste = false;
           this.despejarCamposResponsable();
         }
-      });
+      } else {
+        this.respExiste = false;
+        this.despejarCamposResponsable();
+      }
+    });
   }
 
   despejarCamposResponsable() {
@@ -491,7 +490,7 @@ export class FormIngresosComponent implements OnInit {
 
   ingresarBeneficiario() {
     if (this.formIngreso.invalid) {
-      console.log(this.formIngreso);
+      return;
     }
     Swal.fire({
       title: 'Reportar ingreso',

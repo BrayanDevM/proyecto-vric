@@ -26,8 +26,12 @@ export class UdsService {
     this.token = this.usuario$.token;
   }
 
-  obtenerUds() {
+  obtenerUdsSimple() {
     return this.http.get(this.API_URL + `?token=${this.token}`);
+  }
+
+  obtenerUds() {
+    return this.http.get(this.API_URL + `/datos?token=${this.token}`);
   }
 
   obtenerUdsDisponibles() {

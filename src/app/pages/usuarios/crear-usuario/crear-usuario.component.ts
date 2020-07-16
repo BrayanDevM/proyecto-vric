@@ -1,14 +1,12 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Uds } from 'src/app/models/uds.model';
 import { ContratosService } from 'src/app/services/contratos.service';
 import { Contrato } from 'src/app/models/contrato.model';
 import { UdsService } from 'src/app/services/uds.service';
 import Swal from 'sweetalert2/src/sweetalert2.js';
 import { UsuarioService } from 'src/app/services/usuario.service';
-import { Usuario } from 'src/app/models/usuario.model';
-declare var jQuery: any;
-declare function moment(): any;
+import { NgOption } from '@ng-select/ng-select';
+declare var moment: any;
 
 @Component({
   selector: 'app-crear-usuario',
@@ -16,11 +14,26 @@ declare function moment(): any;
   styleUrls: ['./crear-usuario.component.css']
 })
 export class CrearUsuarioComponent implements OnInit {
+  // data ng-select
+  roles: NgOption = [
+    {
+      value: 'ADMIN',
+      label: 'Administrador',
+      icon: 'fas fa-user-shield text-danger'
+    },
+    { value: 'GESTOR', label: 'Gestor', icon: 'fas fa-user text-success' },
+    {
+      value: 'COORDINADOR',
+      label: 'Coordinador',
+      icon: 'fas fa-user text-primary'
+    },
+    { value: 'DOCENTE', label: 'Docente', icon: 'fas fa-user text-secondary' }
+  ];
+  // ---------------------
   formUsuario: FormGroup;
-  cargando = false;
+  creandoUsuario = false;
   contratosDisponibles: Contrato[] = [];
-  // udsAsignadas: Uds[] = [];
-  // udsDisponibles: Uds[] = [];
+  cargandoContratos = false;
   verPassword = 'password';
   correoExiste = false;
 
@@ -47,73 +60,19 @@ export class CrearUsuarioComponent implements OnInit {
     });
 
     this.obtenerContratos();
-    this.refrescarSelect(600);
   }
 
   obtenerContratos() {
+    this.cargandoContratos = true;
     this.contratos$.obtenerContratos().subscribe((resp: any) => {
       if (resp.ok === true) {
-        // console.log(resp.contratos);
+        this.cargandoContratos = false;
         this.contratosDisponibles = resp.contratos;
+      } else {
+        this.cargandoContratos = false;
       }
     });
   }
-
-  // obtenerUds(rol: string) {
-  //   this.uds$.obtenerUds().subscribe((resp: any) => {
-  //     const arreglo = [];
-  //     if (resp.ok === true) {
-  //       resp.uds.forEach((unidad: Uds) => {
-  //         switch (rol) {
-  //           case 'ADMIN':
-  //             if (unidad.gestor === null) {
-  //               arreglo.push(unidad);
-  //             }
-  //             break;
-
-  //           case 'COORDINADOR':
-  //             if (unidad.coordinador === null) {
-  //               arreglo.push(unidad);
-  //             }
-  //             break;
-
-  //           default:
-  //             if (unidad.docentes.length < 2) {
-  //               arreglo.push(unidad);
-  //             }
-  //             break;
-  //         }
-  //       });
-  //       this.udsDisponibles = arreglo;
-  //       // console.log('Uds asig: ', this.udsAsignadas);
-  //       this.udsAsignadas.forEach((udsAsignada: Uds) => {
-  //         const i = this.udsDisponibles.findIndex(
-  //           (unidad: Uds) => unidad._id === udsAsignada._id
-  //         );
-  //         console.log(this.udsDisponibles[i]);
-  //         this.udsDisponibles.splice(i, 1);
-  //       });
-  //       // console.log(this.udsDisponibles);
-  //       this.refrescarSelect(500);
-  //     }
-  //   });
-  // }
-
-  // asignarUds(udsId: string) {
-  //   const uds = this.udsDisponibles.find(unidad => unidad._id === udsId);
-  //   const i = this.udsDisponibles.findIndex(unidad => unidad._id === udsId);
-  //   this.udsAsignadas.push(uds);
-  //   this.udsDisponibles.splice(i, 1);
-  //   this.refrescarSelect(200);
-  // }
-
-  // removerUds(id: string) {
-  //   const uds = this.udsAsignadas.find((unidad: Uds) => unidad._id === id);
-  //   const i = this.udsAsignadas.findIndex((unidad: Uds) => unidad._id === id);
-  //   this.udsAsignadas.splice(i, 1);
-  //   this.udsDisponibles.push(uds);
-  //   this.refrescarSelect(200);
-  // }
 
   cambiarInputPassword() {
     if (this.verPassword === 'password') {
@@ -124,11 +83,9 @@ export class CrearUsuarioComponent implements OnInit {
   }
 
   crearUsuario() {
-    // const arreglo = [];
-    // this.udsAsignadas.forEach((unidad: Uds) => {
-    //   arreglo.push(unidad._id);
-    // });
-    // this.formUsuario.value.uds = arreglo;
+    if (this.formUsuario.invalid) {
+      return;
+    }
     this.formUsuario.value.creadoEl = moment().format('YYYY-MM-DD');
     Swal.fire({
       title: 'Usuario',
@@ -140,20 +97,19 @@ export class CrearUsuarioComponent implements OnInit {
       confirmButtonText: 'Sí, crear'
     }).then((result: any) => {
       if (result.value) {
+        this.creandoUsuario = true;
         this.usuarios$
           .crearUsuario(this.formUsuario.value)
           .subscribe((resp: any) => {
-            console.log('respuesta backend: ', resp);
-            this.formUsuario.reset();
+            if (resp.ok) {
+              this.creandoUsuario = false;
+              this.formUsuario.reset();
+              // console.log('respuesta backend: ', resp);
+            } else {
+              this.creandoUsuario = false;
+            }
           });
       }
     });
-    console.log(this.formUsuario.value);
-  }
-
-  refrescarSelect(ms: number) {
-    setTimeout(() => {
-      jQuery('.selectpicker').selectpicker('refresh');
-    }, ms);
   }
 }

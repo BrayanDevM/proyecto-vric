@@ -28,4 +28,8 @@ export class RespBeneficiariosService {
       responsable
     );
   }
+
+  buscarRespBeneficiario(documento: string) {
+    return this.http.get(this.API_URL + `/documento/${documento}`);
+  }
 }

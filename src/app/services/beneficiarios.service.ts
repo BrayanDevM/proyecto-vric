@@ -77,11 +77,4 @@ export class BeneficiariosService {
       this.API_URL + `/${beneficiario._id}?token=${this.token}`
     );
   }
-
-  buscarRespBeneficiario(documento: string) {
-    const API_URL = Config.REST.PRINCIPAL.URL;
-    return this.http.get(
-      API_URL + `/buscar/coleccion/responsable/${documento}`
-    );
-  }
 }

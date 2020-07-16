@@ -22,12 +22,11 @@ export class UdsComponent implements OnInit {
 
   obtenerUds() {
     this.cargando = true;
-    this.uds$.obtenerUds().subscribe((resp: any) => {
+    this.uds$.obtenerUdsSimple().subscribe((resp: any) => {
       if (resp.ok) {
         this.cargando = false;
         this.uds = resp.uds;
         this.registros = resp.registros;
-        // console.log(this.uds);
       } else {
         this.cargando = false;
       }
