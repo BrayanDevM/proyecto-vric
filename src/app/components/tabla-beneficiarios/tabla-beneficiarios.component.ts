@@ -6,6 +6,11 @@ import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
 import Swal from 'sweetalert2/src/sweetalert2.js';
 import { Router } from '@angular/router';
 import { NgOption } from '@ng-select/ng-select';
+import {
+  alertDanger,
+  alertSuccess,
+  alertError
+} from 'src/app/helpers/swal2.config';
 declare var jQuery: any;
 
 @Component({
@@ -52,25 +57,32 @@ export class TablaBeneficiariosComponent implements OnInit {
   }
 
   eliminarBeneficiario(beneficiario: Beneficiario) {
-    Swal.fire({
-      title: 'Beneficiario',
-      html: `¿Seguro de que deseas eliminar a <b>${beneficiario.nombre1}</b>?, esta acción no puede deshacerse`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      confirmButtonText: 'Sí, eliminar!'
-    }).then((result: any) => {
-      if (result.value) {
-        this.beneficiarios$.eliminarBeneficiario(beneficiario).subscribe(() => {
-          Swal.fire(
-            'Beneficiario',
-            'Beneficiario eliminado correctamente',
-            'success'
-          );
-          this.realizoCambios.emit(true);
-        });
-      }
-    });
+    alertDanger
+      .fire({
+        title: 'Bebenficiarios',
+        html: `¿Seguro de que deseas eliminar a <b>${beneficiario.nombre1}</b>?, esta acción no puede deshacerse`,
+        confirmButtonText: 'Sí, eliminar'
+      })
+      .then((result: any) => {
+        if (result.value) {
+          this.beneficiarios$
+            .eliminarBeneficiario(beneficiario)
+            .subscribe((resp: any) => {
+              if (resp.ok) {
+                alertSuccess.fire({
+                  title: 'Beneficiario eliminado'
+                });
+                this.realizoCambios.emit(true);
+              } else {
+                alertError.fire({
+                  title: 'Beneficiarios',
+                  text:
+                    'No se ha podido eliminar el beneficiario, intentelo nuevamente.'
+                });
+              }
+            });
+        }
+      });
   }
 
   verInfoBeneficiario(beneficiario: Beneficiario) {

@@ -5,7 +5,8 @@ import { ContratosService } from 'src/app/services/contratos.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UdsService } from 'src/app/services/uds.service';
 import { Uds } from 'src/app/models/uds.model';
-import { NgOption } from '@ng-select/ng-select';
+import { NgOption, NgSelectComponent } from '@ng-select/ng-select';
+import { alertSuccess } from 'src/app/helpers/swal2.config';
 declare var moment: any;
 
 @Component({
@@ -30,17 +31,16 @@ export class ContratoComponent implements OnInit {
   // --------------------------------
   cargandoUdsDisponibles = false;
   formActualizarContrato: FormGroup;
+  actualizando = false;
+
+  @ViewChild('udsDisp') udsDispSelect: NgSelectComponent;
 
   constructor(
     private rutaActual: ActivatedRoute,
     public contrato$: ContratosService,
     public uds$: UdsService,
     private fb: FormBuilder
-  ) {}
-
-  ngOnInit() {
-    this.obtenerContrato();
-
+  ) {
     this.formActualizarContrato = this.fb.group({
       codigo: [null, Validators.required],
       cupos: [null, Validators.required],
@@ -52,26 +52,54 @@ export class ContratoComponent implements OnInit {
     });
   }
 
+  ngOnInit() {
+    this.obtenerContrato()
+      .then((contrato: Contrato) => {
+        this.contrato = contrato;
+        this.udsEnContrato = contrato.uds;
+        this.obtenerIdUdsSeleccionadas(contrato.uds);
+        this.actualizarForm(contrato);
+        this.obtenerUdsDisponibles(contrato._id);
+      })
+      .catch(error => console.log(error));
+  }
+
+  actualizarForm(contrato: Contrato) {
+    this.formActualizarContrato.setValue({
+      codigo: contrato.codigo,
+      cupos: contrato.cupos,
+      regional: contrato.regional,
+      cz: contrato.cz,
+      eas: contrato.eas,
+      nit: contrato.nit,
+      activo: contrato.activo
+    });
+  }
+
   obtenerContrato() {
-    this.rutaActual.params.subscribe((resp: Params) => {
-      this.contrato$.obtenerContrato(resp.id).subscribe((contrato: any) => {
-        // asigno contrato
-        this.contrato = contrato.contrato;
-        // asigno datos de uds en contrato para la vista
-        this.udsEnContrato = this.contrato.uds;
-        this.contrato.uds.forEach((unidad: Uds) => {
-          // Tomo ids para actualizar
-          this.IdUdsSeleccionadas.push(unidad._id);
+    return new Promise((resolve, reject) => {
+      this.rutaActual.params.subscribe((params: Params) => {
+        this.contrato$.obtenerContrato(params.id).subscribe((resp: any) => {
+          if (resp.ok) {
+            resolve(resp.contrato);
+          } else {
+            reject(resp);
+          }
         });
-        this.obtenerUdsDisponibles();
       });
     });
   }
 
-  obtenerUdsDisponibles() {
+  obtenerIdUdsSeleccionadas(uds: Uds[]) {
+    uds.forEach(unidad => {
+      this.IdUdsSeleccionadas.push(unidad._id);
+    });
+  }
+
+  obtenerUdsDisponibles(contratoId: string) {
     this.cargandoUdsDisponibles = true;
     this.uds$
-      .obtenerUdsDisponiblesPorContrato(this.contrato._id)
+      .obtenerUdsDisponiblesPorContrato(contratoId)
       .subscribe((resp: any) => {
         if (resp.ok) {
           // Obtengo todas las UDS disponibles (las del contrato y null);
@@ -110,6 +138,8 @@ export class ContratoComponent implements OnInit {
     this.udsDisponibles.splice(i, 1);
     // Refreso arreglo para el select
     this.udsDisponibles = [...this.udsDisponibles];
+
+    this.udsDispSelect.handleClearClick();
   }
 
   sacarUdsContrato(index: number, unidadId: string) {
@@ -128,6 +158,11 @@ export class ContratoComponent implements OnInit {
   }
 
   actualizar() {
+    this.actualizando = true;
+    if (this.formActualizarContrato.invalid) {
+      this.actualizando = false;
+      return;
+    }
     // Guardo datos en nueva variable, así no reemplaza las UDS en this.contrato para visualizar
     const contrato = new Contrato(
       this.formActualizarContrato.value.codigo,
@@ -142,6 +177,15 @@ export class ContratoComponent implements OnInit {
       this.udsEnContrato,
       this.contrato._id
     );
-    this.contrato$.actualizarContrato(contrato).subscribe();
+    this.contrato$.actualizarContrato(contrato).subscribe((resp: any) => {
+      if (resp.ok) {
+        this.actualizando = false;
+        alertSuccess.fire({
+          title: 'Contrato actualizado'
+        });
+      } else {
+        this.actualizando = false;
+      }
+    });
   }
 }

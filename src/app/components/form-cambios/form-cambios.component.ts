@@ -7,10 +7,9 @@ import { Uds } from 'src/app/models/uds.model';
 import { UdsService } from 'src/app/services/uds.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import Swal from 'sweetalert2/src/sweetalert2.js';
-import { Usuario } from 'src/app/models/usuario.model';
-import { RespBeneficiario } from 'src/app/models/respBeneficiario.model';
 import { Beneficiario } from 'src/app/models/beneficiario.model';
 import { NgOption } from '@ng-select/ng-select';
+import { alertSuccess, alertConfirm } from 'src/app/helpers/swal2.config';
 declare var moment: any;
 
 @Component({
@@ -112,6 +111,7 @@ export class FormCambiosComponent implements OnInit {
   // -----------------------------
   usuario: any;
   formCambio: FormGroup;
+  creando = false;
   @Input() udsAsignadas: Uds[];
   beneficiarios: Beneficiario[];
   cargandoBeneficiarios = false;
@@ -121,21 +121,12 @@ export class FormCambiosComponent implements OnInit {
   listaMunicipios = ['Extranjero'];
   codigoUdsSeleccionada: any;
 
-  @ViewChild('documento', { static: true }) inputDocumento: ElementRef;
-  @ViewChild('respDocumento', { static: true }) inputRespDocumento: ElementRef;
-  @ViewChild('infoCriterio', { static: true }) inputInfoCriterio: ElementRef;
-  // Input respbeneficiario por si existe
-
   constructor(
     private fb: FormBuilder,
     private usuario$: UsuarioService,
     private beneficiarios$: BeneficiariosService,
     private uds$: UdsService
-  ) {}
-
-  ngOnInit() {
-    this.usuario = this.usuario$.usuario;
-
+  ) {
     this.formCambio = this.fb.group({
       // Información de beneficiario
       selectUds: null,
@@ -178,6 +169,10 @@ export class FormCambiosComponent implements OnInit {
       respMunicipioNacimiento: [null, Validators.required],
       fecha: null
     });
+  }
+
+  ngOnInit() {
+    this.usuario = this.usuario$.usuario;
   }
 
   cambiarCodigoUds($event: any) {
@@ -257,44 +252,27 @@ export class FormCambiosComponent implements OnInit {
     this.formCambio.value.fecha = moment().format('DD/MM/YYYY');
   }
 
-  reportarCambio() {
-    this.reemplazarInfoForm(this.madreSeleccionada);
-    this.formCambio.value.ingreso = moment(
-      this.formCambio.value.ingreso,
-      'YYYY-MM-DD'
-    ).format('DD/MM/YYYY');
-    Swal.fire({
-      title: 'Reportar nacimiento',
-      html: `¿Los datos son del beneficiario <b>
-        ${this.formCambio.value.nombre1}
-        ${this.formCambio.value.nombre2}
-        ${this.formCambio.value.apellido1}
-        ${this.formCambio.value.apellido2}
-        </b>identificado con <b>${this.formCambio.value.tipoDoc}:
-        ${this.formCambio.value.documento}</b> son correctos?`,
-      icon: 'warning',
-      showCancelButton: true,
-      // confirmButtonColor: '#3085d6',
-      // cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, reportar cambio'
-    }).then((result: any) => {
-      if (result.value) {
-        this.beneficiarios$
-          .crearBeneficiario(this.formCambio.value)
-          .subscribe((resp: any) => console.log(resp));
-      }
-    });
-  }
-
+  /**
+   *
+   * @param $event
+   * No puedo usar ViewChild para asignar el valor del SD, puesto que este intenta
+   * tomar el elemento cuando aún no se ha creado porque el usuario primero debe
+   * seleccionar una MG, sin embargo, pude proceder a asignar el valor con el método
+   * patchValue del formulario reactivo, pero!, cuando relleno otro campo este se vuelve
+   * undefined, por qué?
+   * Pendiente solucionar para usar patchvalue en formulario de ingresos
+   */
   comprobarSD($event: any) {
     if ($event.value === 'SD') {
       const documentoAleatorio = this.generarDocumento(15);
-      this.inputDocumento.nativeElement.value = documentoAleatorio;
+      this.formCambio.get('documento').setValue(documentoAleatorio);
       this.formCambio.value.documento = documentoAleatorio;
-      this.inputDocumento.nativeElement.disabled = true;
+      this.formCambio.get('documento').disable();
+      // this.inputDocumento.nativeElement.value = documentoAleatorio;
+      this.formCambio.value.documento = documentoAleatorio;
     } else {
-      this.inputDocumento.nativeElement.value = null;
-      this.inputDocumento.nativeElement.disabled = false;
+      this.formCambio.get('documento').setValue('');
+      this.formCambio.get('documento').enable();
     }
   }
 
@@ -368,5 +346,57 @@ export class FormCambiosComponent implements OnInit {
         this.listaMunicipios = this.listaDepartamentos[i].ciudades;
       }
     }
+  }
+
+  formatearFechas() {
+    this.formCambio.value.ingreso = moment(
+      this.formCambio.value.ingreso,
+      'YYYY-MM-DD'
+    ).format('DD/MM/YYYY');
+    this.formCambio.value.nacimiento = moment(
+      this.formCambio.value.nacimiento,
+      'YYYY-MM-DD'
+    ).format('DD/MM/YYYY');
+  }
+
+  reportarCambio() {
+    this.reemplazarInfoForm(this.madreSeleccionada);
+    this.formatearFechas();
+    alertConfirm
+      .fire({
+        title: 'Novedades',
+        html: `<span>Deseas reportar al beneficiario:</span>
+        <ul class="mt-2">
+          <li>
+            ${this.formCambio.value.nombre1}
+            ${this.formCambio.value.nombre2}
+            ${this.formCambio.value.apellido1}
+            ${this.formCambio.value.apellido2}
+          </li>
+          <li>${this.formCambio.value.tipoDoc}: ${this.formCambio.value.documento}</li>
+          <li>Nacimiento: ${this.formCambio.value.nacimiento}</li>
+        </ul>
+      `,
+        confirmButtonText: 'Sí, reportar cambio'
+      })
+      .then((result: any) => {
+        if (result.value) {
+          this.creando = true;
+          this.beneficiarios$
+            .crearBeneficiario(this.formCambio.value)
+            .subscribe((resp: any) => {
+              if (resp.ok) {
+                this.creando = false;
+                this.formCambio.reset();
+                alertSuccess.fire({
+                  title: 'Beneficiario reportado',
+                  text: 'Recuerda reportar el egreso de la Mujer Gestante'
+                });
+              } else {
+                this.creando = false;
+              }
+            });
+        }
+      });
   }
 }

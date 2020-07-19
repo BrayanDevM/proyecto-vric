@@ -6,7 +6,7 @@ import { Beneficiario } from 'src/app/models/beneficiario.model';
 import { Uds } from 'src/app/models/uds.model';
 import Swal from 'sweetalert2/src/sweetalert2.js';
 import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
-import { NgOption } from '@ng-select/ng-select';
+import { NgOption, NgSelectComponent } from '@ng-select/ng-select';
 declare var jQuery: any;
 
 @Component({
@@ -44,8 +44,8 @@ export class MisBeneficiariosComponent implements OnInit {
   mostrarPorEstado = false;
   estadoSeleccionado: string;
 
-  @ViewChild('selectUds', { static: true }) selectUds: ElementRef;
-  @ViewChild('selectEstado', { static: true }) selectEstado: ElementRef;
+  @ViewChild('selectUds', { static: true }) selectUds: NgSelectComponent;
+  @ViewChild('selectEstado', { static: true }) selectEstado: NgSelectComponent;
 
   constructor(
     private usuario$: UsuarioService,
@@ -80,16 +80,29 @@ export class MisBeneficiariosComponent implements OnInit {
   }
 
   traerBeneficiariosUds($event: any) {
+    let id: string;
+    if (typeof $event === 'string') {
+      id = $event;
+    } else {
+      id = $event._id;
+    }
+    this.selectEstado.handleClearClick();
+    this.selectUds.focus();
+    if ($event === undefined) {
+      return;
+    }
     this.cargandoListado = true;
+    this.unidadSeleccionada = id;
+    this.mostrarPorEstado = false;
+    this.mostrarPorUds = true;
     // Vaciamos los arreglos con beneficiarios
     this.beneficiariosPendientes = [];
     this.beneficiariosDS = [];
     this.beneficiariosVinculados = [];
     this.beneficiariosDesvinculados = [];
-    this.beneficiariosPorEstado = [];
     // this.selectEstado.nativeElement.value = null;
     // Traemos y guaramos en arreglos
-    this.uds$.obtenerUnidad($event._id).subscribe((resp: any) => {
+    this.uds$.obtenerUnidad(id).subscribe((resp: any) => {
       resp.unidad.beneficiarios.forEach((beneficiario: Beneficiario) => {
         switch (beneficiario.estado) {
           case 'Pendiente vincular':
@@ -113,8 +126,6 @@ export class MisBeneficiariosComponent implements OnInit {
         }
         this.cargandoListado = false;
       });
-      this.mostrarPorEstado = false;
-      this.mostrarPorUds = true;
     });
     // console.log('Pendientes', this.beneficiariosPendientes);
     // console.log('DS', this.beneficiariosDS);
@@ -123,37 +134,46 @@ export class MisBeneficiariosComponent implements OnInit {
   }
 
   traerBeneficiariosPorEstado($event: any) {
+    let estado: string;
+    if (typeof $event === 'string') {
+      estado = $event;
+    } else {
+      estado = $event.value;
+    }
+    this.selectUds.handleClearClick();
+    this.selectEstado.focus();
+    if ($event === undefined) {
+      this.beneficiariosPorEstado = [];
+      return;
+    }
+    this.estadoSeleccionado = estado;
     this.cargandoListado = true;
-    let contador = 0;
-    // Vaciamos los arreglos con beneficiarios
-    this.estadoSeleccionado = $event.value;
-    this.beneficiariosPendientes = [];
-    this.beneficiariosDS = [];
-    this.beneficiariosVinculados = [];
-    this.beneficiariosDesvinculados = [];
-    this.beneficiariosPorEstado = [];
-    this.uds$.obtenerUds().subscribe((resp: any) => {
-      resp.uds.forEach((unidad: Uds) => {
-        unidad.beneficiarios.forEach((beneficiario: Beneficiario) => {
-          if (beneficiario.estado === $event.value) {
-            this.beneficiariosPorEstado.push(beneficiario);
-          }
-          contador++;
-          if (contador === unidad.beneficiarios.length) {
-            this.cargandoListado = false;
-          }
-        });
+    this.beneficiarios$
+      .obtenerBeneficiariosPorEstado(estado)
+      .subscribe((resp: any) => {
+        console.log(resp);
+        if (resp.ok) {
+          this.beneficiariosPorEstado = resp.beneficiarios;
+          this.cargandoListado = false;
+          this.mostrarPorEstado = true;
+          this.mostrarPorUds = false;
+        } else {
+          this.cargandoListado = false;
+          this.mostrarPorEstado = true;
+          this.mostrarPorUds = false;
+        }
       });
-      this.mostrarPorEstado = true;
-      this.mostrarPorUds = false;
-    });
   }
 
   actualizarListado(realizaCambio?: boolean) {
     if (realizaCambio) {
+      console.log('Realiza cambio, obvio si');
+
       if (this.mostrarPorEstado) {
+        console.log(this.mostrarPorEstado, 'estado?');
         this.traerBeneficiariosPorEstado(this.estadoSeleccionado);
       } else {
+        console.log(this.unidadSeleccionada, 'UDS?');
         this.traerBeneficiariosUds(this.unidadSeleccionada);
       }
     }

@@ -45,7 +45,7 @@
                         <th>Cupos</th>
                         <th>Estado</th>
                         <th>Arriendo</th>
-                        <th>Contrato asignado</th>
+                        <th>Responsable</th>
                         <th>Acciones</th>
                       </tr>
                     </thead>
@@ -77,13 +77,8 @@
                             >Sin arriendo</span
                           >
                         </td>
-                        <td>
-                          <span *ngIf="unidad.enContrato !== null">{{
-                            unidad.enContrato.codigo
-                          }}</span>
-                          <span *ngIf="unidad.enContrato === null"
-                            >No asignado</span
-                          >
+                        <td style="text-transform: capitalize;">
+                          {{ unidad.coordinador.nombre.toLowerCase() }}
                         </td>
                         <td class="text-right">
                           <button

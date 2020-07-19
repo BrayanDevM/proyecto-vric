@@ -7,19 +7,18 @@
         [formGroup]="formActualizarContrato"
         (ngSubmit)="actualizar()"
       >
-        <div class="row">
+        <div class="row BDM_fadeInUp">
           <div class="col-7">
             <div class="card">
               <div class="card-header">
                 Detalles de contrato
               </div>
-              <div *ngIf="contrato" class="card-body">
+              <div class="card-body">
                 <div class="row">
                   <div class="col-3">
                     <div class="form-group">
                       <label for="codigo">Cód. de Contrato</label>
                       <input
-                        [ngModel]="contrato.codigo"
                         formControlName="codigo"
                         name="codigo"
                         type="number"
@@ -32,7 +31,6 @@
                     <div class="form-group">
                       <label for="cupos">Cupos</label>
                       <input
-                        [ngModel]="contrato.cupos"
                         formControlName="cupos"
                         name="cupos"
                         type="number"
@@ -45,7 +43,6 @@
                     <div class="form-group">
                       <label for="regional">Regional</label>
                       <input
-                        [ngModel]="contrato.regional"
                         formControlName="regional"
                         name="regional"
                         type="text"
@@ -58,7 +55,6 @@
                     <div class="form-group">
                       <label for="cz">Centro Zonal</label>
                       <input
-                        [ngModel]="contrato.cz"
                         formControlName="cz"
                         name="cz"
                         type="text"
@@ -73,7 +69,6 @@
                     <div class="form-group">
                       <label for="eas">Nombre de EAS</label>
                       <input
-                        [ngModel]="contrato.eas"
                         formControlName="eas"
                         name="eas"
                         type="text"
@@ -86,7 +81,6 @@
                     <div class="form-group">
                       <label for="nit">NIT</label>
                       <input
-                        [ngModel]="contrato.nit"
                         formControlName="nit"
                         name="nit"
                         type="text"
@@ -104,7 +98,6 @@
                         bindValue="value"
                         placeholder="Seleccionar estado"
                         [searchable]="false"
-                        [ngModel]="contrato.activo"
                         formControlName="activo"
                         name="activo"
                       ></ng-select>
@@ -113,7 +106,7 @@
                 </div>
                 <div class="row">
                   <div class="col-12 mt-3 text-right">
-                    <span class="text-muted"
+                    <span *ngIf="contrato" class="text-muted"
                       >Creado el: {{ contrato.creadoEl }}</span
                     >
                   </div>
@@ -155,6 +148,7 @@
                 <div class="form-group">
                   <label for="uds">Agregar UDS</label>
                   <ng-select
+                    #udsDisp
                     [items]="udsDisponibles"
                     bindLabel="nombre"
                     bindValue="_id"
@@ -171,9 +165,26 @@
           <div class="col-12 text-right">
             <div class="card mt-4">
               <div class="card-body">
-                <button type="submit" class="btn btn-success btn-sm mr-2">
+                <button
+                  *ngIf="!actualizando"
+                  type="submit"
+                  class="btn btn-success btn-sm mr-2"
+                >
                   <i class="far fa-sync"></i>
                   Actualizar
+                </button>
+                <button
+                  *ngIf="actualizando"
+                  [disabled]="actualizando"
+                  type="submit"
+                  class="btn btn-success btn-sm mr-2"
+                >
+                  <span
+                    class="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  Actualizando...
                 </button>
               </div>
             </div>

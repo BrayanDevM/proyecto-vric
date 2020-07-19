@@ -140,7 +140,7 @@
               <div class="row">
                 <div class="col-12 text-right">
                   <button
-                    *ngIf="!cargando"
+                    *ngIf="!creando"
                     type="submit"
                     class="btn btn-success btn-sm"
                   >
@@ -148,12 +148,17 @@
                     Crear
                   </button>
                   <button
-                    *ngIf="cargando"
+                    *ngIf="creando"
+                    [disabled]="creando"
                     type="button"
                     class="btn btn-success btn-sm disabled"
                   >
-                    <i class="fad fa-spinner-third fa-spin"></i>
-                    Creando
+                    <span
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Creando...
                   </button>
                 </div>
               </div>

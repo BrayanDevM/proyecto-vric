@@ -6,6 +6,7 @@ import { UsuarioService } from 'src/app/services/usuario.service';
 import { Usuario } from 'src/app/models/usuario.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgOption } from '@ng-select/ng-select';
+import { alertSuccess, alertError } from 'src/app/helpers/swal2.config';
 declare var moment: any;
 
 @Component({
@@ -32,7 +33,7 @@ export class UnidadComponent implements OnInit {
   docentes: Usuario[];
   cargandoDocentes = false;
   docentesEnUds = [];
-  cargando = false;
+  actualizando = false;
   formActualizarUds: FormGroup;
 
   constructor(
@@ -41,23 +42,13 @@ export class UnidadComponent implements OnInit {
     private rutaActual: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder
-  ) {}
-
-  ngOnInit() {
-    // Creo un objeto vacío para omitir errores de campos null al renderizar
-    this.uds = null;
-    // Obtener datos
-    this.obtenerCoordinadores();
-    this.obtenerGestores();
-    this.obtenerDocentes();
-    this.obtenerUnidad();
-
+  ) {
     // Intancio nuevo formulario
     this.formActualizarUds = this.fb.group({
       codigo: [null, Validators.required],
       nombre: [null, Validators.required],
-      cupos: null,
-      ubicacion: null,
+      cupos: [null, Validators.required],
+      ubicacion: [null, Validators.required],
       coordinador: [null, Validators.required],
       gestor: [null, Validators.required],
       docentes: [null, Validators.required],
@@ -67,31 +58,64 @@ export class UnidadComponent implements OnInit {
     });
   }
 
+  ngOnInit() {
+    // Obtener datos
+    this.obtenerUnidad().then((unidad: Uds) => {
+      this.uds = this.formatearFechas(unidad);
+      this.tomarDocentes(unidad);
+      this.obtenerCoordinadores();
+      this.obtenerGestores();
+      this.obtenerDocentes();
+      this.actualizarForm(this.uds);
+    });
+  }
+
   obtenerUnidad() {
-    // Obtenemos id de la URL
-    this.rutaActual.params.subscribe((resp: Params) => {
-      this.uds$.obtenerUnidad(resp.id).subscribe((uds: any) => {
-        this.uds = uds.unidad;
-        const fechaCreadoEl = moment(this.uds.creadoEl, 'DD/MM/YYYY');
-        this.uds.creadoEl = fechaCreadoEl.format('YYYY-MM-DD');
-        if (this.uds.coordinador === null) {
-          this.uds.coordinador = { _id: '' };
-        }
-        if (this.uds.gestor === null) {
-          this.uds.gestor = { _id: '' };
-        }
-        if (this.uds.docentes !== null || this.uds.docentes) {
-          this.uds.docentes.forEach((docente: Usuario) => {
-            this.docentesEnUds.push(docente._id);
-          });
-        }
-        // console.log('UDS obtenida: ', this.uds);
-        // console.log(this.docentesEnUds);
+    return new Promise((resolve, reject) => {
+      this.rutaActual.params.subscribe((params: Params) => {
+        this.uds$.obtenerUnidad(params.id).subscribe((resp: any) => {
+          if (resp.ok) {
+            resolve(resp.unidad);
+          } else {
+            reject(resp);
+          }
+        });
       });
     });
   }
 
+  formatearFechas(unidad: Uds) {
+    unidad.creadoEl = moment(unidad.creadoEl, 'DD/MM/YYYY').format(
+      'YYYY-MM-DD'
+    );
+    return unidad;
+  }
+
+  tomarDocentes(unidad: Uds) {
+    if (unidad.docentes !== null || unidad.docentes) {
+      unidad.docentes.forEach((docente: Usuario) => {
+        this.docentesEnUds.push(docente._id);
+      });
+    }
+  }
+
+  actualizarForm(unidad: Uds) {
+    this.formActualizarUds.setValue({
+      codigo: unidad.codigo,
+      nombre: unidad.nombre,
+      cupos: unidad.cupos,
+      ubicacion: unidad.ubicacion,
+      coordinador: unidad.coordinador._id,
+      gestor: unidad.gestor._id,
+      docentes: this.docentesEnUds,
+      arriendo: unidad.arriendo,
+      activa: unidad.activa,
+      creadoEl: unidad.creadoEl
+    });
+  }
+
   obtenerDocentes() {
+    this.cargandoDocentes = true;
     this.usuarios$.obtenerUsuarios().subscribe((resp: any) => {
       if (resp.ok) {
         const arreglo = [];
@@ -145,16 +169,20 @@ export class UnidadComponent implements OnInit {
   }
 
   actualizar() {
-    this.cargando = true;
-    this.uds.arriendo = this.formActualizarUds.value.arriendo;
+    this.actualizando = true;
+    if (this.formActualizarUds.invalid) {
+      this.actualizando = false;
+      return;
+    }
     this.uds.codigo = this.formActualizarUds.value.codigo;
     this.uds.nombre = this.formActualizarUds.value.nombre;
     this.uds.cupos = this.formActualizarUds.value.cupos;
-    this.uds.coordinador = this.formActualizarUds.value.coordinador;
-    this.uds.docentes = this.docentesEnUds;
-    this.uds.gestor = this.formActualizarUds.value.gestor;
     this.uds.ubicacion = this.formActualizarUds.value.ubicacion;
+    this.uds.arriendo = this.formActualizarUds.value.arriendo;
     this.uds.activa = this.formActualizarUds.value.activa;
+    this.uds.coordinador = this.formActualizarUds.value.coordinador;
+    this.uds.gestor = this.formActualizarUds.value.gestor;
+    this.uds.docentes = this.docentesEnUds;
     // Valores devueltos a _id ya que populate devuelve un objeto
     this.uds.creadoPor = this.uds.creadoPor._id;
 
@@ -162,10 +190,22 @@ export class UnidadComponent implements OnInit {
       this.uds.enContrato = this.uds.enContrato._id;
     }
     this.uds$.actualizarUds(this.uds).subscribe(resp => {
-      // console.log(resp);
-      this.router.navigate(['/uds']);
+      if (resp.ok) {
+        alertSuccess.fire({
+          title: 'Unidad De Servicio actualizada'
+        });
+        this.actualizando = false;
+        this.docentesEnUds = [];
+        this.router.navigate(['/uds']);
+      } else {
+        this.actualizando = false;
+        alertError.fire({
+          title: 'Error',
+          text:
+            'No se ha podido actualizar la Unidad De Servicio, intentalo nuevamente',
+          timer: 3000
+        });
+      }
     });
-    this.cargando = false;
-    this.docentesEnUds = [];
   }
 }

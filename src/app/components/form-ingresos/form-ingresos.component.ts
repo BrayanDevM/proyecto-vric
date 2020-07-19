@@ -1,24 +1,20 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  ElementRef,
-  Input,
-  Renderer2
-} from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 // Importo municipios y ciudades de Colombia
 import listaDatosColombia from 'src/app/config/colombia.json';
 import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
 import { Uds } from 'src/app/models/uds.model';
-import { UdsService } from 'src/app/services/uds.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import Swal from 'sweetalert2/src/sweetalert2.js';
 import { Usuario } from 'src/app/models/usuario.model';
 import { RespBeneficiario } from 'src/app/models/respBeneficiario.model';
-import { Beneficiario } from 'src/app/models/beneficiario.model';
 import { NgOption, NgSelectComponent } from '@ng-select/ng-select';
 import { RespBeneficiariosService } from 'src/app/services/resp-beneficiarios.service';
+import {
+  alertDanger,
+  alertSuccess,
+  alertConfirm
+} from 'src/app/helpers/swal2.config';
 declare var moment: any;
 
 @Component({
@@ -124,6 +120,7 @@ export class FormIngresosComponent implements OnInit {
 
   // Variables de formulario
   formIngreso: FormGroup;
+  creando = false;
   // Referencias a elementos de formulario beneficiario
   @ViewChild('documento') iDocumento: ElementRef;
   @ViewChild('nombre1') iNombre1: ElementRef;
@@ -176,9 +173,6 @@ export class FormIngresosComponent implements OnInit {
     private respBen$: RespBeneficiariosService
   ) {
     this.usuario = this.usuario$.usuario;
-  }
-
-  ngOnInit() {
     this.formIngreso = this.fb.group({
       // Información de beneficiario
       tipoDoc: [null, Validators.required],
@@ -221,6 +215,8 @@ export class FormIngresosComponent implements OnInit {
       estado: 'Pendiente vincular'
     });
   }
+
+  ngOnInit() {}
 
   cambiarDepartamentos(pais: any) {
     if (pais === undefined) {
@@ -315,6 +311,7 @@ export class FormIngresosComponent implements OnInit {
   }
 
   cambiarCiudadesResp(departamento: any) {
+    console.log(departamento);
     if (departamento === undefined) {
       return;
     }
@@ -390,6 +387,11 @@ export class FormIngresosComponent implements OnInit {
   }
 
   buscarRespBeneficiario(documento: string) {
+    if (documento === '') {
+      this.despejarCamposResponsable();
+      this.respExiste = false;
+      return;
+    }
     let responsable: RespBeneficiario;
     this.respBen$.buscarRespBeneficiario(documento).subscribe((resp: any) => {
       if (resp.ok) {
@@ -482,54 +484,64 @@ export class FormIngresosComponent implements OnInit {
 
     this.formIngreso.get('respDptoNacimiento').patchValue([]);
     this.iRespDptoNac.setDisabledState(false);
-    this.cambiarCiudadesResp([]);
+    this.cambiarCiudadesResp('Extranjero');
 
     this.formIngreso.get('respMunicipioNacimiento').patchValue([]);
     this.iRespMunicipioNac.setDisabledState(false);
   }
 
+  formatearFechas() {
+    this.formIngreso.value.fecha = moment().format('DD/MM/YYYY');
+    this.formIngreso.value.nacimiento = moment(
+      this.formIngreso.value.nacimiento,
+      'YYYY-MM-DD'
+    ).format('DD/MM/YYYY');
+    this.formIngreso.value.respNacimiento = moment(
+      this.formIngreso.value.nacimiento,
+      'YYYY-MM-DD'
+    ).format('DD/MM/YYYY');
+    this.formIngreso.value.ingreso = moment(
+      this.formIngreso.value.ingreso,
+      'YYYY-MM-DD'
+    ).format('DD/MM/YYYY');
+  }
+
   ingresarBeneficiario() {
-    if (this.formIngreso.invalid) {
-      return;
-    }
-    Swal.fire({
-      title: 'Reportar ingreso',
-      html: `¿Los datos del beneficiario <b>
-        ${this.formIngreso.value.nombre1}
-        ${this.formIngreso.value.nombre2}
-        ${this.formIngreso.value.apellido1}
-        ${this.formIngreso.value.apellido2}
-        </b>identificado con <b>${this.formIngreso.value.tipoDoc}:
-        ${this.formIngreso.value.documento}</b> son correctos?`,
-      icon: 'warning',
-      showCancelButton: true,
-      // confirmButtonColor: '#3085d6',
-      // cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, reportar ingreso'
-    }).then((result: any) => {
-      if (result.value) {
-        this.formIngreso.value.fecha = moment().format('DD/MM/YYYY');
-
-        this.formIngreso.value.nacimiento = moment(
-          this.formIngreso.value.nacimiento,
-          'YYYY-MM-DD'
-        ).format('DD/MM/YYYY');
-
-        this.formIngreso.value.respNacimiento = moment(
-          this.formIngreso.value.nacimiento,
-          'YYYY-MM-DD'
-        ).format('DD/MM/YYYY');
-
-        this.formIngreso.value.ingreso = moment(
-          this.formIngreso.value.ingreso,
-          'YYYY-MM-DD'
-        ).format('DD/MM/YYYY');
-
-        // console.log(this.formIngreso.value);
-        this.beneficiarios$
-          .crearBeneficiario(this.formIngreso.value)
-          .subscribe();
-      }
-    });
+    this.formatearFechas();
+    alertConfirm
+      .fire({
+        title: 'Novedades',
+        html: `<span>Deseas reportar al beneficiario:</span>
+        <ul class="mt-2">
+          <li>
+            ${this.formIngreso.value.nombre1}
+            ${this.formIngreso.value.nombre2}
+            ${this.formIngreso.value.apellido1}
+            ${this.formIngreso.value.apellido2}
+          </li>
+          <li>${this.formIngreso.value.tipoDoc}: ${this.formIngreso.value.documento}</li>
+          <li>Nacimiento: ${this.formIngreso.value.nacimiento}</li>
+        </ul>
+      `,
+        confirmButtonText: 'Sí, reportar ingreso'
+      })
+      .then((result: any) => {
+        if (result.value) {
+          this.creando = true;
+          this.beneficiarios$
+            .crearBeneficiario(this.formIngreso.value)
+            .subscribe((resp: any) => {
+              if (resp.ok) {
+                this.creando = false;
+                this.formIngreso.reset();
+                alertSuccess.fire({
+                  title: 'Beneficiario reportado'
+                });
+              } else {
+                this.creando = false;
+              }
+            });
+        }
+      });
   }
 }
