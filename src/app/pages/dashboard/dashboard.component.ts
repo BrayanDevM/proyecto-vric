@@ -3,6 +3,8 @@ import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
 import { Beneficiario } from 'src/app/models/beneficiario.model';
 import { Uds } from 'src/app/models/uds.model';
 import { UdsService } from 'src/app/services/uds.service';
+import { HttpClient } from '@angular/common/http';
+import { LoadingBarService } from '@ngx-loading-bar/core';
 declare var moment: any;
 
 @Component({
@@ -63,10 +65,9 @@ export class DashboardComponent implements OnInit {
 
   hoy = moment(moment().format('DD/MM/YYYY'), 'DD/MM/YYYY');
 
-  constructor(
-    private uds$: UdsService,
-    private beneficiarios$: BeneficiariosService
-  ) {}
+  loader = this.ngxLoader.useRef('http');
+
+  constructor(private uds$: UdsService, private ngxLoader: LoadingBarService) {}
 
   ngOnInit() {
     this.obtenerDatosUds_Beneficiarios().then(() => {

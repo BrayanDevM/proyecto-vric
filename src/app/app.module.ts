@@ -3,8 +3,12 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+// ngx-loading-bar (core, router, http)
+import { LoadingBarModule } from '@ngx-loading-bar/core';
+import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+
 // Módulos personalizados
-import { PagesModule } from './pages/pages.module';
 import { ComponentsModule } from './components/components.module';
 
 // Rutas
@@ -23,7 +27,10 @@ import { PagesComponent } from './pages/pages.component';
     ComponentsModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    LoadingBarHttpClientModule,
+    LoadingBarRouterModule,
+    LoadingBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
