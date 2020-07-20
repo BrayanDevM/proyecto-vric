@@ -7,6 +7,7 @@ import Swal from 'sweetalert2/src/sweetalert2.js';
 import { map, catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { Router } from '@angular/router';
+import { alertError } from '../helpers/swal2.config';
 
 @Injectable({
   providedIn: 'root'
@@ -35,11 +36,10 @@ export class UsuarioService {
     return this.http.post(this.API_URL + '/login', usuario).pipe(
       map((resp: any) => {
         if (!resp.usuario.activo) {
-          Swal.fire({
-            title: 'Error al iniciar sesión',
+          alertError.fire({
+            title: 'Inicio de sesión',
             text:
-              'Tu cuenta se encuentra inactiva, por favor contactar con administración.',
-            icon: 'error'
+              'Tu cuenta se encuentra inactiva, por favor contactar con el administrador.'
           });
           return;
         }
@@ -53,10 +53,9 @@ export class UsuarioService {
       catchError(err => {
         console.log('Error en la petición', err);
         if (err.status === 400) {
-          Swal.fire({
-            title: 'Error al iniciar sesión',
-            text: err.error.mensaje,
-            icon: 'error'
+          alertError.fire({
+            title: 'Inicio de sesión',
+            text: err.error.mensaje
           });
         }
         return throwError(err);

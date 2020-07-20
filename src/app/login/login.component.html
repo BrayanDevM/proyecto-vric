@@ -19,62 +19,68 @@
     ngNativeValidate
     [formGroup]="formLogin"
     (ngSubmit)="login()"
-    class="form-signin"
+    class="form-signin card card-body p-5 shadow"
   >
-    <div class="text-center mt-4 mb-4">
-      <p class="description text-center">Iniciar sesión con</p>
-      <a (click)="googleLogin()" class="btn btn-light btn-google">
-        <img src="assets/img/iconos/google.png" width="12" />
-        Google
-      </a>
-    </div>
-    <img
-      class="mb-4"
-      src="/docs/4.5/assets/brand/bootstrap-solid.svg"
-      alt=""
-      width="72"
-      height="72"
-    />
-    <h1 class="h3 mb-3 font-weight-normal">Credenciales</h1>
-
-    <label for="inputEmail" class="sr-only">Email address</label>
-    <input
-      formControlName="correo"
-      name="correo"
-      [ngModel]="recordarCorreo"
-      type="email"
-      class="form-control"
-      placeholder="Correo..."
-      required
-    />
-    <label for="inputPassword" class="sr-only">Password</label>
-    <input
-      formControlName="password"
-      name="password"
-      type="password"
-      class="form-control"
-      placeholder="Contraseña..."
-      required
-    />
-    <div class="checkbox mb-3">
-      <label>
+    <p class="text-primary icon-users">
+      <i class="fad fa-users fa-3x BDM_fadeInUp"></i>
+    </p>
+    <h3 class="font-weight-normal mb-5">Ingresa tus credenciales</h3>
+    <div class="form-group mb-2">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text">
+            <i class="fas fa-envelope mr-1 ml-1"></i>
+          </div>
+        </div>
         <input
-          formControlName="recuerdame"
-          name="recuerdame"
-          [ngModel]="recordar"
-          class="form-check-input"
-          type="checkbox"
-          value=""
+          formControlName="correo"
+          name="correo"
+          [ngModel]="recordarCorreo"
+          type="email"
+          class="form-control"
+          placeholder="Correo..."
+          required
         />
-        Recordarme
-      </label>
+      </div>
+    </div>
+    <div class="form-group mb-2">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text">
+            <i class="fas fa-key mr-1 ml-1"></i>
+          </div>
+        </div>
+        <input
+          formControlName="password"
+          type="password"
+          name="password"
+          class="form-control"
+          placeholder="Contraseña..."
+          required
+        />
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="checkbox mb-3">
+        <label>
+          <input
+            formControlName="recuerdame"
+            name="recuerdame"
+            [ngModel]="recordar"
+            class="form-check-input"
+            type="checkbox"
+            value=""
+          />
+          Recordarme
+        </label>
+      </div>
     </div>
     <button
       *ngIf="!cargando"
       class="btn btn-lg btn-primary btn-block btn-login"
       type="submit"
     >
-      Inciar sesión
+      Iniciar sesión
     </button>
     <button
       *ngIf="cargando"
@@ -89,8 +95,15 @@
       ></span>
       Iniciando sesión...
     </button>
-    <p class="mt-5 mb-3 text-muted">© 2020-2022</p>
+    <div class="text-center mt-5">
+      <p class="description text-center">También puedes ingresar con</p>
+      <a (click)="googleLogin()" class="btn btn-light btn-google">
+        <img src="assets/img/iconos/google.png" width="12" />
+        Google
+      </a>
+    </div>
   </form>
+  <p class="text-muted">Brayan Ðevia M.© 2020-2022</p>
 </div>
 
 <!-- Modal -->

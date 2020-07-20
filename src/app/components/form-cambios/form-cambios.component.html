@@ -82,6 +82,7 @@
               <input
                 #documento
                 [ngModel]="formCambio.value.documento | documento"
+                [readOnly]="docReadOnly"
                 formControlName="documento"
                 name="documento"
                 type="text"
@@ -347,7 +348,6 @@
             <div class="form-group">
               <label for="codigo">Código UDS</label>
               <input
-                [ngModel]="codigoUdsSeleccionada"
                 formControlName="codigo"
                 name="codigo"
                 type="text"

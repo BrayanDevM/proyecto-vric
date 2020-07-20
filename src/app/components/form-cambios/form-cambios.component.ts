@@ -111,6 +111,7 @@ export class FormCambiosComponent implements OnInit {
   // -----------------------------
   usuario: any;
   formCambio: FormGroup;
+  docReadOnly = false;
   creando = false;
   @Input() udsAsignadas: Uds[];
   beneficiarios: Beneficiario[];
@@ -176,11 +177,10 @@ export class FormCambiosComponent implements OnInit {
   }
 
   cambiarCodigoUds($event: any) {
-    this.formCambio.value.codigo = $event._id;
-    const index = this.udsAsignadas.findIndex(
+    const i = this.udsAsignadas.findIndex(
       (unidad: Uds) => unidad._id === $event._id
     );
-    this.codigoUdsSeleccionada = this.udsAsignadas[index].codigo;
+    this.formCambio.get('codigo').patchValue(this.udsAsignadas[i].codigo);
   }
 
   traerMadres($event: any) {
@@ -240,10 +240,7 @@ export class FormCambiosComponent implements OnInit {
     this.formCambio.value.respApellido2 = madre.apellido2;
     this.formCambio.value.respTipoDoc = madre.tipoDoc;
     this.formCambio.value.respDocumento = madre.documento;
-    this.formCambio.value.respNacimiento = moment(
-      madre.nacimiento,
-      'YYYY-MM-DD'
-    );
+    this.formCambio.value.respNacimiento = madre.nacimiento;
     this.formCambio.value.respSexo = madre.sexo;
     this.formCambio.value.respPaisNacimiento = madre.paisNacimiento;
     this.formCambio.value.respDptoNacimiento = madre.dptoNacimiento;
@@ -264,15 +261,11 @@ export class FormCambiosComponent implements OnInit {
    */
   comprobarSD($event: any) {
     if ($event.value === 'SD') {
-      const documentoAleatorio = this.generarDocumento(15);
-      this.formCambio.get('documento').setValue(documentoAleatorio);
-      this.formCambio.value.documento = documentoAleatorio;
-      this.formCambio.get('documento').disable();
-      // this.inputDocumento.nativeElement.value = documentoAleatorio;
-      this.formCambio.value.documento = documentoAleatorio;
+      this.formCambio.get('documento').patchValue(this.generarDocumento(15));
+      this.docReadOnly = true;
     } else {
       this.formCambio.get('documento').setValue('');
-      this.formCambio.get('documento').enable();
+      this.docReadOnly = false;
     }
   }
 
@@ -384,18 +377,21 @@ export class FormCambiosComponent implements OnInit {
           this.creando = true;
           this.beneficiarios$
             .crearBeneficiario(this.formCambio.value)
-            .subscribe((resp: any) => {
-              if (resp.ok) {
-                this.creando = false;
-                this.formCambio.reset();
-                alertSuccess.fire({
-                  title: 'Beneficiario reportado',
-                  text: 'Recuerda reportar el egreso de la Mujer Gestante'
-                });
-              } else {
-                this.creando = false;
-              }
-            });
+            .subscribe(
+              (resp: any) => {
+                if (resp.ok) {
+                  this.creando = false;
+                  this.formCambio.reset();
+                  alertSuccess.fire({
+                    title: 'Beneficiario reportado',
+                    text: 'Recuerda reportar el egreso de la Mujer Gestante'
+                  });
+                } else {
+                  this.creando = false;
+                }
+              },
+              error => (this.creando = false)
+            );
         }
       });
   }
