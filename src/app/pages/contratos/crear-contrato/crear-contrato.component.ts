@@ -6,6 +6,7 @@ import { ContratosService } from 'src/app/services/contratos.service';
 import { UdsService } from 'src/app/services/uds.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { NgOption } from '@ng-select/ng-select';
+import { alertSuccess, alertError } from 'src/app/helpers/swal2.config';
 declare var moment: any;
 
 @Component({
@@ -28,27 +29,28 @@ export class CrearContratoComponent implements OnInit {
   // Uds seleccionadas para mostrar en tabla
   UdsEnContrato: Uds[] = [];
   cargandoUdsDisponibles = false;
-  formActualizarContrato: FormGroup;
+  formContrato: FormGroup;
+  creando = false;
 
   constructor(
     public contrato$: ContratosService,
     public uds$: UdsService,
     private usuario$: UsuarioService,
     private fb: FormBuilder
-  ) {}
-
-  ngOnInit() {
-    this.obtenerUdsDisponibles();
-
-    this.formActualizarContrato = this.fb.group({
+  ) {
+    this.formContrato = this.fb.group({
       codigo: [null, Validators.required],
       cupos: [null, Validators.required],
       regional: [null, Validators.required],
       cz: [null, Validators.required],
       eas: [null, Validators.required],
       nit: [null, Validators.required],
-      activo: null
+      activo: true
     });
+  }
+
+  ngOnInit() {
+    this.obtenerUdsDisponibles();
   }
 
   obtenerUdsDisponibles() {
@@ -98,20 +100,38 @@ export class CrearContratoComponent implements OnInit {
   }
 
   crearContrato() {
+    this.creando = true;
+    if (this.formContrato.invalid) {
+      this.creando = false;
+      return;
+    }
     // Guardo datos en nueva variable, así no reemplaza las UDS en this.contrato para visualizar
     const contrato = new Contrato(
-      this.formActualizarContrato.value.codigo,
-      this.formActualizarContrato.value.cupos,
-      this.formActualizarContrato.value.eas,
-      this.formActualizarContrato.value.nit,
-      this.formActualizarContrato.value.regional,
-      this.formActualizarContrato.value.cz,
+      this.formContrato.value.codigo,
+      this.formContrato.value.cupos,
+      this.formContrato.value.eas,
+      this.formContrato.value.nit,
+      this.formContrato.value.regional,
+      this.formContrato.value.cz,
       this.usuario$.usuario._id,
       moment().format('DD/MM/YYYY'),
-      this.formActualizarContrato.value.activo,
-      this.IdUdsSeleccionadas,
-      this.contrato._id
+      this.formContrato.value.activo,
+      this.IdUdsSeleccionadas
     );
-    this.contrato$.crearContrato(contrato).subscribe();
+    this.contrato$.crearContrato(contrato).subscribe((resp: any) => {
+      if (resp.ok) {
+        alertSuccess.fire({
+          title: 'Contrato creado'
+        });
+        this.creando = false;
+        this.formContrato.reset();
+      } else {
+        alertError.fire({
+          title: 'Crear contrato',
+          text: 'No se ha podido crear el contrato, intentalo nuevamente'
+        });
+        this.creando = false;
+      }
+    });
   }
 }

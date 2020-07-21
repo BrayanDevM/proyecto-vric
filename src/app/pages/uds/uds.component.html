@@ -6,10 +6,14 @@
         <div class="card BDM_fadeInUp">
           <div class="card-body">
             <!------------------- Spiner cargando información ------------------->
-            <div *ngIf="cargando" class="d-flex justify-content-center">
-              <div class="spinner-border text-primary" role="status">
-                <span class="sr-only">Loading...</span>
-              </div>
+            <div class="content-placeholder" *ngIf="cargando">
+              <ngx-content-loading
+                [speed]="'600ms'"
+                [width]="220"
+                [preserveAspectRatio]="'none'"
+              >
+                <svg:g ngx-bullet-list-preset></svg:g>
+              </ngx-content-loading>
             </div>
             <!------------------- Imágen de datos vacíos ------------------->
             <div *ngIf="!cargando" class="row">
@@ -45,7 +49,7 @@
                         <th>Cupos</th>
                         <th>Estado</th>
                         <th>Arriendo</th>
-                        <th>Contrato asignado</th>
+                        <th>Responsable</th>
                         <th>Acciones</th>
                       </tr>
                     </thead>
@@ -77,13 +81,8 @@
                             >Sin arriendo</span
                           >
                         </td>
-                        <td>
-                          <span *ngIf="unidad.enContrato !== null">{{
-                            unidad.enContrato.codigo
-                          }}</span>
-                          <span *ngIf="unidad.enContrato === null"
-                            >No asignado</span
-                          >
+                        <td style="text-transform: capitalize;">
+                          {{ unidad.coordinador.nombre.toLowerCase() }}
                         </td>
                         <td class="text-right">
                           <button

@@ -2,7 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { UdsService } from 'src/app/services/uds.service';
 import { Uds } from 'src/app/models/uds.model';
 import { Router } from '@angular/router';
-import Swal from 'sweetalert2/src/sweetalert2.js';
+import {
+  alertDanger,
+  alertSuccess,
+  alertError
+} from 'src/app/helpers/swal2.config';
 
 @Component({
   selector: 'app-uds',
@@ -29,6 +33,7 @@ export class UdsComponent implements OnInit {
         this.registros = resp.registros;
       } else {
         this.cargando = false;
+        console.log(resp);
       }
     });
   }
@@ -38,27 +43,29 @@ export class UdsComponent implements OnInit {
   }
 
   eliminarUds(uds: Uds) {
-    Swal.fire({
-      title: 'Eliminar',
-      html: `¿Estás seguro que deseas eliminar a <b>${uds.nombre}</b>?, esta acción no puede deshacerse`,
-      icon: 'warning',
-      confirmButtonColor: '#f44234',
-      confirmButtonText: 'Sí, eliminar',
-      showCancelButton: true,
-      cancelButtonText: 'Cancelar'
-    }).then(result => {
-      if (result.value) {
-        this.uds$.eliminarUds(uds).subscribe((resp: any) => {
-          if (resp.ok === true) {
-            Swal.fire({
-              title: 'Eliminado',
-              text: 'Unidad de Servicio eliminada correctamente',
-              icon: 'success'
-            });
-            this.obtenerUds();
-          }
-        });
-      }
-    });
+    alertDanger
+      .fire({
+        title: 'Eliminar Unidad De Servicio',
+        html: `¿Estás seguro que deseas eliminar la Unidad De Servicio <b>${uds.nombre}</b>?, esta acción no puede deshacerse.`,
+        confirmButtonText: 'Estoy seguro, eliminar'
+      })
+      .then(result => {
+        if (result.value) {
+          this.uds$.eliminarUds(uds).subscribe((resp: any) => {
+            if (resp.ok === true) {
+              alertSuccess.fire({
+                title: 'Unidad De Sercicio eliminada'
+              });
+              this.obtenerUds();
+            } else {
+              alertError.fire({
+                title: 'Eliminar Unidad De Servicio',
+                text:
+                  'No se ha podido eliminar la Unidad De Servicio, intentalo nuevamente'
+              });
+            }
+          });
+        }
+      });
   }
 }

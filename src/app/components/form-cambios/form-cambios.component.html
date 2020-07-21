@@ -5,7 +5,7 @@
         <i class="fas fa-female mr-2"></i>Madre del beneficiario
       </h5>
       <div class="row">
-        <div class="col-xl-4">
+        <div class="col-lg-4 col-xl-3">
           <div class="form-group">
             <label for="udsId">Seleccionar UDS</label>
             <ng-select
@@ -21,7 +21,7 @@
             </ng-select>
           </div>
         </div>
-        <div class="col-xl-4">
+        <div class="col-lg-4 col-xl-3">
           <div class="form-group">
             <label for="beneficiarioId">Seleccionar Madre de bebé</label>
             <ng-select
@@ -54,7 +54,7 @@
           <i class="fas fa-clipboard-user mr-2"></i>Datos básicos
         </h5>
         <div class="row">
-          <div class="col-2">
+          <div class="col-lg-3 col-xl-2">
             <div class="form-group">
               <label for="tipoDoc">Tipo de documento</label>
               <ng-select
@@ -76,12 +76,13 @@
               </ng-select>
             </div>
           </div>
-          <div class="col-2">
+          <div class="col-lg-3 col-xl-2">
             <div class="form-group">
               <label for="documento">NUIP</label>
               <input
                 #documento
                 [ngModel]="formCambio.value.documento | documento"
+                [readOnly]="docReadOnly"
                 formControlName="documento"
                 name="documento"
                 type="text"
@@ -92,7 +93,7 @@
               />
             </div>
           </div>
-          <div class="col-2">
+          <div class="col-lg-3 col-xl-2">
             <div class="form-group">
               <label for="nombre1">Primer nombre</label>
               <input
@@ -106,7 +107,7 @@
               />
             </div>
           </div>
-          <div class="col-2">
+          <div class="col-lg-3 col-xl-2">
             <div class="form-group">
               <label for="nombre2">Segundo nombre</label>
               <input
@@ -119,7 +120,7 @@
               />
             </div>
           </div>
-          <div class="col-2">
+          <div class="col-lg-3 col-xl-2">
             <div class="form-group">
               <label for="apellido1">Primer apellido</label>
               <input
@@ -133,7 +134,7 @@
               />
             </div>
           </div>
-          <div class="col-2">
+          <div class="col-lg-3 col-xl-2">
             <div class="form-group">
               <label for="apellido2">Segundo apellido</label>
               <input
@@ -148,7 +149,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-2">
+          <div class="col-lg-3 col-xl-2">
             <div class="form-group">
               <label for="sexo">Sexo</label>
               <ng-select
@@ -168,7 +169,7 @@
               </ng-select>
             </div>
           </div>
-          <div class="col-2">
+          <div class="col-lg-3 col-xl-2">
             <div class="form-group">
               <label class="label-control" for="nacimiento"
                 >Fecha nacimiento</label
@@ -182,7 +183,7 @@
               />
             </div>
           </div>
-          <div class="col-2">
+          <div class="col-lg-3 col-xl-2">
             <div class="form-group">
               <label for="paisNacimiento">País de nacimiento</label>
               <ng-select
@@ -199,7 +200,7 @@
               </ng-select>
             </div>
           </div>
-          <div class="col-2">
+          <div class="col-lg-3 col-xl-2">
             <div class="form-group">
               <label for="dptoNacimiento">Dpto. de nacimiento</label>
               <ng-select
@@ -216,7 +217,7 @@
               </ng-select>
             </div>
           </div>
-          <div class="col-2">
+          <div class="col-lg-3 col-xl-2">
             <div class="form-group">
               <label for="municipioNacimiento">Municipio de nacimiento</label>
               <ng-select
@@ -232,7 +233,7 @@
               </ng-select>
             </div>
           </div>
-          <div class="col-2">
+          <div class="col-lg-3 col-xl-2">
             <div class="form-group">
               <label for="autorreconocimiento">Autorreconocimiento</label>
               <ng-select
@@ -248,9 +249,7 @@
               </ng-select>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-2">
+          <div class="col-lg-3 col-xl-2">
             <div class="form-group">
               <label for="discapacidad">Discapacidad</label>
               <ng-select
@@ -280,7 +279,7 @@
             <div class="card">
               <div class="card-body">
                 <div class="row">
-                  <div class="col-5">
+                  <div class="col-lg-6 col-xl-5">
                     <ul class="list-unstyled">
                       <li>
                         <b>Nombre completo: </b>
@@ -301,7 +300,7 @@
                       </li>
                     </ul>
                   </div>
-                  <div class="col-3">
+                  <div class="col-lg-2 col-xl-3">
                     <ul class="list-unstyled">
                       <li>
                         <b>{{ madreSeleccionada.tipoDoc }}: </b>
@@ -313,7 +312,7 @@
                       </li>
                     </ul>
                   </div>
-                  <div class="col-4">
+                  <div class="col-lg-4 col-xl-4">
                     <ul class="list-unstyled">
                       <li>
                         <b>Dirección: </b>
@@ -345,11 +344,10 @@
           <i class="fas fa-address-book mr-2"></i>Datos de ingreso
         </h5>
         <div class="row">
-          <div class="col-2">
+          <div class="col-lg-3 col-xl-2">
             <div class="form-group">
               <label for="codigo">Código UDS</label>
               <input
-                [ngModel]="codigoUdsSeleccionada"
                 formControlName="codigo"
                 name="codigo"
                 type="text"
@@ -359,7 +357,7 @@
               />
             </div>
           </div>
-          <div class="col-2">
+          <div class="col-lg-4 col-xl-2">
             <div class="form-group">
               <label for="udsId">Unidad De Servicio</label>
               <ng-select
@@ -375,7 +373,7 @@
               </ng-select>
             </div>
           </div>
-          <div class="col-2">
+          <div class="col-lg-3 col-xl-2">
             <div class="form-group">
               <label class="label-control" for="ingreso"
                 >Fecha de ingreso</label
@@ -390,7 +388,7 @@
               />
             </div>
           </div>
-          <div class="col-2">
+          <div class="col-lg-4 col-xl-2">
             <div class="form-group">
               <label for="comentario">Comentario (opcional)</label>
               <input
@@ -406,9 +404,22 @@
     </div>
     <div class="row">
       <div class="col-12 text-right">
-        <button type="submit" class="btn btn-success btn-sm">
+        <button *ngIf="!creando" type="submit" class="btn btn-success btn-sm">
           <i class="fas fa-user-plus mr-1"></i>
           Reportar ingreso
+        </button>
+        <button
+          *ngIf="creando"
+          [disabled]="creando"
+          type="submit"
+          class="btn btn-success btn-sm"
+        >
+          <span
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Reportando...
         </button>
       </div>
     </div>

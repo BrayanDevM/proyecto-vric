@@ -11,7 +11,7 @@ import { SidebarService } from 'src/app/services/sidebar.service';
 })
 export class HeaderComponent implements OnInit {
   usuario: Usuario;
-  sidebarOpen = true;
+  sidebarMin = false;
 
   constructor(
     private sidebar$: SidebarService,
@@ -21,7 +21,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.usuario = this.usuario$.usuario;
-    this.sidebar$.minimizarMenu(this.sidebarOpen);
+    this.sidebar$.minimizarMenu(this.sidebarMin);
   }
 
   logout() {
@@ -33,7 +33,7 @@ export class HeaderComponent implements OnInit {
   }
 
   minimizarSidebar() {
-    this.sidebarOpen = !this.sidebarOpen;
-    this.sidebar$.minimizarMenu(this.sidebarOpen);
+    this.sidebarMin = !this.sidebarMin;
+    this.sidebar$.minimizarMenu(this.sidebarMin);
   }
 }

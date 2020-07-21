@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ContratosService } from 'src/app/services/contratos.service';
 import { Contrato } from 'src/app/models/contrato.model';
-import Swal from 'sweetalert2/src/sweetalert2.js';
+import {
+  alertDanger,
+  alertSuccess,
+  alertError
+} from 'src/app/helpers/swal2.config';
 import { Router } from '@angular/router';
 
 @Component({
@@ -36,25 +40,29 @@ export class ContratosComponent implements OnInit {
   }
 
   eliminarContrato(contrato: Contrato) {
-    Swal.fire({
-      title: 'Eliminar',
-      html: `¿Estás seguro que deseas eliminar el contrato <b>${contrato.codigo}</b>?, esta acción no puede deshacerse`,
-      icon: 'warning',
-      confirmButtonColor: '#f44234',
-      confirmButtonText: 'Sí, eliminar',
-      showCancelButton: true,
-      cancelButtonText: 'Cancelar'
-    }).then(result => {
-      if (result.value) {
-        this.contratos$.eliminarContrato(contrato).subscribe(() => {
-          Swal.fire({
-            title: 'Eliminado',
-            text: 'El contrato ha sido eliminado',
-            icon: 'success'
+    alertDanger
+      .fire({
+        title: 'Eliminar contrato',
+        html: `¿Estás seguro que deseas eliminar el contrato <b>${contrato.codigo}</b>?, esta acción no puede deshacerse`,
+        confirmButtonText: 'Estoy seguro, eliminar'
+      })
+      .then(result => {
+        if (result.value) {
+          this.contratos$.eliminarContrato(contrato).subscribe((resp: any) => {
+            if (resp.ok) {
+              this.obtenerContratos();
+              alertSuccess.fire({
+                title: 'Contrato eliminado'
+              });
+            } else {
+              alertError.fire({
+                title: 'Eliminar contrato',
+                text:
+                  'No se ha podido eliminar el contrato, intentalo nuevamente'
+              });
+            }
           });
-          this.obtenerContratos();
-        });
-      }
-    });
+        }
+      });
   }
 }

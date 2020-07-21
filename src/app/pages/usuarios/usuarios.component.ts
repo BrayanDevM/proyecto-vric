@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { Contrato } from 'src/app/models/contrato.model';
 import { ContratosService } from 'src/app/services/contratos.service';
 import { NgOption } from '@ng-select/ng-select';
+import { alertError } from 'src/app/helpers/swal2.config';
 declare var jQuery: any;
 
 @Component({
@@ -87,10 +88,8 @@ export class UsuariosComponent implements OnInit {
 
   eliminarUsuario(usuario: Usuario) {
     if (usuario._id === this.ususarios$.usuario._id) {
-      Swal.fire({
-        title: 'Usuario',
-        html: `No puedes eliminarte a ti mismo.`,
-        icon: 'error'
+      alertError.fire({
+        title: 'No puedes eliminarte a ti mismo'
       });
       return;
     }

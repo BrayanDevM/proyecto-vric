@@ -36,7 +36,7 @@ input.form-control::placeholder {
 
 .app-sidebar {
   width: 260px;
-  background-color: rgb(68, 68, 68);
+  background-color: #fff;
   height: 100%;
   transition: all 0.2s ease;
 }
@@ -46,10 +46,99 @@ input.form-control::placeholder {
   /* transform: translateX(-260px); */
 }
 
-/***************************** ESTILOS SIDEBAR **************************************/
-/************************************************************************************/
+.content-placeholder {
+  width: 300px;
+  height: 150px;
+  margin: 1rem auto;
+}
 
-/*************************** FIN ESTILOS SIDEBAR ************************************/
+/*************************** ESTILOS SweetAlert2 ************************************/
+/************************************************************************************/
+.swal2-popup {
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+
+.swal2-popup .swal2-timer-progress-bar {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.swal2-icon-warning .swal2-header,
+.swal2-icon-error .swal2-header {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 0.8rem;
+}
+
+.swal2-icon-warning .swal2-header .swal2-icon,
+.swal2-icon-error .swal2-header .swal2-icon {
+  display: flex;
+  margin: 0;
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+  margin-right: 0.5rem;
+  font-weight: bold;
+}
+
+.swal2-icon-error .swal2-icon.swal2-error [class^='swal2-x-mark-line'] {
+  top: 0.6125em;
+  width: 1em;
+  height: 0.1125em;
+}
+
+.swal2-icon-error .swal2-header .swal2-icon .swal2-x-mark-line-left {
+  left: 0.2625em !important;
+}
+.swal2-icon-error .swal2-header .swal2-icon .swal2-x-mark-line-right {
+  right: 0.2625em !important;
+}
+
+.swal2-icon-warning .swal2-header .swal2-icon > .swal2-icon-content,
+.swal2-icon-error .swal2-header .swal2-icon > .swal2-icon-content {
+  display: flex;
+  align-items: center;
+  font-size: 1.35em;
+}
+
+.swal2-icon-warning .swal2-title,
+.swal2-icon-error .swal2-title {
+  font-weight: 500;
+  font-size: 1.5rem;
+  margin-bottom: 0;
+}
+
+.swal2-icon-warning .swal2-content,
+.swal2-icon-error .swal2-content {
+  text-align: left;
+  padding-bottom: 1rem;
+  padding-left: 2rem;
+}
+
+.swal2-popup .swal2-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.swal2-popup .swal2-actions button:first-child {
+  margin-right: 0.8rem;
+}
+
+.swal2-icon-warning .swal2-header .swal2-icon,
+.swal2-icon-error .swal2-header .swal2-title {
+  color: #dc3546;
+  border-color: #dc3546;
+}
+
+.swal2-icon-success .swal2-header .swal2-icon {
+  margin: 0.8rem 0;
+}
+
+.swal2-icon-success .swal2-title {
+  font-weight: 300;
+  margin-bottom: 0.5rem;
+}
+/************************* FIN ESTILOS SweetAlert2 **********************************/
 /************************************************************************************/
 
 .app-pages {
@@ -66,7 +155,7 @@ input.form-control::placeholder {
 .option-menu {
   margin-top: -9.6px;
   margin-bottom: -9.6px;
-  margin-left: -27px;
+  margin-left: -28px;
   background-color: #f1f1f1;
   height: 56px;
   width: 56px;
@@ -196,14 +285,11 @@ input.form-control::placeholder {
   padding: 4.6px;
 }
 
-.sidebar > .logo {
-  background-image: url('./assets/img/Logo.svg');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  margin: 0 1rem 0;
-  padding-bottom: 4.5rem;
-  border-bottom: 1px solid #eee;
+.sidebar .logo {
+  height: 56px;
+  line-height: 56px;
+  padding: 0 1rem;
+  background-color: #fafafa;
 }
 
 .navbar .logo {
@@ -328,6 +414,18 @@ input.form-control::placeholder {
   border-bottom-color: hsl(0, 0%, 28%);
 }
 
+.ng-select .ng-select-container {
+  font-size: 1rem;
+}
+
+.ng-select .ng-select-container {
+  min-height: 33px;
+}
+
+.form-control {
+  min-height: 33px;
+}
+
 /* defines the animation */
 .BDM_fadeInUp {
   opacity: 0;
@@ -361,16 +459,39 @@ input.form-control::placeholder {
   }
 }
 
-@media screen and (max-width: 1280px) {
+@media screen and (max-width: 1024px) {
   html {
     font-size: 12px;
   }
 
+  .option-menu {
+    margin-left: -24px;
+  }
+
+  .app-sidebar,
+  .sidebar,
+  .sidebar .sidebar-wrapper {
+    width: 200px !important;
+  }
+
+  .sidebar .nav {
+    margin-top: 10px !important;
+  }
+
+  .sidebar .nav .nav-link {
+    padding: 0.5rem 1rem !important;
+  }
+
   .sidebar > .logo {
-    margin: 0 1rem 1rem;
-    padding-bottom: 3.5rem;
-    padding-top: 1rem;
-    background-size: 80%;
+    padding: 0 1rem;
+    height: 56px;
+    text-align: center;
+    background-color: #fbfbfb;
+    line-height: 56px;
+  }
+
+  .app-sidebar-min {
+    margin-left: -200px;
   }
 
   .card-graphic-info .graphic-number {

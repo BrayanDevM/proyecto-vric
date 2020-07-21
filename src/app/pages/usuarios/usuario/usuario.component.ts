@@ -6,6 +6,7 @@ import { Contrato } from 'src/app/models/contrato.model';
 import { Usuario } from 'src/app/models/usuario.model';
 import { NgOption } from '@ng-select/ng-select';
 import Swal from 'sweetalert2';
+import { alertError, alertSuccess } from 'src/app/helpers/swal2.config';
 
 @Component({
   selector: 'app-usuario',
@@ -31,49 +32,66 @@ export class UsuarioComponent implements OnInit {
     { value: 'DOCENTE', label: 'Docente', icon: 'fas fa-user text-secondary' }
   ];
   // ---------------------
-  cargando = false;
+  actualizando = false;
 
   constructor(
     private rutaActual: ActivatedRoute,
     private contrato$: ContratosService,
     private usuarios$: UsuarioService,
     private router: Router
-  ) {
-    this.obtenerUsuario();
-  }
+  ) {}
 
   ngOnInit(): void {
+    this.obtenerUsuario();
     this.obtenerContratos();
   }
 
   obtenerUsuario() {
-    this.rutaActual.params.subscribe((resp: Params) => {
-      this.usuarios$.obtenerUsuario(resp.id).subscribe((usuario: any) => {
-        this.usuario = usuario.usuario;
-        this.usuario.password = null;
+    this.rutaActual.params.subscribe((params: Params) => {
+      this.usuarios$.obtenerUsuario(params.id).subscribe((resp: any) => {
+        if (resp.ok) {
+          this.usuario = resp.usuario;
+          this.usuario.password = null;
+        } else {
+          alertError.fire({
+            title: 'Usuario',
+            text:
+              'No se ha podido obtener la información, intentalo nuevamente.'
+          });
+        }
       });
     });
   }
 
   obtenerContratos() {
     this.contrato$.obtenerContratos().subscribe((resp: any) => {
-      this.contratosDisponibles = resp.contratos;
+      if (resp.ok) {
+        this.contratosDisponibles = resp.contratos;
+      } else {
+        alertError.fire({
+          title: 'Usuario',
+          text: 'No se han podido obtener los contratos para asignar a usuario.'
+        });
+      }
     });
   }
 
   actualizarUsuario() {
-    this.cargando = true;
+    this.actualizando = true;
     this.usuarios$.actualizarUsuario(this.usuario).subscribe((resp: any) => {
       if (resp.ok) {
-        this.cargando = false;
-        Swal.fire(
-          'Usuario actualizado',
-          `Usuario ${this.usuario.nombre} actualizado correctamente`,
-          'success'
-        );
+        this.actualizando = false;
+        alertSuccess.fire({
+          title: 'Usuario',
+          html: `Usuario ${this.usuario.nombre} actualizado correctamente`
+        });
         this.router.navigate(['/usuarios']);
       } else {
-        this.cargando = false;
+        this.actualizando = false;
+        alertError.fire({
+          title: 'Usuario',
+          text: 'No se ha podido actualizar al usuario, intentalo nuevamente'
+        });
       }
     });
   }

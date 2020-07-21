@@ -5,6 +5,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { UdsService } from 'src/app/services/uds.service';
 import { NgOption } from '@ng-select/ng-select';
+import { alertSuccess } from 'src/app/helpers/swal2.config';
 declare function moment(): any;
 
 @Component({
@@ -27,21 +28,14 @@ export class CrearUdsComponent implements OnInit {
   docentes: Usuario[];
   cargandoDocentes = false;
   docentesEnUds: [string, string];
-  cargando = false;
+  creando = false;
   formCrearUds: FormGroup;
 
   constructor(
     private usuarios$: UsuarioService,
     private uds$: UdsService,
     private fb: FormBuilder
-  ) {}
-
-  ngOnInit() {
-    // Obtener datos
-    this.obtenerDocentes();
-    this.obtenerCoordinadores();
-    this.obtenerGestores();
-
+  ) {
     // Intancio nuevo formulario
     this.formCrearUds = this.fb.group({
       codigo: [null, Validators.required],
@@ -54,6 +48,13 @@ export class CrearUdsComponent implements OnInit {
       creadoEl: null,
       arriendo: null
     });
+  }
+
+  ngOnInit() {
+    // Obtener datos
+    this.obtenerDocentes();
+    this.obtenerCoordinadores();
+    this.obtenerGestores();
   }
 
   obtenerDocentes() {
@@ -116,10 +117,11 @@ export class CrearUdsComponent implements OnInit {
   }
 
   crear() {
+    this.creando = true;
     if (this.formCrearUds.invalid) {
+      this.creando = false;
       return;
     }
-    this.cargando = true;
     this.uds = new Uds(
       this.formCrearUds.value.codigo,
       this.formCrearUds.value.cupos,
@@ -136,10 +138,13 @@ export class CrearUdsComponent implements OnInit {
     );
     this.uds$.crearUds(this.uds).subscribe((resp: any) => {
       if (resp.ok) {
-        this.cargando = false;
+        this.creando = false;
+        alertSuccess.fire({
+          title: 'Unidad de Servicio creada'
+        });
         this.formCrearUds.reset();
       } else {
-        this.cargando = false;
+        this.creando = false;
       }
     });
   }

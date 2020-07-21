@@ -107,6 +107,10 @@ export class LineChartComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
+    this.actualizarConfPadre();
+  }
+
+  actualizarConfPadre() {
     if (this.lineChart) {
       this.lineChartData[0].data = this.egresos;
       this.lineChartData[1].data = this.ingresos;

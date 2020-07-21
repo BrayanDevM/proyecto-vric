@@ -7,7 +7,7 @@
           <div class="card-header">
             Detalles de Unidad de Servicio
           </div>
-          <div *ngIf="uds != null" class="card-body ">
+          <div class="card-body ">
             <form
               ngNativeValidate
               [formGroup]="formActualizarUds"
@@ -18,7 +18,6 @@
                   <div class="form-group">
                     <label for="codigo">Código</label>
                     <input
-                      [ngModel]="uds.codigo"
                       formControlName="codigo"
                       name="codigo"
                       type="number"
@@ -35,7 +34,6 @@
                   <div class="form-group">
                     <label for="nombre">Nombre</label>
                     <input
-                      [ngModel]="uds.nombre"
                       formControlName="nombre"
                       name="nombre"
                       type="text"
@@ -50,7 +48,6 @@
                   <div class="form-group">
                     <label for="cupos">Cupos</label>
                     <input
-                      [ngModel]="uds.cupos"
                       formControlName="cupos"
                       name="cupos"
                       type="number"
@@ -63,7 +60,6 @@
                   <div class="form-group">
                     <label for="ubicacion">Ubicación</label>
                     <input
-                      [ngModel]="uds.ubicacion"
                       formControlName="ubicacion"
                       name="ubicacion"
                       type="text"
@@ -76,7 +72,6 @@
                   <div class="form-group">
                     <label for="creadoEl">Creada el</label>
                     <input
-                      [ngModel]="uds.creadoEl"
                       formControlName="creadoEl"
                       name="creadoEl"
                       type="date"
@@ -95,7 +90,6 @@
                       bindLabel="label"
                       placeholder="Seleccionar"
                       [searchable]="false"
-                      [(ngModel)]="uds.arriendo"
                       formControlName="arriendo"
                       name="arriendo"
                     ></ng-select>
@@ -112,7 +106,6 @@
                       bindLabel="nombre"
                       placeholder="Seleccionar coordinador"
                       [loading]="cargandoCoords"
-                      [(ngModel)]="uds.coordinador._id"
                       formControlName="coordinador"
                       name="coordinador"
                     ></ng-select>
@@ -127,7 +120,6 @@
                       bindLabel="nombre"
                       placeholder="Seleccionar gestor"
                       [loading]="cargandoGestores"
-                      [(ngModel)]="uds.gestor._id"
                       formControlName="gestor"
                       name="gestor"
                     ></ng-select>
@@ -142,11 +134,10 @@
                       bindLabel="nombre"
                       placeholder="Seleccionar docentes"
                       [multiple]="true"
+                      [loading]="cargandoDocentes"
+                      [maxSelectedItems]="2"
                       [hideSelected]="true"
                       [closeOnSelect]="false"
-                      [maxSelectedItems]="2"
-                      [loading]="cargandoDocentes"
-                      [(ngModel)]="docentesEnUds"
                       formControlName="docentes"
                       name="docentes"
                     ></ng-select>
@@ -161,7 +152,6 @@
                       bindLabel="label"
                       placeholder="Seleccionar estado"
                       [searchable]="false"
-                      [(ngModel)]="uds.activa"
                       formControlName="activa"
                       name="activa"
                     ></ng-select>
@@ -170,11 +160,11 @@
               </div>
               <div class="row">
                 <div class="col-12">
-                  <span class="text-muted"
+                  <span *ngIf="uds" class="text-muted"
                     >UDS creada por: {{ uds.creadoPor.nombre }}</span
                   >
                   <br />
-                  <span class="text-muted">
+                  <span *ngIf="uds" class="text-muted">
                     Contrato asignado:
                     <span *ngIf="uds.enContrato === null">No asignado</span>
                     <span *ngIf="uds.enContrato !== null">
@@ -186,7 +176,7 @@
               <div class="row">
                 <div class="col-12 text-right">
                   <button
-                    *ngIf="!cargando"
+                    *ngIf="!actualizando"
                     type="submit"
                     class="btn btn-success btn-sm"
                   >
@@ -194,12 +184,17 @@
                     Actualizar
                   </button>
                   <button
-                    *ngIf="cargando"
-                    type="submit"
+                    *ngIf="actualizando"
+                    [disabled]="actualizando"
+                    type="button"
                     class="btn btn-success btn-sm"
                   >
-                    <i class="far fa-sync fa-spin"></i>
-                    Actualizando
+                    <span
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Actualizando...
                   </button>
                 </div>
               </div>

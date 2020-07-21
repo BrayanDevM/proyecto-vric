@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+// content-loader
+import { NgxContentLoadingModule } from 'ngx-content-loading';
+
 // Módulos externos
 import { ComponentsModule } from '../components/components.module';
 
@@ -22,7 +25,6 @@ import { ContratoComponent } from './contratos/contrato/contrato.component';
 import { UnidadComponent } from './uds/unidad/unidad.component';
 import { CrearUdsComponent } from './uds/crear-uds/crear-uds.component';
 import { CrearContratoComponent } from './contratos/crear-contrato/crear-contrato.component';
-import { DocumentoPipe } from '../pipes/documento.pipe';
 import { MisBeneficiariosComponent } from './beneficiarios/mis-beneficiarios/mis-beneficiarios.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { CrearUsuarioComponent } from './usuarios/crear-usuario/crear-usuario.component';
@@ -55,7 +57,8 @@ import { UsuarioComponent } from './usuarios/usuario/usuario.component';
     ComponentsModule,
     NgSelectModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxContentLoadingModule
   ],
   exports: []
 })

@@ -35,6 +35,12 @@ export class BeneficiariosService {
     return this.http.get(this.API_URL + `/${id}?token=${this.token}`);
   }
 
+  obtenerBeneficiariosPorEstado(estado: string) {
+    return this.http.get(
+      this.API_URL + `/estado/${estado}?token=${this.token}`
+    );
+  }
+
   crearBeneficiario(form: any) {
     return this.http.post(this.API_URL + `?token=${this.token}`, form).pipe(
       map((resp: any) => {

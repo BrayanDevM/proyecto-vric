@@ -14,7 +14,7 @@
                     <i class="material-icons">explore</i> Explorar
                   </h5>
                   <div class="row">
-                    <div class="col-3">
+                    <div class="col-lg-4 col-xl-2">
                       <div class="form-group">
                         <label for="unidad">Filtrar por UDS</label>
                         <ng-select
@@ -29,10 +29,11 @@
                         ></ng-select>
                       </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col-lg-4 col-xl-2">
                       <div class="form-group">
                         <label for="unidad">Filtrar por estado</label>
                         <ng-select
+                          #selectEstado
                           [items]="estados"
                           bindValue="value"
                           bindLabel="label"
@@ -62,152 +63,144 @@
           </div>
         </div>
       </div>
-      <div
-        *ngIf="cargandoListado; else beneficiarios"
-        class="spinner-border text-primary d-flex justify-content-center"
-        role="status"
-      >
-        <span class="sr-only">Loading...</span>
+      <!------------------------------------------------------------------------------->
+      <!------------------------ Tabla de beneficiarios Pendientes ------------------------>
+      <div *ngIf="mostrarPorUds" class="row">
+        <div class="col-12">
+          <div class="card mb-4">
+            <h5 class="card-header bg-warning text-white">
+              Beneficiarios pendientes
+            </h5>
+            <div class="card-body">
+              <h6
+                *ngIf="beneficiariosPendientes.length === 0; else pendientes"
+                class="text-center text-muted"
+              >
+                No tienes nada pendiente
+              </h6>
+              <!-- <h5 class="card-title">Special title treatment</h5> -->
+              <ng-template #pendientes>
+                <app-tabla-beneficiarios
+                  [beneficiarios]="beneficiariosPendientes"
+                  (realizoCambios)="actualizarListado($event)"
+                  (beneficiarioInfo)="verInfoBeneficiario($event)"
+                ></app-tabla-beneficiarios>
+              </ng-template>
+            </div>
+          </div>
+        </div>
       </div>
-      <ng-template #beneficiarios>
-        <!------------------------------------------------------------------------------->
-        <!------------------------ Tabla de beneficiarios Pendientes ------------------------>
-        <div *ngIf="mostrarPorUds" class="row">
-          <div class="col-12">
-            <div class="card mb-4">
-              <h5 class="card-header bg-warning text-white">
-                Beneficiarios pendientes
-              </h5>
-              <div class="card-body">
-                <h6
-                  *ngIf="beneficiariosPendientes.length === 0; else pendientes"
-                  class="text-center text-muted"
-                >
-                  No tienes nada pendiente
-                </h6>
-                <!-- <h5 class="card-title">Special title treatment</h5> -->
-                <ng-template #pendientes>
-                  <app-tabla-beneficiarios
-                    [beneficiarios]="beneficiariosPendientes"
-                    (realizoCambios)="actualizarListado($event)"
-                    (beneficiarioInfo)="verInfoBeneficiario($event)"
-                  ></app-tabla-beneficiarios>
-                </ng-template>
-              </div>
+      <!------------------------------------------------------------------------------->
+      <!------------------------ Tabla de beneficiarios con DS ------------------------>
+      <div *ngIf="mostrarPorUds" class="row">
+        <div class="col-12">
+          <div class="card mb-4">
+            <h5 class="card-header bg-info text-white">
+              Beneficiarios con datos sensibles
+            </h5>
+            <div class="card-body">
+              <h6
+                *ngIf="beneficiariosDS.length === 0; else DatosSensibles"
+                class="text-center text-muted"
+              >
+                No tienes datos sensibles
+              </h6>
+              <!-- <h5 class="card-title">Special title treatment</h5> -->
+              <ng-template #DatosSensibles>
+                <app-tabla-beneficiarios
+                  [beneficiarios]="beneficiariosDS"
+                  (realizoCambios)="actualizarListado($event)"
+                  (beneficiarioInfo)="verInfoBeneficiario($event)"
+                ></app-tabla-beneficiarios>
+              </ng-template>
             </div>
           </div>
         </div>
-        <!------------------------------------------------------------------------------->
-        <!------------------------ Tabla de beneficiarios con DS ------------------------>
-        <div *ngIf="mostrarPorUds" class="row">
-          <div class="col-12">
-            <div class="card mb-4">
-              <h5 class="card-header bg-info text-white">
-                Beneficiarios con datos sensibles
-              </h5>
-              <div class="card-body">
-                <h6
-                  *ngIf="beneficiariosDS.length === 0; else DatosSensibles"
-                  class="text-center text-muted"
-                >
-                  No tienes datos sensibles
-                </h6>
-                <!-- <h5 class="card-title">Special title treatment</h5> -->
-                <ng-template #DatosSensibles>
-                  <app-tabla-beneficiarios
-                    [beneficiarios]="beneficiariosDS"
-                    (realizoCambios)="actualizarListado($event)"
-                    (beneficiarioInfo)="verInfoBeneficiario($event)"
-                  ></app-tabla-beneficiarios>
-                </ng-template>
-              </div>
+      </div>
+      <!------------------------------------------------------------------------------->
+      <!---------------------- Tabla de beneficiarios vinculados ---------------------->
+      <div *ngIf="mostrarPorUds" class="row">
+        <div class="col-12">
+          <div class="card mb-4">
+            <h5 class="card-header bg-success text-white">
+              Beneficiarios Vinculados
+            </h5>
+            <div class="card-body">
+              <h6
+                *ngIf="beneficiariosVinculados.length === 0; else vinculados"
+                class="text-center text-muted"
+              >
+                No tienes beneficiarios vinculados
+              </h6>
+              <!-- <h5 class="card-title">Special title treatment</h5> -->
+              <ng-template #vinculados>
+                <app-tabla-beneficiarios
+                  [beneficiarios]="beneficiariosVinculados"
+                  (realizoCambios)="actualizarListado($event)"
+                  (beneficiarioInfo)="verInfoBeneficiario($event)"
+                ></app-tabla-beneficiarios>
+              </ng-template>
             </div>
           </div>
         </div>
-        <!------------------------------------------------------------------------------->
-        <!---------------------- Tabla de beneficiarios vinculados ---------------------->
-        <div *ngIf="mostrarPorUds" class="row">
-          <div class="col-12">
-            <div class="card mb-4">
-              <h5 class="card-header bg-success text-white">
-                Beneficiarios Vinculados
-              </h5>
-              <div class="card-body">
-                <h6
-                  *ngIf="beneficiariosVinculados.length === 0; else vinculados"
-                  class="text-center text-muted"
-                >
-                  No tienes beneficiarios vinculados
-                </h6>
-                <!-- <h5 class="card-title">Special title treatment</h5> -->
-                <ng-template #vinculados>
-                  <app-tabla-beneficiarios
-                    [beneficiarios]="beneficiariosVinculados"
-                    (realizoCambios)="actualizarListado($event)"
-                    (beneficiarioInfo)="verInfoBeneficiario($event)"
-                  ></app-tabla-beneficiarios>
-                </ng-template>
-              </div>
+      </div>
+      <!------------------------------------------------------------------------------->
+      <!--------------------- Tabla de beneficiarios desvinculados -------------------->
+      <div *ngIf="mostrarPorUds" class="row">
+        <div class="col-12">
+          <div class="card mb-4">
+            <h5 class="card-header bg-danger text-white">
+              Beneficiarios desvinculados
+            </h5>
+            <div class="card-body">
+              <h6
+                *ngIf="
+                  beneficiariosDesvinculados.length === 0;
+                  else desvinculados
+                "
+                class="text-center text-muted"
+              >
+                No tienes beneficiarios desvinculados
+              </h6>
+              <!-- <h5 class="card-title">Special title treatment</h5> -->
+              <ng-template #desvinculados>
+                <app-tabla-beneficiarios
+                  [beneficiarios]="beneficiariosDesvinculados"
+                  (realizoCambios)="actualizarListado($event)"
+                  (beneficiarioInfo)="verInfoBeneficiario($event)"
+                ></app-tabla-beneficiarios>
+              </ng-template>
             </div>
           </div>
         </div>
-        <!------------------------------------------------------------------------------->
-        <!--------------------- Tabla de beneficiarios desvinculados -------------------->
-        <div *ngIf="mostrarPorUds" class="row">
-          <div class="col-12">
-            <div class="card mb-4">
-              <h5 class="card-header bg-danger text-white">
-                Beneficiarios desvinculados
-              </h5>
-              <div class="card-body">
-                <h6
-                  *ngIf="
-                    beneficiariosDesvinculados.length === 0;
-                    else desvinculados
-                  "
-                  class="text-center text-muted"
-                >
-                  No tienes beneficiarios desvinculados
-                </h6>
-                <!-- <h5 class="card-title">Special title treatment</h5> -->
-                <ng-template #desvinculados>
-                  <app-tabla-beneficiarios
-                    [beneficiarios]="beneficiariosDesvinculados"
-                    (realizoCambios)="actualizarListado($event)"
-                    (beneficiarioInfo)="verInfoBeneficiario($event)"
-                  ></app-tabla-beneficiarios>
-                </ng-template>
-              </div>
+      </div>
+      <!------------------------------------------------------------------------------->
+      <!---------------------- Tabla de beneficiarios por estado ---------------------->
+      <div *ngIf="mostrarPorEstado" class="row BDM_fadeInUp">
+        <div class="col-12">
+          <div class="card mb-4">
+            <h5 class="card-header bg-primary text-white">
+              Filtro por estado
+              <small>({{ beneficiariosPorEstado.length }})</small>
+            </h5>
+            <div class="card-body">
+              <h6
+                *ngIf="beneficiariosPorEstado.length === 0; else porEstado"
+                class="text-center text-muted"
+              >
+                No tienes beneficiarios con el estado seleccionado
+              </h6>
+              <ng-template #porEstado>
+                <app-tabla-beneficiarios
+                  [beneficiarios]="beneficiariosPorEstado"
+                  (realizoCambios)="actualizarListado($event)"
+                  (beneficiarioInfo)="verInfoBeneficiario($event)"
+                ></app-tabla-beneficiarios>
+              </ng-template>
             </div>
           </div>
         </div>
-        <!------------------------------------------------------------------------------->
-        <!---------------------- Tabla de beneficiarios por estado ---------------------->
-        <div *ngIf="mostrarPorEstado" class="row">
-          <div class="col-12">
-            <div class="card mb-4">
-              <h5 class="card-header bg-primary text-white">
-                Filtro por estado
-              </h5>
-              <div class="card-body">
-                <h6
-                  *ngIf="beneficiariosPorEstado.length === 0; else porEstado"
-                  class="text-center text-muted"
-                >
-                  No tienes beneficiarios con el estado seleccionado
-                </h6>
-                <ng-template #porEstado>
-                  <app-tabla-beneficiarios
-                    [beneficiarios]="beneficiariosPorEstado"
-                    (realizoCambios)="actualizarListado($event)"
-                    (beneficiarioInfo)="verInfoBeneficiario($event)"
-                  ></app-tabla-beneficiarios>
-                </ng-template>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ng-template>
+      </div>
     </div>
   </div>
 </div>
