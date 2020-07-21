@@ -5,11 +5,14 @@
       <div class="col-12">
         <div class="card BDM_fadeInUp">
           <div class="card-body">
-            <!------------------- Spiner cargando información ------------------->
-            <div *ngIf="cargando" class="d-flex justify-content-center">
-              <div class="spinner-border text-primary" role="status">
-                <span class="sr-only">Cargando...</span>
-              </div>
+            <div class="content-placeholder" *ngIf="cargando">
+              <ngx-content-loading
+                [speed]="'600ms'"
+                [width]="220"
+                [preserveAspectRatio]="'none'"
+              >
+                <svg:g ngx-bullet-list-preset></svg:g>
+              </ngx-content-loading>
             </div>
             <div *ngIf="!cargando" class="row">
               <div class="col-12 text-right">

@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+// content-loader
+import { NgxContentLoadingModule } from 'ngx-content-loading';
+
 // Módulos externos
 import { ComponentsModule } from '../components/components.module';
 
@@ -54,7 +57,8 @@ import { UsuarioComponent } from './usuarios/usuario/usuario.component';
     ComponentsModule,
     NgSelectModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxContentLoadingModule
   ],
   exports: []
 })

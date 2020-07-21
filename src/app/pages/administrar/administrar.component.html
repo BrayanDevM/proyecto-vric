@@ -8,10 +8,14 @@
             Debuggin
           </div>
           <div class="card-body">
-            <div *ngIf="cargando" class="d-flex justify-content-center">
-              <div class="spinner-border text-primary" role="status">
-                <span class="sr-only">Loading...</span>
-              </div>
+            <div class="content-placeholder ml-0" *ngIf="cargando">
+              <ngx-content-loading
+                [speed]="'600ms'"
+                [width]="280"
+                [preserveAspectRatio]="'none'"
+              >
+                <svg:g ngx-code-preset></svg:g>
+              </ngx-content-loading>
             </div>
             <div
               *ngIf="!cargando && reportes.length === 0; else listaReportes"
