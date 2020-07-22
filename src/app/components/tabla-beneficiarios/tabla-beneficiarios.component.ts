@@ -33,7 +33,7 @@ export class TablaBeneficiariosComponent implements OnInit {
   ];
   // -----------------------------
 
-  @Input() beneficiarios = [];
+  @Input() beneficiarios: Beneficiario[] = [];
   @Output() realizoCambios: EventEmitter<boolean> = new EventEmitter();
   @Output() beneficiarioInfo: EventEmitter<Beneficiario> = new EventEmitter();
 
@@ -93,10 +93,8 @@ export class TablaBeneficiariosComponent implements OnInit {
     this.beneficiarios$
       .actualizarBeneficiario(beneficiario)
       .subscribe((resp: any) => {
-        Swal.fire({
-          title: 'Beneficiario actualizado',
-          text: 'Beneficiario actualizado correctamente',
-          icon: 'success'
+        alertSuccess.fire({
+          title: 'Beneficiario actualizado'
         });
         this.realizoCambios.emit(true);
       });

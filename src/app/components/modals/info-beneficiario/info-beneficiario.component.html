@@ -39,7 +39,7 @@
                 Sexo: {{ beneficiarioInfo.sexo }}
               </li>
               <li class="list-group-item">
-                <i class="fad fa-stethoscope"></i>
+                <i class="fad fa-wheelchair"></i>
                 Discapacidad:
                 <span *ngIf="beneficiarioInfo.discapacidad">Si</span
                 ><span *ngIf="!beneficiarioInfo.discapacidad">No</span>
@@ -47,6 +47,20 @@
               <li class="list-group-item">
                 <i class="fas fa-globe-americas"></i>
                 Autorreconocimiento: {{ beneficiarioInfo.autorreconocimiento }}
+              </li>
+              <li class="list-group-item">
+                <i class="fas fa-flag-alt"></i>
+                Lugar de nacimiento: <br />
+                {{ beneficiarioInfo.paisNacimiento }} -
+                {{ beneficiarioInfo.dptoNacimiento }},
+                {{ beneficiarioInfo.municipioNacimiento }}
+              </li>
+              <li class="list-group-item">
+                <i class="fas fa-user-check"></i>
+                Criterio de atención: <br />
+                {{ beneficiarioInfo.criterio }} ({{
+                  beneficiarioInfo.infoCriterio
+                }})
               </li>
             </ul>
           </div>
@@ -66,11 +80,19 @@
                 Estado: {{ beneficiarioInfo.estado }}
               </li>
               <li class="list-group-item">
-                <span *ngIf="beneficiarioInfo.estado !== 'Desvinculado'">
+                <span>
                   <i class="fad fa-calendar-check"></i>
                   Ingreso: {{ beneficiarioInfo.ingreso }}
                 </span>
-                <span *ngIf="beneficiarioInfo.estado === 'Desvinculado'">
+              </li>
+              <li
+                *ngIf="
+                  beneficiarioInfo.estado === 'Desvinculado' ||
+                  beneficiarioInfo.estado === 'Pendiente desvincular'
+                "
+                class="list-group-item"
+              >
+                <span>
                   <i class="fad fa-calendar-times"></i>
                   Egreso: {{ beneficiarioInfo.egreso }}
                 </span>

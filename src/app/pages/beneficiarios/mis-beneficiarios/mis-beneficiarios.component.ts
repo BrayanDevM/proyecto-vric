@@ -167,13 +167,9 @@ export class MisBeneficiariosComponent implements OnInit {
 
   actualizarListado(realizaCambio?: boolean) {
     if (realizaCambio) {
-      console.log('Realiza cambio, obvio si');
-
       if (this.mostrarPorEstado) {
-        console.log(this.mostrarPorEstado, 'estado?');
         this.traerBeneficiariosPorEstado(this.estadoSeleccionado);
       } else {
-        console.log(this.unidadSeleccionada, 'UDS?');
         this.traerBeneficiariosUds(this.unidadSeleccionada);
       }
     }

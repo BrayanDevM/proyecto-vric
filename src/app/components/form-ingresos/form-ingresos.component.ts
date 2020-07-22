@@ -447,11 +447,11 @@ export class FormIngresosComponent implements OnInit {
           this.iRespTipoResp.open();
         } else {
           this.respExiste = false;
-          this.despejarCamposResponsable();
+          // this.despejarCamposResponsable();
         }
       } else {
         this.respExiste = false;
-        this.despejarCamposResponsable();
+        // this.despejarCamposResponsable();
       }
     });
   }
