@@ -28,6 +28,7 @@ export class Beneficiario {
     public egreso?: string,
     public creadoEl?: string,
     public creadoPor?: any,
+    public motivoEgreso?: string,
     // tslint:disable-next-line: variable-name
     public _id?: string
   ) {}

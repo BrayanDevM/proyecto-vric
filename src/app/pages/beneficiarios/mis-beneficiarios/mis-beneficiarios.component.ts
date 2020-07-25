@@ -65,8 +65,14 @@ export class MisBeneficiariosComponent implements OnInit {
     this.cargandoUdsAsignadas = true;
     const arregloUds: Uds[] = [];
     let contador = 0;
+
+    if (this.usuario.uds.length === 0) {
+      this.cargandoUdsAsignadas = false;
+      return;
+    }
+
     this.usuario.uds.forEach(unidad => {
-      this.uds$.obtenerUnidad(unidad).subscribe((resp: any) => {
+      this.uds$.obtenerUnidadInfoCompleta(unidad).subscribe((resp: any) => {
         if (resp.ok) {
           arregloUds.push(resp.unidad);
           contador += 1;
@@ -102,7 +108,7 @@ export class MisBeneficiariosComponent implements OnInit {
     this.beneficiariosDesvinculados = [];
     // this.selectEstado.nativeElement.value = null;
     // Traemos y guaramos en arreglos
-    this.uds$.obtenerUnidad(id).subscribe((resp: any) => {
+    this.uds$.obtenerUnidadInfoCompleta(id).subscribe((resp: any) => {
       resp.unidad.beneficiarios.forEach((beneficiario: Beneficiario) => {
         switch (beneficiario.estado) {
           case 'Pendiente vincular':
@@ -111,7 +117,7 @@ export class MisBeneficiariosComponent implements OnInit {
           case 'Pendiente desvincular':
             this.beneficiariosPendientes.push(beneficiario);
             break;
-          case 'Dato Sensible':
+          case 'Dato sensible':
             this.beneficiariosDS.push(beneficiario);
             break;
           case 'Concurrencia':

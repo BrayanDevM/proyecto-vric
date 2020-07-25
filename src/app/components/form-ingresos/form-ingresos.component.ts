@@ -232,15 +232,19 @@ export class FormIngresosComponent implements OnInit {
     if (typeof pais !== 'string') {
       if (pais.value !== 'Colombia') {
         this.listaDepartamentos = [{ departamento: 'Extranjero' }];
+        this.formIngreso.get('autorreconocimiento').patchValue('Ninguno');
       } else {
         this.listaDepartamentos = listaDatosColombia;
+        this.formIngreso.get('autorreconocimiento').patchValue([]);
       }
     } else {
       // Sino, lo recibí de un select
       if (pais !== 'Colombia') {
         this.listaDepartamentos = [{ departamento: 'Extranjero' }];
+        this.formIngreso.get('autorreconocimiento').patchValue('Ninguno');
       } else {
         this.listaDepartamentos = listaDatosColombia;
+        this.formIngreso.get('autorreconocimiento').patchValue([]);
       }
     }
     // console.log(this.listaDepartamentos);

@@ -11,7 +11,7 @@
       <th class="text-center">Estado</th>
       <th>Ingreso</th>
       <th>Reportado</th>
-      <th>UDS</th>
+      <th *ngIf="puedeEditar">UDS</th>
       <th class="text-right">Acciones</th>
     </tr>
   </thead>
@@ -63,7 +63,7 @@
       </td>
       <td>{{ beneficiario.ingreso }}</td>
       <td>{{ beneficiario.creadoEl }}</td>
-      <td>{{ beneficiario.uds.nombre }}</td>
+      <td *ngIf="puedeEditar">{{ beneficiario.uds.nombre }}</td>
       <td class="text-right">
         <button
           *ngIf="puedeEditar"

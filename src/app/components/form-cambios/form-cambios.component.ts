@@ -187,7 +187,7 @@ export class FormCambiosComponent implements OnInit {
     this.cargandoBeneficiarios = true;
     this.beneficiarios = [];
     let contador = 0;
-    this.uds$.obtenerUnidad($event._id).subscribe((resp: any) => {
+    this.uds$.obtenerUnidadInfoCompleta($event._id).subscribe((resp: any) => {
       if (resp.ok) {
         const mujeresGestantesVinculadas = [];
         this.beneficiarios = resp.unidad.beneficiarios;
@@ -384,7 +384,8 @@ export class FormCambiosComponent implements OnInit {
                   this.formCambio.reset();
                   alertSuccess.fire({
                     title: 'Beneficiario reportado',
-                    text: 'Recuerda reportar el egreso de la Mujer Gestante'
+                    text: 'Recuerda reportar el egreso de la Mujer Gestante',
+                    timer: 4000
                   });
                 } else {
                   this.creando = false;

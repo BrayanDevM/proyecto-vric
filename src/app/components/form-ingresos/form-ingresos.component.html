@@ -561,6 +561,7 @@
               [items]="udsAsignadas"
               bindValue="_id"
               bindLabel="nombre"
+              [loading]="!udsAsignadas"
               placeholder="Seleccionar Unidad de Servicio"
               (change)="cambiarCodigoUds($event)"
               formControlName="udsId"

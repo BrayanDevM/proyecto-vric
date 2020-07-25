@@ -46,6 +46,12 @@ export class UdsService {
     return this.http.get(this.API_URL + `/unidad/${id}?token=${this.token}`);
   }
 
+  obtenerUnidadInfoCompleta(id: string) {
+    return this.http.get(
+      this.API_URL + `/unidad/datos/${id}?token=${this.token}`
+    );
+  }
+
   crearUds(uds: Uds) {
     return this.http.post(this.API_URL + `?token=${this.token}`, uds).pipe(
       map((resp: any) => {

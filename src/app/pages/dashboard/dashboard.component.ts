@@ -70,11 +70,19 @@ export class DashboardComponent implements OnInit {
   constructor(private uds$: UdsService, private ngxLoader: LoadingBarService) {}
 
   ngOnInit() {
-    this.obtenerDatosUds_Beneficiarios().then(() => {
+    const datosUdsLocal = localStorage.getItem('datosDashboard');
+    if (datosUdsLocal === null) {
+      this.obtenerDatosUds_Beneficiarios().then(() => {
+        this.contarCupos(this.datosUds);
+        this.obtenerDatosDeBeneficiarios(this.datosUds);
+        this.separarUds_municipios(this.datosUds);
+      });
+    } else {
+      this.datosUds = JSON.parse(localStorage.getItem('datosDashboard'));
       this.contarCupos(this.datosUds);
       this.obtenerDatosDeBeneficiarios(this.datosUds);
       this.separarUds_municipios(this.datosUds);
-    });
+    }
   }
 
   obtenerDatosUds_Beneficiarios(): Promise<boolean> {
@@ -83,6 +91,7 @@ export class DashboardComponent implements OnInit {
         if (resp.ok) {
           // console.log(resp);
           this.datosUds = resp.uds;
+          localStorage.setItem('datosDashboard', JSON.stringify(this.datosUds));
           resolve(true);
         } else {
           reject(false);

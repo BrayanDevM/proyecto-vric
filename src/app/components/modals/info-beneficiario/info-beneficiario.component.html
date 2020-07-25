@@ -79,7 +79,10 @@
                 <i class="fad fa-tag"></i>
                 Estado: {{ beneficiarioInfo.estado }}
               </li>
-              <li class="list-group-item">
+              <li
+                *ngIf="beneficiarioInfo.estado !== 'Desvinculado'"
+                class="list-group-item"
+              >
                 <span>
                   <i class="fad fa-calendar-check"></i>
                   Ingreso: {{ beneficiarioInfo.ingreso }}
@@ -95,6 +98,18 @@
                 <span>
                   <i class="fad fa-calendar-times"></i>
                   Egreso: {{ beneficiarioInfo.egreso }}
+                </span>
+              </li>
+              <li
+                *ngIf="
+                  beneficiarioInfo.estado === 'Desvinculado' ||
+                  beneficiarioInfo.estado === 'Pendiente desvincular'
+                "
+                class="list-group-item"
+              >
+                <span>
+                  <i class="fad fa-running"></i>
+                  Motivo de egreso: {{ beneficiarioInfo.motivoEgreso }}
                 </span>
               </li>
             </ul>

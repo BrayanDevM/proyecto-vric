@@ -6,6 +6,7 @@ import { UdsService } from 'src/app/services/uds.service';
 import Swal from 'sweetalert2/src/sweetalert2.js';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { NgOption } from '@ng-select/ng-select';
+import { alertConfirm } from 'src/app/helpers/swal2.config';
 declare var moment: any;
 
 @Component({
@@ -87,29 +88,27 @@ export class CrearUsuarioComponent implements OnInit {
       return;
     }
     this.formUsuario.value.creadoEl = moment().format('YYYY-MM-DD');
-    Swal.fire({
-      title: 'Usuario',
-      html: `¿Estas seguro de crear al usuario ${this.formUsuario.value.nombre}?`,
-      icon: 'warning',
-      showCancelButton: true,
-      // confirmButtonColor: '#3085d6',
-      // cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, crear'
-    }).then((result: any) => {
-      if (result.value) {
-        this.creandoUsuario = true;
-        this.usuarios$
-          .crearUsuario(this.formUsuario.value)
-          .subscribe((resp: any) => {
-            if (resp.ok) {
-              this.creandoUsuario = false;
-              this.formUsuario.reset();
-              // console.log('respuesta backend: ', resp);
-            } else {
-              this.creandoUsuario = false;
-            }
-          });
-      }
-    });
+    alertConfirm
+      .fire({
+        title: 'Usuarios',
+        html: `¿Estas seguro de crear al usuario ${this.formUsuario.value.nombre}?`,
+        confirmButtonText: 'Crear usuario'
+      })
+      .then((result: any) => {
+        if (result.value) {
+          this.creandoUsuario = true;
+          this.usuarios$
+            .crearUsuario(this.formUsuario.value)
+            .subscribe((resp: any) => {
+              if (resp.ok) {
+                this.creandoUsuario = false;
+                this.formUsuario.reset();
+                // console.log('respuesta backend: ', resp);
+              } else {
+                this.creandoUsuario = false;
+              }
+            });
+        }
+      });
   }
 }

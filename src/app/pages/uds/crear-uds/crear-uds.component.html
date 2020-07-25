@@ -167,5 +167,18 @@
         </div>
       </div>
     </div>
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="alert alert-danger">
+          Desde el back-end sólo se creará la UDS con los responsables, sin
+          embargo, no asigna la UDS a los responsables (buscar
+          uds.controller.js) ya que se debe asegurar que se registren todos y
+          realizar una sola petición, es decir, se realizó así en caso de que
+          otra persona aún no pueda asignar responsables y se debe asignar al
+          momento de editar la UDS, ya que esta petición si cuenta con la
+          asignación de usuarios.
+        </div>
+      </div>
+    </div>
   </div>
 </div>

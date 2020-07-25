@@ -14,6 +14,7 @@
               bindValue="_id"
               bindLabel="nombre"
               placeholder="Seleccionar Unidad de Servicio"
+              [loading]="!udsAsignadas"
               (change)="traerBeneficiarios($event)"
               formControlName="udsId"
               name="udsId"
@@ -35,6 +36,12 @@
               name="beneficiarioId"
               required
             >
+              <!-- item seleccionado (label) -->
+              <ng-template ng-label-tmp let-item="item">
+                {{ item.nombre1 }} {{ item.nombre2 }} {{ item.apellido1 }}
+                {{ item.apellido2 }}
+              </ng-template>
+              <!-- opciones -->
               <ng-template ng-option-tmp let-item="item">
                 {{ item.nombre1 }} {{ item.nombre2 }} {{ item.apellido1 }}
                 {{ item.apellido2 }}
@@ -42,7 +49,22 @@
             </ng-select>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <div class="col-lg-4 col-xl-3">
+          <div class="form-group">
+            <label for="motivo">Motivo de egreso</label>
+            <ng-select
+              [items]="motivosDeEgreso"
+              bindValue="value"
+              bindLabel="label"
+              placeholder="Seleccionar el motivo"
+              formControlName="motivo"
+              name="motivo"
+              required
+            >
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-lg-4 col-xl-2">
           <div class="form-group">
             <label for="egreso">Fecha de desvinculación</label>
             <input
@@ -58,9 +80,26 @@
       </div>
       <div class="row">
         <div class="col-12 text-right">
-          <button type="submit" class="btn btn-danger btn-sm">
+          <button
+            *ngIf="!actualizando"
+            type="submit"
+            class="btn btn-danger btn-sm"
+          >
             <i class="fas fa-user-times mr-1"></i>
             Reportar egreso
+          </button>
+          <button
+            *ngIf="actualizando"
+            [disabled]="actualizando"
+            type="button"
+            class="btn btn-danger btn-sm"
+          >
+            <span
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            Reportando...
           </button>
         </div>
       </div>

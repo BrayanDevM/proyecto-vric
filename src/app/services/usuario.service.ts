@@ -91,12 +91,9 @@ export class UsuarioService {
     this.token = '';
     this.usuario = null;
     this.menu = [];
-    this.cookie$.delete('token');
-    this.cookie$.delete('usuario');
-    this.cookie$.delete('menu');
-    // cookies desde el back-end para Google sign-in
-    this.cookie$.delete('express:sess.sig');
-    this.cookie$.delete('express:sess');
+    this.cookie$.deleteAll();
+    localStorage.removeItem('udsAsignadas');
+    localStorage.removeItem('datosDashboard');
     this.router.navigate(['/login']);
   }
 
