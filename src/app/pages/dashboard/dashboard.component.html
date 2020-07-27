@@ -164,34 +164,37 @@
           <div class="card card-body mb-1">
             <h5 class="card-title mb-0">Estado de atención en Dagua</h5>
           </div>
-          <ul class="list-group">
-            <li
+          <div class="list-group">
+            <a
               *ngFor="let unidad of udsDagua"
+              [routerLink]="['/dashboard/uds', unidad._id]"
+              class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
               class="list-group-item d-flex justify-content-between align-items-center"
             >
               {{ unidad.nombre }}
               <span class="badge badge-info">
                 {{ unidad.beneficiarios.length }}/{{ unidad.cupos }}
               </span>
-            </li>
-          </ul>
+            </a>
+          </div>
         </div>
         <!----------------- DATOS UNIDADES CALI ----------------->
         <div class="col-4">
           <div class="card card-body mb-1">
             <h5 class="card-title mb-0">Estado de atención en Cali</h5>
           </div>
-          <ul class="list-group">
-            <li
+          <div class="list-group">
+            <a
               *ngFor="let unidad of udsCali"
-              class="list-group-item d-flex justify-content-between align-items-center"
+              [routerLink]="['/dashboard/uds', unidad._id]"
+              class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
             >
               {{ unidad.nombre }}
               <span class="badge badge-info">
                 {{ unidad.beneficiarios.length }}/{{ unidad.cupos }}
               </span>
-            </li>
-          </ul>
+            </a>
+          </div>
         </div>
       </div>
     </div>

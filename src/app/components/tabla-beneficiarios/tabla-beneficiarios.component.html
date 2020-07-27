@@ -11,7 +11,7 @@
       <th class="text-center">Estado</th>
       <th>Ingreso</th>
       <th>Reportado</th>
-      <th *ngIf="puedeEditar">UDS</th>
+      <th *ngIf="!listarPorUds">UDS</th>
       <th class="text-right">Acciones</th>
     </tr>
   </thead>
@@ -30,7 +30,7 @@
             [ngClass]="{
               'badge-info': beneficiario.estado === 'Pendiente vincular',
               'badge-danger': beneficiario.estado === 'Pendiente desvincular',
-              'badge-warning': beneficiario.estado === 'Dato Sensible',
+              'badge-warning': beneficiario.estado === 'Dato sensible',
               'badge-secondary': beneficiario.estado === 'Concurrencia',
               'badge-success': beneficiario.estado === 'Vinculado',
               'badge-dark': beneficiario.estado === 'Desvinculado'
@@ -47,23 +47,10 @@
           placeholder="Seleccionar estado"
           [(ngModel)]="beneficiario.estado"
         ></ng-select>
-        <!-- <select
-          *ngIf="puedeEditar"
-          [(ngModel)]="beneficiario.estado"
-          class="form-control"
-          name="estado"
-        >
-          <option value="Pendiente vincular">Pendiente vincular</option>
-          <option value="Pendiente desvincular">Pendiente desvincular</option>
-          <option value="Vinculado">Vinculado</option>
-          <option value="Dato sensible">Dato sensible</option>
-          <option value="Concurrencia">Concurrencia</option>
-          <option value="Desvinculado">Desvinculado</option>
-        </select> -->
       </td>
       <td>{{ beneficiario.ingreso }}</td>
       <td>{{ beneficiario.creadoEl }}</td>
-      <td *ngIf="puedeEditar">{{ beneficiario.uds.nombre }}</td>
+      <td *ngIf="!listarPorUds">{{ beneficiario.uds.nombre }}</td>
       <td class="text-right">
         <button
           *ngIf="puedeEditar"

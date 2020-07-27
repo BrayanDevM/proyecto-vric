@@ -26,29 +26,55 @@ export class UdsService {
     this.token = this.usuario$.token;
   }
 
-  obtenerUdsSimple() {
-    return this.http.get(this.API_URL + `?token=${this.token}`);
+  /**
+   * Consulta las UDS por defecto, opcionalmente se puede enviar
+   * una consulta con criterios especificos para las propiedades de una
+   * UDS: (enContrato, arriendo='si/no', coordinador, gestor, docentes, cupos)
+   */
+  obtenerUds(query?: string) {
+    if (!query) {
+      return this.http.get(this.API_URL + `?token=${this.token}`);
+    } else {
+      return this.http.get(this.API_URL + `?${query}&token=${this.token}`);
+    }
   }
 
-  obtenerUds() {
-    return this.http.get(this.API_URL + `/datos?token=${this.token}`);
+  obtenerUds_beneficiarios(query?: string) {
+    if (!query) {
+      return this.http.get(this.API_URL + `/beneficiarios?token=${this.token}`);
+    } else {
+      return this.http.get(
+        this.API_URL + `/beneficiarios?${query}&token=${this.token}`
+      );
+    }
   }
 
-  obtenerUdsDisponibles() {
-    return this.http.get(this.API_URL + `/disponibles`);
-  }
-
-  obtenerUdsDisponiblesPorContrato(contratoId: string = null) {
-    return this.http.get(this.API_URL + `/disponibles/${contratoId}`);
+  obtenerUds_beneficiarios_responsables(query?: string) {
+    if (!query) {
+      return this.http.get(
+        this.API_URL + `/beneficiarios/responsables?token=${this.token}`
+      );
+    } else {
+      return this.http.get(
+        this.API_URL +
+          `/beneficiarios/responsables?${query}&token=${this.token}`
+      );
+    }
   }
 
   obtenerUnidad(id: string) {
-    return this.http.get(this.API_URL + `/unidad/${id}?token=${this.token}`);
+    return this.http.get(this.API_URL + `/${id}?token=${this.token}`);
   }
 
-  obtenerUnidadInfoCompleta(id: string) {
+  obtenerUnidad_beneficiarios(id: string) {
     return this.http.get(
-      this.API_URL + `/unidad/datos/${id}?token=${this.token}`
+      this.API_URL + `/${id}/beneficiarios?token=${this.token}`
+    );
+  }
+
+  obtenerUnidad_beneficiarios_responsables(id: string) {
+    return this.http.get(
+      this.API_URL + `/${id}/beneficiarios/responsables?token=${this.token}`
     );
   }
 

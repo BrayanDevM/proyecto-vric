@@ -3,7 +3,6 @@ import { Usuario } from 'src/app/models/usuario.model';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { Beneficiario } from 'src/app/models/beneficiario.model';
 import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
-import Swal from 'sweetalert2/src/sweetalert2.js';
 import { Router } from '@angular/router';
 import { NgOption } from '@ng-select/ng-select';
 import {
@@ -34,6 +33,7 @@ export class TablaBeneficiariosComponent implements OnInit {
   // -----------------------------
 
   @Input() beneficiarios: Beneficiario[] = [];
+  @Input() listarPorUds = true;
   @Output() realizoCambios: EventEmitter<boolean> = new EventEmitter();
   @Output() beneficiarioInfo: EventEmitter<Beneficiario> = new EventEmitter();
 

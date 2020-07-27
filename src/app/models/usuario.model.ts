@@ -7,8 +7,8 @@ export class Usuario {
     public telefono?: string,
     public rol?: string,
     public google?: boolean,
-    public contratos?: [],
-    public uds?: [],
+    public contratos?: any[],
+    public uds?: any[],
     public activo?: boolean,
     public creadoEl?: string,
     // tslint:disable-next-line: variable-name

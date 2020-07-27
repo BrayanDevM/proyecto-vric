@@ -122,7 +122,7 @@ export class BeneficiarioComponent implements OnInit {
   labelInputInfoCriterio = 'Detalle criterio';
 
   // elements
-  @ViewChild('infoCriterio', { static: true }) iInfoCriterio: ElementRef;
+  @ViewChild('infoCriterio') iInfoCriterio: ElementRef;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -130,12 +130,12 @@ export class BeneficiarioComponent implements OnInit {
     private responsables$: RespBeneficiariosService,
     private router: Router
   ) {
-    this.activatedRoute.params.subscribe((resp: Params) => {
+    this.activatedRoute.params.subscribe((params: Params) => {
       this.beneficiarios$
-        .obtenerBeneficiario(resp.id)
-        .subscribe((respBen: any) => {
-          this.beneficiario = respBen.beneficiario;
-          this.obtenerResponsable(this.beneficiario.responsableId._id);
+        .obtenerBeneficiario(params.id)
+        .subscribe((resp: any) => {
+          this.beneficiario = resp.beneficiario;
+          this.obtenerResponsable(this.beneficiario.responsableId);
           this.beneficiario.nacimiento = moment(
             this.beneficiario.nacimiento,
             'DD/MM/YYYY'

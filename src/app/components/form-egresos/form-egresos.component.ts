@@ -4,7 +4,6 @@ import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
 import { Uds } from 'src/app/models/uds.model';
 import { UdsService } from 'src/app/services/uds.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
-import Swal from 'sweetalert2/src/sweetalert2.js';
 import { Beneficiario } from 'src/app/models/beneficiario.model';
 import { alertSuccess, alertDanger } from 'src/app/helpers/swal2.config';
 import { NgOption } from '@ng-select/ng-select';
@@ -78,7 +77,7 @@ export class FormEgresosComponent implements OnInit {
     this.cargandoBeneficiarios = true;
     this.beneficiarios = [];
     let contador = 0;
-    this.uds$.obtenerUnidadInfoCompleta($event._id).subscribe((resp: any) => {
+    this.uds$.obtenerUnidad_beneficiarios($event._id).subscribe((resp: any) => {
       if (resp.ok) {
         const beneficiariosVinculados = [];
         this.beneficiarios = resp.unidad.beneficiarios;

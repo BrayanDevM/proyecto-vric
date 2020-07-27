@@ -60,8 +60,8 @@ export class DashboardComponent implements OnInit {
   mgAdolescente = 0;
 
   // Datos de UDS
-  udsCali: any = [];
-  udsDagua: any = [];
+  udsCali: Uds[] = [];
+  udsDagua: Uds[] = [];
 
   hoy = moment(moment().format('DD/MM/YYYY'), 'DD/MM/YYYY');
 
@@ -87,7 +87,7 @@ export class DashboardComponent implements OnInit {
 
   obtenerDatosUds_Beneficiarios(): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      this.uds$.obtenerUds().subscribe((resp: any) => {
+      this.uds$.obtenerUds_beneficiarios().subscribe((resp: any) => {
         if (resp.ok) {
           // console.log(resp);
           this.datosUds = resp.uds;

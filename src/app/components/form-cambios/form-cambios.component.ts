@@ -187,7 +187,7 @@ export class FormCambiosComponent implements OnInit {
     this.cargandoBeneficiarios = true;
     this.beneficiarios = [];
     let contador = 0;
-    this.uds$.obtenerUnidadInfoCompleta($event._id).subscribe((resp: any) => {
+    this.uds$.obtenerUnidad_beneficiarios($event._id).subscribe((resp: any) => {
       if (resp.ok) {
         const mujeresGestantesVinculadas = [];
         this.beneficiarios = resp.unidad.beneficiarios;

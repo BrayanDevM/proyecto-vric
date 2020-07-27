@@ -26,7 +26,7 @@ export class UdsComponent implements OnInit {
 
   obtenerUds() {
     this.cargando = true;
-    this.uds$.obtenerUdsSimple().subscribe((resp: any) => {
+    this.uds$.obtenerUds().subscribe((resp: any) => {
       if (resp.ok) {
         this.cargando = false;
         this.uds = resp.uds;

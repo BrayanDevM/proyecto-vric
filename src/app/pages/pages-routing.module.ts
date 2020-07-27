@@ -23,6 +23,7 @@ import { AdministrarComponent } from './administrar/administrar.component';
 import { AdminGuard } from '../services/guards/admin.guard';
 import { VerificaTokenGuard } from '../services/guards/verifica-token.guard';
 import { UsuarioComponent } from './usuarios/usuario/usuario.component';
+import { DashboardUdsComponent } from './dashboard/dashboard-uds/dashboard-uds.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,25 @@ const routes: Routes = [
       partes: [
         {
           titulo: 'Dashboard',
+          url: ''
+        }
+      ],
+      gIcono: 'book'
+    }
+  },
+  {
+    path: 'dashboard/uds/:id',
+    canActivate: [VerificaTokenGuard],
+    component: DashboardUdsComponent,
+    data: {
+      paginaActiva: 'UDS',
+      partes: [
+        {
+          titulo: 'Dashboard',
+          url: '/dashboard'
+        },
+        {
+          titulo: 'UDS',
           url: ''
         }
       ],

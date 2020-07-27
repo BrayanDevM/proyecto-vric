@@ -47,7 +47,11 @@ export class UsuarioService {
         this.token = resp.token;
         this.menu = resp.menu;
         this.crearCookieSesion(this.token, this.usuario, this.menu);
-        this.router.navigate(['/dashboard']);
+        if (this.usuario.rol === 'DOCENTE') {
+          this.router.navigate(['/dashboard/uds', this.usuario.uds[0]]);
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
         return true;
       }),
       catchError(err => {
@@ -82,7 +86,11 @@ export class UsuarioService {
       this.token = message.data.token;
       this.menu = message.data.menu;
       this.crearCookieSesion(this.token, this.usuario, this.menu);
-      this.router.navigate(['/dashboard']);
+      if (this.usuario.rol === 'DOCENTE') {
+        this.router.navigate(['/dashboard/uds', this.usuario.uds[0]]);
+      } else {
+        this.router.navigate(['/dashboard']);
+      }
     });
     return true;
   }
@@ -125,8 +133,45 @@ export class UsuarioService {
     return this.cookie$.check('token') ? true : false;
   }
 
-  obtenerUsuarios() {
-    return this.http.get(this.API_URL + `/usuarios?token=${this.token}`);
+  obtenerUsuarios(query?: string) {
+    if (!query) {
+      return this.http.get(this.API_URL + `/usuarios?token=${this.token}`);
+    } else {
+      return this.http.get(
+        this.API_URL + `/usuarios?${query}&token=${this.token}`
+      );
+    }
+  }
+  obtenerUsuarios_uds(query?: string) {
+    if (!query) {
+      return this.http.get(this.API_URL + `/usuarios/uds?token=${this.token}`);
+    } else {
+      return this.http.get(
+        this.API_URL + `/usuarios/uds?${query}&token=${this.token}`
+      );
+    }
+  }
+  obtenerUsuarios_contratos(query?: string) {
+    if (!query) {
+      return this.http.get(
+        this.API_URL + `/usuarios/contratos?token=${this.token}`
+      );
+    } else {
+      return this.http.get(
+        this.API_URL + `/usuarios/contratos?${query}&token=${this.token}`
+      );
+    }
+  }
+  obtenerUsuarios_contratos_uds(query?: string) {
+    if (!query) {
+      return this.http.get(
+        this.API_URL + `/usuarios/contratos/uds?token=${this.token}`
+      );
+    } else {
+      return this.http.get(
+        this.API_URL + `/usuarios/contratos/uds?${query}&token=${this.token}`
+      );
+    }
   }
 
   obtenerUsuario(id: string) {
