@@ -2,8 +2,27 @@
   <div class="container-fluid">
     <app-breadcrumb></app-breadcrumb>
     <div class="BDM_fadeInUp">
+      <div *ngIf="true" class="row">
+        <div class="col-12 text-right mb-4">
+          <button
+            *ngIf="!cargandoDatos"
+            (click)="obtenerDatos()"
+            type="button"
+            class="btn btn-outline-secondary"
+          >
+            <i class="fas fa-sync"></i> Actualizar
+          </button>
+          <button
+            *ngIf="cargandoDatos"
+            type="button"
+            class="btn btn-outline-secondary disabled"
+          >
+            <i class="fas fa-sync fa-spin"></i> Actualizando...
+          </button>
+        </div>
+      </div>
       <div class="row mb-4">
-        <div class="col-3">
+        <div class="col-sm-12 col-xl-3">
           <div class="card card-body text-center" style="position: relative;">
             <h5 class="card-subtitle">Cobertura Cali</h5>
             <app-pie-chart
@@ -26,7 +45,7 @@
             >
           </div>
         </div>
-        <div class="col-3">
+        <div class="col-sm-12 col-xl-3">
           <div class="card card-body text-center" style="position: relative;">
             <h5 class="card-subtitle">Cobertura Dagua</h5>
             <app-pie-chart
@@ -49,7 +68,7 @@
             >
           </div>
         </div>
-        <div class="col-3">
+        <div class="col-sm-12 col-xl-3">
           <div class="card card-body text-center" style="position: relative;">
             <h5 class="card-subtitle">Cobertura total</h5>
             <app-pie-chart
@@ -72,7 +91,7 @@
             >
           </div>
         </div>
-        <div class="col-3">
+        <div class="col-sm-12 col-xl-3">
           <div class="card card-body text-center" style="position: relative;">
             <h5 class="card-subtitle">Datos sensibles</h5>
             <app-pie-chart
@@ -94,8 +113,8 @@
         </div>
       </div>
       <div class="row mb-4">
-        <div class="col-8">
-          <div class="card card-body">
+        <div class="col-sm-12 col-xl-8">
+          <div class="card card-body novedades">
             <h5 class="card-title">Novedades</h5>
             <!-- <div class="text-right">
               <div class="btn-group btn-group-toggle mb-2" data-toggle="buttons">
@@ -115,7 +134,7 @@
             ></app-line-chart>
           </div>
         </div>
-        <div class="col-4">
+        <div class="col-sm-12 col-xl-4">
           <div class="card card-body pb-5">
             <h5 class="card-title">Población</h5>
             <app-pie-chart
@@ -128,7 +147,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-4">
+        <div class="col-sm-12 col-xl-4 mb-4">
           <div class="card card-body mb-1">
             <h5 class="card-title mb-0">Datos especiales</h5>
           </div>
@@ -160,7 +179,7 @@
           </ul>
         </div>
         <!----------------- DATOS UNIDADES DAGUA ----------------->
-        <div class="col-4">
+        <div class="col-sm-12 col-xl-4 mb-4">
           <div class="card card-body mb-1">
             <h5 class="card-title mb-0">Estado de atención en Dagua</h5>
           </div>
@@ -179,7 +198,7 @@
           </div>
         </div>
         <!----------------- DATOS UNIDADES CALI ----------------->
-        <div class="col-4">
+        <div class="col-sm-12 col-xl-4 mb-4">
           <div class="card card-body mb-1">
             <h5 class="card-title mb-0">Estado de atención en Cali</h5>
           </div>

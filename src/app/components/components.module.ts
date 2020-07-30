@@ -17,21 +17,25 @@ import { FormCambiosComponent } from './form-cambios/form-cambios.component';
 import { PieChartComponent } from './charts/pie-chart/pie-chart.component';
 import { InfoBeneficiarioComponent } from './modals/info-beneficiario/info-beneficiario.component';
 import { LineChartComponent } from './charts/line-chart/line-chart.component';
+import { ModalActualizacionesComponent } from './modals/modal-actualizaciones/modal-actualizaciones.component';
+
+const components = [
+  HeaderComponent,
+  SidebarComponent,
+  BreadcrumbComponent,
+  TablaBeneficiariosComponent,
+  FormIngresosComponent,
+  DocumentoPipe,
+  FormEgresosComponent,
+  FormCambiosComponent,
+  PieChartComponent,
+  InfoBeneficiarioComponent,
+  LineChartComponent,
+  ModalActualizacionesComponent
+];
 
 @NgModule({
-  declarations: [
-    HeaderComponent,
-    SidebarComponent,
-    BreadcrumbComponent,
-    TablaBeneficiariosComponent,
-    FormIngresosComponent,
-    DocumentoPipe,
-    FormEgresosComponent,
-    FormCambiosComponent,
-    PieChartComponent,
-    InfoBeneficiarioComponent,
-    LineChartComponent
-  ],
+  declarations: [...components],
   imports: [
     CommonModule,
     RouterModule,
@@ -40,17 +44,6 @@ import { LineChartComponent } from './charts/line-chart/line-chart.component';
     ReactiveFormsModule,
     ChartsModule
   ],
-  exports: [
-    HeaderComponent,
-    SidebarComponent,
-    BreadcrumbComponent,
-    TablaBeneficiariosComponent,
-    FormIngresosComponent,
-    FormEgresosComponent,
-    FormCambiosComponent,
-    InfoBeneficiarioComponent,
-    PieChartComponent,
-    LineChartComponent
-  ]
+  exports: [...components]
 })
 export class ComponentsModule {}

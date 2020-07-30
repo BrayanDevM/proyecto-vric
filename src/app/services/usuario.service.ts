@@ -35,6 +35,8 @@ export class UsuarioService {
 
     return this.http.post(this.API_URL + '/login', usuario).pipe(
       map((resp: any) => {
+        // console.log(resp, '<- repsonse!');
+
         if (!resp.usuario.activo) {
           alertError.fire({
             title: 'Inicio de sesión',

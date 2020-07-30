@@ -231,8 +231,8 @@ export class FormCambiosComponent implements OnInit {
     this.formCambio.value.direccion = madre.direccion;
     this.formCambio.value.barrio = madre.barrio;
     this.formCambio.value.telefono = madre.telefono;
-    this.formCambio.value.criterio = madre.criterio;
-    this.formCambio.value.infoCriterio = madre.infoCriterio;
+    this.formCambio.value.criterio = 'Otro';
+    this.formCambio.value.infoCriterio = 'Cambio de Mujer Gestante';
     // Info responsable
     this.formCambio.value.respNombre1 = madre.nombre1;
     this.formCambio.value.respNombre2 = madre.nombre2;
@@ -295,6 +295,7 @@ export class FormCambiosComponent implements OnInit {
     if (typeof pais !== 'string') {
       if (pais.value !== 'Colombia') {
         this.listaDepartamentos = [{ departamento: 'Extranjero' }];
+        this.formCambio.get('autorreconocimiento').patchValue('Ninguno');
       } else {
         this.listaDepartamentos = listaDatosColombia;
       }

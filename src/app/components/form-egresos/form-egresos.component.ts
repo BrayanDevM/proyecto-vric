@@ -24,7 +24,7 @@ export class FormEgresosComponent implements OnInit {
     },
     { value: 'Tránsito a otro programa', label: 'Tránsito a otro programa' },
     { value: 'Traslado de municipio', label: 'Traslado de municipio' },
-    { value: 'Cambio de grupo familiar', label: 'Cambio de grupo familiar' },
+    { value: 'Cambio a bebé lactante', label: 'Cambio a bebé lactante' },
     {
       value: 'Distancia del centro de atención',
       label: 'Distancia del centro de atención'
@@ -101,11 +101,14 @@ export class FormEgresosComponent implements OnInit {
     const index = this.beneficiarios.findIndex(
       beneficiario => beneficiario._id === this.formEgreso.value.beneficiarioId
     );
+
     this.beneficiarioEgreso = this.beneficiarios[index];
+    console.log(this.beneficiarios);
+
     this.beneficiarioEgreso.creadoPor = this.usuario._id;
     this.beneficiarioEgreso.motivoEgreso = this.formEgreso.value.motivo;
-    this.beneficiarioEgreso.responsableId = this.beneficiarioEgreso.responsableId._id;
-    this.beneficiarioEgreso.uds = this.beneficiarioEgreso.uds._id;
+    this.beneficiarioEgreso.responsableId = this.beneficiarioEgreso.responsableId;
+    this.beneficiarioEgreso.uds = this.beneficiarioEgreso.uds;
 
     this.beneficiarioEgreso.egreso = moment(
       this.formEgreso.value.egreso,

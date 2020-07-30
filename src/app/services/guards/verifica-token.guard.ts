@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
 import { UsuarioService } from '../usuario.service';
+import * as jwt_decode from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,10 @@ export class VerificaTokenGuard implements CanActivate {
     // tomamos el token del usuario
     const token = this.usuario$.token;
     // lo convertimos en un arreglo para obtener la fecha de expiración
-    const payload = JSON.parse(atob(token.split('.')[1]));
+    // const payload = JSON.parse(atob(token.split('.')[1]));
+    const payload = jwt_decode(token);
+    // console.log(payload, 'payload');
+
     const expirado = this.comprobarExpiracion(payload.exp);
 
     // Si ya pasó la fecha de expiración cierra sesión

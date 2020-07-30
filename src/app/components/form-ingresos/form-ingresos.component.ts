@@ -315,7 +315,6 @@ export class FormIngresosComponent implements OnInit {
   }
 
   cambiarCiudadesResp(departamento: any) {
-    console.log(departamento);
     if (departamento === undefined) {
       return;
     }
@@ -396,68 +395,69 @@ export class FormIngresosComponent implements OnInit {
       this.respExiste = false;
       return;
     }
-    let responsable: RespBeneficiario;
-    this.respBen$.buscarRespBeneficiario(documento).subscribe((resp: any) => {
-      if (resp.ok) {
-        console.log(resp);
-        if (resp.responsable.length > 0) {
-          responsable = resp.responsable[0];
-          this.respExiste = true;
+    this.respBen$
+      .obtenerResponsables(`documento=${documento}`)
+      .subscribe((resp: any) => {
+        if (resp.ok) {
+          // console.log(resp);
+          if (resp.respBeneficiarios.length > 0) {
+            const responsable: RespBeneficiario = resp.respBeneficiarios[0];
+            this.respExiste = true;
 
-          this.formIngreso.get('respTipoDoc').patchValue(responsable.tipoDoc);
-          this.irespTipoDoc.setDisabledState(true);
+            this.formIngreso.get('respTipoDoc').patchValue(responsable.tipoDoc);
+            this.irespTipoDoc.setDisabledState(true);
 
-          this.iRespNombre1.nativeElement.value = responsable.nombre1;
-          this.iRespNombre1.nativeElement.disabled = true;
+            this.iRespNombre1.nativeElement.value = responsable.nombre1;
+            this.iRespNombre1.nativeElement.disabled = true;
 
-          this.iRespNombre2.nativeElement.value = responsable.nombre2;
-          this.iRespNombre2.nativeElement.disabled = true;
+            this.iRespNombre2.nativeElement.value = responsable.nombre2;
+            this.iRespNombre2.nativeElement.disabled = true;
 
-          this.iRespApellido1.nativeElement.value = responsable.apellido1;
-          this.iRespApellido1.nativeElement.disabled = true;
+            this.iRespApellido1.nativeElement.value = responsable.apellido1;
+            this.iRespApellido1.nativeElement.disabled = true;
 
-          this.iRespApellido2.nativeElement.value = responsable.apellido2;
-          this.iRespApellido2.nativeElement.disabled = true;
+            this.iRespApellido2.nativeElement.value = responsable.apellido2;
+            this.iRespApellido2.nativeElement.disabled = true;
 
-          this.iRespNacimiento.nativeElement.value = moment(
-            responsable.nacimiento,
-            'DD/MM/YYYY'
-          ).format('YYYY-MM-DD');
-          this.iRespNacimiento.nativeElement.disabled = true;
+            this.iRespNacimiento.nativeElement.value = moment(
+              responsable.nacimiento,
+              'DD/MM/YYYY'
+            ).format('YYYY-MM-DD');
+            this.iRespNacimiento.nativeElement.disabled = true;
 
-          this.formIngreso.get('respSexo').patchValue(responsable.sexo);
-          this.iRespSexo.setDisabledState(true);
+            this.formIngreso.get('respSexo').patchValue(responsable.sexo);
+            this.iRespSexo.setDisabledState(true);
 
-          this.iRespNacimiento.nativeElement.disabled = true;
+            this.iRespNacimiento.nativeElement.disabled = true;
 
-          this.formIngreso
-            .get('respPaisNacimiento')
-            .patchValue(responsable.paisNacimiento);
-          this.iRespPaisNac.setDisabledState(true);
-          this.cambiarDepartamentosResp(responsable.paisNacimiento);
+            this.formIngreso
+              .get('respPaisNacimiento')
+              .patchValue(responsable.paisNacimiento);
+            this.iRespPaisNac.setDisabledState(true);
+            this.cambiarDepartamentosResp(responsable.paisNacimiento);
 
-          this.formIngreso
-            .get('respDptoNacimiento')
-            .patchValue(responsable.dptoNacimiento);
-          this.iRespDptoNac.setDisabledState(true);
-          this.cambiarCiudadesResp(responsable.dptoNacimiento);
+            this.formIngreso
+              .get('respDptoNacimiento')
+              .patchValue(responsable.dptoNacimiento);
+            this.iRespDptoNac.setDisabledState(true);
+            this.cambiarCiudadesResp(responsable.dptoNacimiento);
 
-          this.formIngreso
-            .get('respMunicipioNacimiento')
-            .patchValue(responsable.municipioNacimiento);
-          this.iRespMunicipioNac.setDisabledState(true);
+            this.formIngreso
+              .get('respMunicipioNacimiento')
+              .patchValue(responsable.municipioNacimiento);
+            this.iRespMunicipioNac.setDisabledState(true);
 
-          this.iRespTipoResp.focus();
-          this.iRespTipoResp.open();
+            this.iRespTipoResp.focus();
+            this.iRespTipoResp.open();
+          } else {
+            this.respExiste = false;
+            // this.despejarCamposResponsable();
+          }
         } else {
           this.respExiste = false;
           // this.despejarCamposResponsable();
         }
-      } else {
-        this.respExiste = false;
-        // this.despejarCamposResponsable();
-      }
-    });
+      });
   }
 
   despejarCamposResponsable() {

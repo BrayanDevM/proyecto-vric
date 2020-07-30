@@ -86,6 +86,7 @@
         </button>
         <button
           *ngIf="puedeEditar || beneficiario.estado === 'Pendiente vincular'"
+          [disabled]="usuario.rol === 'COORDINADOR'"
           (click)="eliminarBeneficiario(beneficiario)"
           type="button"
           class="btn btn-outline-danger btn-sm btn-circle mr-1"

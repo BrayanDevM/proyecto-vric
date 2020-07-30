@@ -398,7 +398,18 @@
                           />
                         </div>
                       </div>
-                      <div class="col-2">
+                    </div>
+                  </div>
+                </div>
+                <!--------------------- Sección datos de egreso ----------------------->
+                <!------------------------------------------------------------------->
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <h5 class="card-title text-danger">
+                      <i class="fas fa-running mr-2"></i>Datos de egreso
+                    </h5>
+                    <div class="row">
+                      <div class="col-xl-2">
                         <div class="form-group">
                           <label class="label-control text-danger" for="ingreso"
                             >Fecha de egreso</label
@@ -409,6 +420,23 @@
                             type="date"
                             class="form-control"
                           />
+                        </div>
+                      </div>
+                      <div class="col-xl-3">
+                        <div class="form-group">
+                          <label class="label-control text-danger" for="ingreso"
+                            >Motivo de egreso</label
+                          >
+                          <ng-select
+                            [items]="motivosDeEgreso"
+                            bindValue="value"
+                            bindLabel="label"
+                            placeholder="Seleccionar motivo"
+                            [(ngModel)]="beneficiario.motivoEgreso"
+                            name="motivoEgreso"
+                            required
+                          >
+                          </ng-select>
                         </div>
                       </div>
                     </div>

@@ -64,7 +64,7 @@ export class DashboardComponent implements OnInit {
   udsDagua: Uds[] = [];
 
   hoy = moment(moment().format('DD/MM/YYYY'), 'DD/MM/YYYY');
-
+  cargandoDatos = false;
   loader = this.ngxLoader.useRef('http');
 
   constructor(private uds$: UdsService, private ngxLoader: LoadingBarService) {}
@@ -72,17 +72,23 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     const datosUdsLocal = localStorage.getItem('datosDashboard');
     if (datosUdsLocal === null) {
-      this.obtenerDatosUds_Beneficiarios().then(() => {
-        this.contarCupos(this.datosUds);
-        this.obtenerDatosDeBeneficiarios(this.datosUds);
-        this.separarUds_municipios(this.datosUds);
-      });
+      this.obtenerDatos();
     } else {
       this.datosUds = JSON.parse(localStorage.getItem('datosDashboard'));
       this.contarCupos(this.datosUds);
       this.obtenerDatosDeBeneficiarios(this.datosUds);
       this.separarUds_municipios(this.datosUds);
     }
+  }
+
+  obtenerDatos() {
+    this.cargandoDatos = true;
+    this.obtenerDatosUds_Beneficiarios().then(() => {
+      this.contarCupos(this.datosUds);
+      this.obtenerDatosDeBeneficiarios(this.datosUds);
+      this.separarUds_municipios(this.datosUds);
+      this.cargandoDatos = false;
+    });
   }
 
   obtenerDatosUds_Beneficiarios(): Promise<boolean> {
@@ -140,6 +146,13 @@ export class DashboardComponent implements OnInit {
   }
 
   obtenerDatosDeBeneficiarios(uds: any) {
+    this.mgAdolescente = 0;
+    this.ingresosPorMes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    this.egresosPorMes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    this.totalMG = 0;
+    this.totalMujeres = 0;
+    this.totalHombres = 0;
+    this.totalextranjeros = 0;
     uds.forEach((unidad: any) => {
       unidad.beneficiarios.forEach((beneficiario: any) => {
         this.contarPoblacion(beneficiario);
@@ -151,11 +164,18 @@ export class DashboardComponent implements OnInit {
   }
 
   contarCupos(uds: any) {
+    this.totalCaliVinculados = 0;
+    this.totalCaliDS = 0;
+    this.totalDaguaVinculados = 0;
+    this.totalDaguaDS = 0;
     let contador = 0;
     uds.forEach((unidad: any) => {
       if (unidad.ubicacion === 'Cali') {
         unidad.beneficiarios.forEach((beneficiario: any) => {
-          if (beneficiario.estado === 'Vinculado') {
+          if (
+            beneficiario.estado === 'Vinculado' ||
+            beneficiario.estado === 'Pendiente desvincular'
+          ) {
             this.totalCaliVinculados += 1;
           }
           if (beneficiario.estado === 'Dato sensible') {
@@ -164,7 +184,10 @@ export class DashboardComponent implements OnInit {
         });
       } else {
         unidad.beneficiarios.forEach((beneficiario: any) => {
-          if (beneficiario.estado === 'Vinculado') {
+          if (
+            beneficiario.estado === 'Vinculado' ||
+            beneficiario.estado === 'Pendiente desvincular'
+          ) {
             this.totalDaguaVinculados += 1;
           }
           if (beneficiario.estado === 'Dato sensible') {
@@ -220,6 +243,7 @@ export class DashboardComponent implements OnInit {
   }
 
   contarIngresosPorMes(beneficiario: any) {
+    this.mostrarGraficaLinea = false;
     // Formateo fechas
     const mesIngreso = moment(beneficiario.ingreso, 'DD/MM/YYYY').format('MMM');
     const mesEgreso = moment(beneficiario.egreso, 'DD/MM/YYYY').format('MMM');
@@ -237,6 +261,7 @@ export class DashboardComponent implements OnInit {
   }
 
   contarConDiscapacidad(beneficiario: any) {
+    this.conDiscapacidad = 0;
     if (beneficiario.estado === 'Vinculado' && beneficiario.discapacidad) {
       this.conDiscapacidad += 1;
     }
@@ -246,6 +271,7 @@ export class DashboardComponent implements OnInit {
   }
 
   contarEnConcurrencia(beneficiario: any) {
+    this.enConcurrencia = 0;
     if (beneficiario.estado === 'Concurrencia') {
       this.enConcurrencia += 1;
     }

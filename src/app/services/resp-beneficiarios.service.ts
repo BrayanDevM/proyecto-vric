@@ -18,6 +18,14 @@ export class RespBeneficiariosService {
     this.token = this.usuario$.token;
   }
 
+  obtenerResponsables(query?: string) {
+    if (!query) {
+      return this.http.get(this.API_URL);
+    } else {
+      return this.http.get(this.API_URL + `?${query}`);
+    }
+  }
+
   obtenerResponsable(id: string) {
     return this.http.get(this.API_URL + `/${id}?token=${this.token}`);
   }
@@ -27,9 +35,5 @@ export class RespBeneficiariosService {
       this.API_URL + `/${responsable._id}?token=${this.token}`,
       responsable
     );
-  }
-
-  buscarRespBeneficiario(documento: string) {
-    return this.http.get(this.API_URL + `/documento/${documento}`);
   }
 }
