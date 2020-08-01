@@ -26,12 +26,38 @@ export class ContratosService {
     this.token = this.usuario$.token;
   }
 
-  obtenerContratos() {
-    return this.http.get(this.API_URL + `?token=${this.token}`).pipe(
-      catchError(err => {
-        return throwError(err);
-      })
-    );
+  obtenerContratos(query?: string) {
+    if (!query) {
+      return this.http.get(this.API_URL + `?token=${this.token}`).pipe(
+        catchError(err => {
+          return throwError(err);
+        })
+      );
+    } else {
+      return this.http.get(this.API_URL + `?${query}&token=${this.token}`).pipe(
+        catchError(err => {
+          return throwError(err);
+        })
+      );
+    }
+  }
+
+  obtenerContratos_uds(query?: string) {
+    if (!query) {
+      return this.http.get(this.API_URL + `/uds?token=${this.token}`).pipe(
+        catchError(err => {
+          return throwError(err);
+        })
+      );
+    } else {
+      return this.http
+        .get(this.API_URL + `/uds?${query}&token=${this.token}`)
+        .pipe(
+          catchError(err => {
+            return throwError(err);
+          })
+        );
+    }
   }
 
   obtenerContrato(id: string) {

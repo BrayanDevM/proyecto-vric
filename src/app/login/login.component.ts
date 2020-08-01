@@ -13,8 +13,7 @@ export class LoginComponent implements OnInit {
   usuario: Usuario;
   formLogin: FormGroup;
   cargando = false;
-  recordar = false;
-  recordarCorreo: string;
+  recordarCorreo = false;
 
   constructor(
     private fb: FormBuilder,
@@ -28,8 +27,9 @@ export class LoginComponent implements OnInit {
       recuerdame: false
     });
     if (localStorage.getItem('correo')) {
-      this.recordarCorreo = localStorage.getItem('correo');
-      this.recordar = true;
+      const correo = localStorage.getItem('correo');
+      this.formLogin.get('correo').patchValue(correo);
+      this.formLogin.get('recuerdame').patchValue(!this.recordarCorreo);
     }
   }
 
@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit {
     this.usuarioService
       .login(this.usuario, this.formLogin.value.recuerdame)
       .subscribe(
-        resp => {
+        (resp: any) => {
           this.cargando = false;
         },
         (error: any) => {

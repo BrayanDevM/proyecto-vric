@@ -27,6 +27,7 @@ export class MisBeneficiariosComponent implements OnInit {
   disableRol = false;
   // ---------------------------
   usuario: Usuario;
+  query = '';
   udsAsignadas: Uds[] = [];
   cargandoUdsAsignadas = false;
   unidadSeleccionada: string;
@@ -51,35 +52,50 @@ export class MisBeneficiariosComponent implements OnInit {
     private usuario$: UsuarioService,
     private uds$: UdsService,
     private beneficiarios$: BeneficiariosService
-  ) {}
-
-  ngOnInit() {
+  ) {
     this.usuario = this.usuario$.usuario;
     if (this.usuario.rol === 'DOCENTE') {
       this.disableRol = true;
     }
+  }
+
+  ngOnInit() {
     this.obtenerUds();
   }
 
   obtenerUds() {
-    this.cargandoUdsAsignadas = true;
-    const arregloUds: Uds[] = [];
-    let contador = 0;
-    this.usuario.uds.forEach(unidad => {
-      this.uds$.obtenerUnidad(unidad).subscribe((resp: any) => {
+    switch (this.usuario.rol) {
+      case 'ADMIN':
+        this.query = `gestor=${this.usuario._id}`;
+        break;
+      case 'GESTOR':
+        this.query = `gestor=${this.usuario._id}`;
+        break;
+      case 'COORDINADOR':
+        this.query = `coordinador=${this.usuario._id}`;
+        break;
+      default:
+        this.query = `docentes=${this.usuario._id}`;
+        break;
+    }
+    // Si ya ha consultado una vez sólo toma los datos del LS
+    const udsEnLocal = localStorage.getItem('udsAsignadas');
+    if (udsEnLocal !== null) {
+      this.udsAsignadas = JSON.parse(udsEnLocal);
+    } else {
+      this.uds$.obtenerUds(this.query).subscribe((resp: any) => {
         if (resp.ok) {
-          arregloUds.push(resp.unidad);
-          contador += 1;
-        }
-        if (contador === this.usuario.uds.length) {
-          this.udsAsignadas = arregloUds;
-          this.cargandoUdsAsignadas = false;
+          this.udsAsignadas = resp.uds;
+          localStorage.setItem(
+            'udsAsignadas',
+            JSON.stringify(this.udsAsignadas)
+          );
         }
       });
-    });
+    }
   }
 
-  traerBeneficiariosUds($event: any) {
+  obtenerUds_beneficiarios_responsables($event: any) {
     let id: string;
     if (typeof $event === 'string') {
       id = $event;
@@ -102,38 +118,40 @@ export class MisBeneficiariosComponent implements OnInit {
     this.beneficiariosDesvinculados = [];
     // this.selectEstado.nativeElement.value = null;
     // Traemos y guaramos en arreglos
-    this.uds$.obtenerUnidad(id).subscribe((resp: any) => {
-      resp.unidad.beneficiarios.forEach((beneficiario: Beneficiario) => {
-        switch (beneficiario.estado) {
-          case 'Pendiente vincular':
-            this.beneficiariosPendientes.push(beneficiario);
-            break;
-          case 'Pendiente desvincular':
-            this.beneficiariosPendientes.push(beneficiario);
-            break;
-          case 'Dato Sensible':
-            this.beneficiariosDS.push(beneficiario);
-            break;
-          case 'Concurrencia':
-            this.beneficiariosDS.push(beneficiario);
-            break;
-          case 'Vinculado':
-            this.beneficiariosVinculados.push(beneficiario);
-            break;
-          default:
-            this.beneficiariosDesvinculados.push(beneficiario);
-            break;
-        }
-        this.cargandoListado = false;
+    this.uds$
+      .obtenerUnidad_beneficiarios_responsables(id)
+      .subscribe((resp: any) => {
+        resp.unidad.beneficiarios.forEach((beneficiario: Beneficiario) => {
+          switch (beneficiario.estado) {
+            case 'Pendiente vincular':
+              this.beneficiariosPendientes.push(beneficiario);
+              break;
+            case 'Pendiente desvincular':
+              this.beneficiariosPendientes.push(beneficiario);
+              break;
+            case 'Dato sensible':
+              this.beneficiariosDS.push(beneficiario);
+              break;
+            case 'Concurrencia':
+              this.beneficiariosDS.push(beneficiario);
+              break;
+            case 'Vinculado':
+              this.beneficiariosVinculados.push(beneficiario);
+              break;
+            default:
+              this.beneficiariosDesvinculados.push(beneficiario);
+              break;
+          }
+          this.cargandoListado = false;
+        });
       });
-    });
     // console.log('Pendientes', this.beneficiariosPendientes);
     // console.log('DS', this.beneficiariosDS);
     // console.log('Vinculados', this.beneficiariosVinculados);
     // console.log('Desvinculados', this.beneficiariosDesvinculados);
   }
 
-  traerBeneficiariosPorEstado($event: any) {
+  obtenerBeneficiariosPorEstado($event: any) {
     let estado: string;
     if (typeof $event === 'string') {
       estado = $event;
@@ -149,7 +167,7 @@ export class MisBeneficiariosComponent implements OnInit {
     this.estadoSeleccionado = estado;
     this.cargandoListado = true;
     this.beneficiarios$
-      .obtenerBeneficiariosPorEstado(estado)
+      .obtenerBeneficiarios_responsables(`estado=${estado}`)
       .subscribe((resp: any) => {
         console.log(resp);
         if (resp.ok) {
@@ -168,9 +186,10 @@ export class MisBeneficiariosComponent implements OnInit {
   actualizarListado(realizaCambio?: boolean) {
     if (realizaCambio) {
       if (this.mostrarPorEstado) {
-        this.traerBeneficiariosPorEstado(this.estadoSeleccionado);
+        // cambiar backend
+        this.obtenerBeneficiariosPorEstado(this.estadoSeleccionado);
       } else {
-        this.traerBeneficiariosUds(this.unidadSeleccionada);
+        this.obtenerUds_beneficiarios_responsables(this.unidadSeleccionada);
       }
     }
   }

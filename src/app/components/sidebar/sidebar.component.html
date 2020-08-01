@@ -37,7 +37,7 @@
           <div class="collapse" id="beneficiarios">
             <ul class="nav">
               <li
-                *ngIf="usuarioRol === 'DOCENTE'"
+                *ngIf="usuarioRol === 'DOCENTE' || usuarioRol === 'ADMIN'"
                 class="nav-item"
                 routerLinkActive="active"
               >

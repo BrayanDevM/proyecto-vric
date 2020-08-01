@@ -13,6 +13,7 @@
               bindValue="_id"
               bindLabel="nombre"
               placeholder="Seleccionar Unidad de Servicio"
+              [loading]="!udsAsignadas"
               (change)="traerMadres($event)"
               formControlName="selectUds"
               name="selectUds"
@@ -36,6 +37,12 @@
               name="beneficiarioId"
               required
             >
+              <!-- item seleccionado (label) -->
+              <ng-template ng-label-tmp let-item="item">
+                {{ item.nombre1 }} {{ item.nombre2 }} {{ item.apellido1 }}
+                {{ item.apellido2 }}
+              </ng-template>
+              <!-- opciones -->
               <ng-template ng-option-tmp let-item="item">
                 {{ item.nombre1 }} {{ item.nombre2 }} {{ item.apellido1 }}
                 {{ item.apellido2 }}
@@ -51,7 +58,7 @@
     <div class="card mb-3">
       <div class="card-body">
         <h5 class="card-title text-success">
-          <i class="fas fa-clipboard-user mr-2"></i>Datos básicos
+          <i class="fas fa-clipboard-user mr-2"></i>Datos básicos del bebé
         </h5>
         <div class="row">
           <div class="col-lg-3 col-xl-2">
@@ -344,19 +351,6 @@
           <i class="fas fa-address-book mr-2"></i>Datos de ingreso
         </h5>
         <div class="row">
-          <div class="col-lg-3 col-xl-2">
-            <div class="form-group">
-              <label for="codigo">Código UDS</label>
-              <input
-                formControlName="codigo"
-                name="codigo"
-                type="text"
-                class="form-control"
-                disabled
-                required
-              />
-            </div>
-          </div>
           <div class="col-lg-4 col-xl-2">
             <div class="form-group">
               <label for="udsId">Unidad De Servicio</label>
@@ -371,6 +365,18 @@
                 required
               >
               </ng-select>
+            </div>
+          </div>
+          <div class="col-lg-3 col-xl-2">
+            <div class="form-group text-muted">
+              <label for="codigo">Código</label>
+              <input
+                formControlName="codigo"
+                name="codigo"
+                type="text"
+                class="form-control"
+                disabled
+              />
             </div>
           </div>
           <div class="col-lg-3 col-xl-2">

@@ -37,7 +37,24 @@
                     {{ beneficiario.apellido2 }}
                   </td>
                   <td>{{ beneficiario.uds.nombre }}</td>
-                  <td>{{ beneficiario.estado }}</td>
+                  <td>
+                    <span
+                      [ngClass]="{
+                        'badge-info':
+                          beneficiario.estado === 'Pendiente vincular',
+                        'badge-danger':
+                          beneficiario.estado === 'Pendiente desvincular',
+                        'badge-warning':
+                          beneficiario.estado === 'Dato sensible',
+                        'badge-secondary':
+                          beneficiario.estado === 'Concurrencia',
+                        'badge-success': beneficiario.estado === 'Vinculado',
+                        'badge-dark': beneficiario.estado === 'Desvinculado'
+                      }"
+                      class="badge badge-success"
+                      >{{ beneficiario.estado }}</span
+                    >
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -69,7 +86,7 @@
                   <th>Código</th>
                   <th>Nombre</th>
                   <th>Cupos</th>
-                  <th *ngIf="usuario.rol === 'ADMIN'"></th>
+                  <th>Ver</th>
                 </tr>
               </thead>
               <tbody>
@@ -77,9 +94,9 @@
                   <td>{{ unidad.codigo }}</td>
                   <td>{{ unidad.nombre }}</td>
                   <td>{{ unidad.cupos }}</td>
-                  <td *ngIf="usuario.rol === 'ADMIN'">
+                  <td>
                     <button
-                      [routerLink]="['/uds/unidad/', unidad._id]"
+                      [routerLink]="['/dashboard/uds/', unidad._id]"
                       class="btn btn-sm btn-light"
                     >
                       <i class="fas fa-eye"></i>

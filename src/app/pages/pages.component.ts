@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { SidebarService } from '../services/sidebar.service';
 import { NgSelectConfig } from '@ng-select/ng-select';
+declare var jQuery: any;
 
 @Component({
   selector: 'app-pages',
@@ -15,10 +16,13 @@ export class PagesComponent implements OnInit, AfterViewInit {
     this.ngSelectConfig.loadingText = 'Cargando...';
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    localStorage.removeItem('cerrarUpdateModal');
+  }
 
   ngAfterViewInit() {
     this.autoMinSidebar();
+    this.mostrarModalActualizaciones();
   }
 
   autoMinSidebar(): void {
@@ -26,6 +30,15 @@ export class PagesComponent implements OnInit, AfterViewInit {
       setTimeout(() => {
         this.sidebar$.minimizarMenu(true);
       }, 500);
+    }
+  }
+
+  mostrarModalActualizaciones() {
+    const modalVisto = localStorage.getItem('cerrarUpdateModal-v1.5.1');
+    if (modalVisto === 'true') {
+      return;
+    } else {
+      jQuery('#modalActualizaciones').modal('show');
     }
   }
 }

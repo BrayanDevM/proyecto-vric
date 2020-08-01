@@ -27,17 +27,31 @@ export class BeneficiariosService {
     this.token = this.usuario$.token;
   }
 
-  obtenerBeneficiarios() {
-    return this.http.get(this.API_URL + `?token=${this.token}`);
+  obtenerBeneficiarios(query?: string) {
+    if (!query) {
+      return this.http.get(this.API_URL + `?token=${this.token}`);
+    } else {
+      return this.http.get(this.API_URL + `?${query}&token=${this.token}`);
+    }
+  }
+
+  obtenerBeneficiarios_responsables(query?: string) {
+    if (!query) {
+      return this.http.get(this.API_URL + `/responsables?token=${this.token}`);
+    } else {
+      return this.http.get(
+        this.API_URL + `/responsables?${query}&token=${this.token}`
+      );
+    }
   }
 
   obtenerBeneficiario(id: string) {
     return this.http.get(this.API_URL + `/${id}?token=${this.token}`);
   }
 
-  obtenerBeneficiariosPorEstado(estado: string) {
+  obtenerBeneficiario_responsables(id: string) {
     return this.http.get(
-      this.API_URL + `/estado/${estado}?token=${this.token}`
+      this.API_URL + `/${id}/responsables?token=${this.token}`
     );
   }
 

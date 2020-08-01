@@ -1,0 +1,143 @@
+<div
+  class="modal fade"
+  data-backdrop="static"
+  id="modalActualizaciones"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="actualizacion"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="actualizacion">Notas de despliegue</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item active">Beta v1.5.1</li>
+          <!-- <li class="list-group-item">
+            <span class="badge badge-danger">Eliminado</span> tal cosa
+          </li> -->
+          <li class="list-group-item">
+            <span class="badge badge-warning">Arreglo</span>
+            <span>
+              Se corrigió el error al iniciar sesión de algunos usuarios.
+            </span>
+          </li>
+          <li class="list-group-item">
+            <span class="badge badge-warning">Arreglo</span>
+            <span>
+              Se corrigió la traída de datos del responsable en formulario de
+              ingreso.
+            </span>
+          </li>
+          <li class="list-group-item">
+            <span class="badge badge-warning">Arreglo</span>
+            <span>
+              Se cambió la posición de los selectores de UDS en formularios,
+              este ahora irá antes del campo de código UDS.
+            </span>
+          </li>
+          <li class="list-group-item">
+            <span class="badge badge-success">Nuevo</span>
+            <span>
+              Se agregó la opción <b>Cambio a bebé lactante</b> a los motivos de
+              egreso para asignar al egreso de Mujeres Gestantes.
+            </span>
+          </li>
+        </ul>
+        <!------------------------------- ACTUALIZACION ------------------------------->
+        <!----------------------------------------------------------------------------->
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item active">Beta v1.5.0</li>
+          <!-- <li class="list-group-item">
+            <span class="badge badge-danger">Eliminado</span> tal cosa
+          </li> -->
+          <li class="list-group-item">
+            <span class="badge badge-warning">Arreglo</span>
+            <span>
+              Se corrigió el error al visualizar beneficiarios.
+            </span>
+          </li>
+          <li class="list-group-item">
+            <span class="badge badge-warning">Arreglo</span>
+            <span
+              >Se corrigió estado de beneficiario en página de búsqueda.</span
+            >
+          </li>
+          <li class="list-group-item">
+            <span class="badge badge-info">Mejora</span>
+            <span
+              >Carga de listado <b>UDS asignadas</b> ahora se realiza una sóla
+              vez durante la sesión. (menor tiempo de espera)</span
+            >
+          </li>
+          <li class="list-group-item">
+            <span class="badge badge-info">Mejora</span>
+            <span
+              >Carga de datos en <b>Dashboard</b> ahora se realiza una sóla vez
+              durante la sesión. (menor tiempo de espera)</span
+            >
+          </li>
+          <li class="list-group-item">
+            <span class="badge badge-info">Mejora</span>
+            <span>
+              Página <b>Novedades</b>, al seleccionar un beneficiario
+              extranjero, automáticamente se cambia valor de autorreconocimiento
+              a <b>Ninguno</b>. <br />
+              <small class="text-muted">John Piedrahita</small>
+            </span>
+          </li>
+          <li class="list-group-item">
+            <span class="badge badge-success">Nuevo</span>
+            <span>
+              Página
+              <b>Dashboard</b> permite graficar datos de cada UDS, se debe
+              seleccionar en el listado.
+              <img
+                src="assets/img/tutos/Dashboard-uds.gif"
+                width="100%"
+                alt=""
+              />
+            </span>
+          </li>
+          <li class="list-group-item">
+            <span class="badge badge-success">Nuevo</span>
+            <span>
+              Se añadió un botón de visualización a los resultados de UDS en el
+              buscador.
+              <img src="assets/img/tutos/Buscar-uds.gif" width="100%" alt="" />
+            </span>
+          </li>
+          <li class="list-group-item">
+            <span class="badge badge-success">Nuevo</span>
+            <span>
+              Usuarios con rol
+              <b>DOCENTE</b> al iniciar sesión ingresarán al <b>Dashboard</b> de
+              su UDS asignada (en caso de tener dos o más, ingresará a la
+              primera).
+            </span>
+          </li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button
+          (click)="actualizacionVista()"
+          type="button"
+          class="btn btn-outline-primary"
+          data-dismiss="modal"
+        >
+          Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

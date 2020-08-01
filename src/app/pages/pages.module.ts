@@ -30,6 +30,7 @@ import { UsuariosComponent } from './usuarios/usuarios.component';
 import { CrearUsuarioComponent } from './usuarios/crear-usuario/crear-usuario.component';
 import { BusquedaComponent } from './busqueda/busqueda.component';
 import { UsuarioComponent } from './usuarios/usuario/usuario.component';
+import { DashboardUdsComponent } from './dashboard/dashboard-uds/dashboard-uds.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { UsuarioComponent } from './usuarios/usuario/usuario.component';
     UsuariosComponent,
     CrearUsuarioComponent,
     BusquedaComponent,
-    UsuarioComponent
+    UsuarioComponent,
+    DashboardUdsComponent
   ],
   imports: [
     CommonModule,

@@ -99,11 +99,11 @@ export class ContratoComponent implements OnInit {
   obtenerUdsDisponibles(contratoId: string) {
     this.cargandoUdsDisponibles = true;
     this.uds$
-      .obtenerUdsDisponiblesPorContrato(contratoId)
+      .obtenerUds(`enContrato=null+${contratoId}`)
       .subscribe((resp: any) => {
         if (resp.ok) {
           // Obtengo todas las UDS disponibles (las del contrato y null);
-          this.udsDisponibles = resp.udsDisponibles;
+          this.udsDisponibles = resp.uds;
           // Para cada unidad que está en contrato ['_id']
           this.IdUdsSeleccionadas.forEach(udsId => {
             // obtengo index en disponibles

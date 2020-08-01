@@ -187,7 +187,7 @@ export class FormCambiosComponent implements OnInit {
     this.cargandoBeneficiarios = true;
     this.beneficiarios = [];
     let contador = 0;
-    this.uds$.obtenerUnidad($event._id).subscribe((resp: any) => {
+    this.uds$.obtenerUnidad_beneficiarios($event._id).subscribe((resp: any) => {
       if (resp.ok) {
         const mujeresGestantesVinculadas = [];
         this.beneficiarios = resp.unidad.beneficiarios;
@@ -231,8 +231,8 @@ export class FormCambiosComponent implements OnInit {
     this.formCambio.value.direccion = madre.direccion;
     this.formCambio.value.barrio = madre.barrio;
     this.formCambio.value.telefono = madre.telefono;
-    this.formCambio.value.criterio = madre.criterio;
-    this.formCambio.value.infoCriterio = madre.infoCriterio;
+    this.formCambio.value.criterio = 'Otro';
+    this.formCambio.value.infoCriterio = 'Cambio de Mujer Gestante';
     // Info responsable
     this.formCambio.value.respNombre1 = madre.nombre1;
     this.formCambio.value.respNombre2 = madre.nombre2;
@@ -295,6 +295,7 @@ export class FormCambiosComponent implements OnInit {
     if (typeof pais !== 'string') {
       if (pais.value !== 'Colombia') {
         this.listaDepartamentos = [{ departamento: 'Extranjero' }];
+        this.formCambio.get('autorreconocimiento').patchValue('Ninguno');
       } else {
         this.listaDepartamentos = listaDatosColombia;
       }
@@ -384,7 +385,8 @@ export class FormCambiosComponent implements OnInit {
                   this.formCambio.reset();
                   alertSuccess.fire({
                     title: 'Beneficiario reportado',
-                    text: 'Recuerda reportar el egreso de la Mujer Gestante'
+                    text: 'Recuerda reportar el egreso de la Mujer Gestante',
+                    timer: 4000
                   });
                 } else {
                   this.creando = false;

@@ -55,7 +55,7 @@ export class CrearContratoComponent implements OnInit {
 
   obtenerUdsDisponibles() {
     this.cargandoUdsDisponibles = true;
-    this.uds$.obtenerUdsDisponibles().subscribe((resp: any) => {
+    this.uds$.obtenerUds('enContrato=null').subscribe((resp: any) => {
       if (resp.ok) {
         this.udsDisponibles = resp.udsDisponibles;
         this.cargandoUdsDisponibles = false;

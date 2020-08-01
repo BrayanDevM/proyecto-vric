@@ -15,6 +15,36 @@ declare var moment: any;
   styleUrls: ['./beneficiario.component.css']
 })
 export class BeneficiarioComponent implements OnInit {
+  motivosDeEgreso: NgOption = [
+    {
+      value: 'Retiro voluntario del programa',
+      label: 'Retiro voluntario del programa'
+    },
+    { value: 'Tránsito a otro programa', label: 'Tránsito a otro programa' },
+    { value: 'Traslado de municipio', label: 'Traslado de municipio' },
+    { value: 'Cambio a bebé lactante', label: 'Cambio a bebé lactante' },
+    {
+      value: 'Distancia del centro de atención',
+      label: 'Distancia del centro de atención'
+    },
+    { value: 'Edad cumplida', label: 'Edad cumplida' },
+    { value: 'Enfermedad', label: 'Enfermedad' },
+    { value: 'Fallecimiento', label: 'Fallecimiento' },
+    { value: 'No le gusta la comida', label: 'No le gusta la comida' },
+    {
+      value: 'En casa hay quien lo cuide',
+      label: 'En casa hay quien lo cuide'
+    },
+    {
+      value: 'Alto costo para la familia (transporte)',
+      label: 'Alto costo para la familia (transporte)'
+    },
+    { value: 'Cambio vigencia', label: 'Cambio vigencia' },
+    { value: 'Conflicto armado', label: 'Conflicto armado' },
+    { value: 'Desplazamiento forzado', label: 'Desplazamiento forzado' },
+    { value: 'Pasó al SIMAT', label: 'Pasó al SIMAT' },
+    { value: 'Otro', label: 'Otro' }
+  ];
   beneficiario: Beneficiario;
   responsable: RespBeneficiario;
 
@@ -122,7 +152,7 @@ export class BeneficiarioComponent implements OnInit {
   labelInputInfoCriterio = 'Detalle criterio';
 
   // elements
-  @ViewChild('infoCriterio', { static: true }) iInfoCriterio: ElementRef;
+  @ViewChild('infoCriterio') iInfoCriterio: ElementRef;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -130,18 +160,22 @@ export class BeneficiarioComponent implements OnInit {
     private responsables$: RespBeneficiariosService,
     private router: Router
   ) {
-    this.activatedRoute.params.subscribe((resp: Params) => {
+    this.activatedRoute.params.subscribe((params: Params) => {
       this.beneficiarios$
-        .obtenerBeneficiario(resp.id)
-        .subscribe((respBen: any) => {
-          this.beneficiario = respBen.beneficiario;
-          this.obtenerResponsable(this.beneficiario.responsableId._id);
+        .obtenerBeneficiario(params.id)
+        .subscribe((resp: any) => {
+          this.beneficiario = resp.beneficiario;
+          this.obtenerResponsable(this.beneficiario.responsableId);
           this.beneficiario.nacimiento = moment(
             this.beneficiario.nacimiento,
             'DD/MM/YYYY'
           ).format('YYYY-MM-DD');
           this.beneficiario.ingreso = moment(
             this.beneficiario.ingreso,
+            'DD/MM/YYYY'
+          ).format('YYYY-MM-DD');
+          this.beneficiario.egreso = moment(
+            this.beneficiario.egreso,
             'DD/MM/YYYY'
           ).format('YYYY-MM-DD');
           this.cambiarDepartamentos(this.beneficiario.paisNacimiento);

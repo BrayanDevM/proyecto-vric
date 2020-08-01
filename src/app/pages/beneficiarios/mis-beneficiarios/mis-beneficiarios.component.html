@@ -24,7 +24,9 @@
                           bindLabel="nombre"
                           [loading]="cargandoUdsAsignadas"
                           placeholder="Seleccionar Unidad de Servicio"
-                          (change)="traerBeneficiariosUds($event)"
+                          (change)="
+                            obtenerUds_beneficiarios_responsables($event)
+                          "
                           name="unidad"
                         ></ng-select>
                       </div>
@@ -39,7 +41,7 @@
                           bindLabel="label"
                           [searchable]="false"
                           placeholder="Seleccionar por estado"
-                          (change)="traerBeneficiariosPorEstado($event)"
+                          (change)="obtenerBeneficiariosPorEstado($event)"
                           [readonly]="disableRol"
                         ></ng-select>
                       </div>
@@ -82,6 +84,7 @@
               <ng-template #pendientes>
                 <app-tabla-beneficiarios
                   [beneficiarios]="beneficiariosPendientes"
+                  [listarPorUds]="true"
                   (realizoCambios)="actualizarListado($event)"
                   (beneficiarioInfo)="verInfoBeneficiario($event)"
                 ></app-tabla-beneficiarios>
@@ -109,6 +112,7 @@
               <ng-template #DatosSensibles>
                 <app-tabla-beneficiarios
                   [beneficiarios]="beneficiariosDS"
+                  [listarPorUds]="true"
                   (realizoCambios)="actualizarListado($event)"
                   (beneficiarioInfo)="verInfoBeneficiario($event)"
                 ></app-tabla-beneficiarios>
@@ -136,6 +140,7 @@
               <ng-template #vinculados>
                 <app-tabla-beneficiarios
                   [beneficiarios]="beneficiariosVinculados"
+                  [listarPorUds]="true"
                   (realizoCambios)="actualizarListado($event)"
                   (beneficiarioInfo)="verInfoBeneficiario($event)"
                 ></app-tabla-beneficiarios>
@@ -166,6 +171,7 @@
               <ng-template #desvinculados>
                 <app-tabla-beneficiarios
                   [beneficiarios]="beneficiariosDesvinculados"
+                  [listarPorUds]="true"
                   (realizoCambios)="actualizarListado($event)"
                   (beneficiarioInfo)="verInfoBeneficiario($event)"
                 ></app-tabla-beneficiarios>
@@ -193,6 +199,7 @@
               <ng-template #porEstado>
                 <app-tabla-beneficiarios
                   [beneficiarios]="beneficiariosPorEstado"
+                  [listarPorUds]="false"
                   (realizoCambios)="actualizarListado($event)"
                   (beneficiarioInfo)="verInfoBeneficiario($event)"
                 ></app-tabla-beneficiarios>
