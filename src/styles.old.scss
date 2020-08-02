@@ -1,5 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 @import '~@ng-select/ng-select/themes/default.theme.css';
+@import '~bootstrap/scss/bootstrap';
+@import '~bootstrap/scss/bootstrap-reboot';
+@import '~bootstrap/scss/bootstrap-grid';
 
 * {
   font-family: Roboto, 'Sans-serif';
@@ -7,6 +9,11 @@
 
 html,
 body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   font-size: 14px;
 }
 

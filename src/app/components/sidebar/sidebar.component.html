@@ -1,72 +1,90 @@
-<div
-  class="sidebar"
-  data-color="purple"
-  data-background-color="white"
-  data-image="src/assets/img/Logo.svg"
->
-  <!--
-    Tip 1: cambiamos el color usando: data-color="purple | azure | green | orange | danger"
-
-    Tip 2: podemos agregar imagen usando: data-image tag
--->
-  <div class="logo">
-    <img src="assets/img/Logo.svg" width="80%" alt="" />
-    <span class="badge badge-success">Beta</span>
-  </div>
-  <div class="sidebar-wrapper">
-    <ul class="nav">
-      <li
-        *ngFor="let menuItem of menu"
-        class="nav-item"
-        routerLinkActive="active"
-      >
-        <a class="nav-link" [routerLink]="menuItem.url">
-          <i class="material-icons">{{ menuItem.gIcon }}</i>
-          <p>{{ menuItem.titulo }}</p>
-        </a>
-      </li>
-      <li class="nav-item nav-collapse" routerLinkActive="active">
-        <a
-          class="nav-link collapsed"
-          data-toggle="collapse"
-          href="#beneficiarios"
-          aria-expanded="false"
-        >
-          <i class="material-icons">assignment_ind</i>
-          <p>Beneficiarios <b class="caret"></b></p>
-          <div class="collapse" id="beneficiarios">
-            <ul class="nav">
-              <li
-                *ngIf="usuarioRol === 'DOCENTE' || usuarioRol === 'ADMIN'"
-                class="nav-item"
-                routerLinkActive="active"
-              >
-                <a class="nav-link" routerLink="/beneficiarios/novedades">
-                  <span class="sidebar-mini"></span>
-                  <span class="sidebar-normal">Novedades</span>
-                </a>
-              </li>
-              <li class="nav-item" routerLinkActive="active">
-                <a
-                  class="nav-link"
-                  routerLink="/beneficiarios/mis-beneficiarios"
-                >
-                  <span class="sidebar-mini"></span>
-                  <span class="sidebar-normal">Mis beneficiarios</span>
-                </a>
-              </li>
-            </ul>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="actions">
+      <div class="logo">
+        <img src="./assets/img/Icono-dark.svg" width="28px" alt="" />
+      </div>
+      <div class="spacer"></div>
+      <div class="notificactions">
+        <button mat-icon-button>
+          <mat-icon>alarm_outline</mat-icon>
+        </button>
+      </div>
+      <div class="user-btn">
+        <button mat-icon-button class="user-btn">
+          <mat-icon [matMenuTriggerFor]="menu">account_circle</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu" xPosition="before">
+          <div class="user-info-menu">
+            <span>Iniciaste como</span>
+            <span class="email">{{ usuario.correo }}</span>
           </div>
-        </a>
-      </li>
-      <!-- Fijado al final -->
-      <li class="nav-item active-pro ">
-        <a class="nav-link" data-toggle="modal" data-target="#modal-reporte">
-          <i class="material-icons">sms_failed</i>
-          <p>Reportar fallo</p>
-        </a>
-      </li>
-    </ul>
+          <mat-divider></mat-divider>
+          <button mat-menu-item>
+            <mat-icon fontSet="material-icons-two-tone"
+              >account_circle</mat-icon
+            >
+            <span>Perfil</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon fontSet="material-icons-two-tone">settings</mat-icon>
+            <span>Ajustes</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button (click)="cerrarSesion()" mat-menu-item>
+            <mat-icon>power_settings_new</mat-icon>
+            <span>Cerrar sesión</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+    <div class="user">
+      <div class="avatar"></div>
+      <div class="info">
+        <div class="name">{{ usuario.nombre }}</div>
+        <div class="email">{{ usuario.correo }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="navigation-group">
+    <div class="navigation-title-wrapper">
+      <div class="navigation-group-title">Dashboards</div>
+      <div class="navigation-group-subtitle">Subtitulo</div>
+    </div>
+    <div
+      class="navigation-item"
+      *ngFor="let menuItem of menuUsuario"
+      routerLinkActive="active"
+    >
+      <a [routerLink]="menuItem.url" class="navigation-link">
+        <mat-icon>{{ menuItem.gIcon }}</mat-icon>
+        <div class="navigation-link-text">{{ menuItem.titulo }}</div>
+      </a>
+    </div>
+    <div
+      *ngIf="usuario.rol === 'DOCENTE' || usuarioRol === 'ADMIN'"
+      class="navigation-item"
+      routerLinkActive="active"
+    >
+      <a routerLink="/beneficiarios/novedades" class="navigation-link">
+        <mat-icon>add_task</mat-icon>
+        <div class="navigation-link-text">Novedades</div>
+      </a>
+    </div>
+    <div class="navigation-item" routerLinkActive="active">
+      <a routerLink="/beneficiarios/mis-beneficiarios" class="navigation-link">
+        <mat-icon>people</mat-icon>
+        <div class="navigation-link-text">Beneficiarios</div>
+      </a>
+    </div>
+  </div>
+  <div class="navigation-group group-bottom">
+    <div class="navigation-item" routerLinkActive="active">
+      <a href="#" class="navigation-link">
+        <mat-icon>sms_failed</mat-icon>
+        <div class="navigation-link-text">Fallo</div>
+      </a>
+    </div>
   </div>
 </div>
 

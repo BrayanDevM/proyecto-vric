@@ -21,7 +21,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.usuario = this.usuario$.usuario;
-    this.sidebar$.minimizarMenu(this.sidebarMin);
+    // this.sidebar$.minimizarMenu(this.sidebarMin);
   }
 
   logout() {
@@ -30,10 +30,5 @@ export class HeaderComponent implements OnInit {
 
   buscar(termino: any) {
     this.router.navigate(['/buscar', termino]);
-  }
-
-  minimizarSidebar() {
-    this.sidebarMin = !this.sidebarMin;
-    this.sidebar$.minimizarMenu(this.sidebarMin);
   }
 }

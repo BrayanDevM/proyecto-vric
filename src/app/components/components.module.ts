@@ -18,6 +18,8 @@ import { PieChartComponent } from './charts/pie-chart/pie-chart.component';
 import { InfoBeneficiarioComponent } from './modals/info-beneficiario/info-beneficiario.component';
 import { LineChartComponent } from './charts/line-chart/line-chart.component';
 import { ModalActualizacionesComponent } from './modals/modal-actualizaciones/modal-actualizaciones.component';
+import { DialogAcercaDeComponent } from './dialogs/dialog-acerca-de/dialog-acerca-de.component';
+import { MaterialModule } from '../material/material.module';
 
 const components = [
   HeaderComponent,
@@ -31,7 +33,8 @@ const components = [
   PieChartComponent,
   InfoBeneficiarioComponent,
   LineChartComponent,
-  ModalActualizacionesComponent
+  ModalActualizacionesComponent,
+  DialogAcercaDeComponent
 ];
 
 @NgModule({
@@ -42,7 +45,8 @@ const components = [
     NgSelectModule,
     FormsModule,
     ReactiveFormsModule,
-    ChartsModule
+    ChartsModule,
+    MaterialModule
   ],
   exports: [...components]
 })

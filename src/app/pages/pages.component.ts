@@ -8,6 +8,7 @@ declare var jQuery: any;
   templateUrl: './pages.component.html'
 })
 export class PagesComponent implements OnInit, AfterViewInit {
+  mode = 'side';
   constructor(
     private sidebar$: SidebarService,
     private ngSelectConfig: NgSelectConfig
@@ -21,17 +22,17 @@ export class PagesComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.autoMinSidebar();
+    // this.autoMinSidebar();
     this.mostrarModalActualizaciones();
   }
 
-  autoMinSidebar(): void {
-    if (screen.width <= 1024) {
-      setTimeout(() => {
-        this.sidebar$.minimizarMenu(true);
-      }, 500);
-    }
-  }
+  // autoMinSidebar(): void {
+  //   if (screen.width <= 1024) {
+  //     setTimeout(() => {
+  //       this.sidebar$.minimizarMenu(true);
+  //     }, 500);
+  //   }
+  // }
 
   mostrarModalActualizaciones() {
     const modalVisto = localStorage.getItem('cerrarUpdateModal-v1.5.1');

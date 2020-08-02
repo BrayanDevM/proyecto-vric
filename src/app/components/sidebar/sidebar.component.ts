@@ -4,6 +4,7 @@ import { ReportesService } from 'src/app/services/reportes.service';
 import Swal from 'sweetalert2/src/sweetalert2.js';
 import { SidebarService } from 'src/app/services/sidebar.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
+import { Usuario } from 'src/app/models/usuario.model';
 declare var moment: any;
 declare var jQuery: any;
 
@@ -13,8 +14,9 @@ declare var jQuery: any;
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit {
+  usuario: Usuario;
   usuarioRol: string;
-  menu: any = [];
+  menuUsuario: any = [];
   reporte = new Reporte('Fallo', '', moment().format('DD/MM/YYYY'));
 
   constructor(
@@ -24,8 +26,12 @@ export class SidebarComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.menu = this.sidebar$.obtenerMenu();
-    this.usuarioRol = this.usuario$.usuario.rol;
+    this.menuUsuario = this.sidebar$.obtenerMenu();
+    this.usuario = this.usuario$.usuario;
+  }
+
+  cerrarSesion() {
+    this.usuario$.logout();
   }
 
   crearReporte() {

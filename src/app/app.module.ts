@@ -10,6 +10,7 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 
 // Módulos personalizados
 import { ComponentsModule } from './components/components.module';
+import { MaterialModule } from './material/material.module';
 
 // Rutas
 import { AppRoutingModule } from './app-routing.module';
@@ -18,6 +19,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { PagesComponent } from './pages/pages.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DialogAcercaDeComponent } from './components/dialogs/dialog-acerca-de/dialog-acerca-de.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, PagesComponent],
@@ -30,8 +34,11 @@ import { PagesComponent } from './pages/pages.component';
     ReactiveFormsModule,
     LoadingBarHttpClientModule,
     LoadingBarRouterModule,
-    LoadingBarModule
+    LoadingBarModule,
+    BrowserAnimationsModule,
+    MaterialModule
   ],
+  entryComponents: [DialogAcercaDeComponent],
   providers: [],
   bootstrap: [AppComponent]
 })

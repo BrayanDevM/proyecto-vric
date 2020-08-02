@@ -3,19 +3,42 @@
   [color]="'#27a844'"
   ref="http"
 ></ngx-loading-bar>
-<ngx-loading-bar [includeSpinner]="false" ref="router"></ngx-loading-bar>
-<div class="app-wrapper">
-  <div id="app-sidebar" class="app-sidebar">
+<mat-sidenav-container class="vric-container">
+  <mat-sidenav #sidenav [mode]="mode" opened>
     <app-sidebar></app-sidebar>
-  </div>
-  <div class="app-pages">
-    <div class="page-navbar">
-      <app-header></app-header>
-    </div>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <!-------------------------------------- HEADER -------------------------------------->
+    <mat-toolbar color="primary">
+      <button
+        (click)="sidenav.toggle()"
+        mat-icon-button
+        class="example-icon"
+        aria-label="Example icon-button with menu icon"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span class="mat-spacer"></span>
+      <button
+        mat-icon-button
+        class="example-icon favorite-icon"
+        aria-label="Example icon-button with heart icon"
+      >
+        <mat-icon>search</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        class="example-icon"
+        aria-label="Example icon-button with share icon"
+      >
+        <mat-icon>share</mat-icon>
+      </button>
+    </mat-toolbar>
+    <!------------------------------------ FIN HEADER ------------------------------------>
     <div class="page-content">
       <router-outlet></router-outlet>
     </div>
-  </div>
-</div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
 
 <app-modal-actualizaciones></app-modal-actualizaciones>

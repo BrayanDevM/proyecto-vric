@@ -1,162 +1,113 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container">
-    <div class="logo"></div>
-    <span class="badge badge-success">Beta</span>
-    <div class="navbar-nav ml-md-auto">
-      <button
-        class="btn btn-outline-info btn-sm"
-        type="button"
-        data-toggle="modal"
-        data-target="#exampleModal"
-      >
-        Acerca de
+<!------------------------------ NAVBAR ------------------------------>
+<nav class="login-navbar">
+  <mat-toolbar>
+    <div class="container">
+      <img src="./assets/img/Logo.svg" class="logo" alt="" />
+      <span class="beta">Beta</span>
+      <button mat-icon-button (click)="acercaDe()">
+        <mat-icon>info_outline</mat-icon>
       </button>
     </div>
-  </div>
+  </mat-toolbar>
 </nav>
-<div class="wrapper text-center">
-  <form
-    ngNativeValidate
-    [formGroup]="formLogin"
-    (ngSubmit)="login()"
-    class="form-signin card card-body p-5 shadow"
-  >
-    <p class="text-primary icon-users">
-      <i class="fad fa-users fa-3x BDM_fadeInUp"></i>
-    </p>
-    <h3 class="font-weight-normal mb-5">Ingresa tus credenciales</h3>
-    <div class="form-group mb-2">
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <div class="input-group-text">
-            <i class="fas fa-envelope mr-1 ml-1"></i>
+<!------------------------------ Login wrapper ------------------------------>
+<div class="login-wrapper">
+  <div class="container">
+    <div class="row">
+      <!--------------- Columna izquierda con imagen --------------->
+      <div class="col-lg-8 pr-5 d-none d-lg-block">
+        <img src="./assets/img/svg/login-draw.svg" width="100%" alt="" />
+      </div>
+      <!-------------- Columna derecha con formulario -------------->
+      <div class="col-sm-12 col-lg-4 login-form">
+        <form ngNativeValidate [formGroup]="formLogin" (ngSubmit)="login()">
+          <div class="welcome-text">
+            <h1>Bienvenido :)</h1>
+            <p class="text-muted">
+              Para permancer conectado, por favor ingresa con tu información
+              personal, dirección de correo y contraseña.
+            </p>
           </div>
-        </div>
-        <input
-          formControlName="correo"
-          name="correo"
-          type="email"
-          class="form-control"
-          placeholder="Correo..."
-          required
-        />
-      </div>
-    </div>
-    <div class="form-group mb-2">
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <div class="input-group-text">
-            <i class="fas fa-key mr-1 ml-1"></i>
+          <mat-form-field appearance="fill" hideRequiredMarker>
+            <mat-label>Dirección de correo</mat-label>
+            <input
+              matInput
+              placeholder="usuario@dominio.com"
+              autocomplete="off"
+              formControlName="correo"
+              name="correo"
+              required
+            />
+            <mat-icon matPrefix>mail_outline</mat-icon>
+            <!-- <mat-hint>Mensaje</mat-hint> -->
+          </mat-form-field>
+          <mat-form-field appearance="fill" hideRequiredMarker>
+            <mat-label>Contraseña</mat-label>
+            <input
+              matInput
+              [type]="hide ? 'password' : 'text'"
+              formControlName="password"
+              name="password"
+              required
+            />
+            <mat-icon matPrefix>lock_outline</mat-icon>
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="hide = !hide"
+              [attr.aria-label]="'Ocultar contraseña'"
+              [attr.aria-pressed]="hide"
+            >
+              <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </mat-form-field>
+          <div class="form-options">
+            <div class="row">
+              <div class="col">
+                <mat-checkbox
+                  color="primary"
+                  class="mt-3 mb-3"
+                  formControlName="recuerdame"
+                  name="recuerdame"
+                  >Recuerdame</mat-checkbox
+                >
+              </div>
+              <div class="col text-right">
+                <a href="#" class="forgot-password">Olvidaste tu contraseña?</a>
+              </div>
+            </div>
           </div>
-        </div>
-        <input
-          formControlName="password"
-          type="password"
-          name="password"
-          class="form-control"
-          placeholder="Contraseña..."
-          required
-        />
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="checkbox mb-3">
-        <label>
-          <input
-            formControlName="recuerdame"
-            name="recuerdame"
-            class="form-check-input"
-            type="checkbox"
-            value=""
-          />
-          Recordarme
-        </label>
-      </div>
-    </div>
-    <button
-      *ngIf="!cargando"
-      class="btn btn-lg btn-primary btn-block btn-login"
-      type="submit"
-    >
-      Iniciar sesión
-    </button>
-    <button
-      *ngIf="cargando"
-      class="btn btn-lg btn-primary btn-block btn-login"
-      type="button"
-      disabled
-    >
-      <span
-        class="spinner-border spinner-border-sm mr-1"
-        role="status"
-        aria-hidden="true"
-      ></span>
-      Iniciando sesión...
-    </button>
-    <div class="text-center mt-5">
-      <p class="description text-center">También puedes ingresar con</p>
-      <a (click)="googleLogin()" class="btn btn-light btn-google">
-        <img src="assets/img/iconos/google.png" width="12" />
-        Google
-      </a>
-    </div>
-  </form>
-  <p class="text-muted">Brayan Ðevia M.© 2020-2022</p>
-</div>
-
-<!-- Modal -->
-<div
-  class="modal fade"
-  id="exampleModal"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="acercaDe"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="acercaDe">Acerca de</h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>
-          Esta aplicación permite a las Entidades Administradoras de Servicicio
-          - EAS (Aliados estratégicos del Insituto Colombiano del Bienestar
-          Familiar) a administrar la información de sus servicios, las personas
-          autorizadas al uso de esta aplicación reconocen que se manipula la
-          información personal de sus beneficiarios y se comprometen a registrar
-          sólo la información solicitada.
-        </p>
-        <p>
-          Es importante resaltar que esta aplicación amplía las herramientas
-          básicas utilizada por la EAS para la manipulación de la información de
-          sus beneficiarios, la información aquí consignada perdurará hasta la
-          fecha que la EAS tenga contratada con ICBF, posterior a la fecha de
-          finalización de contrato se eliminará toda la información relacionada
-          a los beneficiarios sin copia de seguridad alguna para garantizar la
-          privacidad de los mismos.
-        </p>
-        <p>
-          Actualmente la aplicación se encuentra en fase de desarrollo (beta),
-          por ende, es probable que se realicen cambios a nivel técnico y/o
-          visual.
-        </p>
-        <p>
-          Esta aplicación hace uso de Cookies para almacenar datos se sesión.
-        </p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">
-          Entendido
-        </button>
+          <div class="form-submit">
+            <button
+              type="submit"
+              mat-raised-button
+              color="primary"
+              class="mat-btn-rounded btn-login"
+            >
+              <span *ngIf="!cargando">Iniciar sesión</span>
+              <div *ngIf="cargando" class="spinner-wrapper">
+                <mat-spinner
+                  diameter="26"
+                  color="accent"
+                  class="spinner-white"
+                ></mat-spinner>
+              </div>
+            </button>
+          </div>
+          <div class="col-12">
+            <small class="text-muted">También puedes ingresar con</small>
+            <div class="mt-2">
+              <button
+                mat-icon-button
+                (click)="googleLogin()"
+                class="mat-btn-rounded btn-google"
+              >
+                <mat-icon svgIcon="google"></mat-icon>
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>
