@@ -4,6 +4,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ChartsModule } from 'ng2-charts';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 // Componentes
 import { HeaderComponent } from './header/header.component';
@@ -20,6 +21,7 @@ import { LineChartComponent } from './charts/line-chart/line-chart.component';
 import { ModalActualizacionesComponent } from './modals/modal-actualizaciones/modal-actualizaciones.component';
 import { DialogAcercaDeComponent } from './dialogs/dialog-acerca-de/dialog-acerca-de.component';
 import { MaterialModule } from '../material/material.module';
+import { ApexPieChartComponent } from './apexchart/apex-pie-chart/apex-pie-chart.component';
 
 const components = [
   HeaderComponent,
@@ -34,7 +36,8 @@ const components = [
   InfoBeneficiarioComponent,
   LineChartComponent,
   ModalActualizacionesComponent,
-  DialogAcercaDeComponent
+  DialogAcercaDeComponent,
+  ApexPieChartComponent
 ];
 
 @NgModule({
@@ -46,6 +49,7 @@ const components = [
     FormsModule,
     ReactiveFormsModule,
     ChartsModule,
+    NgApexchartsModule,
     MaterialModule
   ],
   exports: [...components]

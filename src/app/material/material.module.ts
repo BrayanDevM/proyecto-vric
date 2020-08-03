@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { MatGridListModule } from '@angular/material/grid-list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,6 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 
 const MaterialComponents = [
+  MatGridListModule,
   MatButtonModule,
   MatToolbarModule,
   MatIconModule,

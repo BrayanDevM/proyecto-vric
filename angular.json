@@ -29,7 +29,8 @@
             "scripts": [
               "src/assets/js/plugins/moment.min.js",
               "src/assets/js/plugins/moment-with-locales.min.js",
-              "src/assets/js/fontawesome.v5-pro.js"
+              "src/assets/js/fontawesome.v5-pro.js",
+              "node_modules/apexcharts/dist/apexcharts.min.js"
             ]
           },
           "configurations": {

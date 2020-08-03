@@ -31,6 +31,7 @@ import { CrearUsuarioComponent } from './usuarios/crear-usuario/crear-usuario.co
 import { BusquedaComponent } from './busqueda/busqueda.component';
 import { UsuarioComponent } from './usuarios/usuario/usuario.component';
 import { DashboardUdsComponent } from './dashboard/dashboard-uds/dashboard-uds.component';
+import { MaterialModule } from '../material/material.module';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { DashboardUdsComponent } from './dashboard/dashboard-uds/dashboard-uds.c
     CommonModule,
     PagesRoutingModule,
     ComponentsModule,
+    MaterialModule,
     NgSelectModule,
     FormsModule,
     ReactiveFormsModule,

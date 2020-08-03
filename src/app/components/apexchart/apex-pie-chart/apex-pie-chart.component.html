@@ -1,0 +1,44 @@
+<div class="shadow-sm bg-white rounded" #chart>
+  <div class="p-4">
+    <div class="d-flex justify-content-between">
+      <div class="chart-title">
+        {{ titulo }}
+      </div>
+      <div class="chart-time">
+        {{ totalSeries }}
+      </div>
+    </div>
+  </div>
+  <div class="p-4 pt-0 pie-chart">
+    <apx-chart
+      [series]="chartOptions.series"
+      [colors]="chartOptions.colors"
+      [chart]="chartOptions.chart"
+      [labels]="chartOptions.labels"
+      [legend]="chartOptions.legend"
+      [dataLabels]="chartOptions.dataLabels"
+      [tooltip]="chartOptions.tooltip"
+      [plotOptions]="chartOptions.plotOptions"
+      [states]="chartOptions.states"
+      [responsive]="chartOptions.responsive"
+    ></apx-chart>
+  </div>
+  <div class="p-4 pt-0 pb-3">
+    <ul class="list-group list-group-flush">
+      <li
+        class="list-group-item d-flex justify-content-between"
+        *ngFor="let value of data"
+      >
+        <div class="label">
+          <div
+            class="label-color"
+            [ngStyle]="{ 'background-color': value.color }"
+          ></div>
+          <div class="label-text">{{ value.label }}</div>
+        </div>
+        <div class="data">{{ value.serie }}</div>
+        <div class="percent">{{ value.porcentaje }}%</div>
+      </li>
+    </ul>
+  </div>
+</div>

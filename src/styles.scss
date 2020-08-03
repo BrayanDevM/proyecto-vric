@@ -2,19 +2,14 @@
 @import '~bootstrap/scss/bootstrap';
 @import '~bootstrap/scss/bootstrap-reboot';
 @import '~bootstrap/scss/bootstrap-grid';
-
-* {
-  font-family: Roboto, 'Sans-serif';
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 html,
 body {
   height: 100%;
-}
-body {
-  margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
   font-size: 14px;
+  font-family: 'Inter', Roboto, 'Helvetica Neue', sans-serif !important;
+  margin: 0;
 }
 
 /* Sobre escritura de bootstrap */
@@ -47,7 +42,36 @@ button:focus {
 }
 
 .page-content {
-  padding: 1rem 0;
+  padding: 2rem;
+  background-color: #f1f4f9;
+}
+
+.page-content h1,
+.page-content h2 {
+  font-size: 32px;
+  letter-spacing: -0.022em;
+  line-height: 1.25;
+  font-family: 'Inter';
+  font-weight: 600;
+}
+
+.page-content .btn {
+  color: #32405a;
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.header {
+  margin: 1rem 0;
+}
+
+.page-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 // Media Querys **************************************************
