@@ -14,9 +14,8 @@ export class DashboardUdsComponent implements OnInit {
   hoy = moment(moment().format('DD/MM/YYYY'), 'DD/MM/YYYY');
 
   // datos UDS
-  nombre = 'Unidad de Servicio';
-  codigo = 0;
-  cupos = 0;
+  unidadDeServicio: Uds;
+  unidadCupos = 0;
 
   // total por estado
   totalVinculados = 0;
@@ -25,16 +24,25 @@ export class DashboardUdsComponent implements OnInit {
   totalConcurrencia = 0;
   totalDS = 0;
 
-  // total por sexo
-  totalHombres = 0;
-  totalMujeres = 0;
+  // Segregado por población
+  totalLactantes = 0;
+  totalMayoresSeisMeses = 0;
+  totalMG = 0;
 
-  // total por población
+  // Segregado por población vulnerable
+  totalDiscapacitados = 0;
+  totalEtnia = 0;
+  totalVictima = 0;
   totalExtranjeros = 0;
 
+  // Segregado por sexo
+  totalSexoHombre = 0;
+  totalSexoMujer = 0;
+  totalSexoOtro = 0;
+
   // Segregado por fecha
-  ingresosPorMes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-  egresosPorMes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  ingresosPorMes = [];
+  egresosPorMes = [];
   meses = [
     'Feb',
     'Mar',
@@ -48,29 +56,27 @@ export class DashboardUdsComponent implements OnInit {
     'Nov',
     'Dic'
   ];
-  mostrarGraficaLinea = false;
-
-  // Segregados específicos
-  conDiscapacidad = 0;
 
   mgAdolescente = 0;
-  totalMG = 0;
+  enConcurrencia = 0;
 
   constructor(private rutaActual: ActivatedRoute, private uds$: UdsService) {}
 
   ngOnInit(): void {
     this.obtenerUds_beneficiarios().then((unidad: Uds) => {
-      this.cupos = unidad.cupos;
-      this.nombre = unidad.nombre;
-      this.codigo = unidad.codigo;
-      this.contarCupos(unidad.beneficiarios);
-      unidad.beneficiarios.forEach((beneficiario: Beneficiario) => {
-        this.contarPoblacion(beneficiario);
-        this.contarIngresosPorMes(beneficiario);
-        this.contarConDiscapacidad(beneficiario);
-        this.contarMgAdolescente(beneficiario);
-        this.mostrarGraficaLinea = true;
-      });
+      this.unidadDeServicio = unidad;
+      this.unidadCupos = unidad.cupos;
+      this.contarIngresosPorMes(this.unidadDeServicio.beneficiarios);
+      this.unidadDeServicio.beneficiarios.forEach(
+        (beneficiario: Beneficiario) => {
+          this.contarCupos(beneficiario);
+          this.contarPoblacion(beneficiario);
+          this.contarSexo(beneficiario);
+          this.contarTipoBeneficiario(beneficiario);
+          this.contarMgAdolescente(beneficiario);
+          this.contarEnConcurrencia(beneficiario);
+        }
+      );
     });
   }
 
@@ -90,29 +96,82 @@ export class DashboardUdsComponent implements OnInit {
     });
   }
 
-  contarCupos(beneficiarios: Beneficiario[]) {
-    beneficiarios.forEach(beneficiario => {
-      switch (beneficiario.estado) {
-        case 'Vinculado':
-          this.totalVinculados++;
-          break;
-        case 'Desvinculado':
-          this.totalDesvinculados++;
-          break;
-        case 'Dato sensible':
-          this.totalDS++;
-          break;
-        case 'Concurrencia':
-          this.totalConcurrencia++;
-          break;
-        default:
-          this.totalPendientes++;
-          break;
-      }
-    });
+  contarCupos(beneficiario: Beneficiario) {
+    if (
+      beneficiario.estado === 'Vinculado' ||
+      beneficiario.estado === 'Pendiente desvincular'
+    ) {
+      this.totalVinculados += 1;
+    }
+    if (beneficiario.estado === 'Dato sensible') {
+      this.totalDS += 1;
+    }
   }
 
   contarPoblacion(beneficiario: Beneficiario) {
+    const estado = beneficiario.estado;
+    const tipoDoc = beneficiario.tipoDoc;
+
+    if (
+      (beneficiario.autorreconocimiento !== 'Ninguno' &&
+        estado === 'Vinculado') ||
+      (beneficiario.autorreconocimiento !== 'Ninguno' &&
+        estado === 'Dato sensible') ||
+      (beneficiario.autorreconocimiento !== 'Ninguno' &&
+        estado === 'Pendiente desvincular')
+    ) {
+      this.totalEtnia += 1;
+      // console.log(beneficiario);
+    }
+    if (
+      (beneficiario.discapacidad && estado === 'Vinculado') ||
+      (beneficiario.discapacidad && estado === 'Dato sensible') ||
+      (beneficiario.discapacidad && estado === 'Pendiente desvincular')
+    ) {
+      this.totalDiscapacitados += 1;
+      // console.log(beneficiario);
+    }
+    if (
+      (tipoDoc === 'SD' && estado === 'Vinculado') ||
+      (tipoDoc === 'SD' && estado === 'Dato sensible') ||
+      (tipoDoc === 'SD' && estado === 'Pendiente desvincular')
+    ) {
+      this.totalExtranjeros += 1;
+      // console.log(beneficiario);
+    }
+  }
+  contarTipoBeneficiario(beneficiario: Beneficiario) {
+    // datos
+    const nacimiento = moment(beneficiario.nacimiento, 'DD/MM/YYYY');
+    const edadMeses = this.hoy.diff(nacimiento, 'months');
+    const estado = beneficiario.estado;
+
+    if (
+      (edadMeses <= 6 && estado === 'Vinculado') ||
+      (edadMeses <= 6 && estado === 'Dato sensible') ||
+      (edadMeses <= 6 && estado === 'Pendiente desvincular')
+    ) {
+      this.totalLactantes += 1;
+      // console.log(beneficiario);
+    }
+    if (
+      (edadMeses >= 7 && edadMeses <= 60 && estado === 'Vinculado') ||
+      (edadMeses >= 7 && edadMeses <= 60 && estado === 'Dato sensible') ||
+      (edadMeses >= 7 && edadMeses <= 60 && estado === 'Pendiente desvincular')
+    ) {
+      this.totalMayoresSeisMeses += 1;
+      // console.log(beneficiario);
+    }
+    if (
+      (edadMeses > 60 && estado === 'Vinculado') ||
+      (edadMeses > 60 && estado === 'Dato sensible') ||
+      (edadMeses > 60 && estado === 'Pendiente desvincular')
+    ) {
+      this.totalMG += 1;
+      // console.log(beneficiario);
+    }
+  }
+  contarSexo(beneficiario: Beneficiario) {
     // datos
     const nacimiento = moment(beneficiario.nacimiento, 'DD/MM/YYYY');
     const edadAnios = this.hoy.diff(nacimiento, 'years');
@@ -121,58 +180,64 @@ export class DashboardUdsComponent implements OnInit {
     const tipoDoc = beneficiario.tipoDoc;
 
     if (
-      (sexo === 'Hombre' && edadAnios <= 5 && estado === 'Vinculado') ||
-      (sexo === 'Hombre' && edadAnios <= 5 && estado === 'Dato sensible')
+      (sexo === 'Hombre' && estado === 'Vinculado') ||
+      (sexo === 'Hombre' && estado === 'Dato sensible') ||
+      (sexo === 'Hombre' && estado === 'Pendiente desvincular')
     ) {
-      this.totalHombres += 1;
+      this.totalSexoHombre += 1;
       // console.log(beneficiario);
     }
     if (
-      (sexo === 'Mujer' && edadAnios <= 5 && estado === 'Vinculado') ||
-      (sexo === 'Mujer' && edadAnios <= 5 && estado === 'Dato sensible')
+      (sexo === 'Mujer' && estado === 'Vinculado') ||
+      (sexo === 'Mujer' && estado === 'Dato sensible') ||
+      (sexo === 'Mujer' && estado === 'Pendiente desvincular')
     ) {
-      this.totalMujeres += 1;
+      this.totalSexoMujer += 1;
       // console.log(beneficiario);
     }
     if (
-      (edadAnios > 5 && estado === 'Vinculado') ||
-      (edadAnios > 5 && estado === 'Dato sensible')
+      (sexo === 'Otro' && estado === 'Vinculado') ||
+      (sexo === 'Otro' && estado === 'Dato sensible') ||
+      (sexo === 'Otro' && estado === 'Pendiente desvincular')
     ) {
-      this.totalMG += 1;
-      // console.log(beneficiario);
-    }
-    if (
-      (tipoDoc === 'SD' && estado === 'Vinculado') ||
-      (tipoDoc === 'SD' && estado === 'Dato sensible')
-    ) {
-      this.totalExtranjeros += 1;
+      this.totalSexoOtro += 1;
       // console.log(beneficiario);
     }
   }
 
-  contarIngresosPorMes(beneficiario: Beneficiario) {
-    // Formateo fechas
-    const mesIngreso = moment(beneficiario.ingreso, 'DD/MM/YYYY').format('MMM');
-    const mesEgreso = moment(beneficiario.egreso, 'DD/MM/YYYY').format('MMM');
+  contarIngresosPorMes(beneficiarios: Beneficiario[]) {
+    let contador = 0;
+    const ingresosPorMes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    const egresosPorMes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    beneficiarios.forEach(beneficiario => {
+      // Formateo fechas
+      const mesIngreso = moment(beneficiario.ingreso, 'DD/MM/YYYY').format(
+        'MMM'
+      );
+      const mesEgreso = moment(beneficiario.egreso, 'DD/MM/YYYY').format('MMM');
 
-    // Asigno contador en cada mes
-    this.meses.forEach((item: string, i) => {
-      const mes = item.toLowerCase() + '.';
-      if (beneficiario.estado === 'Vinculado' && mesIngreso === mes) {
-        this.ingresosPorMes[i] += 1;
-      }
-      if (beneficiario.estado === 'Desvinculado' && mesEgreso === mes) {
-        this.egresosPorMes[i] += 1;
+      // Asigno contador en cada mes
+      this.meses.forEach((item: string, i) => {
+        const mes = item.toLowerCase() + '.';
+        if (mesIngreso === mes) {
+          ingresosPorMes[i]++;
+        }
+        if (mesEgreso === mes) {
+          egresosPorMes[i]++;
+        }
+      });
+      contador++;
+      if (contador === beneficiarios.length) {
+        this.ingresosPorMes = ingresosPorMes;
+        this.egresosPorMes = egresosPorMes;
+        console.log(this.ingresosPorMes, 'ingresos');
       }
     });
   }
 
-  contarConDiscapacidad(beneficiario: Beneficiario) {
-    if (beneficiario.estado === 'Vinculado' && beneficiario.discapacidad) {
-      this.conDiscapacidad += 1;
-    }
-    if (beneficiario.estado === 'Dato sensible' && beneficiario.discapacidad) {
-      this.conDiscapacidad += 1;
+  contarEnConcurrencia(beneficiario: Beneficiario) {
+    if (beneficiario.estado === 'Concurrencia') {
+      this.enConcurrencia += 1;
     }
   }
 

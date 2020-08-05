@@ -55,6 +55,10 @@ button:focus {
   font-weight: 600;
 }
 
+.page-content h2.title {
+  font-size: 1.8rem;
+}
+
 .page-content .btn {
   color: #32405a;
   font-weight: 500;
@@ -74,7 +78,94 @@ button:focus {
   align-items: center;
 }
 
-// Media Querys **************************************************
+.sidenav-uds-list {
+  width: 280px;
+  padding: 1rem;
+}
+.sidenav-uds-list .mat-list-item-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+// ApexCharts ***************************************************************
+.apexchart .chart-title {
+  text-transform: uppercase;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+.apexchart .chart-subtitle {
+  font-size: 0.9rem;
+}
+
+.apexchart .list-group {
+  font-size: 0.9rem;
+}
+
+.apexchart .label {
+  flex-direction: row;
+  width: 50%;
+}
+
+.apexchart .label-color {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.apexchart .data {
+  font-weight: 500;
+  width: 35px;
+  margin: 0 auto;
+  text-align: end;
+}
+
+.apexchart .percent {
+  width: 55px;
+  text-align: end;
+}
+
+.apexchart .percent,
+.apexchart .chart-actions {
+  color: #64748b;
+}
+
+// Animaciones **************************************************************
+.BDM_fadeInUp {
+  opacity: 0;
+  /* transform: translate(0, 30px); */
+  animation: fadeInUp 0.2s ease-in-out 0s forwards;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d((0, 40px, 0));
+    transform: translate3d(0, 40px, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: none;
+    transform: none;
+  }
+}
+@keyframes fadeOutDown {
+  from {
+    opacity: 0;
+    -webkit-transform: none;
+    transform: none;
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 40px, 0);
+    transform: translate3d(0, 40px, 0);
+  }
+}
+
+// Media Querys *************************************************************
 @media (max-width: 640px) {
   .login-navbar {
     position: relative !important;

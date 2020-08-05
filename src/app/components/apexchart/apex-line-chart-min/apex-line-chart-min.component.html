@@ -1,0 +1,40 @@
+<div class="apexchart shadow-sm bg-white rounded" #chart>
+  <div class="p-4 pb-0">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="chart-header">
+        <div class="chart-title">
+          {{ titulo }}
+        </div>
+        <div class="chart-subtitle text-muted">
+          {{ subtitulo }}
+        </div>
+      </div>
+      <div class="chart-actions">
+        {{ actions }}
+      </div>
+    </div>
+  </div>
+  <div class="line-chart p-4 pb-1 d-flex">
+    <div class="chart-data d-flex flex-column mr-2">
+      <h2 class="m-0">{{ totalData | number }}</h2>
+      <div class="text-muted text-nowrap d-flex align-items-center">
+        <mat-icon class="text-primary mr-1">timeline</mat-icon>
+        <small>Novedades</small>
+      </div>
+    </div>
+    <div class="chart" #chart>
+      <apx-chart
+        [series]="chartOptions.series"
+        [chart]="chartOptions.chart"
+        [xaxis]="chartOptions.xaxis"
+        [yaxis]="chartOptions.yaxis"
+        [dataLabels]="chartOptions.dataLabels"
+        [grid]="chartOptions.grid"
+        [stroke]="chartOptions.stroke"
+        [tooltip]="chartOptions.tooltip"
+        [theme]="chartOptions.theme"
+        [colors]="chartOptions.colors"
+      ></apx-chart>
+    </div>
+  </div>
+</div>

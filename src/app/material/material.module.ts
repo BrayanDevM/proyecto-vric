@@ -11,6 +11,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+import { MatBadgeModule } from '@angular/material/badge';
 
 const MaterialComponents = [
   MatGridListModule,
@@ -24,7 +26,9 @@ const MaterialComponents = [
   MatSidenavModule,
   MatDialogModule,
   MatMenuModule,
-  MatDividerModule
+  MatDividerModule,
+  MatListModule,
+  MatBadgeModule
 ];
 
 @NgModule({

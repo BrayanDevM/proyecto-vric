@@ -1,0 +1,16 @@
+.apexchart .popularity h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #444;
+  font-family: Inter, Roboto, Arial;
+}
+
+.apexchart.bar-chart-staked {
+  /* min-height: 335px; */
+}
+
+.apexchart .chart {
+  width: 100% !important;
+  margin-top: -1.5rem;
+  margin-left: -10px;
+}

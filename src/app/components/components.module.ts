@@ -22,6 +22,9 @@ import { ModalActualizacionesComponent } from './modals/modal-actualizaciones/mo
 import { DialogAcercaDeComponent } from './dialogs/dialog-acerca-de/dialog-acerca-de.component';
 import { MaterialModule } from '../material/material.module';
 import { ApexPieChartComponent } from './apexchart/apex-pie-chart/apex-pie-chart.component';
+import { ApexLineChartTimeseriesComponent } from './apexchart/apex-line-chart-timeseries/apex-line-chart-timeseries.component';
+import { ApexLineChartMinComponent } from './apexchart/apex-line-chart-min/apex-line-chart-min.component';
+import { ApexBarChartStackedComponent } from './apexchart/apex-bar-chart-stacked/apex-bar-chart-stacked.component';
 
 const components = [
   HeaderComponent,
@@ -37,7 +40,10 @@ const components = [
   LineChartComponent,
   ModalActualizacionesComponent,
   DialogAcercaDeComponent,
-  ApexPieChartComponent
+  ApexPieChartComponent,
+  ApexLineChartMinComponent,
+  ApexLineChartTimeseriesComponent,
+  ApexBarChartStackedComponent
 ];
 
 @NgModule({

@@ -23,7 +23,7 @@ export class PagesComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     // this.autoMinSidebar();
-    this.mostrarModalActualizaciones();
+    // this.mostrarModalActualizaciones();
   }
 
   // autoMinSidebar(): void {
@@ -34,12 +34,12 @@ export class PagesComponent implements OnInit, AfterViewInit {
   //   }
   // }
 
-  mostrarModalActualizaciones() {
-    const modalVisto = localStorage.getItem('cerrarUpdateModal-v1.5.1');
-    if (modalVisto === 'true') {
-      return;
-    } else {
-      jQuery('#modalActualizaciones').modal('show');
-    }
-  }
+  // mostrarModalActualizaciones() {
+  //   const modalVisto = localStorage.getItem('cerrarUpdateModal-v1.5.1');
+  //   if (modalVisto === 'true') {
+  //     return;
+  //   } else {
+  //     jQuery('#modalActualizaciones').modal('show');
+  //   }
+  // }
 }
