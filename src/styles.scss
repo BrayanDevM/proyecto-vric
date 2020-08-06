@@ -1,4 +1,5 @@
-@import '~@ng-select/ng-select/themes/default.theme.css';
+// @import '~@ng-select/ng-select/themes/default.theme.css';
+@import '~@ng-select/ng-select/themes/material.theme.css';
 @import '~bootstrap/scss/bootstrap';
 @import '~bootstrap/scss/bootstrap-reboot';
 @import '~bootstrap/scss/bootstrap-grid';
@@ -226,16 +227,34 @@ button:focus {
   font-size: 0.75rem;
   margin-bottom: -2px;
 }
-.form-detalle .form-label {
+.form-detalle .form-field mat-form-field.mat-form-field,
+.form-detalle .form-field ng-select.ng-select {
+  width: 100%;
+}
+.form-detalle
+  .form-field
+  mat-form-field.mat-form-field
+  .mat-form-field-wrapper {
+  padding-bottom: 0;
+}
+.form-detalle .form-field mat-form-field.mat-form-field .mat-form-field-infix {
+  width: auto;
+  font-family: Inter, Roboto, Arial, Helvetica, sans-serif;
+  font-size: 0.92rem;
+}
+.form-detalle .form-field {
   display: flex;
   flex-direction: row;
   align-items: center;
   margin-top: 32px;
   margin-bottom: 0;
+  max-width: 100%;
 }
-.form-detalle .form-label .form-label-icon {
+.form-detalle .form-field .form-field-icon {
   margin: 0 25px 0 -50px;
   color: #64748b;
+}
+.form-detalle.modo-edicion .form-field .form-field-icon {
 }
 
 .clipboard-btn:hover {

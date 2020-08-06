@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Contrato } from 'src/app/models/contrato.model';
 import { Uds } from 'src/app/models/uds.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -7,6 +7,7 @@ import { UdsService } from 'src/app/services/uds.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { NgOption } from '@ng-select/ng-select';
 import { alertSuccess, alertError } from 'src/app/helpers/swal2.config';
+import { Router } from '@angular/router';
 declare var moment: any;
 
 @Component({
@@ -27,16 +28,18 @@ export class CrearContratoComponent implements OnInit {
   // IDs para pasar por formulario
   IdUdsSeleccionadas: string[] = [];
   // Uds seleccionadas para mostrar en tabla
-  UdsEnContrato: Uds[] = [];
+  udsEnContrato: Uds[] = [];
   cargandoUdsDisponibles = false;
   formContrato: FormGroup;
   creando = false;
+  @Output() nuevoContrato: EventEmitter<any> = new EventEmitter();
 
   constructor(
     public contrato$: ContratosService,
     public uds$: UdsService,
     private usuario$: UsuarioService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.formContrato = this.fb.group({
       codigo: [null, Validators.required],
@@ -45,19 +48,27 @@ export class CrearContratoComponent implements OnInit {
       cz: [null, Validators.required],
       eas: [null, Validators.required],
       nit: [null, Validators.required],
-      activo: true
+      activo: false
     });
+  }
+
+  get fv() {
+    return this.formContrato.value;
   }
 
   ngOnInit() {
     this.obtenerUdsDisponibles();
   }
 
+  cancelar() {
+    this.router.navigate(['/contratos']);
+  }
+
   obtenerUdsDisponibles() {
     this.cargandoUdsDisponibles = true;
     this.uds$.obtenerUds('enContrato=null').subscribe((resp: any) => {
       if (resp.ok) {
-        this.udsDisponibles = resp.udsDisponibles;
+        this.udsDisponibles = resp.uds;
         this.cargandoUdsDisponibles = false;
       } else {
         this.cargandoUdsDisponibles = false;
@@ -77,7 +88,7 @@ export class CrearContratoComponent implements OnInit {
     // Agrego id a selección
     this.IdUdsSeleccionadas.push(event._id);
     // Agrego datos de UDS para mostrar
-    this.UdsEnContrato.push(UdsSeleccionada);
+    this.udsEnContrato.unshift(UdsSeleccionada);
     // Elimino de las disponibles
     this.udsDisponibles.splice(i, 1);
     // Refreso arreglo para el select
@@ -90,11 +101,11 @@ export class CrearContratoComponent implements OnInit {
       (unidad: any) => unidad === unidadId
     );
     // La agrego nuevamente como disponible en listado
-    this.udsDisponibles.push(this.UdsEnContrato[index]);
+    this.udsDisponibles.push(this.udsEnContrato[index]);
     // Refreso arreglo para el select
     this.udsDisponibles = [...this.udsDisponibles];
     // La elimino de la vista
-    this.UdsEnContrato.splice(index, 1);
+    this.udsEnContrato.splice(index, 1);
     // La elimino de las seleccionadas
     this.IdUdsSeleccionadas.splice(i, 1);
   }
@@ -124,7 +135,10 @@ export class CrearContratoComponent implements OnInit {
           title: 'Contrato creado'
         });
         this.creando = false;
-        this.formContrato.reset();
+        this.contrato$.nuevoContrato$.emit(resp.contratoCreado);
+        // this.formContrato.reset();
+        this.router.navigate(['/contratos']);
+        // this.router.navigate(['contratos', { outlets: { contrato: [resp.contratoCreado._id] } }]);
       } else {
         alertError.fire({
           title: 'Crear contrato',

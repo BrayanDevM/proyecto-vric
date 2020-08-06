@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { UsuarioService } from './usuario.service';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -16,6 +16,8 @@ export class ContratosService {
   usuario: Usuario;
   token: string;
   API_URL = Config.REST.PRINCIPAL.URL + '/contratos';
+  nuevoContrato$ = new EventEmitter<any>();
+  contratoEliminado$ = new EventEmitter<string>();
 
   constructor(
     private usuario$: UsuarioService,

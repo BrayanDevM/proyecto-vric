@@ -1,7 +1,14 @@
 <mat-sidenav-container [hasBackdrop]="false">
   <mat-sidenav #contrato mode="side" [opened]="openSidebar" position="end">
+    <!-- Component view/edit -->
     <router-outlet
       name="contrato"
+      (activate)="openSidebar = true"
+      (deactivate)="openSidebar = false"
+    ></router-outlet>
+    <!-- Component create -->
+    <router-outlet
+      name="nuevo"
       (activate)="openSidebar = true"
       (deactivate)="openSidebar = false"
     ></router-outlet>
@@ -35,7 +42,12 @@
               <!-- <mat-hint>Hint</mat-hint> -->
             </mat-form-field>
           </div>
-          <button mat-flat-button color="primary" class="btn-md">
+          <button
+            (click)="crear()"
+            mat-flat-button
+            color="primary"
+            class="btn-md"
+          >
             <mat-icon>add</mat-icon> Crear
           </button>
         </div>
@@ -50,7 +62,6 @@
           <th mat-header-cell *matHeaderCellDef>No.</th>
           <td mat-cell *matCellDef="let contrato">
             {{ contrato.codigo }}
-            <div class="td-row-link" (click)="verContrato(contrato._id)"></div>
           </td>
         </ng-container>
         <!-- Name Column -->
@@ -75,7 +86,11 @@
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="tablaColumnas"></tr>
-        <tr mat-row *matRowDef="let row; columns: tablaColumnas"></tr>
+        <tr
+          mat-row
+          (click)="verContrato(contrato._id)"
+          *matRowDef="let row; columns: tablaColumnas; let contrato"
+        ></tr>
         <!-- Row shown when there is no matching data. -->
         <tr class="mat-row" *matNoDataRow>
           <td class="mat-cell" colspan="4">

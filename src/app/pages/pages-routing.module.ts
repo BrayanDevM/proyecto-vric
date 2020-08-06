@@ -65,7 +65,8 @@ const routes: Routes = [
     component: ContratosComponent,
     canActivate: [AdminGuard, VerificaTokenGuard],
     children: [
-      { path: ':id', component: ContratoComponent, outlet: 'contrato' }
+      { path: ':id', component: ContratoComponent, outlet: 'contrato' },
+      { path: 'crear', component: CrearContratoComponent, outlet: 'nuevo' }
     ],
     data: {
       paginaActiva: 'Contratos',
@@ -73,44 +74,6 @@ const routes: Routes = [
         {
           titulo: 'Contratos',
           url: '/contratos'
-        }
-      ],
-      gIcono: 'book'
-    }
-  },
-  {
-    path: 'contratos/contrato/:id',
-    canActivate: [AdminGuard, VerificaTokenGuard],
-    component: ContratoComponent,
-    data: {
-      paginaActiva: 'Ver contrato',
-      partes: [
-        {
-          titulo: 'Contratos',
-          url: '/contratos'
-        },
-        {
-          titulo: 'Ver contrato',
-          url: ''
-        }
-      ],
-      gIcono: 'book'
-    }
-  },
-  {
-    path: 'contratos/crear',
-    canActivate: [AdminGuard, VerificaTokenGuard],
-    component: CrearContratoComponent,
-    data: {
-      paginaActiva: 'Crear contrato',
-      partes: [
-        {
-          titulo: 'Contratos',
-          url: '/contratos'
-        },
-        {
-          titulo: 'Crear contrato',
-          url: ''
         }
       ],
       gIcono: 'book'

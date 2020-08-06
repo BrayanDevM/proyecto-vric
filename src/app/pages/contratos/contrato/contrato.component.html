@@ -1,215 +1,19 @@
-<!-- <div class="content">
-  <div class="container-fluid">
-    <app-breadcrumb></app-breadcrumb>
-    <div class="BDM_fadeInUp">
-      <form
-        ngNativeValidate
-        [formGroup]="formActualizarContrato"
-        (ngSubmit)="actualizar()"
-      >
-        <div class="row BDM_fadeInUp">
-          <div class="col-7">
-            <div class="card">
-              <div class="card-header">
-                Detalles de contrato
-              </div>
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-3">
-                    <div class="form-group">
-                      <label for="codigo">Cód. de Contrato</label>
-                      <input
-                        formControlName="codigo"
-                        name="codigo"
-                        type="number"
-                        class="form-control"
-                        placeholder="Número..."
-                      />
-                    </div>
-                  </div>
-                  <div class="col-2">
-                    <div class="form-group">
-                      <label for="cupos">Cupos</label>
-                      <input
-                        formControlName="cupos"
-                        name="cupos"
-                        type="number"
-                        class="form-control"
-                        placeholder="Cupos..."
-                      />
-                    </div>
-                  </div>
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label for="regional">Regional</label>
-                      <input
-                        formControlName="regional"
-                        name="regional"
-                        type="text"
-                        class="form-control"
-                        placeholder="Regional..."
-                      />
-                    </div>
-                  </div>
-                  <div class="col-3">
-                    <div class="form-group">
-                      <label for="cz">Centro Zonal</label>
-                      <input
-                        formControlName="cz"
-                        name="cz"
-                        type="text"
-                        class="form-control"
-                        placeholder="CZ..."
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-5">
-                    <div class="form-group">
-                      <label for="eas">Nombre de EAS</label>
-                      <input
-                        formControlName="eas"
-                        name="eas"
-                        type="text"
-                        class="form-control"
-                        placeholder="Nombre de EAS..."
-                      />
-                    </div>
-                  </div>
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label for="nit">NIT</label>
-                      <input
-                        formControlName="nit"
-                        name="nit"
-                        type="text"
-                        class="form-control"
-                        placeholder="NIT..."
-                      />
-                    </div>
-                  </div>
-                  <div class="col-3">
-                    <div class="form-group">
-                      <label for="coordinador">Estado de contrato</label>
-                      <ng-select
-                        [items]="estadoContrato"
-                        bindLabel="label"
-                        bindValue="value"
-                        placeholder="Seleccionar estado"
-                        [searchable]="false"
-                        formControlName="activo"
-                        name="activo"
-                      ></ng-select>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-12 mt-3 text-right">
-                    <span *ngIf="contrato" class="text-muted"
-                      >Creado el: {{ contrato.creadoEl }}</span
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-5">
-            <div class="card mb-4">
-              <div class="card-header">
-                UDS asignadas en contrato
-              </div>
-              <div class="card-body">
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th>Codigo</th>
-                      <th>Nombre</th>
-                      <th>Cupos</th>
-                      <th class="text-right">Remover</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let unidad of udsEnContrato; index as i">
-                      <td>{{ unidad.codigo }}</td>
-                      <td>{{ unidad.nombre }}</td>
-                      <td>{{ unidad.cupos }}</td>
-                      <td class="text-right">
-                        <button
-                          (click)="sacarUdsContrato(i, unidad._id)"
-                          class="btn btn-sm btn-danger"
-                        >
-                          <i class="far fa-minus"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div class="form-group">
-                  <label for="uds">Agregar UDS</label>
-                  <ng-select
-                    #udsDisp
-                    [items]="udsDisponibles"
-                    bindLabel="nombre"
-                    bindValue="_id"
-                    placeholder="Seleccionar Unidad de Servicio"
-                    [loading]="cargandoUdsDisponibles"
-                    (change)="agregarUdsContrato($event)"
-                  ></ng-select>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12 text-right">
-            <div class="card mt-4">
-              <div class="card-body">
-                <button
-                  *ngIf="!actualizando"
-                  type="submit"
-                  class="btn btn-success btn-sm mr-2"
-                >
-                  <i class="far fa-sync"></i>
-                  Actualizar
-                </button>
-                <button
-                  *ngIf="actualizando"
-                  [disabled]="actualizando"
-                  type="submit"
-                  class="btn btn-success btn-sm mr-2"
-                >
-                  <span
-                    class="spinner-border spinner-border-sm"
-                    role="status"
-                    aria-hidden="true"
-                  ></span>
-                  Actualizando...
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-</div> -->
-<div class="contrato-detalle">
-  <div class="actions">
-    <button mat-icon-button [matMenuTriggerFor]="menu">
-      <mat-icon>more_vert</mat-icon>
-    </button>
-    <mat-menu #menu="matMenu" xPosition="before">
-      <button mat-menu-item>
-        <mat-icon fontSet="material-icons-two-tone">edit</mat-icon>
-        <span>Editar</span>
-      </button>
-    </mat-menu>
-    <button routerLink="/contratos" matTooltip="Cerrar" mat-icon-button>
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+<div class="contrato-detalle" *ngIf="!editMode; else formEdit">
   <form class="form-detalle">
+    <div class="actions">
+      <button type="button" mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu" xPosition="before">
+        <button type="button" (click)="editMode = true" mat-menu-item>
+          <mat-icon fontSet="material-icons-two-tone">edit</mat-icon>
+          <span>Editar</span>
+        </button>
+      </mat-menu>
+      <button routerLink="/contratos" matTooltip="Cerrar" mat-icon-button>
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
     <div class="logo-icbf">
       <img src="./assets/img/logos/icbf.png" width="128" alt="" />
     </div>
@@ -225,25 +29,26 @@
       <span class="status-text" *ngIf="contrato.activo">Activo</span>
       <span class="status-text" *ngIf="!contrato.activo">Inactivo</span>
     </div>
-    <div class="form-label ubicacion">
-      <mat-icon fontSet="material-icons-two-tone" class="form-label-icon"
+    <div class="form-field ubicacion">
+      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
         >place</mat-icon
       >
       <div class="label">{{ contrato.regional }}, {{ contrato.cz }}</div>
     </div>
-    <div class="form-label eas">
-      <mat-icon fontSet="material-icons-two-tone" class="form-label-icon"
+    <div class="form-field eas">
+      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
         >home_work</mat-icon
       >
       <div class="label">{{ contrato.eas }}</div>
     </div>
-    <div class="form-label nit">
-      <mat-icon fontSet="material-icons-two-tone" class="form-label-icon"
+    <div class="form-field nit">
+      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
         >label</mat-icon
       >
       <div class="label">
         NIT <span id="nit">{{ contrato.nit }}</span>
         <button
+          type="button"
           (click)="copiar('nit')"
           mat-icon-button
           matTooltip="Copiar"
@@ -254,25 +59,179 @@
         </button>
       </div>
     </div>
-    <div class="form-label cupos">
-      <mat-icon fontSet="material-icons-two-tone" class="form-label-icon"
+    <div class="form-field cupos">
+      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
         >people</mat-icon
       >
       <div class="label">{{ contrato.cupos }} Cupos</div>
     </div>
-    <div class="form-label uds">
-      <mat-icon fontSet="material-icons-two-tone" class="form-label-icon"
+    <div class="form-field creadoEl">
+      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+        >today</mat-icon
+      >
+      <div class="label">Creado el {{ contrato.creadoEl }}</div>
+    </div>
+    <div class="form-field uds">
+      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
         >home</mat-icon
       >
       <div class="label">Unidades De Servicio (UDS)</div>
     </div>
-    <mat-divider></mat-divider>
-    <mat-nav-list>
-      <ng-container *ngFor="let unidad of udsEnContrato">
-        <a mat-list-item [routerLink]="['/dashboard/uds', unidad._id]">
-          <div>{{ unidad.nombre }}</div>
-        </a>
-      </ng-container>
-    </mat-nav-list>
+    <div class="list-uds">
+      <mat-divider></mat-divider>
+      <mat-nav-list>
+        <ng-container *ngFor="let unidad of udsEnContrato">
+          <a mat-list-item [routerLink]="['/dashboard/uds', unidad._id]">
+            <div>{{ unidad.nombre }}</div>
+          </a>
+        </ng-container>
+      </mat-nav-list>
+    </div>
   </form>
 </div>
+<!-- TEMPLATE FOR EDIT MODE FORM -->
+<ng-template #formEdit>
+  <div class="contrato-detalle">
+    <form
+      class="form-detalle modo-edicion"
+      ngNativeValidate
+      [formGroup]="formActualizarContrato"
+      (ngSubmit)="actualizar()"
+    >
+      <div class="actions">
+        <button
+          type="button"
+          (click)="editMode = false"
+          mat-icon-button
+          matTooltip="Cancelar"
+        >
+          <mat-icon fontSet="material-icons-two-tone">cancel</mat-icon>
+        </button>
+        <button type="submit" mat-icon-button matTooltip="Guardar">
+          <mat-icon fontSet="material-icons-two-tone">save</mat-icon>
+        </button>
+        <button
+          type="button"
+          (click)="eliminarContrato(contrato)"
+          mat-icon-button
+          matTooltip="Eliminar"
+        >
+          <mat-icon fontSet="material-icons-two-tone">delete</mat-icon>
+        </button>
+      </div>
+      <div class="logo-icbf">
+        <img src="./assets/img/logos/icbf.png" width="128" alt="" />
+      </div>
+      <div class="codigo form-field">
+        <mat-form-field appearance="outline">
+          <mat-label>Código de contrato</mat-label>
+          <input
+            matInput
+            formControlName="codigo"
+            name="codigo"
+            placeholder="Código de contrato"
+          />
+        </mat-form-field>
+      </div>
+      <div class="activo form-field mt-4">
+        <mat-slide-toggle name="activo" formControlName="activo">
+          <span *ngIf="fv.activo">Activo</span>
+          <span *ngIf="!fv.activo">Inactivo</span>
+        </mat-slide-toggle>
+      </div>
+      <div class="ubicacion form-field">
+        <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+          >place</mat-icon
+        >
+        <mat-form-field appearance="outline">
+          <mat-label>Regional ICBF</mat-label>
+          <input
+            matInput
+            formControlName="regional"
+            name="regional"
+            placeholder="Departamento..."
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="ml-2">
+          <mat-label>Centro Zonal</mat-label>
+          <input
+            matInput
+            formControlName="cz"
+            name="cz"
+            placeholder="Centro zonal..."
+          />
+        </mat-form-field>
+      </div>
+      <div class="form-field eas">
+        <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+          >home_work</mat-icon
+        >
+        <mat-form-field appearance="outline" class="ml-2">
+          <mat-label>Entidad Administradora de Servicio (EAS)</mat-label>
+          <input
+            matInput
+            formControlName="eas"
+            name="eas"
+            placeholder="Entidad Administradora de Servicios..."
+          />
+        </mat-form-field>
+      </div>
+      <div class="form-field nit">
+        <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+          >label</mat-icon
+        >
+        <mat-form-field appearance="outline" class="ml-2">
+          <mat-label>NIT</mat-label>
+          <input
+            matInput
+            formControlName="nit"
+            name="nit"
+            placeholder="NIT..."
+          />
+        </mat-form-field>
+      </div>
+      <div class="form-field cupos">
+        <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+          >people</mat-icon
+        >
+        <mat-form-field appearance="outline" class="ml-2">
+          <mat-label>Cupos asignados</mat-label>
+          <input
+            matInput
+            type="numeric"
+            formControlName="cupos"
+            name="cupos"
+            placeholder="Cupos asignados..."
+          />
+        </mat-form-field>
+      </div>
+      <div class="form-field uds">
+        <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+          >home</mat-icon
+        >
+        <div class="label">Unidades De Servicio (UDS)</div>
+      </div>
+      <div class="form-field agregar-uds mt-1">
+        <ng-select
+          #udsDisp
+          [items]="udsDisponibles"
+          bindLabel="nombre"
+          bindValue="_id"
+          placeholder="Asignar UDS disponible"
+          [loading]="cargandoUdsDisponibles"
+          (change)="agregarUdsContrato($event)"
+        ></ng-select>
+      </div>
+      <div class="list-uds">
+        <mat-divider></mat-divider>
+        <mat-nav-list>
+          <ng-container *ngFor="let unidad of udsEnContrato">
+            <a mat-list-item [routerLink]="['/dashboard/uds', unidad._id]">
+              <div>{{ unidad.nombre }}</div>
+            </a>
+          </ng-container>
+        </mat-nav-list>
+      </div>
+    </form>
+  </div>
+</ng-template>

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ContratosService } from 'src/app/services/contratos.service';
 import { Contrato } from 'src/app/models/contrato.model';
 import {
@@ -6,33 +6,59 @@ import {
   alertSuccess,
   alertError
 } from 'src/app/helpers/swal2.config';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-contratos',
   templateUrl: './contratos.component.html',
   styleUrls: ['./contratos.component.css']
 })
-export class ContratosComponent implements OnInit {
+export class ContratosComponent implements OnInit, OnDestroy {
+  contratos: Contrato[] = [];
   tablaColumnas: string[] = ['codigo', 'eas', 'nit', 'regional', 'cupos'];
   tablaData: MatTableDataSource<any>;
   cantRregistros = 0;
   cargando = false;
   openSidebar = false;
+  nuevoContrato: Subscription;
+  contratoEliminado: Subscription;
 
-  constructor(public contratos$: ContratosService, private router: Router) {}
+  constructor(
+    public contratos$: ContratosService,
+    private router: Router,
+    private ruta: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     this.obtenerContratos();
+
+    this.nuevoContrato = this.contratos$.nuevoContrato$.subscribe(contrato => {
+      this.contratos.push(contrato);
+      this.tablaData = new MatTableDataSource(this.contratos);
+    });
+
+    this.contratoEliminado = this.contratos$.contratoEliminado$.subscribe(
+      id => {
+        const i = this.contratos.findIndex(contrato => contrato._id === id);
+        this.contratos.splice(i, 1);
+        this.tablaData = new MatTableDataSource(this.contratos);
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    this.nuevoContrato.unsubscribe();
   }
 
   obtenerContratos() {
     this.cargando = true;
     this.contratos$.obtenerContratos().subscribe((resp: any) => {
       if (resp.ok) {
+        this.contratos = resp.contratos;
         this.cantRregistros = resp.registros;
-        this.tablaData = new MatTableDataSource(resp.contratos);
+        this.tablaData = new MatTableDataSource(this.contratos);
       } else {
         this.cargando = false;
       }
@@ -40,7 +66,8 @@ export class ContratosComponent implements OnInit {
   }
 
   crear() {
-    this.router.navigate(['/contratos/crear']);
+    // this.router.navigate(['/contratos/crear']);
+    this.router.navigate(['contratos', { outlets: { nuevo: 'crear' } }]);
   }
 
   filtrarTabla(event: Event) {
@@ -50,32 +77,5 @@ export class ContratosComponent implements OnInit {
 
   verContrato(id?: string) {
     this.router.navigate(['contratos', { outlets: { contrato: [id] } }]);
-  }
-
-  eliminarContrato(contrato: Contrato) {
-    alertDanger
-      .fire({
-        title: 'Eliminar contrato',
-        html: `¿Estás seguro que deseas eliminar el contrato <b>${contrato.codigo}</b>?, esta acción no puede deshacerse`,
-        confirmButtonText: 'Estoy seguro, eliminar'
-      })
-      .then(result => {
-        if (result.value) {
-          this.contratos$.eliminarContrato(contrato).subscribe((resp: any) => {
-            if (resp.ok) {
-              this.obtenerContratos();
-              alertSuccess.fire({
-                title: 'Contrato eliminado'
-              });
-            } else {
-              alertError.fire({
-                title: 'Eliminar contrato',
-                text:
-                  'No se ha podido eliminar el contrato, intentalo nuevamente'
-              });
-            }
-          });
-        }
-      });
   }
 }
