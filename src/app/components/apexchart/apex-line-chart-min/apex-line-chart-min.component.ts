@@ -37,10 +37,22 @@ export class ApexLineChartMinComponent implements OnInit, OnChanges {
   @Input() subtitulo = '';
   @Input() series: any[] = [];
   @Input() seriesNombre = '';
-  @Input() categorias: string[] = [];
   @Input() colors: string[] = [];
   @Input() tiempoContador = 1000;
   @Input() actions = '';
+  @Input() categorias: string[] = [
+    'Feb',
+    'Mar',
+    'Abr',
+    'May',
+    'Jun',
+    'Jul',
+    'Ago',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dic'
+  ];
   totalData = 0;
 
   constructor() {
@@ -126,9 +138,10 @@ export class ApexLineChartMinComponent implements OnInit, OnChanges {
         data: this.series
       }
     ];
+    this.chartOptions.xaxis.categories = this.categorias;
     this.chartOptions.colors = this.colors;
     const countSeries = this.totalValores(this.series);
-    this.contador(this.tiempoContador, countSeries);
+    this.contador(countSeries);
   }
 
   totalValores(series: number[]) {
@@ -140,7 +153,7 @@ export class ApexLineChartMinComponent implements OnInit, OnChanges {
     return total;
   }
 
-  contador(duracion: number, valor: number) {
+  contador(valor: number) {
     // Cuanto tiempo tarda la animación
     const animationDuration = 2000;
     // Calcule cuánto tiempo debe durar cada "fotograma", si queremos actualizar la animación 60 veces por segundo

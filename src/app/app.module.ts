@@ -21,7 +21,14 @@ import { LoginComponent } from './login/login.component';
 import { PagesComponent } from './pages/pages.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DialogAcercaDeComponent } from './components/dialogs/dialog-acerca-de/dialog-acerca-de.component';
-import { MatDialogModule } from '@angular/material/dialog';
+import { DefaultUrlSerializer, UrlSerializer, UrlTree } from '@angular/router';
+
+export class MyUrlSerializer extends DefaultUrlSerializer
+  implements UrlSerializer {
+  serialize(tree: UrlTree): string {
+    return super.serialize(tree).replace(/\(|\)|\w+-\w+:/g, '');
+  }
+}
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, PagesComponent],
@@ -39,7 +46,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     MaterialModule
   ],
   entryComponents: [DialogAcercaDeComponent],
-  providers: [],
+  providers: [{ provide: UrlSerializer, useClass: MyUrlSerializer }],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

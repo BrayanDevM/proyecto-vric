@@ -1,4 +1,4 @@
-<div class="content">
+<!-- <div class="content">
   <div class="container-fluid">
     <app-breadcrumb></app-breadcrumb>
     <div class="BDM_fadeInUp">
@@ -193,4 +193,86 @@
       </form>
     </div>
   </div>
+</div> -->
+<div class="contrato-detalle">
+  <div class="actions">
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu" xPosition="before">
+      <button mat-menu-item>
+        <mat-icon fontSet="material-icons-two-tone">edit</mat-icon>
+        <span>Editar</span>
+      </button>
+    </mat-menu>
+    <button routerLink="/contratos" matTooltip="Cerrar" mat-icon-button>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <form class="form-detalle">
+    <div class="logo-icbf">
+      <img src="./assets/img/logos/icbf.png" width="128" alt="" />
+    </div>
+    <h2 class="form-title">Contrato {{ contrato.codigo }}</h2>
+    <div
+      class="status alert"
+      [ngClass]="{
+        'alert-success': contrato.activo,
+        'alert-danger': !contrato.activo
+      }"
+    >
+      <!-- <div class="status-indicator bg-success"></div> -->
+      <span class="status-text" *ngIf="contrato.activo">Activo</span>
+      <span class="status-text" *ngIf="!contrato.activo">Inactivo</span>
+    </div>
+    <div class="form-label ubicacion">
+      <mat-icon fontSet="material-icons-two-tone" class="form-label-icon"
+        >place</mat-icon
+      >
+      <div class="label">{{ contrato.regional }}, {{ contrato.cz }}</div>
+    </div>
+    <div class="form-label eas">
+      <mat-icon fontSet="material-icons-two-tone" class="form-label-icon"
+        >home_work</mat-icon
+      >
+      <div class="label">{{ contrato.eas }}</div>
+    </div>
+    <div class="form-label nit">
+      <mat-icon fontSet="material-icons-two-tone" class="form-label-icon"
+        >label</mat-icon
+      >
+      <div class="label">
+        NIT <span id="nit">{{ contrato.nit }}</span>
+        <button
+          (click)="copiar('nit')"
+          mat-icon-button
+          matTooltip="Copiar"
+          matTooltipPosition="right"
+          class="clipboard-btn ml-2"
+        >
+          <mat-icon class="clipboard-icon">content_copy</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="form-label cupos">
+      <mat-icon fontSet="material-icons-two-tone" class="form-label-icon"
+        >people</mat-icon
+      >
+      <div class="label">{{ contrato.cupos }} Cupos</div>
+    </div>
+    <div class="form-label uds">
+      <mat-icon fontSet="material-icons-two-tone" class="form-label-icon"
+        >home</mat-icon
+      >
+      <div class="label">Unidades De Servicio (UDS)</div>
+    </div>
+    <mat-divider></mat-divider>
+    <mat-nav-list>
+      <ng-container *ngFor="let unidad of udsEnContrato">
+        <a mat-list-item [routerLink]="['/dashboard/uds', unidad._id]">
+          <div>{{ unidad.nombre }}</div>
+        </a>
+      </ng-container>
+    </mat-nav-list>
+  </form>
 </div>

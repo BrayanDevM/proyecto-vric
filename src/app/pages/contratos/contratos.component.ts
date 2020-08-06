@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ContratosService } from 'src/app/services/contratos.service';
 import { Contrato } from 'src/app/models/contrato.model';
 import {
@@ -7,6 +7,7 @@ import {
   alertError
 } from 'src/app/helpers/swal2.config';
 import { Router } from '@angular/router';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-contratos',
@@ -14,8 +15,11 @@ import { Router } from '@angular/router';
   styleUrls: ['./contratos.component.css']
 })
 export class ContratosComponent implements OnInit {
-  contratos: Contrato[] = [];
+  tablaColumnas: string[] = ['codigo', 'eas', 'nit', 'regional', 'cupos'];
+  tablaData: MatTableDataSource<any>;
+  cantRregistros = 0;
   cargando = false;
+  openSidebar = false;
 
   constructor(public contratos$: ContratosService, private router: Router) {}
 
@@ -27,8 +31,8 @@ export class ContratosComponent implements OnInit {
     this.cargando = true;
     this.contratos$.obtenerContratos().subscribe((resp: any) => {
       if (resp.ok) {
-        this.cargando = false;
-        this.contratos = resp.contratos;
+        this.cantRregistros = resp.registros;
+        this.tablaData = new MatTableDataSource(resp.contratos);
       } else {
         this.cargando = false;
       }
@@ -37,6 +41,15 @@ export class ContratosComponent implements OnInit {
 
   crear() {
     this.router.navigate(['/contratos/crear']);
+  }
+
+  filtrarTabla(event: Event) {
+    const criterioBusqueda = (event.target as HTMLInputElement).value;
+    this.tablaData.filter = criterioBusqueda.trim().toLowerCase();
+  }
+
+  verContrato(id?: string) {
+    this.router.navigate(['contratos', { outlets: { contrato: [id] } }]);
   }
 
   eliminarContrato(contrato: Contrato) {

@@ -7,6 +7,7 @@ import { UdsService } from 'src/app/services/uds.service';
 import { Uds } from 'src/app/models/uds.model';
 import { NgOption, NgSelectComponent } from '@ng-select/ng-select';
 import { alertSuccess } from 'src/app/helpers/swal2.config';
+import { MatSnackBar } from '@angular/material/snack-bar';
 declare var moment: any;
 
 @Component({
@@ -39,7 +40,8 @@ export class ContratoComponent implements OnInit {
     private rutaActual: ActivatedRoute,
     public contrato$: ContratosService,
     public uds$: UdsService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private snackBar$: MatSnackBar
   ) {
     this.formActualizarContrato = this.fb.group({
       codigo: [null, Validators.required],
@@ -155,6 +157,31 @@ export class ContratoComponent implements OnInit {
     this.udsEnContrato.splice(index, 1);
     // La elimino de las seleccionadas
     this.IdUdsSeleccionadas.splice(i, 1);
+  }
+
+  copiar(elementId: any) {
+    // Create an auxiliary hidden input
+    const element = document.createElement('input');
+
+    // Get the text from the element passed into the input
+    element.setAttribute('value', document.getElementById(elementId).innerHTML);
+
+    // Append the aux input to the body
+    document.body.appendChild(element);
+
+    // Highlight the content
+    element.select();
+
+    // Execute the copy command
+    document.execCommand('copy');
+
+    // Remove the input from the body
+    document.body.removeChild(element);
+    this.snackBar$.open('Copiado al portapapeles', 'Cerrar', {
+      duration: 4500,
+      horizontalPosition: 'end',
+      verticalPosition: 'bottom'
+    });
   }
 
   actualizar() {

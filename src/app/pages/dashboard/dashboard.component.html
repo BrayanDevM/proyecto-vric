@@ -66,10 +66,11 @@
             <div class="mb-3">
               <app-apex-line-chart-min
                 titulo="Ingresos"
+                subtitulo="Registrados en CUÉNTAME"
                 [seriesNombre]="'Ingresos'"
                 [series]="ingresosPorMes"
                 [colors]="['#69c18e']"
-                [tiempoContador]="-1000"
+                [categorias]="mesesFull"
               ></app-apex-line-chart-min>
             </div>
           </div>
@@ -77,17 +78,18 @@
             <div class="mb-4">
               <app-apex-line-chart-min
                 titulo="Egresos"
+                subtitulo="Registrados en esta aplicación"
                 [seriesNombre]="'Egresos'"
                 [series]="egresosPorMes"
                 [colors]="['#f05251']"
-                [tiempoContador]="1000"
+                [categorias]="mesesFull"
               ></app-apex-line-chart-min>
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col-sm-12 mb-4 pt-2">
-            <h2 class="title mb-0">Beneficiarios</h2>
+            <h2 class="subtitle mb-0">Beneficiarios</h2>
             <div class="text-muted">
               Información demográfica y comportamiento general de los
               beneficiarios

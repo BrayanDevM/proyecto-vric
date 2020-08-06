@@ -64,6 +64,9 @@ const routes: Routes = [
     path: 'contratos',
     component: ContratosComponent,
     canActivate: [AdminGuard, VerificaTokenGuard],
+    children: [
+      { path: ':id', component: ContratoComponent, outlet: 'contrato' }
+    ],
     data: {
       paginaActiva: 'Contratos',
       partes: [

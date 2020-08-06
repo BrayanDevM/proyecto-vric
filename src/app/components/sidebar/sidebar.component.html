@@ -11,8 +11,8 @@
         </button>
       </div>
       <div class="user-btn">
-        <button mat-icon-button class="user-btn">
-          <mat-icon [matMenuTriggerFor]="menu">account_circle</mat-icon>
+        <button mat-icon-button [matMenuTriggerFor]="menu" class="user-btn">
+          <mat-icon>account_circle</mat-icon>
         </button>
         <mat-menu #menu="matMenu" xPosition="before">
           <div class="user-info-menu">
@@ -39,7 +39,9 @@
       </div>
     </div>
     <div class="user">
-      <div class="avatar"></div>
+      <div class="avatar">
+        <img src="./assets/img/developer.png" width="100%" alt="" />
+      </div>
       <div class="info">
         <div class="name">{{ usuario.nombre }}</div>
         <div class="email">{{ usuario.correo }}</div>

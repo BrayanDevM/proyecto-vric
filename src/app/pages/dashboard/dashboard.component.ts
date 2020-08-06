@@ -61,6 +61,19 @@ export class DashboardComponent implements OnInit {
     'Nov',
     'Dic'
   ];
+  mesesFull = [
+    'Febrero',
+    'Marzo',
+    'Abril',
+    'Mayo',
+    'Junio',
+    'Julio',
+    'Agosto',
+    'Septiembre',
+    'Octubre',
+    'Noviembre',
+    'Diciciembre'
+  ];
 
   // Segregados específicos
   enConcurrencia = 0;
@@ -184,7 +197,7 @@ export class DashboardComponent implements OnInit {
     this.totalVictima = 0;
     this.totalExtranjeros = 0;
     this.enConcurrencia = 0;
-    uds.forEach((unidad: any) => {
+    uds.forEach((unidad: any, i) => {
       unidad.beneficiarios.forEach((beneficiario: any) => {
         this.contarPoblacion(beneficiario);
         this.contarIngresosPorMes(beneficiario);
@@ -193,6 +206,27 @@ export class DashboardComponent implements OnInit {
         this.contarSexo(beneficiario);
         this.contarEnConcurrencia(beneficiario);
       });
+    });
+    this.limpiarIngresosEgresos();
+  }
+
+  limpiarIngresosEgresos() {
+    const mesActual = moment(this.hoy, 'DD/MM/YYYY').format('MMM');
+
+    this.meses.forEach((mes, i) => {
+      mes = mes.toLowerCase() + '.';
+      if (mes === mesActual) {
+        // remuevo datos de los meses que aún no llegan
+        // y el primer elemento (cuando se cargan todos los beneficiarios masivamente)
+        this.ingresosPorMes.splice(i + 1, 12);
+        this.ingresosPorMes.splice(0, 1);
+
+        this.egresosPorMes.splice(i + 1, 12);
+        this.egresosPorMes.splice(0, 1);
+
+        this.mesesFull.splice(0, 1);
+        return;
+      }
     });
   }
 
@@ -339,7 +373,6 @@ export class DashboardComponent implements OnInit {
     // Formateo fechas
     const mesIngreso = moment(beneficiario.ingreso, 'DD/MM/YYYY').format('MMM');
     const mesEgreso = moment(beneficiario.egreso, 'DD/MM/YYYY').format('MMM');
-
     // Asigno contador en cada mes
     this.meses.forEach((item: string, i) => {
       const mes = item.toLowerCase() + '.';

@@ -20,7 +20,8 @@
   <div class="popularity p-4 pt-0 pb-0">
     <h3 class="mb-0">
       <span [ngStyle]="{ color: colorValorPopular }">{{ valorPopular }}</span>
-      es el valor más alto
+      <span *ngIf="valorPopular !== ''"> es el valor más alto</span>
+      <span *ngIf="valorPopular === ''">No tienes datos en esta categoría</span>
     </h3>
   </div>
   <div class="pb-4 pr-3 d-flex justify-content-center align-items-center">

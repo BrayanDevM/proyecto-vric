@@ -168,7 +168,7 @@ export class ApexBarChartStackedComponent implements OnInit, OnChanges {
         serie,
         label: labels[i],
         color: colors[i],
-        porcentaje: ((serie * 100) / this.totalSeries).toFixed(2)
+        porcentaje: this.calcularPorcentaje(serie, this.totalSeries)
       });
     });
     return data;
@@ -183,11 +183,24 @@ export class ApexBarChartStackedComponent implements OnInit, OnChanges {
     return total;
   }
 
+  calcularPorcentaje(valor: number, total: number) {
+    const porcentaje: string = ((valor * 100) / total).toFixed(2);
+    if (porcentaje === 'NaN') {
+      return 0;
+    } else {
+      return porcentaje;
+    }
+  }
+
   buscarValorPopular(series: number[]): void {
     const valorMasAlto = Math.max.apply(null, series);
     const i = this.data.findIndex((obj: any) => obj.serie === valorMasAlto);
-
-    this.valorPopular = this.data[i].label;
-    this.colorValorPopular = this.data[i].color;
+    if (valorMasAlto === 0) {
+      this.valorPopular = '';
+      this.colorValorPopular = '#464646';
+    } else {
+      this.valorPopular = this.data[i].label;
+      this.colorValorPopular = this.data[i].color;
+    }
   }
 }

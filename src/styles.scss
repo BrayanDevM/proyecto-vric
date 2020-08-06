@@ -17,6 +17,11 @@ button:focus {
   outline: none;
 }
 
+.btn {
+  padding-bottom: 0.2rem !important;
+  padding-top: 0.2rem !important;
+}
+
 .mat-spacer {
   flex: 1 1 auto;
 }
@@ -27,6 +32,10 @@ button:focus {
 
 .vric-container {
   height: 100vh;
+}
+
+.header-toolbar .mat-toolbar {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
 .mat-drawer-inner-container {
@@ -41,13 +50,21 @@ button:focus {
   width: 200px;
 }
 
+.mat-drawer-container {
+  background-color: #f1f4f9 !important;
+  min-height: calc(100% - 64px);
+}
 .page-content {
   padding: 2rem;
   background-color: #f1f4f9;
 }
 
-.page-content h1,
-.page-content h2 {
+.header {
+  margin: 1rem 0;
+}
+.header h1,
+.header h2,
+.page-title .title {
   font-size: 32px;
   letter-spacing: -0.022em;
   line-height: 1.25;
@@ -55,20 +72,47 @@ button:focus {
   font-weight: 600;
 }
 
-.page-content h2.title {
-  font-size: 1.8rem;
+.header .search-input .mat-form-field-wrapper {
+  padding-bottom: 0;
+  margin: 0;
 }
-
-.page-content .btn {
-  color: #32405a;
+.header .search-input .mat-form-field-flex {
+  min-height: 40px;
+  background-color: #fff;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.header .search-input .mat-form-field-flex:hover .mat-form-field-outline-start,
+.header .search-input .mat-form-field-flex:hover .mat-form-field-outline-gap,
+.header .search-input .mat-form-field-flex:hover .mat-form-field-outline-end {
+  // border-color: #cfd8e3;
+  border-width: 1px;
+}
+.header .search-input .mat-form-field-prefix {
+  color: #97a6ba;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 30px;
+}
+.header .search-input .mat-form-field-infix {
+  display: flex;
+  width: 130px;
+  height: 40px;
+  border: none;
+  padding: 0;
+  margin-left: 2px;
+}
+.header .search-input .mat-form-field-infix input::-webkit-input-placeholder {
   font-weight: 500;
-  font-size: 0.9rem;
-  padding-top: 2px;
-  padding-bottom: 2px;
 }
 
-.header {
-  margin: 1rem 0;
+.page-title .title-bold {
+  font-weight: 800;
+}
+
+.page-content .subtitle {
+  font-size: 1.8rem;
 }
 
 .page-actions {
@@ -76,6 +120,10 @@ button:focus {
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
+}
+
+.page-actions .btn-md {
+  min-height: 40px;
 }
 
 .sidenav-uds-list {
@@ -86,6 +134,132 @@ button:focus {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.mat-table {
+  width: 100%;
+  box-shadow: none;
+  font-family: Inter, Roboto, Arial, sans-serif;
+}
+.contratos-lista tr.mat-row {
+  height: 64px;
+  cursor: pointer;
+}
+.contratos-lista tr.mat-header-row {
+  background-color: #fcfdff;
+}
+.contratos-lista tr.mat-header-row th {
+  text-transform: capitalize;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+.contratos-lista tr.mat-row {
+  position: relative;
+}
+.contratos-lista tr.mat-row:hover {
+  background-color: #f1f5ff;
+}
+.contratos-lista tr.mat-row td:first-child,
+.contratos-lista tr.mat-header-row th:first-child {
+  padding-left: 32px;
+}
+.contratos-lista tr.mat-row td:last-child,
+.contratos-lista tr.mat-header-row th:last-child {
+  padding-right: 32px;
+}
+
+.td-row-link {
+  position: absolute;
+  width: 100%;
+  height: 64px;
+  left: 0;
+  bottom: 0;
+}
+
+// SIDENAV DETAIL COMPONENTS ********************************************
+.contrato-detalle {
+  position: relative;
+  width: 480px;
+  height: 100%;
+  background-color: #fff;
+  border-left: 1px solid #eee;
+}
+.contrato-detalle .actions {
+  position: absolute;
+  top: 32px;
+  right: 24px;
+  display: flex;
+  flex-direction: row;
+}
+.contrato-detalle .actions button:hover {
+  background-color: #eee;
+}
+.form-detalle {
+  padding: 56px 64px 64px 80px;
+}
+.form-detalle .form-title {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.form-detalle .status {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: fit-content;
+  padding: 0.1rem 0.5rem;
+  border-radius: 5px;
+  border: none;
+}
+.form-detalle .status .status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 5rem;
+  background-color: #4e9dff;
+  margin-right: 5px;
+  box-shadow: 0 0 2px #9a9a9a;
+}
+.form-detalle .status .status-text {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  margin-bottom: -2px;
+}
+.form-detalle .form-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 32px;
+  margin-bottom: 0;
+}
+.form-detalle .form-label .form-label-icon {
+  margin: 0 25px 0 -50px;
+  color: #64748b;
+}
+
+.clipboard-btn:hover {
+  background-color: #eee;
+}
+.clipboard-btn .clipboard-icon {
+  color: #525252;
+  font-size: 1.5rem;
+}
+
+.logo-icbf {
+  border: 1px solid #d2d2d2;
+  width: 128px;
+  height: 128px;
+  margin-bottom: 32px;
+  padding: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #fff;
+}
+.logo-icbf img {
+  width: 100%;
 }
 
 // ApexCharts ***************************************************************
@@ -120,6 +294,12 @@ button:focus {
   width: 35px;
   margin: 0 auto;
   text-align: end;
+}
+
+.apexchart .chart-data h2 {
+  font-size: 3rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem !important;
 }
 
 .apexchart .percent {

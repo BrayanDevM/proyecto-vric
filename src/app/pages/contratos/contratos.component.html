@@ -1,4 +1,93 @@
-<div class="content">
+<mat-sidenav-container [hasBackdrop]="false">
+  <mat-sidenav #contrato mode="side" [opened]="openSidebar" position="end">
+    <router-outlet
+      name="contrato"
+      (activate)="openSidebar = true"
+      (deactivate)="openSidebar = false"
+    ></router-outlet>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div style="height: 100%;">
+      <div class="header row p-5 pb-4 m-0 bg-white">
+        <div class="page-title col-xl-6 p-0">
+          <h2 class="title-bold m-0">Contratos</h2>
+          <div class="text-muted ml-1">
+            <span *ngIf="cantRregistros !== 1"
+              >{{ cantRregistros }} Contratos</span
+            >
+            <span *ngIf="cantRregistros === 1"
+              >{{ cantRregistros }} Contrato</span
+            >
+          </div>
+        </div>
+        <div class="page-actions col-xl-6 p-0">
+          <div class="mr-3">
+            <mat-form-field appearance="outline" class="search-input">
+              <!-- <mat-label></mat-label> -->
+              <input
+                matInput
+                (keyup)="filtrarTabla($event)"
+                placeholder="Buscar contratos"
+                autocomplete="off"
+                #buscar
+              />
+              <mat-icon matPrefix>search</mat-icon>
+              <!-- <mat-hint>Hint</mat-hint> -->
+            </mat-form-field>
+          </div>
+          <button mat-flat-button color="primary" class="btn-md">
+            <mat-icon>add</mat-icon> Crear
+          </button>
+        </div>
+      </div>
+      <table
+        mat-table
+        [dataSource]="tablaData"
+        class="mat-table contratos-lista mat-elevation-z8"
+      >
+        <!-- Position Column -->
+        <ng-container matColumnDef="codigo">
+          <th mat-header-cell *matHeaderCellDef>No.</th>
+          <td mat-cell *matCellDef="let contrato">
+            {{ contrato.codigo }}
+            <div class="td-row-link" (click)="verContrato(contrato._id)"></div>
+          </td>
+        </ng-container>
+        <!-- Name Column -->
+        <ng-container matColumnDef="eas">
+          <th mat-header-cell *matHeaderCellDef>eas</th>
+          <td mat-cell *matCellDef="let contrato">{{ contrato.eas }}</td>
+        </ng-container>
+        <!-- Weight Column -->
+        <ng-container matColumnDef="nit">
+          <th mat-header-cell *matHeaderCellDef>nit</th>
+          <td mat-cell *matCellDef="let contrato">{{ contrato.nit }}</td>
+        </ng-container>
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="regional">
+          <th mat-header-cell *matHeaderCellDef>regional</th>
+          <td mat-cell *matCellDef="let contrato">{{ contrato.regional }}</td>
+        </ng-container>
+        <ng-container matColumnDef="cupos">
+          <th mat-header-cell *matHeaderCellDef>cupos</th>
+          <td mat-cell *matCellDef="let contrato">
+            {{ contrato.cupos }}
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="tablaColumnas"></tr>
+        <tr mat-row *matRowDef="let row; columns: tablaColumnas"></tr>
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="4">
+            No se encontraton contratos con "{{ buscar.value }}"
+          </td>
+        </tr>
+      </table>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+<!-- <div class="content">
   <div class="container-fluid">
     <app-breadcrumb></app-breadcrumb>
     <div class="row">
@@ -91,4 +180,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->

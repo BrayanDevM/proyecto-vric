@@ -56,6 +56,19 @@ export class DashboardUdsComponent implements OnInit {
     'Nov',
     'Dic'
   ];
+  mesesFull = [
+    'Febrero',
+    'Marzo',
+    'Abril',
+    'Mayo',
+    'Junio',
+    'Julio',
+    'Agosto',
+    'Septiembre',
+    'Octubre',
+    'Noviembre',
+    'Diciciembre'
+  ];
 
   mgAdolescente = 0;
   enConcurrencia = 0;
@@ -77,6 +90,7 @@ export class DashboardUdsComponent implements OnInit {
           this.contarEnConcurrencia(beneficiario);
         }
       );
+      this.limpiarIngresosEgresos();
     });
   }
 
@@ -220,17 +234,36 @@ export class DashboardUdsComponent implements OnInit {
       this.meses.forEach((item: string, i) => {
         const mes = item.toLowerCase() + '.';
         if (mesIngreso === mes) {
-          ingresosPorMes[i]++;
+          ingresosPorMes[i] += 1;
         }
         if (mesEgreso === mes) {
-          egresosPorMes[i]++;
+          egresosPorMes[i] += 1;
         }
       });
       contador++;
       if (contador === beneficiarios.length) {
         this.ingresosPorMes = ingresosPorMes;
         this.egresosPorMes = egresosPorMes;
-        console.log(this.ingresosPorMes, 'ingresos');
+      }
+    });
+  }
+
+  limpiarIngresosEgresos() {
+    const mesActual = moment(this.hoy, 'DD/MM/YYYY').format('MMM');
+
+    this.meses.forEach((mes, i) => {
+      mes = mes.toLowerCase() + '.';
+      if (mes === mesActual) {
+        // remuevo datos de los meses que aún no llegan
+        // y el primer elemento (cuando se cargan todos los beneficiarios masivamente)
+        this.ingresosPorMes.splice(i + 1, 12);
+        this.ingresosPorMes.splice(0, 1);
+
+        this.egresosPorMes.splice(i + 1, 12);
+        this.egresosPorMes.splice(0, 1);
+
+        this.mesesFull.splice(0, 1);
+        return;
       }
     });
   }
