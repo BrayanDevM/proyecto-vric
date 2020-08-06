@@ -182,10 +182,9 @@ export class UnidadComponent implements OnInit {
     this.uds.activa = this.formActualizarUds.value.activa;
     this.uds.coordinador = this.formActualizarUds.value.coordinador;
     this.uds.gestor = this.formActualizarUds.value.gestor;
-    this.uds.docentes = this.docentesEnUds;
+    this.uds.docentes = this.formActualizarUds.value.docentes;
     // Valores devueltos a _id ya que populate devuelve un objeto
     this.uds.creadoPor = this.uds.creadoPor._id;
-
     if (this.uds.enContrato !== null) {
       this.uds.enContrato = this.uds.enContrato._id;
     }
