@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { ContratosService } from 'src/app/services/contratos.service';
 import { Contrato } from 'src/app/models/contrato.model';
-import { Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
 
@@ -14,53 +14,39 @@ export class ContratosComponent implements OnInit, OnDestroy {
   contratos: Contrato[] = [];
   tablaColumnas: string[] = ['codigo', 'eas', 'nit', 'regional', 'cupos'];
   tablaData: MatTableDataSource<any>;
-  cantRregistros = 0;
-  cargando = false;
-  openSidebar = false;
-  nuevoContrato: Subscription;
+  numRegistros = 0;
+  abrirSidenav = false;
+
+  // variables para almacenar subscripción y poder desuscribirnos
+  contratoNuevo: Subscription;
   contratoEliminado: Subscription;
 
   constructor(public contratos$: ContratosService, private router: Router) {}
 
   ngOnInit() {
     this.obtenerContratos();
-
-    this.nuevoContrato = this.contratos$.nuevoContrato$.subscribe(contrato => {
-      this.contratos.push(contrato);
-      this.tablaData = new MatTableDataSource(this.contratos);
-      this.cantRregistros++;
-    });
-
-    this.contratoEliminado = this.contratos$.contratoEliminado$.subscribe(
-      id => {
-        const i = this.contratos.findIndex(contrato => contrato._id === id);
-        this.contratos.splice(i, 1);
-        this.tablaData = new MatTableDataSource(this.contratos);
-        this.cantRregistros--;
-      }
-    );
+    this.subsContratoNuevo();
+    this.subsContratoEliminado();
   }
 
   ngOnDestroy() {
-    this.nuevoContrato.unsubscribe();
+    this.desuscribir();
   }
 
   obtenerContratos() {
-    this.cargando = true;
-    this.contratos$.obtenerContratos().subscribe((resp: any) => {
-      if (resp.ok) {
-        this.contratos = resp.contratos;
-        this.cantRregistros = resp.registros;
-        this.tablaData = new MatTableDataSource(this.contratos);
-      } else {
-        this.cargando = false;
-      }
+    this.contratos$.obtenerContratos().subscribe((contratos: Contrato[]) => {
+      this.contratos = contratos;
+      this.numRegistros = contratos.length;
+      this.tablaData = new MatTableDataSource(this.contratos);
     });
   }
 
   crear() {
-    // this.router.navigate(['/contratos/crear']);
     this.router.navigate(['contratos', { outlets: { nuevo: 'crear' } }]);
+  }
+
+  verContrato(id?: string) {
+    this.router.navigate(['contratos', { outlets: { contrato: [id] } }]);
   }
 
   filtrarTabla(event: Event) {
@@ -68,7 +54,39 @@ export class ContratosComponent implements OnInit, OnDestroy {
     this.tablaData.filter = criterioBusqueda.trim().toLowerCase();
   }
 
-  verContrato(id?: string) {
-    this.router.navigate(['contratos', { outlets: { contrato: [id] } }]);
+  // subscribes
+  /**
+   * Nos suscribimos al emisor de cambios en caso de que se emita un nuevo contrato.
+   * Agregamos al final el nuevo contrato, actualizamos tabla y sumamos 1 al contador
+   */
+  subsContratoNuevo(): void {
+    this.contratoNuevo = this.contratos$.nuevoContrato$.subscribe(
+      (contrato: Contrato) => {
+        this.contratos.push(contrato);
+        this.tablaData = new MatTableDataSource(this.contratos);
+        this.numRegistros++;
+      }
+    );
+  }
+
+  /**
+   * Nos suscribimos al emisor de cambios en caso de que se emita un nuevo contrato.
+   * Eliminamos el contrato del arreglo, actualizamos tabla y restamos 1 al contador
+   */
+  subsContratoEliminado(): void {
+    this.contratoEliminado = this.contratos$.contratoEliminado$.subscribe(
+      (id: string) => {
+        const i = this.contratos.findIndex(contrato => contrato._id === id);
+        this.contratos.splice(i, 1);
+        this.tablaData = new MatTableDataSource(this.contratos);
+        this.numRegistros--;
+      }
+    );
+  }
+
+  // Nos desuscribimos para mejorar performance
+  desuscribir(): void {
+    this.contratoNuevo.unsubscribe();
+    this.contratoEliminado.unsubscribe();
   }
 }

@@ -69,6 +69,7 @@ export class ContratoComponent implements OnInit {
           this.obtenerIdUdsSeleccionadas(contrato.uds);
           this.actualizarForm(contrato);
           this.obtenerUdsDisponibles(contrato._id);
+          this.editMode = false;
         })
         .catch(error => console.log(error));
     });

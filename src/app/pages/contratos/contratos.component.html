@@ -1,30 +1,26 @@
 <mat-sidenav-container [hasBackdrop]="false">
-  <mat-sidenav #contrato mode="side" [opened]="openSidebar" position="end">
+  <mat-sidenav #contrato mode="side" [opened]="abrirSidenav" position="end">
     <!-- Component view/edit -->
     <router-outlet
       name="contrato"
-      (activate)="openSidebar = true"
-      (deactivate)="openSidebar = false"
+      (activate)="abrirSidenav = true"
+      (deactivate)="abrirSidenav = false"
     ></router-outlet>
     <!-- Component create -->
     <router-outlet
       name="nuevo"
-      (activate)="openSidebar = true"
-      (deactivate)="openSidebar = false"
+      (activate)="abrirSidenav = true"
+      (deactivate)="abrirSidenav = false"
     ></router-outlet>
   </mat-sidenav>
   <mat-sidenav-content>
     <div style="height: 100%;">
-      <div class="header row p-5 pb-4 m-0 bg-white">
+      <div class="header row border-bottom m-0 bg-white">
         <div class="page-title col-xl-6 p-0">
           <h2 class="title-bold m-0">Contratos</h2>
           <div class="text-muted ml-1">
-            <span *ngIf="cantRregistros !== 1"
-              >{{ cantRregistros }} Contratos</span
-            >
-            <span *ngIf="cantRregistros === 1"
-              >{{ cantRregistros }} Contrato</span
-            >
+            <span *ngIf="numRegistros !== 1">{{ numRegistros }} Contratos</span>
+            <span *ngIf="numRegistros === 1">{{ numRegistros }} Contrato</span>
           </div>
         </div>
         <div class="page-actions col-xl-6 p-0">
@@ -54,6 +50,7 @@
       </div>
       <table
         mat-table
+        *ngIf="contratos.length > 0; else noContratos"
         [dataSource]="tablaData"
         class="mat-table contratos-lista mat-elevation-z8"
       >
@@ -93,106 +90,17 @@
         ></tr>
         <!-- Row shown when there is no matching data. -->
         <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" colspan="4">
+          <td class="mat-cell" colspan="5">
             No se encontraton contratos con "{{ buscar.value }}"
           </td>
         </tr>
       </table>
+
+      <ng-template #noContratos>
+        <div class="no-data">
+          <span>No hay contratos!</span>
+        </div>
+      </ng-template>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
-
-<!-- <div class="content">
-  <div class="container-fluid">
-    <app-breadcrumb></app-breadcrumb>
-    <div class="row">
-      <div class="col-12">
-        <div class="card BDM_fadeInUp">
-          <div class="card-body">
-            <div class="content-placeholder" *ngIf="cargando">
-              <ngx-content-loading
-                [speed]="'600ms'"
-                [width]="220"
-                [preserveAspectRatio]="'none'"
-              >
-                <svg:g ngx-bullet-list-preset></svg:g>
-              </ngx-content-loading>
-            </div>
-            <div *ngIf="!cargando" class="row">
-              <div class="col-12 text-right">
-                <button (click)="crear()" class="btn btn-primary btn-sm mb-3">
-                  <i class="material-icons"> post_add</i>
-                  Crear contrato
-                </button>
-              </div>
-              <div class="col-12">
-                <div
-                  *ngIf="!cargando && contratos.length === 0"
-                  class="text-center"
-                >
-                  <img
-                    src="assets/img/empty_state.jpg"
-                    alt="No hay contratos"
-                  />
-                  <h4 class="text-muted mb-5">No hay contratos :D</h4>
-                </div>
-                <div *ngIf="contratos.length > 0" class="table-responsive">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th>Código</th>
-                        <th>EAS</th>
-                        <th>NIT</th>
-                        <th>Regional</th>
-                        <th>Centro Zonal</th>
-                        <th>Cupos</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let contrato of contratos">
-                        <td>{{ contrato.codigo }}</td>
-                        <td>{{ contrato.eas }}</td>
-                        <td>{{ contrato.nit }}</td>
-                        <td>{{ contrato.regional }}</td>
-                        <td>{{ contrato.cz }}</td>
-                        <td>{{ contrato.cupos }}</td>
-                        <td class="text-center">
-                          <span
-                            *ngIf="contrato.activo"
-                            class="badge badge-success"
-                            >Activo</span
-                          >
-                          <span
-                            *ngIf="!contrato.activo"
-                            class="badge badge-danger"
-                            >Inactivo</span
-                          >
-                        </td>
-                        <td class="text-right">
-                          <button
-                            [routerLink]="['/contratos/contrato', contrato._id]"
-                            class="btn btn-info btn-sm mr-1"
-                          >
-                            <i class="fas fa-pencil"></i>
-                          </button>
-                          <button
-                            (click)="eliminarContrato(contrato)"
-                            class="btn btn-danger btn-sm mr-1"
-                          >
-                            <i class="fas fa-trash"></i>
-                          </button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div> -->

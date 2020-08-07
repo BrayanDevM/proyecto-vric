@@ -35,6 +35,17 @@ button:focus {
   height: 100vh;
 }
 
+.no-data {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 250px;
+  font-size: 2rem;
+  color: #969696;
+}
+
 .header-toolbar .mat-toolbar {
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
@@ -52,16 +63,20 @@ button:focus {
 }
 
 .mat-drawer-container {
-  background-color: #f1f4f9 !important;
+  background-color: #fff !important;
   min-height: calc(100% - 64px);
 }
+
+.bg-blue-grey {
+  background-color: #f1f4f9 !important;
+}
+
 .page-content {
   padding: 2rem;
-  background-color: #f1f4f9;
 }
 
 .header {
-  margin: 1rem 0;
+  padding: 40px 32px;
 }
 .header h1,
 .header h2,
@@ -153,7 +168,7 @@ button:focus {
   text-transform: capitalize;
   font-weight: 700;
   font-size: 0.9rem;
-  border-top: 1px solid #eee;
+  // border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
 }
 .contratos-lista tr.mat-row {
@@ -332,6 +347,95 @@ button:focus {
 .apexchart .chart-actions {
   color: #64748b;
 }
+
+/*************************** ESTILOS SweetAlert2 ************************************/
+/************************************************************************************/
+.swal2-popup {
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+
+.swal2-popup .swal2-timer-progress-bar {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.swal2-icon-warning .swal2-header,
+.swal2-icon-error .swal2-header {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 0.8rem;
+}
+
+.swal2-icon-warning .swal2-header .swal2-icon,
+.swal2-icon-error .swal2-header .swal2-icon {
+  display: flex;
+  margin: 0;
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+  margin-right: 0.5rem;
+  font-weight: bold;
+}
+
+.swal2-icon-error .swal2-icon.swal2-error [class^='swal2-x-mark-line'] {
+  top: 0.6125em;
+  width: 1em;
+  height: 0.1125em;
+}
+
+.swal2-icon-error .swal2-header .swal2-icon .swal2-x-mark-line-left {
+  left: 0.2625em !important;
+}
+.swal2-icon-error .swal2-header .swal2-icon .swal2-x-mark-line-right {
+  right: 0.2625em !important;
+}
+
+.swal2-icon-warning .swal2-header .swal2-icon > .swal2-icon-content,
+.swal2-icon-error .swal2-header .swal2-icon > .swal2-icon-content {
+  display: flex;
+  align-items: center;
+  font-size: 1.35em;
+}
+
+.swal2-icon-warning .swal2-title,
+.swal2-icon-error .swal2-title {
+  font-weight: 500;
+  font-size: 1.5rem;
+  margin-bottom: 0;
+}
+
+.swal2-icon-warning .swal2-content,
+.swal2-icon-error .swal2-content {
+  text-align: left;
+  padding-bottom: 1rem;
+  padding-left: 2rem;
+}
+
+.swal2-popup .swal2-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.swal2-popup .swal2-actions button:first-child {
+  margin-right: 0.8rem;
+}
+
+.swal2-icon-warning .swal2-header .swal2-icon,
+.swal2-icon-error .swal2-header .swal2-title {
+  color: #dc3546;
+  border-color: #dc3546;
+}
+
+.swal2-icon-success .swal2-header .swal2-icon {
+  margin: 0.8rem 0;
+}
+
+.swal2-icon-success .swal2-title {
+  font-weight: 300;
+  margin-bottom: 0.5rem;
+}
+/************************* FIN ESTILOS SweetAlert2 **********************************/
+/************************************************************************************/
 
 // Animaciones **************************************************************
 .BDM_fadeInUp {
