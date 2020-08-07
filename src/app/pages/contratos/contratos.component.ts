@@ -1,12 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ContratosService } from 'src/app/services/contratos.service';
 import { Contrato } from 'src/app/models/contrato.model';
-import {
-  alertDanger,
-  alertSuccess,
-  alertError
-} from 'src/app/helpers/swal2.config';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
 
@@ -25,11 +20,7 @@ export class ContratosComponent implements OnInit, OnDestroy {
   nuevoContrato: Subscription;
   contratoEliminado: Subscription;
 
-  constructor(
-    public contratos$: ContratosService,
-    private router: Router,
-    private ruta: ActivatedRoute
-  ) {}
+  constructor(public contratos$: ContratosService, private router: Router) {}
 
   ngOnInit() {
     this.obtenerContratos();
@@ -37,6 +28,7 @@ export class ContratosComponent implements OnInit, OnDestroy {
     this.nuevoContrato = this.contratos$.nuevoContrato$.subscribe(contrato => {
       this.contratos.push(contrato);
       this.tablaData = new MatTableDataSource(this.contratos);
+      this.cantRregistros++;
     });
 
     this.contratoEliminado = this.contratos$.contratoEliminado$.subscribe(
@@ -44,6 +36,7 @@ export class ContratosComponent implements OnInit, OnDestroy {
         const i = this.contratos.findIndex(contrato => contrato._id === id);
         this.contratos.splice(i, 1);
         this.tablaData = new MatTableDataSource(this.contratos);
+        this.cantRregistros--;
       }
     );
   }

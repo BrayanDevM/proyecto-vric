@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Router, ActivationEnd } from '@angular/router';
 import { Contrato } from 'src/app/models/contrato.model';
 import { ContratosService } from 'src/app/services/contratos.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -12,6 +12,8 @@ import {
   alertError
 } from 'src/app/helpers/swal2.config';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 declare var moment: any;
 
 @Component({
@@ -41,7 +43,6 @@ export class ContratoComponent implements OnInit {
   @ViewChild('udsDisp') udsDispSelect: NgSelectComponent;
 
   constructor(
-    private rutaActual: ActivatedRoute,
     public contratos$: ContratosService,
     public uds$: UdsService,
     private fb: FormBuilder,
@@ -57,18 +58,30 @@ export class ContratoComponent implements OnInit {
       nit: [null, Validators.required],
       activo: null
     });
+    this.obtenerInfoRuta().subscribe(data => {
+      if (data === undefined) {
+        return;
+      }
+      this.obtenerContrato(data)
+        .then((contrato: Contrato) => {
+          this.contrato = contrato;
+          this.udsEnContrato = contrato.uds;
+          this.obtenerIdUdsSeleccionadas(contrato.uds);
+          this.actualizarForm(contrato);
+          this.obtenerUdsDisponibles(contrato._id);
+        })
+        .catch(error => console.log(error));
+    });
   }
 
-  ngOnInit() {
-    this.obtenerContrato()
-      .then((contrato: Contrato) => {
-        this.contrato = contrato;
-        this.udsEnContrato = contrato.uds;
-        this.obtenerIdUdsSeleccionadas(contrato.uds);
-        this.actualizarForm(contrato);
-        this.obtenerUdsDisponibles(contrato._id);
-      })
-      .catch(error => console.log(error));
+  ngOnInit() {}
+
+  obtenerInfoRuta(): Observable<any> {
+    return this.router.events.pipe(
+      filter(event => event instanceof ActivationEnd),
+      filter((event: ActivationEnd) => event.snapshot.firstChild === null),
+      map((event: ActivationEnd) => event.snapshot.params.id)
+    );
   }
 
   actualizarForm(contrato: Contrato) {
@@ -87,16 +100,14 @@ export class ContratoComponent implements OnInit {
     return this.formActualizarContrato.value;
   }
 
-  obtenerContrato() {
+  obtenerContrato(id: string) {
     return new Promise((resolve, reject) => {
-      this.rutaActual.params.subscribe((params: Params) => {
-        this.contratos$.obtenerContrato(params.id).subscribe((resp: any) => {
-          if (resp.ok) {
-            resolve(resp.contrato);
-          } else {
-            reject(resp);
-          }
-        });
+      this.contratos$.obtenerContrato(id).subscribe((resp: any) => {
+        if (resp.ok) {
+          resolve(resp.contrato);
+        } else {
+          reject(resp);
+        }
       });
     });
   }
