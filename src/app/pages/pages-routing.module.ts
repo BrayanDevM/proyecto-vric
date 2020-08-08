@@ -31,7 +31,7 @@ const routes: Routes = [
     canActivate: [VerificaTokenGuard],
     component: DashboardComponent,
     data: {
-      paginaActiva: 'Dashboard',
+      nombrePagina: 'Dashboard',
       partes: [
         {
           titulo: 'Dashboard',
@@ -46,7 +46,7 @@ const routes: Routes = [
     canActivate: [VerificaTokenGuard],
     component: DashboardUdsComponent,
     data: {
-      paginaActiva: 'UDS',
+      nombrePagina: 'UDS',
       partes: [
         {
           titulo: 'Dashboard',
@@ -68,76 +68,24 @@ const routes: Routes = [
       { path: ':id', component: ContratoComponent, outlet: 'contrato' },
       { path: 'crear', component: CrearContratoComponent, outlet: 'nuevo' }
     ],
-    data: {
-      paginaActiva: 'Contratos',
-      partes: [
-        {
-          titulo: 'Contratos',
-          url: '/contratos'
-        }
-      ],
-      gIcono: 'book'
-    }
+    data: { nombrePagina: 'Contratos' }
   },
   {
     path: 'uds',
     component: UdsComponent,
     canActivate: [AdminGuard, VerificaTokenGuard],
-    data: {
-      paginaActiva: 'Unidades De Servicio',
-      partes: [
-        {
-          titulo: 'Unidades De Servicio',
-          url: ''
-        }
-      ],
-      gIcono: 'book'
-    }
-  },
-  {
-    path: 'uds/unidad/:id',
-    component: UnidadComponent,
-    canActivate: [AdminGuard, VerificaTokenGuard],
-    data: {
-      paginaActiva: 'Ver unidad',
-      partes: [
-        {
-          titulo: 'Unidades De Servicio',
-          url: '/uds'
-        },
-        {
-          titulo: 'Ver unidad',
-          url: ''
-        }
-      ],
-      gIcono: 'book'
-    }
-  },
-  {
-    path: 'uds/crear',
-    component: CrearUdsComponent,
-    canActivate: [AdminGuard, VerificaTokenGuard],
-    data: {
-      paginaActiva: 'Crear unidad',
-      partes: [
-        {
-          titulo: 'Unidades De Servicio',
-          url: '/uds'
-        },
-        {
-          titulo: 'Crear unidad',
-          url: ''
-        }
-      ],
-      gIcono: 'book'
-    }
+    children: [
+      { path: ':id', component: UnidadComponent, outlet: 'uds' },
+      { path: 'crear', component: CrearUdsComponent, outlet: 'nuevo' }
+    ],
+    data: { nombrePagina: 'Unidades De Servicio' }
   },
   {
     path: 'beneficiarios',
     canActivate: [VerificaTokenGuard],
     component: BeneficiariosComponent,
     data: {
-      paginaActiva: 'Beneficiarios',
+      nombrePagina: 'Beneficiarios',
       partes: [
         {
           titulo: 'Beneficiarios',
@@ -152,7 +100,7 @@ const routes: Routes = [
     canActivate: [VerificaTokenGuard],
     component: MisBeneficiariosComponent,
     data: {
-      paginaActiva: 'Mis Beneficiarios',
+      nombrePagina: 'Mis Beneficiarios',
       partes: [
         {
           titulo: 'Beneficiarios',
@@ -171,7 +119,7 @@ const routes: Routes = [
     canActivate: [VerificaTokenGuard],
     component: NovedadesComponent,
     data: {
-      paginaActiva: 'Novedades',
+      nombrePagina: 'Novedades',
       partes: [
         {
           titulo: 'Beneficiarios',
@@ -190,7 +138,7 @@ const routes: Routes = [
     canActivate: [VerificaTokenGuard],
     component: BeneficiarioComponent,
     data: {
-      paginaActiva: 'Ver beneficiario',
+      nombrePagina: 'Ver beneficiario',
       partes: [
         {
           titulo: 'Beneficiarios',
@@ -209,7 +157,7 @@ const routes: Routes = [
     component: AdministrarComponent,
     canActivate: [AdminGuard, VerificaTokenGuard],
     data: {
-      paginaActiva: 'Administrar',
+      nombrePagina: 'Administrar',
       partes: [
         {
           titulo: 'Administrar',
@@ -224,7 +172,7 @@ const routes: Routes = [
     component: UsuariosComponent,
     canActivate: [AdminGuard, VerificaTokenGuard],
     data: {
-      paginaActiva: 'Usuarios',
+      nombrePagina: 'Usuarios',
       partes: [
         {
           titulo: 'Usuarios',
@@ -239,7 +187,7 @@ const routes: Routes = [
     component: CrearUsuarioComponent,
     canActivate: [AdminGuard, VerificaTokenGuard],
     data: {
-      paginaActiva: 'Crear usuario',
+      nombrePagina: 'Crear usuario',
       partes: [
         {
           titulo: 'Usuarios',
@@ -258,7 +206,7 @@ const routes: Routes = [
     component: UsuarioComponent,
     canActivate: [AdminGuard, VerificaTokenGuard],
     data: {
-      paginaActiva: 'Editar usuario',
+      nombrePagina: 'Editar usuario',
       partes: [
         {
           titulo: 'Usuarios',
@@ -277,7 +225,7 @@ const routes: Routes = [
     canActivate: [VerificaTokenGuard],
     component: PerfilComponent,
     data: {
-      paginaActiva: 'Perfil de usuario',
+      nombrePagina: 'Perfil de usuario',
       partes: [
         {
           titulo: 'Perfil de usuario',
@@ -292,7 +240,7 @@ const routes: Routes = [
     canActivate: [VerificaTokenGuard],
     component: BusquedaComponent,
     data: {
-      paginaActiva: 'Buscar',
+      nombrePagina: 'Buscar',
       partes: [
         {
           titulo: 'Buscar',

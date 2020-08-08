@@ -1,12 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { UdsService } from 'src/app/services/uds.service';
 import { Uds } from 'src/app/models/uds.model';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router, ActivationEnd } from '@angular/router';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { Usuario } from 'src/app/models/usuario.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { NgOption } from '@ng-select/ng-select';
-import { alertSuccess, alertError } from 'src/app/helpers/swal2.config';
+import {
+  alertSuccess,
+  alertError,
+  alertDanger
+} from 'src/app/helpers/swal2.config';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
 declare var moment: any;
 
 @Component({
@@ -15,15 +21,6 @@ declare var moment: any;
   styleUrls: ['./unidad.component.css']
 })
 export class UnidadComponent implements OnInit {
-  // valores ng-select
-  estadoArriendo: NgOption = [
-    { value: true, label: 'Con arriendo' },
-    { value: false, label: 'Sin arriendo' }
-  ];
-  estadoUds: NgOption = [
-    { value: true, label: 'Activa' },
-    { value: false, label: 'Inactiva' }
-  ];
   // ------------------------
   uds: Uds;
   coordinadores: Usuario[];
@@ -33,14 +30,14 @@ export class UnidadComponent implements OnInit {
   docentes: Usuario[];
   cargandoDocentes = false;
   docentesEnUds = [];
-  actualizando = false;
   formActualizarUds: FormGroup;
+  editMode = false;
 
   constructor(
     private usuarios$: UsuarioService,
     private uds$: UdsService,
-    private rutaActual: ActivatedRoute,
     private router: Router,
+    private snackBar$: MatSnackBar,
     private fb: FormBuilder
   ) {
     // Intancio nuevo formulario
@@ -56,30 +53,44 @@ export class UnidadComponent implements OnInit {
       activa: false,
       creadoEl: null
     });
-  }
-
-  ngOnInit() {
-    // Obtener datos
-    this.obtenerUnidad().then((unidad: Uds) => {
-      this.uds = this.formatearFechas(unidad);
-      this.tomarDocentes(unidad);
-      this.obtenerCoordinadores();
-      this.obtenerGestores();
-      this.obtenerDocentes();
-      this.actualizarForm(this.uds);
+    this.obtenerInfoRuta().subscribe(paramId => {
+      if (paramId === undefined) {
+        return;
+      }
+      this.obtenerUnidad(paramId).then((unidad: Uds) => {
+        this.uds = this.formatearFechas(unidad);
+        this.docentesEnUnidad(unidad);
+        this.obtenerCoordinadores();
+        this.obtenerGestores();
+        this.obtenerDocentes();
+        this.actualizarForm(this.uds);
+        this.editMode = false;
+      });
     });
   }
 
-  obtenerUnidad() {
+  get fv() {
+    return this.formActualizarUds.value;
+  }
+
+  ngOnInit() {}
+
+  obtenerInfoRuta(): Observable<any> {
+    return this.router.events.pipe(
+      filter(event => event instanceof ActivationEnd),
+      filter((event: ActivationEnd) => event.snapshot.firstChild === null),
+      map((event: ActivationEnd) => event.snapshot.params.id)
+    );
+  }
+
+  obtenerUnidad(id: string) {
     return new Promise((resolve, reject) => {
-      this.rutaActual.params.subscribe((params: Params) => {
-        this.uds$.obtenerUnidad(params.id).subscribe((resp: any) => {
-          if (resp.ok) {
-            resolve(resp.unidad);
-          } else {
-            reject(resp);
-          }
-        });
+      this.uds$.obtenerUnidad(id).subscribe((resp: any) => {
+        if (resp.ok) {
+          resolve(resp.unidad);
+        } else {
+          reject(resp);
+        }
       });
     });
   }
@@ -91,7 +102,7 @@ export class UnidadComponent implements OnInit {
     return unidad;
   }
 
-  tomarDocentes(unidad: Uds) {
+  docentesEnUnidad(unidad: Uds) {
     if (unidad.docentes !== null || unidad.docentes) {
       unidad.docentes.forEach((docente: Usuario) => {
         this.docentesEnUds.push(docente._id);
@@ -169,9 +180,7 @@ export class UnidadComponent implements OnInit {
   }
 
   actualizar() {
-    this.actualizando = true;
     if (this.formActualizarUds.invalid) {
-      this.actualizando = false;
       return;
     }
     this.uds.codigo = this.formActualizarUds.value.codigo;
@@ -188,16 +197,25 @@ export class UnidadComponent implements OnInit {
     if (this.uds.enContrato !== null) {
       this.uds.enContrato = this.uds.enContrato._id;
     }
-    this.uds$.actualizarUds(this.uds).subscribe(resp => {
+    this.uds$.actualizarUds(this.uds).subscribe((resp: any) => {
       if (resp.ok) {
         alertSuccess.fire({
           title: 'Unidad De Servicio actualizada'
         });
-        this.actualizando = false;
+        this.uds$.udsActualizada$.emit(resp.udsActualizada);
+        console.log(resp.udsActualizada, 'actualizada?');
+
         this.docentesEnUds = [];
-        this.router.navigate(['/uds']);
+        this.obtenerUnidad(this.uds._id).then((unidad: Uds) => {
+          this.uds = this.formatearFechas(unidad);
+          this.docentesEnUnidad(unidad);
+          this.obtenerCoordinadores();
+          this.obtenerGestores();
+          this.obtenerDocentes();
+          this.actualizarForm(this.uds);
+          this.editMode = false;
+        });
       } else {
-        this.actualizando = false;
         alertError.fire({
           title: 'Error',
           text:
@@ -205,6 +223,58 @@ export class UnidadComponent implements OnInit {
           timer: 3000
         });
       }
+    });
+  }
+
+  eliminar(uds: Uds) {
+    alertDanger
+      .fire({
+        title: 'Eliminar Unidad De Servicio',
+        html: `¿Estás seguro que deseas eliminar la Unidad De Servicio <b>${uds.nombre}</b>?, esta acción no puede deshacerse.`,
+        confirmButtonText: 'Estoy seguro, eliminar'
+      })
+      .then(result => {
+        if (result.value) {
+          this.uds$.eliminarUds(uds).subscribe((resp: any) => {
+            if (resp.ok === true) {
+              this.uds$.udsEliminada$.emit(uds._id);
+              alertSuccess.fire({
+                title: 'Unidad De Sercicio eliminada'
+              });
+            } else {
+              alertError.fire({
+                title: 'Eliminar Unidad De Servicio',
+                text:
+                  'No se ha podido eliminar la Unidad De Servicio, intentalo nuevamente'
+              });
+            }
+          });
+        }
+      });
+  }
+
+  copiar(elementId: any) {
+    // Create an auxiliary hidden input
+    const element = document.createElement('input');
+
+    // Get the text from the element passed into the input
+    element.setAttribute('value', document.getElementById(elementId).innerHTML);
+
+    // Append the aux input to the body
+    document.body.appendChild(element);
+
+    // Highlight the content
+    element.select();
+
+    // Execute the copy command
+    document.execCommand('copy');
+
+    // Remove the input from the body
+    document.body.removeChild(element);
+    this.snackBar$.open('Copiado al portapapeles', 'Cerrar', {
+      duration: 4500,
+      horizontalPosition: 'end',
+      verticalPosition: 'bottom'
     });
   }
 }

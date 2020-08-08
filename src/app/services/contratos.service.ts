@@ -4,8 +4,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Config } from '../config/config';
 import { Contrato } from '../models/contrato.model';
 import { Usuario } from '../models/usuario.model';
-import { map, catchError } from 'rxjs/operators';
-import { throwError, pipe } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +21,9 @@ export class ContratosService {
   // });
 
   // Emiten actualizaciones
-  nuevoContrato$ = new EventEmitter<Contrato>();
+  contratoNuevo$ = new EventEmitter<Contrato>();
   contratoEliminado$ = new EventEmitter<string>();
+  contratoActualizado$ = new EventEmitter<Contrato>();
 
   constructor(private usuario$: UsuarioService, private http: HttpClient) {
     this.usuario = this.usuario$.usuario;

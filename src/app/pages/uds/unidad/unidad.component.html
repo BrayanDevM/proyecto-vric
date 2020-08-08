@@ -1,4 +1,4 @@
-<div class="content">
+<!-- <div class="content">
   <div class="container-fluid">
     <app-breadcrumb></app-breadcrumb>
     <div class="row">
@@ -204,4 +204,269 @@
       </div>
     </div>
   </div>
+</div> -->
+<div class="contrato-detalle" *ngIf="!editMode; else formEdit">
+  <form class="form-detalle">
+    <div class="actions">
+      <button type="button" mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu" xPosition="before">
+        <button type="button" (click)="editMode = true" mat-menu-item>
+          <mat-icon fontSet="material-icons-two-tone">edit</mat-icon>
+          <span>Editar</span>
+        </button>
+      </mat-menu>
+      <button routerLink="/uds" matTooltip="Cerrar" mat-icon-button>
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="logo-icbf">
+      <img src="./assets/img/logos/icbf.png" width="128" alt="" />
+    </div>
+    <h2 class="form-title">{{ uds.nombre }}</h2>
+    <div class="badges d-flex flex-row">
+      <div
+        class="badge-status alert mr-1"
+        [ngClass]="{
+          'alert-success': uds.activa,
+          'alert-danger': !uds.activa
+        }"
+      >
+        <div
+          class="status-indicator"
+          [ngClass]="{
+            'bg-success': uds.activa,
+            'bg-danger': !uds.activa
+          }"
+        ></div>
+        <span class="status-text" *ngIf="uds.activa">Activa</span>
+        <span class="status-text" *ngIf="!uds.activa">Inactiva</span>
+      </div>
+      <div
+        class="badge-status alert"
+        [ngClass]="{
+          'alert-primary': uds.arriendo,
+          'alert-secondary': !uds.arriendo
+        }"
+      >
+        <div
+          class="status-indicator"
+          [ngClass]="{
+            'bg-primary': uds.arriendo,
+            'bg-secondary': !uds.arriendo
+          }"
+        ></div>
+        <span class="status-text" *ngIf="uds.arriendo">Con arriendo</span>
+        <span class="status-text" *ngIf="!uds.arriendo">Sin arriendo</span>
+      </div>
+    </div>
+    <div class="form-field codigo">
+      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+        >label</mat-icon
+      >
+      <div class="label">
+        Cód. <span id="codigo">{{ uds.codigo }}</span>
+        <button
+          type="button"
+          (click)="copiar('codigo')"
+          mat-icon-button
+          matTooltip="Copiar"
+          matTooltipPosition="right"
+          class="clipboard-btn ml-2"
+        >
+          <mat-icon class="clipboard-icon">content_copy</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="form-field cupos">
+      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+        >fact_check</mat-icon
+      >
+      <div class="label">{{ uds.cupos }} Cupos</div>
+    </div>
+    <div class="form-field coordinador">
+      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+        >supervisor_account</mat-icon
+      >
+      <div class="label">{{ uds.coordinador.nombre }}</div>
+    </div>
+    <div class="form-field docentes">
+      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+        >group</mat-icon
+      >
+      <div class="d-flex flex-column">
+        <div class="label" *ngFor="let docente of uds.docentes">
+          {{ docente.nombre }}
+        </div>
+      </div>
+    </div>
+    <div class="form-field gestor">
+      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+        >person</mat-icon
+      >
+      <div class="label">{{ uds.gestor.nombre }}</div>
+    </div>
+    <div class="form-field ubicacion">
+      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+        >place</mat-icon
+      >
+      <div class="label">{{ uds.ubicacion }}</div>
+    </div>
+    <div class="form-field creadoEl">
+      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+        >today</mat-icon
+      >
+      <div class="label">Creado el {{ uds.creadoEl }}</div>
+    </div>
+  </form>
 </div>
+<!--------------------------------------------------------------------------------->
+<!-------------------------- TEMPLATE FOR EDIT MODE FORM -------------------------->
+<ng-template #formEdit>
+  <div class="contrato-detalle">
+    <form
+      class="form-detalle modo-edicion"
+      ngNativeValidate
+      [formGroup]="formActualizarUds"
+      (ngSubmit)="actualizar()"
+    >
+      <div class="actions">
+        <button
+          type="button"
+          (click)="editMode = false"
+          mat-icon-button
+          matTooltip="Cancelar"
+        >
+          <mat-icon fontSet="material-icons-two-tone">cancel</mat-icon>
+        </button>
+        <button type="submit" mat-icon-button matTooltip="Guardar">
+          <mat-icon fontSet="material-icons-two-tone">save</mat-icon>
+        </button>
+        <button
+          type="button"
+          (click)="eliminar(uds)"
+          mat-icon-button
+          matTooltip="Eliminar"
+        >
+          <mat-icon fontSet="material-icons-two-tone">delete</mat-icon>
+        </button>
+      </div>
+      <div class="logo-icbf">
+        <img src="./assets/img/logos/icbf.png" width="128" alt="" />
+      </div>
+      <div class="nombre form-field">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre unidad de servicio</mat-label>
+          <input
+            matInput
+            formControlName="nombre"
+            name="nombre"
+            placeholder="Código de contrato"
+          />
+        </mat-form-field>
+      </div>
+      <div class="activa form-field mt-4">
+        <mat-slide-toggle name="activa" formControlName="activa">
+          <span *ngIf="fv.activa">Activa</span>
+          <span *ngIf="!fv.activa">Inactiva</span>
+        </mat-slide-toggle>
+      </div>
+      <div class="arriendo form-field mt-4">
+        <mat-slide-toggle name="arriendo" formControlName="arriendo">
+          <span *ngIf="fv.arriendo">Con ariendo</span>
+          <span *ngIf="!fv.arriendo">Sin arriendo</span>
+        </mat-slide-toggle>
+      </div>
+      <div class="codigo form-field">
+        <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+          >label</mat-icon
+        >
+        <mat-form-field appearance="outline">
+          <mat-label>Código</mat-label>
+          <input
+            matInput
+            formControlName="codigo"
+            name="codigo"
+            placeholder="Código de contrato"
+          />
+        </mat-form-field>
+      </div>
+      <div class="ubicacion form-field">
+        <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+          >place</mat-icon
+        >
+        <mat-form-field appearance="outline">
+          <mat-label>Ubicación</mat-label>
+          <input
+            matInput
+            formControlName="ubicacion"
+            name="ubicacion"
+            placeholder="Municipio..."
+          />
+        </mat-form-field>
+      </div>
+      <div class="form-field cupos">
+        <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+          >fact_check</mat-icon
+        >
+        <mat-form-field appearance="outline" class="ml-2">
+          <mat-label>Cupos asignados</mat-label>
+          <input
+            matInput
+            type="numeric"
+            formControlName="cupos"
+            name="cupos"
+            placeholder="Cupos asignados..."
+          />
+        </mat-form-field>
+      </div>
+      <div class="form-field coordinador">
+        <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+          >supervisor_account</mat-icon
+        >
+        <ng-select
+          [items]="coordinadores"
+          bindValue="_id"
+          bindLabel="nombre"
+          placeholder="Seleccionar coordinador"
+          [loading]="cargandoCoords"
+          formControlName="coordinador"
+          name="coordinador"
+        ></ng-select>
+      </div>
+      <div class="form-field docentes">
+        <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+          >group</mat-icon
+        >
+        <ng-select
+          [items]="docentes"
+          bindValue="_id"
+          bindLabel="nombre"
+          placeholder="Seleccionar docentes"
+          [multiple]="true"
+          [loading]="cargandoDocentes"
+          [maxSelectedItems]="2"
+          [hideSelected]="true"
+          [closeOnSelect]="false"
+          formControlName="docentes"
+          name="docentes"
+        ></ng-select>
+      </div>
+      <div class="form-field gestor">
+        <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+          >person</mat-icon
+        >
+        <ng-select
+          [items]="gestores"
+          bindValue="_id"
+          bindLabel="nombre"
+          placeholder="Seleccionar gestor"
+          [loading]="cargandoGestores"
+          formControlName="gestor"
+          name="gestor"
+        ></ng-select>
+      </div>
+    </form>
+  </div>
+</ng-template>

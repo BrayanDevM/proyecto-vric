@@ -19,13 +19,19 @@
     </div>
     <h2 class="form-title">Contrato {{ contrato.codigo }}</h2>
     <div
-      class="status alert"
+      class="badge-status alert"
       [ngClass]="{
         'alert-success': contrato.activo,
         'alert-danger': !contrato.activo
       }"
     >
-      <!-- <div class="status-indicator bg-success"></div> -->
+      <div
+        class="status-indicator"
+        [ngClass]="{
+          'bg-success': contrato.activo,
+          'bg-danger': !contrato.activo
+        }"
+      ></div>
       <span class="status-text" *ngIf="contrato.activo">Activo</span>
       <span class="status-text" *ngIf="!contrato.activo">Inactivo</span>
     </div>

@@ -6,6 +6,7 @@ import { UsuarioService } from 'src/app/services/usuario.service';
 import { UdsService } from 'src/app/services/uds.service';
 import { NgOption } from '@ng-select/ng-select';
 import { alertSuccess } from 'src/app/helpers/swal2.config';
+import { Router } from '@angular/router';
 declare function moment(): any;
 
 @Component({
@@ -14,11 +15,6 @@ declare function moment(): any;
   styleUrls: ['./crear-uds.component.css']
 })
 export class CrearUdsComponent implements OnInit {
-  // valores ng-select
-  estadoArriendo: NgOption = [
-    { value: true, label: 'Con arriendo' },
-    { value: false, label: 'Sin arriendo' }
-  ];
   // ------------------------
   uds: Uds;
   coordinadores: Usuario[];
@@ -28,13 +24,13 @@ export class CrearUdsComponent implements OnInit {
   docentes: Usuario[];
   cargandoDocentes = false;
   docentesEnUds: [string, string];
-  creando = false;
   formCrearUds: FormGroup;
 
   constructor(
     private usuarios$: UsuarioService,
     private uds$: UdsService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     // Intancio nuevo formulario
     this.formCrearUds = this.fb.group({
@@ -50,11 +46,19 @@ export class CrearUdsComponent implements OnInit {
     });
   }
 
+  get fv() {
+    return this.formCrearUds.value;
+  }
+
   ngOnInit() {
     // Obtener datos
     this.obtenerDocentes();
     this.obtenerCoordinadores();
     this.obtenerGestores();
+  }
+
+  cancelar() {
+    this.router.navigate(['/uds']);
   }
 
   obtenerDocentes() {
@@ -117,9 +121,7 @@ export class CrearUdsComponent implements OnInit {
   }
 
   crear() {
-    this.creando = true;
     if (this.formCrearUds.invalid) {
-      this.creando = false;
       return;
     }
     this.uds = new Uds(
@@ -138,13 +140,11 @@ export class CrearUdsComponent implements OnInit {
     );
     this.uds$.crearUds(this.uds).subscribe((resp: any) => {
       if (resp.ok) {
-        this.creando = false;
+        this.uds$.udsNueva$.emit(resp.udsCreada);
         alertSuccess.fire({
           title: 'Unidad de Servicio creada'
         });
         this.formCrearUds.reset();
-      } else {
-        this.creando = false;
       }
     });
   }

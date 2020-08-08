@@ -20,6 +20,7 @@ export class ContratosComponent implements OnInit, OnDestroy {
   // variables para almacenar subscripción y poder desuscribirnos
   contratoNuevo: Subscription;
   contratoEliminado: Subscription;
+  contratoActualizado: Subscription;
 
   constructor(public contratos$: ContratosService, private router: Router) {}
 
@@ -27,6 +28,7 @@ export class ContratosComponent implements OnInit, OnDestroy {
     this.obtenerContratos();
     this.subsContratoNuevo();
     this.subsContratoEliminado();
+    this.subsContratoEActualizado();
   }
 
   ngOnDestroy() {
@@ -60,7 +62,7 @@ export class ContratosComponent implements OnInit, OnDestroy {
    * Agregamos al final el nuevo contrato, actualizamos tabla y sumamos 1 al contador
    */
   subsContratoNuevo(): void {
-    this.contratoNuevo = this.contratos$.nuevoContrato$.subscribe(
+    this.contratoNuevo = this.contratos$.contratoNuevo$.subscribe(
       (contrato: Contrato) => {
         this.contratos.push(contrato);
         this.tablaData = new MatTableDataSource(this.contratos);
@@ -83,10 +85,26 @@ export class ContratosComponent implements OnInit, OnDestroy {
       }
     );
   }
+  /**
+   * Nos suscribimos al emisor de cambios en caso de que se emita un contrato editado.
+   * Eliminamos el contrato del arreglo, actualizamos tabla.
+   */
+  subsContratoEActualizado(): void {
+    this.contratoActualizado = this.contratos$.contratoActualizado$.subscribe(
+      (contratoAct: Contrato) => {
+        const i = this.contratos.findIndex(
+          contrato => contrato._id === contratoAct._id
+        );
+        this.contratos.splice(i, 1, contratoAct);
+        this.tablaData = new MatTableDataSource(this.contratos);
+      }
+    );
+  }
 
   // Nos desuscribimos para mejorar performance
   desuscribir(): void {
     this.contratoNuevo.unsubscribe();
     this.contratoEliminado.unsubscribe();
+    this.contratoActualizado.unsubscribe();
   }
 }

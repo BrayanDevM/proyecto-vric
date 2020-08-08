@@ -71,6 +71,11 @@ button:focus {
   background-color: #f1f4f9 !important;
 }
 
+.page-wrapper {
+  height: calc(100vh - 64px);
+  overflow: auto;
+}
+
 .page-content {
   padding: 2rem;
 }
@@ -91,6 +96,9 @@ button:focus {
 .header .search-input .mat-form-field-wrapper {
   padding-bottom: 0;
   margin: 0;
+}
+.mat-form-field-wrapper .mat-form-field-subscript-wrapper {
+  margin-top: 2.166667em;
 }
 .header .search-input .mat-form-field-flex {
   min-height: 40px;
@@ -222,16 +230,17 @@ button:focus {
   font-weight: 700;
 }
 
-.form-detalle .status {
+.badge-status {
   display: flex;
   flex-direction: row;
   align-items: center;
   width: fit-content;
   padding: 0.1rem 0.5rem;
-  border-radius: 5px;
+  border-radius: 2rem;
   border: none;
+  margin: auto 0;
 }
-.form-detalle .status .status-indicator {
+.badge-status .status-indicator {
   width: 8px;
   height: 8px;
   border-radius: 5rem;
@@ -239,10 +248,12 @@ button:focus {
   margin-right: 5px;
   box-shadow: 0 0 2px #9a9a9a;
 }
-.form-detalle .status .status-text {
+.badge-status .status-text {
   text-transform: uppercase;
   font-size: 0.75rem;
   margin-bottom: -2px;
+  font-weight: 600;
+  opacity: 0.8;
 }
 .form-detalle .form-field mat-form-field.mat-form-field,
 .form-detalle .form-field ng-select.ng-select {

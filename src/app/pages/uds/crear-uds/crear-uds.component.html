@@ -1,4 +1,4 @@
-<div class="content">
+<!-- <div class="content">
   <div class="container-fluid">
     <app-breadcrumb></app-breadcrumb>
     <div class="row">
@@ -181,4 +181,144 @@
       </div>
     </div>
   </div>
+</div> -->
+<div class="contrato-detalle">
+  <form
+    class="form-detalle modo-edicion"
+    ngNativeValidate
+    [formGroup]="formCrearUds"
+    (ngSubmit)="crear()"
+  >
+    <div class="actions">
+      <button
+        type="button"
+        (click)="cancelar()"
+        mat-icon-button
+        matTooltip="Cancelar"
+      >
+        <mat-icon fontSet="material-icons-two-tone">cancel</mat-icon>
+      </button>
+      <button type="submit" mat-icon-button matTooltip="Guardar">
+        <mat-icon fontSet="material-icons-two-tone">save</mat-icon>
+      </button>
+    </div>
+    <div class="logo-icbf">
+      <img src="./assets/img/logos/icbf.png" width="128" alt="" />
+    </div>
+    <div class="nombre form-field">
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre unidad de servicio</mat-label>
+        <input
+          matInput
+          formControlName="nombre"
+          name="nombre"
+          placeholder="Código de contrato"
+        />
+        <mat-error *ngIf="f.nombre.errors?.minlength"
+          >No es un nombre corto?, al menos 5 letras 😀</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <!-- <div class="activa form-field mt-4">
+      <mat-slide-toggle name="activa" formControlName="activa">
+        <span *ngIf="fv.activa">Activa</span>
+        <span *ngIf="!fv.activa">Inactiva</span>
+      </mat-slide-toggle>
+    </div> -->
+    <div class="arriendo form-field mt-4">
+      <mat-slide-toggle name="arriendo" formControlName="arriendo">
+        <span *ngIf="fv.arriendo">Con ariendo</span>
+        <span *ngIf="!fv.arriendo">Sin arriendo</span>
+      </mat-slide-toggle>
+    </div>
+    <div class="codigo form-field">
+      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+        >label</mat-icon
+      >
+      <mat-form-field appearance="outline">
+        <mat-label>Código</mat-label>
+        <input
+          matInput
+          formControlName="codigo"
+          name="codigo"
+          placeholder="Código de contrato"
+        />
+      </mat-form-field>
+    </div>
+    <div class="ubicacion form-field">
+      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+        >place</mat-icon
+      >
+      <mat-form-field appearance="outline">
+        <mat-label>Ubicación</mat-label>
+        <input
+          matInput
+          formControlName="ubicacion"
+          name="ubicacion"
+          placeholder="Municipio..."
+        />
+      </mat-form-field>
+    </div>
+    <div class="form-field cupos">
+      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+        >fact_check</mat-icon
+      >
+      <mat-form-field appearance="outline" class="ml-2">
+        <mat-label>Cupos asignados</mat-label>
+        <input
+          matInput
+          type="numeric"
+          formControlName="cupos"
+          name="cupos"
+          placeholder="Cupos asignados..."
+        />
+      </mat-form-field>
+    </div>
+    <div class="form-field coordinador">
+      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+        >supervisor_account</mat-icon
+      >
+      <ng-select
+        [items]="coordinadores"
+        bindValue="_id"
+        bindLabel="nombre"
+        placeholder="Seleccionar coordinador"
+        [loading]="cargandoCoords"
+        formControlName="coordinador"
+        name="coordinador"
+      ></ng-select>
+    </div>
+    <div class="form-field docentes">
+      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+        >group</mat-icon
+      >
+      <ng-select
+        [items]="docentes"
+        bindValue="_id"
+        bindLabel="nombre"
+        placeholder="Seleccionar docentes"
+        [multiple]="true"
+        [loading]="cargandoDocentes"
+        [maxSelectedItems]="2"
+        [hideSelected]="true"
+        [closeOnSelect]="false"
+        formControlName="docentes"
+        name="docentes"
+      ></ng-select>
+    </div>
+    <div class="form-field gestor">
+      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
+        >person</mat-icon
+      >
+      <ng-select
+        [items]="gestores"
+        bindValue="_id"
+        bindLabel="nombre"
+        placeholder="Seleccionar gestor"
+        [loading]="cargandoGestores"
+        formControlName="gestor"
+        name="gestor"
+      ></ng-select>
+    </div>
+  </form>
 </div>

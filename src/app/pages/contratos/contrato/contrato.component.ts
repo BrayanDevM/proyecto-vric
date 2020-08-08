@@ -14,7 +14,6 @@ import {
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-declare var moment: any;
 
 @Component({
   selector: 'app-contrato',
@@ -58,11 +57,11 @@ export class ContratoComponent implements OnInit {
       nit: [null, Validators.required],
       activo: null
     });
-    this.obtenerInfoRuta().subscribe(data => {
-      if (data === undefined) {
+    this.obtenerInfoRuta().subscribe(paramId => {
+      if (paramId === undefined) {
         return;
       }
-      this.obtenerContrato(data)
+      this.obtenerContrato(paramId)
         .then((contrato: Contrato) => {
           this.contrato = contrato;
           this.udsEnContrato = contrato.uds;
@@ -75,6 +74,10 @@ export class ContratoComponent implements OnInit {
     });
   }
 
+  get fv() {
+    return this.formActualizarContrato.value;
+  }
+
   ngOnInit() {}
 
   obtenerInfoRuta(): Observable<any> {
@@ -83,22 +86,6 @@ export class ContratoComponent implements OnInit {
       filter((event: ActivationEnd) => event.snapshot.firstChild === null),
       map((event: ActivationEnd) => event.snapshot.params.id)
     );
-  }
-
-  actualizarForm(contrato: Contrato) {
-    this.formActualizarContrato.setValue({
-      codigo: contrato.codigo,
-      cupos: contrato.cupos,
-      regional: contrato.regional,
-      cz: contrato.cz,
-      eas: contrato.eas,
-      nit: contrato.nit,
-      activo: contrato.activo
-    });
-  }
-
-  get fv() {
-    return this.formActualizarContrato.value;
   }
 
   obtenerContrato(id: string) {
@@ -110,6 +97,18 @@ export class ContratoComponent implements OnInit {
           reject(resp);
         }
       });
+    });
+  }
+
+  actualizarForm(contrato: Contrato) {
+    this.formActualizarContrato.setValue({
+      codigo: contrato.codigo,
+      cupos: contrato.cupos,
+      regional: contrato.regional,
+      cz: contrato.cz,
+      eas: contrato.eas,
+      nit: contrato.nit,
+      activo: contrato.activo
     });
   }
 
@@ -226,6 +225,7 @@ export class ContratoComponent implements OnInit {
     this.contratos$.actualizarContrato(contrato).subscribe((resp: any) => {
       if (resp.ok) {
         this.contrato = resp.contratoActualizado;
+        this.contratos$.contratoActualizado$.emit(this.contrato);
         this.obtenerIdUdsSeleccionadas(resp.contratoActualizado.uds);
         this.actualizarForm(resp.contratoActualizado);
         this.obtenerUdsDisponibles(resp.contratoActualizado._id);
