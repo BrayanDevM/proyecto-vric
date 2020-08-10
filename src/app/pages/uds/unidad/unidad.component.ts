@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UdsService } from 'src/app/services/uds.service';
 import { Uds } from 'src/app/models/uds.model';
-import { ActivatedRoute, Router, ActivationEnd } from '@angular/router';
+import { Router, ActivationEnd } from '@angular/router';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { Usuario } from 'src/app/models/usuario.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -125,6 +125,10 @@ export class UnidadComponent implements OnInit {
     });
   }
 
+  volver() {
+    this.router.navigate(['unidades-de-servicio']);
+  }
+
   obtenerDocentes() {
     this.cargandoDocentes = true;
     this.usuarios$.obtenerUsuarios().subscribe((resp: any) => {
@@ -203,7 +207,6 @@ export class UnidadComponent implements OnInit {
           title: 'Unidad De Servicio actualizada'
         });
         this.uds$.udsActualizada$.emit(resp.udsActualizada);
-        console.log(resp.udsActualizada, 'actualizada?');
 
         this.docentesEnUds = [];
         this.obtenerUnidad(this.uds._id).then((unidad: Uds) => {
@@ -237,10 +240,11 @@ export class UnidadComponent implements OnInit {
         if (result.value) {
           this.uds$.eliminarUds(uds).subscribe((resp: any) => {
             if (resp.ok === true) {
-              this.uds$.udsEliminada$.emit(uds._id);
               alertSuccess.fire({
                 title: 'Unidad De Sercicio eliminada'
               });
+              this.uds$.udsEliminada$.emit(uds._id);
+              this.volver();
             } else {
               alertError.fire({
                 title: 'Eliminar Unidad De Servicio',

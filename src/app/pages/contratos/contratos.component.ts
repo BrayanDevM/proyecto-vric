@@ -44,11 +44,11 @@ export class ContratosComponent implements OnInit, OnDestroy {
   }
 
   crear() {
-    this.router.navigate(['contratos', { outlets: { nuevo: 'crear' } }]);
+    this.router.navigate(['contratos/crear']);
   }
 
   verContrato(id?: string) {
-    this.router.navigate(['contratos', { outlets: { contrato: [id] } }]);
+    this.router.navigate(['contratos/contrato', id]);
   }
 
   filtrarTabla(event: Event) {

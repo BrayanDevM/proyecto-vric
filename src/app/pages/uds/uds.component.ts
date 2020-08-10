@@ -2,11 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UdsService } from 'src/app/services/uds.service';
 import { Uds } from 'src/app/models/uds.model';
 import { Router } from '@angular/router';
-import {
-  alertDanger,
-  alertSuccess,
-  alertError
-} from 'src/app/helpers/swal2.config';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
 
@@ -28,6 +23,7 @@ export class UdsComponent implements OnInit, OnDestroy {
   tablaData: MatTableDataSource<any>;
   numRegistros = 0;
   abrirSidenav = false;
+  udsFiltradas = false;
 
   // variables para almacenar subscripción y poder desuscribirnos
   udsNueva: Subscription;
@@ -55,12 +51,26 @@ export class UdsComponent implements OnInit, OnDestroy {
     });
   }
 
+  obtenerUdsFiltro(query: string) {
+    this.udsFiltradas = true;
+    this.uds$.obtenerUds(query).subscribe((resp: any) => {
+      this.uds = resp.uds;
+      this.numRegistros = this.uds.length;
+      this.tablaData = new MatTableDataSource(this.uds);
+    });
+  }
+
+  removerFiltro() {
+    this.udsFiltradas = false;
+    this.obtenerUds();
+  }
+
   crear() {
-    this.router.navigate(['uds', { outlets: { nuevo: 'crear' } }]);
+    this.router.navigate(['unidades-de-servicio/crear']);
   }
 
   verUnidad(id?: string) {
-    this.router.navigate(['uds', { outlets: { uds: [id] } }]);
+    this.router.navigate(['unidades-de-servicio/unidad', id]);
   }
 
   filtrarTabla(event: Event) {

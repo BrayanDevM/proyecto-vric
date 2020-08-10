@@ -1,6 +1,34 @@
+<div class="page-wrapper BDM_fadeInUp">
+  <div class="header row border-bottom m-0 bg-white">
+    <div class="page-title col-xl-6 p-0">
+      <h2 class="title-bold m-0">Beneficiarios</h2>
+      <div class="text-muted ml-1">
+        <div>Lista de beneficiarios registrados</div>
+      </div>
+    </div>
+    <div class="page-actions col-xl-6 p-0">
+      <!-- nothing -->
+      <mat-form-field
+        appearance="outlined"
+        class="select"
+        (change)="obtenerUds_beneficiarios_responsables($event)"
+      >
+        <!-- <mat-label>Filtrar por UDS</mat-label> -->
+        <mat-select placeholder="Seleccionar UDS">
+          <mat-option *ngFor="let unidad of udsAsignadas" [value]="unidad._id">
+            {{ unidad.nombre }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>home_work</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="page-content"></div>
+  <!-- PAGE CONTENT -->
+</div>
+
 <div class="content">
   <div class="container-fluid">
-    <app-breadcrumb></app-breadcrumb>
     <div class="BDM_fadeInUp">
       <!------------------------------------------------------------------------------->
       <!---------------------- Tabla de beneficiarios pendientes ---------------------->

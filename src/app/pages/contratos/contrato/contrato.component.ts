@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  Output,
+  EventEmitter
+} from '@angular/core';
 import { Router, ActivationEnd } from '@angular/router';
 import { Contrato } from 'src/app/models/contrato.model';
 import { ContratosService } from 'src/app/services/contratos.service';
@@ -86,6 +92,10 @@ export class ContratoComponent implements OnInit {
       filter((event: ActivationEnd) => event.snapshot.firstChild === null),
       map((event: ActivationEnd) => event.snapshot.params.id)
     );
+  }
+
+  volver() {
+    this.router.navigate(['/contratos']);
   }
 
   obtenerContrato(id: string) {

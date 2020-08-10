@@ -17,6 +17,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatSelectModule } from '@angular/material/select';
 
 const MaterialComponents = [
   MatGridListModule,
@@ -34,8 +37,11 @@ const MaterialComponents = [
   MatListModule,
   MatBadgeModule,
   MatTableModule,
+  MatSortModule,
   MatTooltipModule,
   MatSnackBarModule,
+  MatTabsModule,
+  MatSelectModule,
   MatSlideToggleModule
 ];
 

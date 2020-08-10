@@ -9,10 +9,8 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 // Componentes
 import { HeaderComponent } from './header/header.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { TablaBeneficiariosComponent } from './tabla-beneficiarios/tabla-beneficiarios.component';
 import { FormIngresosComponent } from './form-ingresos/form-ingresos.component';
-import { DocumentoPipe } from '../pipes/documento.pipe';
 import { FormEgresosComponent } from './form-egresos/form-egresos.component';
 import { FormCambiosComponent } from './form-cambios/form-cambios.component';
 import { PieChartComponent } from './charts/pie-chart/pie-chart.component';
@@ -25,14 +23,13 @@ import { ApexPieChartComponent } from './apexchart/apex-pie-chart/apex-pie-chart
 import { ApexLineChartTimeseriesComponent } from './apexchart/apex-line-chart-timeseries/apex-line-chart-timeseries.component';
 import { ApexLineChartMinComponent } from './apexchart/apex-line-chart-min/apex-line-chart-min.component';
 import { ApexBarChartStackedComponent } from './apexchart/apex-bar-chart-stacked/apex-bar-chart-stacked.component';
+import { AppPipesModule } from '../pipes/app-pipes.module';
 
 const components = [
   HeaderComponent,
   SidebarComponent,
-  BreadcrumbComponent,
   TablaBeneficiariosComponent,
   FormIngresosComponent,
-  DocumentoPipe,
   FormEgresosComponent,
   FormCambiosComponent,
   PieChartComponent,
@@ -54,6 +51,7 @@ const components = [
     NgSelectModule,
     FormsModule,
     ReactiveFormsModule,
+    AppPipesModule,
     ChartsModule,
     NgApexchartsModule,
     MaterialModule

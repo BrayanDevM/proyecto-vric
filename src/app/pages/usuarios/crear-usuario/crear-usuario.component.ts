@@ -7,6 +7,7 @@ import Swal from 'sweetalert2/src/sweetalert2.js';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { NgOption } from '@ng-select/ng-select';
 import { alertConfirm } from 'src/app/helpers/swal2.config';
+import { Router } from '@angular/router';
 declare var moment: any;
 
 @Component({
@@ -37,13 +38,14 @@ export class CrearUsuarioComponent implements OnInit {
   cargandoContratos = false;
   verPassword = 'password';
   correoExiste = false;
+  hide = true;
 
   @ViewChild('password', { static: true }) iPasword: ElementRef;
 
   constructor(
     private fb: FormBuilder,
     private contratos$: ContratosService,
-    private uds$: UdsService,
+    private router: Router,
     private usuarios$: UsuarioService
   ) {}
 
@@ -57,30 +59,26 @@ export class CrearUsuarioComponent implements OnInit {
       contratos: null,
       uds: [],
       password: ['', Validators.required],
+      activo: false,
       creadoEl: ''
     });
 
     this.obtenerContratos();
   }
 
-  obtenerContratos() {
-    this.cargandoContratos = true;
-    this.contratos$.obtenerContratos().subscribe((resp: any) => {
-      if (resp.ok === true) {
-        this.cargandoContratos = false;
-        this.contratosDisponibles = resp.contratos;
-      } else {
-        this.cargandoContratos = false;
-      }
-    });
+  get fv(): any {
+    return this.formUsuario.value;
   }
 
-  cambiarInputPassword() {
-    if (this.verPassword === 'password') {
-      this.verPassword = 'text';
-    } else {
-      this.verPassword = 'password';
-    }
+  cancelar() {
+    this.router.navigate(['usuarios']);
+  }
+
+  obtenerContratos() {
+    this.cargandoContratos = true;
+    this.contratos$.obtenerContratos().subscribe((contratos: Contrato[]) => {
+      this.contratosDisponibles = contratos;
+    });
   }
 
   crearUsuario() {
@@ -100,13 +98,8 @@ export class CrearUsuarioComponent implements OnInit {
           this.usuarios$
             .crearUsuario(this.formUsuario.value)
             .subscribe((resp: any) => {
-              if (resp.ok) {
-                this.creandoUsuario = false;
-                this.formUsuario.reset();
-                // console.log('respuesta backend: ', resp);
-              } else {
-                this.creandoUsuario = false;
-              }
+              this.usuarios$.usuarioNuevo$.emit(resp.usuarioCreado);
+              this.formUsuario.reset();
             });
         }
       });

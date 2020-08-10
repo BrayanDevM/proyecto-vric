@@ -29,9 +29,9 @@ export class GlobalErrorHandler implements ErrorHandler {
         // Si no tiene conexión
         if (!navigator.onLine) {
           message = 'No tienes conexión a internet';
-        } else {
-          message = errorService.getServerMessage(error);
         }
+      } else {
+        message = errorService.getServerMessage(error);
       }
       notifier.showError(message);
     }

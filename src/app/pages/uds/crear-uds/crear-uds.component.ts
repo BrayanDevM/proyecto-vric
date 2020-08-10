@@ -58,7 +58,7 @@ export class CrearUdsComponent implements OnInit {
   }
 
   cancelar() {
-    this.router.navigate(['/uds']);
+    this.router.navigate(['/unidades-de-servicio']);
   }
 
   obtenerDocentes() {

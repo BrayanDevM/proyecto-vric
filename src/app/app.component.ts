@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { NombreTabWebService } from './services/nombre-tab-web.service';
 declare var moment: any;
 
 @Component({
@@ -7,7 +8,7 @@ declare var moment: any;
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  constructor() {
+  constructor(private nombreTab: NombreTabWebService) {
     moment.locale('es');
   }
 }

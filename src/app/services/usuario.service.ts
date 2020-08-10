@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter, resolveForwardRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Usuario } from '../models/usuario.model';
 import { Config } from '../config/config';
@@ -17,6 +17,10 @@ export class UsuarioService {
   token: string;
   menu: any = [];
   API_URL = Config.REST.PRINCIPAL.URL;
+
+  usuarioNuevo$ = new EventEmitter<Usuario>();
+  usuarioEliminado$ = new EventEmitter<string>();
+  usuarioActualizado$ = new EventEmitter<Usuario>();
 
   constructor(
     private http: HttpClient,
@@ -137,7 +141,13 @@ export class UsuarioService {
 
   obtenerUsuarios(query?: string) {
     if (!query) {
-      return this.http.get(this.API_URL + `/usuarios?token=${this.token}`);
+      return this.http.get(this.API_URL + `/usuarios?token=${this.token}`).pipe(
+        map((resp: any) => {
+          if (resp.ok) {
+            return resp.usuarios;
+          }
+        })
+      );
     } else {
       return this.http.get(
         this.API_URL + `/usuarios?${query}&token=${this.token}`
@@ -228,29 +238,7 @@ export class UsuarioService {
 
   eliminarUsuario(usuario: Usuario) {
     const URL = this.API_URL + `/usuarios/${usuario._id}?token=${this.token}`;
-    return this.http.delete(URL).pipe(
-      map((resp: any) => {
-        if (resp.ok === true) {
-          Swal.fire({
-            title: 'Usuario',
-            text: resp.mensaje,
-            icon: 'success'
-          });
-          return true;
-        } else {
-          console.log('error serv', resp);
-          return resp;
-        }
-      }),
-      catchError(err => {
-        Swal.fire({
-          title: 'Usuario',
-          text: err.error.mensaje,
-          icon: 'error'
-        });
-        return throwError(err);
-      })
-    );
+    return this.http.delete(URL);
   }
 
   renovarToken() {

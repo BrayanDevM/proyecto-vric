@@ -1,14 +1,7 @@
 <mat-sidenav-container [hasBackdrop]="false">
   <mat-sidenav #contrato mode="side" [opened]="abrirSidenav" position="end">
-    <!-- Component view/edit -->
+    <!-- CHILD ROUTES -->
     <router-outlet
-      name="contrato"
-      (activate)="abrirSidenav = true"
-      (deactivate)="abrirSidenav = false"
-    ></router-outlet>
-    <!-- Component create -->
-    <router-outlet
-      name="nuevo"
       (activate)="abrirSidenav = true"
       (deactivate)="abrirSidenav = false"
     ></router-outlet>

@@ -135,7 +135,7 @@ export class CrearContratoComponent implements OnInit {
           title: 'Contrato creado'
         });
         this.creando = false;
-        this.contrato$.nuevoContrato$.emit(resp.contratoCreado);
+        this.contrato$.contratoNuevo$.emit(resp.contratoCreado);
         // this.formContrato.reset();
         this.router.navigate(['/contratos']);
         // this.router.navigate(['contratos', { outlets: { contrato: [resp.contratoCreado._id] } }]);

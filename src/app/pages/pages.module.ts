@@ -8,6 +8,7 @@ import { NgxContentLoadingModule } from 'ngx-content-loading';
 
 // Módulos externos
 import { ComponentsModule } from '../components/components.module';
+import { AppPipesModule } from '../pipes/app-pipes.module';
 
 // Rutas
 import { PagesRoutingModule } from './pages-routing.module';
@@ -59,6 +60,7 @@ import { MaterialModule } from '../material/material.module';
     PagesRoutingModule,
     ComponentsModule,
     MaterialModule,
+    AppPipesModule,
     NgSelectModule,
     FormsModule,
     ReactiveFormsModule,
