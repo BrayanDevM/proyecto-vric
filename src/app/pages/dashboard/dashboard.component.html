@@ -116,16 +116,6 @@
         <div class="col-sm-12 col-xl-8">
           <div class="card card-body novedades">
             <h5 class="card-title">Novedades</h5>
-            <!-- <div class="text-right">
-              <div class="btn-group btn-group-toggle mb-2" data-toggle="buttons">
-                <label class="btn btn-light btn-sm active">
-                  <input type="radio" name="options" id="option1" checked /> Cali
-                </label>
-                <label class="btn btn-light btn-sm">
-                  <input type="radio" name="options" id="option2" /> Dagua
-                </label>
-              </div>
-            </div> -->
             <app-line-chart
               *ngIf="mostrarGraficaLinea"
               [ingresos]="ingresosPorMes"
@@ -188,7 +178,6 @@
               *ngFor="let unidad of udsDagua"
               [routerLink]="['/dashboard/uds', unidad._id]"
               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-              class="list-group-item d-flex justify-content-between align-items-center"
             >
               {{ unidad.nombre }}
               <span class="badge badge-info">
