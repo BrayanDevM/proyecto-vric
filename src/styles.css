@@ -149,7 +149,8 @@ input.form-control::placeholder {
 }
 
 .page-navbar {
-  /* flex: 1; */
+  box-shadow: 0px 1px 3px #d0d0d0;
+  z-index: 5;
 }
 
 .option-menu {
@@ -264,12 +265,16 @@ input.form-control::placeholder {
 
 .page-content {
   flex: 1;
-  background-color: #f6f7fb;
+  /* background-color: #f6f7fb; */
+  background-color: #f1f4f9;
   overflow-y: scroll;
 }
 
 .page-content .content {
-  padding: 1rem 1rem 2rem;
+  padding: 2rem;
+}
+.page-content .content .container-fluid {
+  padding: 0;
 }
 
 /* Estilos para los íconos de FontAwesome en sidebar*/

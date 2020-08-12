@@ -4,7 +4,7 @@
   (ngSubmit)="ingresarBeneficiario()"
 >
   <!------------------- Sección datos básicos ------------------->
-  <div class="card mb-3">
+  <div class="card mb-4 shadow-sm">
     <div class="card-body">
       <h5 class="card-title text-success">
         <i class="fas fa-clipboard-user mr-2"></i>Datos básicos
@@ -37,8 +37,8 @@
             <label for="documento">NUIP</label>
             <input
               #documento
-              [ngModel]="formIngreso.value.documento | documento"
-              (ngModelChange)="formIngreso.value.documento = $event"
+              [ngModel]="fv.documento | documento"
+              (ngModelChange)="fv.documento = $event"
               formControlName="documento"
               name="documento"
               type="text"
@@ -225,7 +225,7 @@
     </div>
   </div>
   <!------------------- Sección datos de ubicación ------------------->
-  <div class="card mb-3">
+  <div class="card mb-4 shadow-sm">
     <div class="card-body">
       <h5 class="card-title text-success">
         <i class="fas fa-map-marked"></i> Datos de ubicación
@@ -316,8 +316,7 @@
     </div>
   </div>
   <!------------------- Sección datos de acudiente ------------------->
-
-  <div class="card mb-3">
+  <div class="card mb-4 shadow-sm">
     <div class="card-body">
       <h5 class="card-title text-success">
         <i class="fas fa-users mr-2"></i>Datos de responsable o acudiente
@@ -351,8 +350,8 @@
             <label for="documento">NUIP</label>
             <input
               #respDocumento
-              [ngModel]="formIngreso.value.respDocumento | documento"
-              (ngModelChange)="formIngreso.value.respDocumento = $event"
+              [ngModel]="fv.respDocumento | documento"
+              (ngModelChange)="fv.respDocumento = $event"
               (focusout)="buscarRespBeneficiario($event.target.value)"
               formControlName="respDocumento"
               name="respDocumento"
@@ -533,8 +532,358 @@
       </div>
     </div>
   </div>
+  <!------------------- Sección datos de madre ------------------->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title text-info">
+        <i class="fas fa-female mr-2"></i>Datos madre del beneficiario
+      </h5>
+      <div class="card-actions mb-3">
+        <!--******************************** Toggle tiene o no madre ********************************-->
+        <div class="custom-control custom-switch">
+          <input
+            [(ngModel)]="tieneMadre"
+            [ngModelOptions]="{ standalone: true }"
+            (change)="desactivarCamposMadre()"
+            type="checkbox"
+            id="madre"
+            class="custom-control-input"
+          />
+          <label class="custom-control-label" for="madre">
+            <span *ngIf="tieneMadre">Tiene madre</span>
+            <span *ngIf="!tieneMadre">No tiene madre</span>
+          </label>
+        </div>
+        <!--*************************** Toggle Madre igual a acudiente ***************************-->
+        <div *ngIf="tieneMadre" class="custom-control custom-switch">
+          <input
+            [(ngModel)]="madreIgualAResp"
+            [ngModelOptions]="{ standalone: true }"
+            (change)="madreIgualResponsable()"
+            type="checkbox"
+            id="madreIgualResp"
+            class="custom-control-input"
+          />
+          <label class="custom-control-label" for="madreIgualResp">
+            <span *ngIf="madreIgualAResp">Es el mismo acudiente</span>
+            <span *ngIf="!madreIgualAResp">No es el mismo acudiente</span>
+          </label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-3 col-xl-2">
+          <div class="form-group">
+            <label for="madreTipoDoc">Tipo de documento</label>
+            <ng-select
+              #madreTipoDoc
+              [items]="tiposDeDocumento"
+              bindValue="value"
+              bindLabel="label"
+              groupBy="group"
+              labelForId="madreTipoDoc"
+              placeholder="Seleccionar tipo de documento"
+              (change)="comprobarMadreSD($event)"
+              formControlName="madreTipoDoc"
+              name="madreTipoDoc"
+              required
+            >
+              <ng-template ng-label-tmp let-item="item">
+                <i [class]="item.icon"></i>
+                {{ item.label }}
+              </ng-template>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-lg-3 col-xl-2">
+          <div class="form-group">
+            <label for="documento">NUIP</label>
+            <input
+              #madreDocumento
+              [ngModel]="fv.madreDocumento | documento"
+              (ngModelChange)="fv.madreDocumento = $event"
+              formControlName="madreDocumento"
+              name="madreDocumento"
+              type="text"
+              class="form-control"
+              placeholder="Número de NUIP"
+              autocomplete="off"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-lg-3 col-xl-2">
+          <div class="form-group">
+            <label for="madreNombre1">Primer nombre</label>
+            <input
+              #madreNombre1
+              formControlName="madreNombre1"
+              name="madreNombre1"
+              type="text"
+              class="form-control"
+              placeholder="Escribe un nombre"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-lg-3 col-xl-2">
+          <div class="form-group">
+            <label for="madreNombre2">Segundo nombre</label>
+            <input
+              #madreNombre2
+              formControlName="madreNombre2"
+              name="madreNombre2"
+              type="text"
+              class="form-control"
+              placeholder="Escribe un nombre"
+            />
+          </div>
+        </div>
+        <div class="col-lg-3 col-xl-2">
+          <div class="form-group">
+            <label for="madreApellido1">Primer apellido</label>
+            <input
+              #madreApellido1
+              formControlName="madreApellido1"
+              name="madreApellido1"
+              type="text"
+              class="form-control"
+              placeholder="Escribe un apellido"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-lg-3 col-xl-2">
+          <div class="form-group">
+            <label for="madreApellido2">Segundo apellido</label>
+            <input
+              #madreApellido2
+              formControlName="madreApellido2"
+              name="madreApellido2"
+              type="text"
+              class="form-control"
+              placeholder="Escribe un apellido"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-3 col-xl-2">
+          <div class="form-group">
+            <label for="madreSexo">Sexo</label>
+            <ng-select
+              #madreSexo
+              [items]="sexos"
+              bindValue="value"
+              bindLabel="label"
+              labelForId="madreSexo"
+              placeholder="Seleccionar sexo"
+              formControlName="madreSexo"
+              name="madreSexo"
+              required
+            >
+              <ng-template ng-label-tmp let-item="item">
+                <i [class]="item.icon"></i>
+                {{ item.label }}
+              </ng-template>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-lg-3 col-xl-2">
+          <div class="form-group">
+            <label class="label-control" for="madreNacimiento"
+              >Fecha nacimiento</label
+            >
+            <input
+              #madreNacimiento
+              formControlName="madreNacimiento"
+              name="madreNacimiento"
+              id="madreNacimiento"
+              type="date"
+              class="form-control"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-----------------*******************-- Sección datos de padre --*******************----------------->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title text-info">
+        <i class="fas fa-male mr-2"></i>Datos padre del beneficiario
+      </h5>
+      <div class="card-actions mb-3">
+        <!--******************************** Toggle tiene o no madre ********************************-->
+        <div class="custom-control custom-switch">
+          <input
+            [(ngModel)]="tienePadre"
+            [ngModelOptions]="{ standalone: true }"
+            (change)="desactivarCamposPadre()"
+            type="checkbox"
+            id="padre"
+            class="custom-control-input"
+          />
+          <label class="custom-control-label" for="padre">
+            <span *ngIf="tienePadre">Tiene padre</span>
+            <span *ngIf="!tienePadre">No tiene padre</span>
+          </label>
+        </div>
+        <!--*************************** Toggle Madre igual a acudiente ***************************-->
+        <div *ngIf="tienePadre" class="custom-control custom-switch">
+          <input
+            [(ngModel)]="padreIgualAResp"
+            [ngModelOptions]="{ standalone: true }"
+            (change)="padreIgualResponsable()"
+            type="checkbox"
+            id="padreIgualResp"
+            class="custom-control-input"
+          />
+          <label class="custom-control-label" for="padreIgualResp">
+            <span *ngIf="padreIgualAResp">Es el mismo acudiente</span>
+            <span *ngIf="!padreIgualAResp">No es el mismo acudiente</span>
+          </label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-3 col-xl-2">
+          <div class="form-group">
+            <label for="padreTipoDoc">Tipo de documento</label>
+            <ng-select
+              #padreTipoDoc
+              [items]="tiposDeDocumento"
+              bindValue="value"
+              bindLabel="label"
+              groupBy="group"
+              labelForId="padreTipoDoc"
+              placeholder="Seleccionar tipo de documento"
+              (change)="comprobarPadreSD($event)"
+              formControlName="padreTipoDoc"
+              name="padreTipoDoc"
+              required
+            >
+              <ng-template ng-label-tmp let-item="item">
+                <i [class]="item.icon"></i>
+                {{ item.label }}
+              </ng-template>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-lg-3 col-xl-2">
+          <div class="form-group">
+            <label for="documento">NUIP</label>
+            <input
+              #padreDocumento
+              [ngModel]="fv.padreDocumento | documento"
+              (ngModelChange)="fv.padreDocumento = $event"
+              formControlName="padreDocumento"
+              name="padreDocumento"
+              type="text"
+              class="form-control"
+              placeholder="Número de NUIP"
+              autocomplete="off"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-lg-3 col-xl-2">
+          <div class="form-group">
+            <label for="padreNombre1">Primer nombre</label>
+            <input
+              #padreNombre1
+              formControlName="padreNombre1"
+              name="padreNombre1"
+              type="text"
+              class="form-control"
+              placeholder="Escribe un nombre"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-lg-3 col-xl-2">
+          <div class="form-group">
+            <label for="padreNombre2">Segundo nombre</label>
+            <input
+              #padreNombre2
+              formControlName="padreNombre2"
+              name="padreNombre2"
+              type="text"
+              class="form-control"
+              placeholder="Escribe un nombre"
+            />
+          </div>
+        </div>
+        <div class="col-lg-3 col-xl-2">
+          <div class="form-group">
+            <label for="padreApellido1">Primer apellido</label>
+            <input
+              #padreApellido1
+              formControlName="padreApellido1"
+              name="padreApellido1"
+              type="text"
+              class="form-control"
+              placeholder="Escribe un apellido"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-lg-3 col-xl-2">
+          <div class="form-group">
+            <label for="padreApellido2">Segundo apellido</label>
+            <input
+              #padreApellido2
+              formControlName="padreApellido2"
+              name="padreApellido2"
+              type="text"
+              class="form-control"
+              placeholder="Escribe un apellido"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-3 col-xl-2">
+          <div class="form-group">
+            <label for="padreSexo">Sexo</label>
+            <ng-select
+              #padreSexo
+              [items]="sexos"
+              bindValue="value"
+              bindLabel="label"
+              labelForId="padreSexo"
+              placeholder="Seleccionar sexo"
+              formControlName="padreSexo"
+              name="padreSexo"
+              required
+            >
+              <ng-template ng-label-tmp let-item="item">
+                <i [class]="item.icon"></i>
+                {{ item.label }}
+              </ng-template>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-lg-3 col-xl-2">
+          <div class="form-group">
+            <label class="label-control" for="padreNacimiento"
+              >Fecha nacimiento</label
+            >
+            <input
+              #padreNacimiento
+              formControlName="padreNacimiento"
+              name="padreNacimiento"
+              id="padreNacimiento"
+              type="date"
+              class="form-control"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <!------------------- Sección UDS e Ingreso ------------------->
-  <div class="card mb-3">
+  <div class="card mb-3 shadow-sm">
     <div class="card-body">
       <h5 class="card-title text-success">
         <i class="fas fa-address-book mr-2"></i>Datos de ingreso

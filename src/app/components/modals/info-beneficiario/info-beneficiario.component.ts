@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { Beneficiario } from 'src/app/models/beneficiario.model';
 import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
 import { alertSuccess } from 'src/app/helpers/swal2.config';
@@ -9,13 +9,17 @@ declare var moment: any;
   templateUrl: './info-beneficiario.component.html',
   styleUrls: ['./info-beneficiario.component.css']
 })
-export class InfoBeneficiarioComponent implements OnInit {
+export class InfoBeneficiarioComponent implements OnInit, OnChanges {
   @Input() beneficiarioInfo: Beneficiario = null;
   editarComentario = false;
 
   constructor(private beneficiarios$: BeneficiariosService) {}
 
   ngOnInit() {}
+
+  ngOnChanges() {
+    console.log(this.beneficiarioInfo, 'beneficiario recibido');
+  }
 
   actualizarComentario() {
     this.beneficiarios$

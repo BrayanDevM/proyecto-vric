@@ -107,7 +107,7 @@ export class FormIngresosComponent implements OnInit {
   tipoResponsables: NgOption = [
     { value: 'Madre', label: 'Madre' },
     { value: 'Padre', label: 'Padre' },
-    { value: 'Tio/a', label: 'Madre' },
+    { value: 'Tia/o', label: 'Tia/o' },
     { value: 'Abuelo/a', label: 'Abuelo/a' },
     { value: 'Conyugue', label: 'Conyugue' },
     { value: 'Si misma', label: 'Si misma' },
@@ -161,6 +161,14 @@ export class FormIngresosComponent implements OnInit {
   listaDepartamentosResp: any = [{ departamento: 'Extranjero' }];
   listaMunicipiosResp = ['Extranjero'];
   respExiste = false;
+  madreExiste = false;
+  padreExiste = false;
+
+  tienePadre = true;
+  tieneMadre = true;
+
+  madreIgualAResp = false;
+  padreIgualAResp = false;
   // Info de usuario
   usuario: Usuario;
   @Input() udsAsignadas: Uds[];
@@ -212,11 +220,36 @@ export class FormIngresosComponent implements OnInit {
       respDptoNacimiento: [null, Validators.required],
       respMunicipioNacimiento: [null, Validators.required],
       fecha: null,
-      estado: 'Pendiente vincular'
+      estado: 'Pendiente vincular',
+      // Información Padre
+      madreTipoDoc: [null, Validators.required],
+      madreDocumento: ['', Validators.required],
+      madreNombre1: [null, Validators.required],
+      madreNombre2: null,
+      madreApellido1: [null, Validators.required],
+      madreApellido2: null,
+      madreSexo: [null, Validators.required],
+      madreNacimiento: [null, Validators.required],
+      // Información Madre
+      padreTipoDoc: [null, Validators.required],
+      padreDocumento: ['', Validators.required],
+      padreNombre1: [null, Validators.required],
+      padreNombre2: null,
+      padreApellido1: [null, Validators.required],
+      padreApellido2: null,
+      padreSexo: [null, Validators.required],
+      padreNacimiento: [null, Validators.required]
     });
   }
 
   ngOnInit() {}
+
+  get f(): FormGroup {
+    return this.formIngreso;
+  }
+  get fv(): any {
+    return this.formIngreso.value;
+  }
 
   cambiarDepartamentos(pais: any) {
     if (pais === undefined) {
@@ -286,7 +319,7 @@ export class FormIngresosComponent implements OnInit {
     if ($event.value === 'SD') {
       const documentoAleatorio = this.generarDocumento(15);
       this.iDocumento.nativeElement.value = documentoAleatorio;
-      this.formIngreso.value.documento = documentoAleatorio;
+      this.fv.documento = documentoAleatorio;
       this.iDocumento.nativeElement.disabled = true;
     } else {
       this.iDocumento.nativeElement.value = null;
@@ -344,7 +377,7 @@ export class FormIngresosComponent implements OnInit {
     if ($event.value === 'SD') {
       const documentoAleatorio = this.generarDocumento(15);
       this.iRespDocumento.nativeElement.value = documentoAleatorio;
-      this.formIngreso.value.respDocumento = documentoAleatorio;
+      this.fv.respDocumento = documentoAleatorio;
       this.iRespDocumento.nativeElement.disabled = true;
     } else {
       this.iRespDocumento.nativeElement.value = null;
@@ -382,7 +415,7 @@ export class FormIngresosComponent implements OnInit {
     if ($event === undefined) {
       return;
     }
-    this.formIngreso.value.codigo = $event._id;
+    this.fv.codigo = $event._id;
     const index = this.udsAsignadas.findIndex(
       (unidad: Uds) => unidad._id === $event._id
     );
@@ -494,20 +527,130 @@ export class FormIngresosComponent implements OnInit {
     this.iRespMunicipioNac.setDisabledState(false);
   }
 
+  comprobarMadreSD($event: any) {
+    if ($event.value === 'SD') {
+      const documentoAleatorio = this.generarDocumento(15);
+      this.fv.madreDocumento = documentoAleatorio;
+      this.f.get('madreDocumento').patchValue(documentoAleatorio);
+    }
+  }
+  comprobarPadreSD($event: any) {
+    if ($event.value === 'SD') {
+      const documentoAleatorio = this.generarDocumento(15);
+      this.fv.madreDocumento = documentoAleatorio;
+      this.f.get('padreDocumento').patchValue(documentoAleatorio);
+    }
+  }
+
+  desactivarCamposPadre() {
+    if (!this.tienePadre) {
+      this.f.get('padreTipoDoc').disable();
+      this.f.get('padreDocumento').disable();
+      this.f.get('padreNombre1').disable();
+      this.f.get('padreNombre2').disable();
+      this.f.get('padreApellido1').disable();
+      this.f.get('padreApellido2').disable();
+      this.f.get('padreSexo').disable();
+      this.f.get('padreNacimiento').disable();
+    } else {
+      this.f.get('padreTipoDoc').enable();
+      this.f.get('padreDocumento').enable();
+      this.f.get('padreNombre1').enable();
+      this.f.get('padreNombre2').enable();
+      this.f.get('padreApellido1').enable();
+      this.f.get('padreApellido2').enable();
+      this.f.get('padreSexo').enable();
+      this.f.get('padreNacimiento').enable();
+    }
+  }
+  desactivarCamposMadre() {
+    if (!this.tieneMadre) {
+      this.f.get('madreTipoDoc').disable();
+      this.f.get('madreDocumento').disable();
+      this.f.get('madreNombre1').disable();
+      this.f.get('madreNombre2').disable();
+      this.f.get('madreApellido1').disable();
+      this.f.get('madreApellido2').disable();
+      this.f.get('madreSexo').disable();
+      this.f.get('madreNacimiento').disable();
+    } else {
+      this.f.get('madreTipoDoc').enable();
+      this.f.get('madreDocumento').enable();
+      this.f.get('madreNombre1').enable();
+      this.f.get('madreNombre2').enable();
+      this.f.get('madreApellido1').enable();
+      this.f.get('madreApellido2').enable();
+      this.f.get('madreSexo').enable();
+      this.f.get('madreNacimiento').enable();
+    }
+  }
+  madreIgualResponsable() {
+    if (this.madreIgualAResp) {
+      this.padreIgualAResp = false;
+      this.padreIgualResponsable();
+      this.f.get('madreTipoDoc').patchValue(this.fv.respTipoDoc);
+      this.f.get('madreDocumento').patchValue(this.fv.respDocumento);
+      this.f.get('madreNombre1').patchValue(this.fv.respNombre1);
+      this.f.get('madreNombre2').patchValue(this.fv.respNombre2);
+      this.f.get('madreApellido1').patchValue(this.fv.respApellido1);
+      this.f.get('madreApellido2').patchValue(this.fv.respApellido2);
+      this.f.get('madreSexo').patchValue(this.fv.respSexo);
+      this.f.get('madreNacimiento').patchValue(this.fv.respNacimiento);
+    } else {
+      this.f.get('madreTipoDoc').patchValue(null);
+      this.f.get('madreDocumento').patchValue(null);
+      this.f.get('madreNombre1').patchValue(null);
+      this.f.get('madreNombre2').patchValue(null);
+      this.f.get('madreApellido1').patchValue(null);
+      this.f.get('madreApellido2').patchValue(null);
+      this.f.get('madreSexo').patchValue(null);
+      this.f.get('madreNacimiento').patchValue(null);
+    }
+  }
+  padreIgualResponsable() {
+    if (this.padreIgualAResp) {
+      this.madreIgualAResp = false;
+      this.madreIgualResponsable();
+      this.f.get('padreTipoDoc').patchValue(this.fv.respTipoDoc);
+      this.f.get('padreDocumento').patchValue(this.fv.respDocumento);
+      this.f.get('padreNombre1').patchValue(this.fv.respNombre1);
+      this.f.get('padreNombre2').patchValue(this.fv.respNombre2);
+      this.f.get('padreApellido1').patchValue(this.fv.respApellido1);
+      this.f.get('padreApellido2').patchValue(this.fv.respApellido2);
+      this.f.get('padreSexo').patchValue(this.fv.respSexo);
+      this.f.get('padreNacimiento').patchValue(this.fv.respNacimiento);
+    } else {
+      this.f.get('padreTipoDoc').patchValue(null);
+      this.f.get('padreDocumento').patchValue(null);
+      this.f.get('padreNombre1').patchValue(null);
+      this.f.get('padreNombre2').patchValue(null);
+      this.f.get('padreApellido1').patchValue(null);
+      this.f.get('padreApellido2').patchValue(null);
+      this.f.get('padreSexo').patchValue(null);
+      this.f.get('padreNacimiento').patchValue(null);
+    }
+  }
+
   formatearFechas() {
-    this.formIngreso.value.fecha = moment().format('DD/MM/YYYY');
-    this.formIngreso.value.nacimiento = moment(
-      this.formIngreso.value.nacimiento,
+    this.fv.fecha = moment().format('DD/MM/YYYY');
+    this.fv.nacimiento = moment(this.fv.nacimiento, 'YYYY-MM-DD').format(
+      'DD/MM/YYYY'
+    );
+    this.fv.respNacimiento = moment(
+      this.fv.respNacimiento,
       'YYYY-MM-DD'
     ).format('DD/MM/YYYY');
-    this.formIngreso.value.respNacimiento = moment(
-      this.formIngreso.value.nacimiento,
+    this.fv.madreNacimiento = moment(
+      this.fv.madreNacimiento,
       'YYYY-MM-DD'
     ).format('DD/MM/YYYY');
-    this.formIngreso.value.ingreso = moment(
-      this.formIngreso.value.ingreso,
+    this.fv.padreNacimiento = moment(
+      this.fv.padreNacimiento,
       'YYYY-MM-DD'
     ).format('DD/MM/YYYY');
+    this.fv.ingreso = moment(this.fv.ingreso, 'YYYY-MM-DD').format(
+      'DD/MM/YYYY'
+    );
   }
 
   ingresarBeneficiario() {
@@ -518,13 +661,13 @@ export class FormIngresosComponent implements OnInit {
         html: `<span>Deseas reportar al beneficiario:</span>
         <ul class="mt-2">
           <li>
-            ${this.formIngreso.value.nombre1}
-            ${this.formIngreso.value.nombre2}
-            ${this.formIngreso.value.apellido1}
-            ${this.formIngreso.value.apellido2}
+            ${this.fv.nombre1}
+            ${this.fv.nombre2}
+            ${this.fv.apellido1}
+            ${this.fv.apellido2}
           </li>
-          <li>${this.formIngreso.value.tipoDoc}: ${this.formIngreso.value.documento}</li>
-          <li>Nacimiento: ${this.formIngreso.value.nacimiento}</li>
+          <li>${this.fv.tipoDoc}: ${this.fv.documento}</li>
+          <li>Nacimiento: ${this.fv.nacimiento}</li>
         </ul>
       `,
         confirmButtonText: 'Sí, reportar ingreso'
@@ -533,7 +676,7 @@ export class FormIngresosComponent implements OnInit {
         if (result.value) {
           this.creando = true;
           this.beneficiarios$
-            .crearBeneficiario(this.formIngreso.value)
+            .crearBeneficiario(this.fv)
             .subscribe((resp: any) => {
               if (resp.ok) {
                 this.creando = false;

@@ -152,18 +152,42 @@
         </div>
         <p>
           <a
-            class="btn btn-sm btn-light mt-3"
+            class="btn btn-sm btn-outline-info mt-3"
             data-toggle="collapse"
-            href="#multiCollapseExample1"
+            href="#infoResponsable"
             role="button"
             aria-expanded="false"
-            aria-controls="multiCollapseExample1"
-            >Ver información de acudiente</a
+            aria-controls="infoResponsable"
           >
+            Ver información de acudiente
+          </a>
+          <a
+            *ngIf="beneficiarioInfo.madreId !== null"
+            class="btn btn-sm btn-outline-info mt-3 ml-2"
+            data-toggle="collapse"
+            href="#infoMadre"
+            role="button"
+            aria-expanded="false"
+            aria-controls="infoMadre"
+          >
+            Ver información de la madre
+          </a>
+          <a
+            *ngIf="beneficiarioInfo.padreId !== null"
+            class="btn btn-sm btn-outline-info mt-3 ml-2"
+            data-toggle="collapse"
+            href="#infoPadre"
+            role="button"
+            aria-expanded="false"
+            aria-controls="infoPadre"
+          >
+            Ver información del padre
+          </a>
         </p>
         <div class="row">
+          <!--/*/*/*/**/*/*/**//*//* COLLAPSE INFO RESPONSABLE /*/*/*/**/*/*/**//*//*-->
           <div class="col-12">
-            <div class="collapse multi-collapse" id="multiCollapseExample1">
+            <div class="collapse multi-collapse" id="infoResponsable">
               <div class="card card-body mb-2">
                 <div class="row">
                   <div class="col-6">
@@ -192,6 +216,58 @@
                       {{ beneficiarioInfo.responsableId.paisNacimiento }},
                       {{ beneficiarioInfo.responsableId.dptoNacimiento }} -
                       {{ beneficiarioInfo.responsableId.municipioNacimiento }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--/*/*/*/**/*/*/**//*//* COLLAPSE INFO MADRE /*/*/*/**/*/*/**//*//*-->
+          <div class="col-12">
+            <div class="collapse multi-collapse" id="infoMadre">
+              <div class="card card-body mb-2">
+                <div *ngIf="beneficiarioInfo.madreId !== null" class="row">
+                  <div class="col-6">
+                    <p class="mb-0">
+                      <i class="fas fa-users"></i>
+                      {{ beneficiarioInfo.madreId.nombre1 }}
+                      {{ beneficiarioInfo.madreId.nombre2 }}
+                      {{ beneficiarioInfo.madreId.apellido1 }}
+                      {{ beneficiarioInfo.madreId.apellido2 }}
+                      <br />
+                      <i class="fas fa-id-card"></i>
+                      {{ beneficiarioInfo.madreId.tipoDoc }}.
+                      {{ beneficiarioInfo.madreId.documento }}
+                      <br />
+                      <i class="fas fa-calendar-day"></i>
+                      Nacimiento:
+                      {{ beneficiarioInfo.madreId.nacimiento }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--/*/*/*/**/*/*/**//*//* COLLAPSE INFO PADRE /*/*/*/**/*/*/**//*//*-->
+          <div class="col-12">
+            <div class="collapse multi-collapse" id="infoPadre">
+              <div class="card card-body mb-2">
+                <div *ngIf="beneficiarioInfo.padreId !== null" class="row">
+                  <div class="col-6">
+                    <p class="mb-0">
+                      <i class="fas fa-users"></i>
+                      {{ beneficiarioInfo.padreId.nombre1 }}
+                      {{ beneficiarioInfo.padreId.nombre2 }}
+                      {{ beneficiarioInfo.padreId.apellido1 }}
+                      {{ beneficiarioInfo.padreId.apellido2 }}
+                      <br />
+                      <i class="fas fa-id-card"></i>
+                      {{ beneficiarioInfo.padreId.tipoDoc }}.
+                      {{ beneficiarioInfo.padreId.documento }}
+                      <br />
+                      <i class="fas fa-calendar-day"></i>
+                      Nacimiento:
+                      {{ beneficiarioInfo.padreId.nacimiento }}
                     </p>
                   </div>
                 </div>
