@@ -107,7 +107,7 @@ export class FormIngresosComponent implements OnInit {
   tipoResponsables: NgOption = [
     { value: 'Madre', label: 'Madre' },
     { value: 'Padre', label: 'Padre' },
-    { value: 'Tio/a', label: 'Madre' },
+    { value: 'Tia/o', label: 'Tia/o' },
     { value: 'Abuelo/a', label: 'Abuelo/a' },
     { value: 'Conyugue', label: 'Conyugue' },
     { value: 'Si misma', label: 'Si misma' },

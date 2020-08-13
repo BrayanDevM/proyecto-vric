@@ -45,6 +45,11 @@ button:focus {
   font-size: 2rem;
   color: #969696;
 }
+.no-data img {
+  width: 38%;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
 
 .header-toolbar .mat-toolbar {
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
@@ -121,7 +126,7 @@ button:focus {
 }
 .header .search-input .mat-form-field-infix {
   display: flex;
-  width: 130px;
+  width: 160px;
   height: 40px;
   border: none;
   padding: 0;
@@ -264,6 +269,26 @@ h5.card-title {
   opacity: 0.7;
 }
 
+.table-section,
+.table-section-info {
+  height: 56px;
+  min-height: 56px;
+  max-height: 56px;
+  font-weight: 600;
+  // border-top-width: 2px;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  font-size: 1.3rem;
+}
+.table-section {
+  background-color: #f1f5f9;
+}
+.table-section-info {
+  background-color: #fff;
+}
+
+// MAT-SELECT ESTILOS
 .select .mat-form-field-wrapper {
   padding-bottom: 0;
 }
@@ -281,17 +306,58 @@ h5.card-title {
 }
 
 .select .mat-form-field-flex {
-  border: 1px solid #cfd8e3;
+  border: 1px solid #e0e0e0;
   border-radius: 6px;
   padding-top: 5px;
   background-color: #fff;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  min-height: 48px;
+  min-height: 41.5px;
   padding: 0 16px;
   // ----
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+// INFO BENEFICIARIO DIALOG STYLES
+.info-beneficiario-wrapper {
+  font-family: Inter, Roboto, Arial, Helvetica, sans-serif;
+}
+.info-beneficiario-wrapper .user-no-image {
+  width: 96px;
+  height: 96px;
+  margin-bottom: 0;
+}
+.info-beneficiario-wrapper .mat-tab-header {
+  margin-top: 1rem;
+  padding: 0;
+}
+.info-beneficiario-wrapper .nombre-completo {
+  font-size: 1.8rem;
+  margin-bottom: 0;
+  font-weight: 700;
+}
+.info-beneficiario-wrapper .form-field {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.info-beneficiario-wrapper .form-field-icon {
+  margin-right: 24px;
+}
+
+.mat-btn-sm {
+  max-height: 24px;
+  max-width: 24px;
+  line-height: 24px !important;
+}
+.mat-btn-sm:hover {
+  background-color: #eee;
+}
+.mat-btn-sm .mat-button-wrapper mat-icon {
+  font-size: 15px;
 }
 
 // SIDENAV DETAIL COMPONENTS ********************************************

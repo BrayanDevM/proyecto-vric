@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { UsuarioService } from './usuario.service';
 import { Beneficiario } from '../models/beneficiario.model';
 import { HttpClient } from '@angular/common/http';
@@ -17,6 +17,8 @@ export class BeneficiariosService {
   token: string;
   benficiario: Beneficiario;
   API_URL = Config.REST.PRINCIPAL.URL + '/beneficiarios';
+  // observables
+  inputSearch$ = new EventEmitter<string>();
 
   constructor(
     private usuario$: UsuarioService,

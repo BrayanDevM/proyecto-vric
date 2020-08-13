@@ -1,680 +1,729 @@
-<div class="content">
-  <div class="container-fluid">
-    <!------------------------------------------------------------------------------->
-    <!---------------------- Tabla de beneficiarios pendientes ---------------------->
+<h2 mat-dialog-title>Información de beneficiario</h2>
+<mat-dialog-content>
+  <div class="info-beneficiario-wrapper">
     <div class="row">
       <div class="col-12">
-        <div class="card">
-          <div class="card-header">
-            <ul class="nav nav-tabs card-header-tabs" data-tabs="tabs">
-              <li class="nav-item">
-                <a
-                  class="nav-link active"
-                  href="#beneficiario"
-                  data-toggle="tab"
-                >
-                  <i class="fas fa-pencil"></i>
-                  Editar beneficiario
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#responsable" data-toggle="tab">
-                  <i class="fas fa-pencil"></i>
-                  Editar responsable
-                </a>
-              </li>
-            </ul>
+        <div class="beneficiario-header d-flex flex-row align-items-center">
+          <div class="user-no-image mr-3">
+            {{ data.nombre1 | primeraLetra }}
           </div>
-          <div ngi class="card-body">
-            <div class="tab-content" id="myTabContent">
-              <div
-                *ngIf="beneficiario"
-                class="tab-pane fade show active"
-                id="beneficiario"
-                role="tabpanel"
-                aria-labelledby="beneficiario-tab"
-              >
-                <!--------------------------- Datos básicos -------------------------->
-                <!-------------------------------------------------------------------->
-                <div class="card card-body mb-3">
-                  <h5 class="card-title text-success">
-                    <i class="fas fa-clipboard-user mr-2"></i>Datos básicos
-                  </h5>
-                  <div class="row">
-                    <div class="col-2">
-                      <div class="form-group">
-                        <label for="tipoDoc">Tipo de documento</label>
-                        <ng-select
-                          [items]="tiposDeDocumento"
-                          bindValue="value"
-                          bindLabel="label"
-                          groupBy="group"
-                          placeholder="Seleccionar tipo de documento"
-                          [(ngModel)]="beneficiario.tipoDoc"
-                          name="tipoDoc"
-                          required
-                        >
-                          <ng-template ng-label-tmp let-item="item">
-                            <i [class]="item.icon"></i>
-                            {{ item.label }}
-                          </ng-template>
-                        </ng-select>
-                      </div>
-                    </div>
-                    <div class="col-2">
-                      <div class="form-group">
-                        <label for="documento">NUIP</label>
-                        <input
-                          #documento
-                          [(ngModel)]="beneficiario.documento"
-                          name="documento"
-                          type="text"
-                          class="form-control"
-                          placeholder="Número de NUIP"
-                          autocomplete="off"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div class="col-2">
-                      <div class="form-group">
-                        <label for="nombre1">Primer nombre</label>
-                        <input
-                          [(ngModel)]="beneficiario.nombre1"
-                          name="nombre1"
-                          type="text"
-                          class="form-control"
-                          placeholder="Escribe un nombre"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div class="col-2">
-                      <div class="form-group">
-                        <label for="nombre2">Segundo nombre</label>
-                        <input
-                          [(ngModel)]="beneficiario.nombre2"
-                          name="nombre2"
-                          type="text"
-                          class="form-control"
-                          placeholder="Escribe un nombre"
-                        />
-                      </div>
-                    </div>
-                    <div class="col-2">
-                      <div class="form-group">
-                        <label for="apellido1">Primer apellido</label>
-                        <input
-                          [(ngModel)]="beneficiario.apellido1"
-                          name="apellido1"
-                          type="text"
-                          class="form-control"
-                          placeholder="Escribe un apellido"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div class="col-2">
-                      <div class="form-group">
-                        <label for="apellido2">Segundo apellido</label>
-                        <input
-                          [(ngModel)]="beneficiario.apellido2"
-                          name="apellido2"
-                          type="text"
-                          class="form-control"
-                          placeholder="Escribe un apellido"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-2">
-                      <div class="form-group">
-                        <label for="sexo">Sexo</label>
-                        <ng-select
-                          [items]="sexos"
-                          bindValue="value"
-                          bindLabel="label"
-                          placeholder="Seleccionar sexo"
-                          [(ngModel)]="beneficiario.sexo"
-                          name="sexo"
-                          required
-                        >
-                          <ng-template ng-label-tmp let-item="item">
-                            <i [class]="item.icon"></i>
-                            {{ item.label }}
-                          </ng-template>
-                        </ng-select>
-                      </div>
-                    </div>
-                    <div class="col-2">
-                      <div class="form-group">
-                        <label class="label-control" for="nacimiento"
-                          >Fecha nacimiento</label
-                        >
-                        <input
-                          [(ngModel)]="beneficiario.nacimiento"
-                          name="nacimiento"
-                          type="date"
-                          class="form-control"
-                          autocomplete="off"
-                        />
-                      </div>
-                    </div>
-                    <div class="col-2">
-                      <div class="form-group">
-                        <label for="paisNacimiento">País de nacimiento</label>
-                        <ng-select
-                          [items]="paises"
-                          bindValue="value"
-                          bindLabel="label"
-                          placeholder="Seleccionar país"
-                          [(ngModel)]="beneficiario.paisNacimiento"
-                          (change)="cambiarDepartamentos($event)"
-                          name="paisNacimiento"
-                          required
-                        >
-                        </ng-select>
-                      </div>
-                    </div>
-                    <div class="col-2">
-                      <div class="form-group">
-                        <label for="dptoNacimiento">Dpto. de nacimiento</label>
-                        <ng-select
-                          [items]="listaDepartamentos"
-                          bindValue="departamento"
-                          bindLabel="departamento"
-                          placeholder="Seleccionar departamento"
-                          [(ngModel)]="beneficiario.dptoNacimiento"
-                          (change)="cambiarCiudades($event)"
-                          name="dptoNacimiento"
-                          required
-                        >
-                        </ng-select>
-                      </div>
-                    </div>
-                    <div class="col-2">
-                      <div class="form-group">
-                        <label for="municipioNacimiento"
-                          >Municipio de nacimiento</label
-                        >
-                        <ng-select
-                          [items]="listaMunicipios"
-                          bindValue="municipio"
-                          bindLabel="municipio"
-                          placeholder="Seleccionar municipio"
-                          [(ngModel)]="beneficiario.municipioNacimiento"
-                          name="municipioNacimiento"
-                          required
-                        >
-                        </ng-select>
-                      </div>
-                    </div>
-                    <div class="col-2">
-                      <div class="form-group">
-                        <label for="autorreconocimiento"
-                          >Autorreconocimiento</label
-                        >
-                        <ng-select
-                          [items]="reconocimientos"
-                          bindValue="value"
-                          bindLabel="label"
-                          placeholder="Seleccionar autorreconocimiento"
-                          [(ngModel)]="beneficiario.autorreconocimiento"
-                          name="autorreconocimiento"
-                          required
-                        >
-                        </ng-select>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-2">
-                      <div class="form-group">
-                        <label for="discapacidad">Discapacidad</label>
-                        <ng-select
-                          [items]="discapacidades"
-                          bindValue="value"
-                          bindLabel="label"
-                          placeholder="Seleccionar autorreconocimiento"
-                          [(ngModel)]="beneficiario.discapacidad"
-                          name="discapacidad"
-                          required
-                        >
-                        </ng-select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!------------------- Sección datos de ubicación --------------------->
-                <!-------------------------------------------------------------------->
-                <div class="card mb-3">
-                  <div class="card-body">
-                    <h5 class="card-title text-success">
-                      <i class="fas fa-map-marked"></i> Datos de ubicación
-                    </h5>
-                    <div class="row">
-                      <div class="col-4">
-                        <div class="form-group">
-                          <label for="direccion">Dirección</label>
-                          <input
-                            [(ngModel)]="beneficiario.direccion"
-                            name="direccion"
-                            type="text"
-                            class="form-control"
-                            placeholder="Dirección exacta"
-                            autocomplete="off"
-                            required
-                          />
-                          <small class="form-text text-muted">
-                            <b>Ejemplo rural:</b> Subiendo por vía principal
-                            casa verde a lado de tienda Pepita
-                          </small>
-                        </div>
-                      </div>
-                      <div class="col-2">
-                        <div class="form-group">
-                          <label for="barrio">Barrio</label>
-                          <input
-                            [(ngModel)]="beneficiario.barrio"
-                            name="barrio"
-                            type="text"
-                            class="form-control"
-                            placeholder="Barrio"
-                            autocomplete="off"
-                            required
-                          />
-                        </div>
-                      </div>
-                      <div class="col-2">
-                        <div class="form-group">
-                          <label for="telefono">Teléfono</label>
-                          <input
-                            [(ngModel)]="beneficiario.telefono"
-                            name="telefono"
-                            type="text"
-                            class="form-control"
-                            placeholder="Telefono"
-                            autocomplete="off"
-                            required
-                          />
-                        </div>
-                      </div>
-                      <div class="col-2">
-                        <div class="form-group">
-                          <label for="autorreconocimiento"
-                            >Criterio de atención</label
-                          >
-                          <ng-select
-                            [items]="criterios"
-                            bindValue="value"
-                            bindLabel="label"
-                            placeholder="Seleccionar criterio"
-                            [(ngModel)]="beneficiario.criterio"
-                            (change)="validarCriterio($event)"
-                            name="criterio"
-                            required
-                          >
-                          </ng-select>
-                        </div>
-                      </div>
-                      <div class="col-2">
-                        <div class="form-group">
-                          <label for="infoCriterio">{{
-                            labelInputInfoCriterio
-                          }}</label>
-                          <input
-                            [(ngModel)]="beneficiario.infoCriterio"
-                            name="infoCriterio"
-                            [attr.type]="tipoInputInfoCriterio"
-                            class="form-control"
-                            placeholder="Escriba"
-                            autocomplete="off"
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!--------------------- Sección UDS e Ingreso ----------------------->
-                <!------------------------------------------------------------------->
-                <div class="card mb-3">
-                  <div class="card-body">
-                    <h5 class="card-title text-success">
-                      <i class="fas fa-address-book mr-2"></i>Datos de ingreso
-                    </h5>
-                    <div class="row">
-                      <div class="col-2">
-                        <div class="form-group">
-                          <label for="codigo">Código UDS</label>
-                          <input
-                            [(ngModel)]="beneficiario.uds.codigo"
-                            name="codigo"
-                            type="text"
-                            class="form-control"
-                            disabled
-                            required
-                          />
-                        </div>
-                      </div>
-                      <div class="col-2">
-                        <div class="form-group">
-                          <label for="udsId">Unidad De Servicio</label>
-                          <input
-                            [(ngModel)]="beneficiario.uds.nombre"
-                            name="codigo"
-                            type="text"
-                            class="form-control"
-                            disabled
-                            required
-                          />
-                        </div>
-                      </div>
-                      <div class="col-2">
-                        <div class="form-group">
-                          <label class="label-control" for="ingreso"
-                            >Fecha de ingreso</label
-                          >
-                          <input
-                            [(ngModel)]="beneficiario.ingreso"
-                            name="ingreso"
-                            type="date"
-                            class="form-control"
-                            autocomplete="off"
-                            required
-                          />
-                        </div>
-                      </div>
-                      <div class="col-4">
-                        <div class="form-group">
-                          <label for="comentario">Comentario (opcional)</label>
-                          <input
-                            [(ngModel)]="beneficiario.comentario"
-                            name="comentario"
-                            type="text"
-                            class="form-control"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!--------------------- Sección datos de egreso ----------------------->
-                <!------------------------------------------------------------------->
-                <div class="card mb-3">
-                  <div class="card-body">
-                    <h5 class="card-title text-danger">
-                      <i class="fas fa-running mr-2"></i>Datos de egreso
-                    </h5>
-                    <div class="row">
-                      <div class="col-xl-2">
-                        <div class="form-group">
-                          <label class="label-control text-danger" for="ingreso"
-                            >Fecha de egreso</label
-                          >
-                          <input
-                            [(ngModel)]="beneficiario.egreso"
-                            name="egreso"
-                            type="date"
-                            class="form-control"
-                          />
-                        </div>
-                      </div>
-                      <div class="col-xl-3">
-                        <div class="form-group">
-                          <label class="label-control text-danger" for="ingreso"
-                            >Motivo de egreso</label
-                          >
-                          <ng-select
-                            [items]="motivosDeEgreso"
-                            bindValue="value"
-                            bindLabel="label"
-                            placeholder="Seleccionar motivo"
-                            [(ngModel)]="beneficiario.motivoEgreso"
-                            name="motivoEgreso"
-                            required
-                          >
-                          </ng-select>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-12 text-right">
-                    <button
-                      (click)="actualizarBeneficiario()"
-                      type="button"
-                      class="btn btn-success btn-sm"
-                    >
-                      <i class="fas fa-sync mr-1"></i>
-                      Actualizar beneficiario
-                    </button>
-                  </div>
-                </div>
+          <div class="d-flex flex-column">
+            <h1 class="nombre-completo">
+              <span>
+                {{ data.nombre1 | nombrePropio }}
+              </span>
+              <span *ngIf="data.nombre2 !== ''">
+                {{ data.nombre2 | nombrePropio }}
+              </span>
+              <span>
+                {{ data.apellido1 | nombrePropio }}
+              </span>
+              <span *ngIf="data.apellido2 !== ''">
+                {{ data.apellido2 | nombrePropio }}
+              </span>
+            </h1>
+            <div class="form-field documento mb-1">
+              <div class="label">
+                {{ data.tipoDoc }}.
+                <span id="documento">{{ data.documento }}</span>
               </div>
-              <div
-                class="tab-pane fade"
-                id="responsable"
-                role="tabpanel"
-                aria-labelledby="responsable-tab"
+              <button
+                type="button"
+                (click)="copiar('documento')"
+                mat-icon-button
+                matTooltip="Copiar"
+                matTooltipPosition="right"
+                class="mat-btn-sm ml-2"
               >
-                <!------------------- Sección datos de acudiente ------------------->
-                <div class="card mb-3">
-                  <div class="card-body">
-                    <h5 class="card-title text-success">
-                      <i class="fas fa-users mr-2"></i>Datos de acudiente
-                    </h5>
-                    <div *ngIf="responsable" class="row">
-                      <div class="col-2">
-                        <div class="form-group">
-                          <label for="respTipoDoc">Tipo de documento</label>
-                          <ng-select
-                            [items]="tiposDeDocumento"
-                            bindValue="value"
-                            bindLabel="label"
-                            groupBy="group"
-                            placeholder="Seleccionar tipo de documento"
-                            [(ngModel)]="responsable.tipoDoc"
-                            name="respTipoDoc"
-                            required
-                          >
-                            <ng-template ng-label-tmp let-item="item">
-                              <i [class]="item.icon"></i>
-                              {{ item.label }}
-                            </ng-template>
-                          </ng-select>
-                        </div>
-                      </div>
-                      <div class="col-2">
-                        <div class="form-group">
-                          <label for="documento">NUIP</label>
-                          <input
-                            [(ngModel)]="responsable.documento"
-                            name="respDocumento"
-                            type="text"
-                            class="form-control"
-                            placeholder="Número de NUIP"
-                            autocomplete="off"
-                            required
-                          />
-                        </div>
-                      </div>
-                      <div class="col-2">
-                        <div class="form-group">
-                          <label for="respNombre1">Primer nombre</label>
-                          <input
-                            [(ngModel)]="responsable.nombre1"
-                            name="respNombre1"
-                            type="text"
-                            class="form-control"
-                            placeholder="Escribe un nombre"
-                            required
-                          />
-                        </div>
-                      </div>
-                      <div class="col-2">
-                        <div class="form-group">
-                          <label for="respNombre2">Segundo nombre</label>
-                          <input
-                            [(ngModel)]="responsable.nombre2"
-                            name="respNombre2"
-                            type="text"
-                            class="form-control"
-                            placeholder="Escribe un nombre"
-                          />
-                        </div>
-                      </div>
-                      <div class="col-2">
-                        <div class="form-group">
-                          <label for="respApellido1">Primer apellido</label>
-                          <input
-                            [(ngModel)]="responsable.apellido1"
-                            name="respApellido1"
-                            type="text"
-                            class="form-control"
-                            placeholder="Escribe un apellido"
-                            required
-                          />
-                        </div>
-                      </div>
-                      <div class="col-2">
-                        <div class="form-group">
-                          <label for="respApellido2">Segundo apellido</label>
-                          <input
-                            [(ngModel)]="responsable.apellido2"
-                            name="respApellido2"
-                            type="text"
-                            class="form-control"
-                            placeholder="Escribe un apellido"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div *ngIf="responsable" class="row">
-                      <div class="col-2">
-                        <div class="form-group">
-                          <label for="respSexo">Sexo</label>
-                          <ng-select
-                            [items]="sexos"
-                            bindValue="value"
-                            bindLabel="label"
-                            placeholder="Seleccionar sexo"
-                            [(ngModel)]="responsable.sexo"
-                            name="respSexo"
-                            required
-                          >
-                            <ng-template ng-label-tmp let-item="item">
-                              <i [class]="item.icon"></i>
-                              {{ item.label }}
-                            </ng-template>
-                          </ng-select>
-                        </div>
-                      </div>
-                      <div class="col-2">
-                        <div class="form-group">
-                          <label class="label-control" for="respNacimiento"
-                            >Fecha nacimiento</label
-                          >
-                          <input
-                            [(ngModel)]="responsable.nacimiento"
-                            name="respNacimiento"
-                            id="respNacimiento"
-                            type="date"
-                            class="form-control"
-                            autocomplete="off"
-                          />
-                        </div>
-                      </div>
-                      <div class="col-2">
-                        <div class="form-group">
-                          <label for="respPaisNacimiento"
-                            >País de nacimiento</label
-                          >
-                          <ng-select
-                            [items]="paises"
-                            bindValue="value"
-                            bindLabel="label"
-                            placeholder="Seleccionar país"
-                            [(ngModel)]="responsable.paisNacimiento"
-                            (change)="cambiarDepartamentosResp($event)"
-                            name="respPaisNacimiento"
-                            required
-                          >
-                          </ng-select>
-                        </div>
-                      </div>
-                      <div class="col-2">
-                        <div class="form-group">
-                          <label for="respDptoNacimiento"
-                            >Dpto. de nacimiento</label
-                          >
-                          <ng-select
-                            [items]="listaDepartamentosResp"
-                            bindValue="departamento"
-                            bindLabel="departamento"
-                            placeholder="Seleccionar departamento"
-                            [(ngModel)]="responsable.dptoNacimiento"
-                            (change)="cambiarCiudadesResp($event)"
-                            name="respDptoNacimiento"
-                            required
-                          >
-                          </ng-select>
-                        </div>
-                      </div>
-                      <div class="col-2">
-                        <div class="form-group">
-                          <label for="respMunicipioNacimiento"
-                            >Municipio de nacimiento</label
-                          >
-                          <ng-select
-                            [items]="listaMunicipiosResp"
-                            bindValue="municipio"
-                            bindLabel="municipio"
-                            placeholder="Seleccionar municipio"
-                            [(ngModel)]="responsable.municipioNacimiento"
-                            name="respMunicipioNacimiento"
-                            required
-                          >
-                          </ng-select>
-                        </div>
-                      </div>
-                      <div class="col-2">
-                        <div class="form-group">
-                          <label for="tipoResponsable">Tipo de acudiente</label>
-                          <ng-select
-                            [items]="tipoResponsables"
-                            bindValue="value"
-                            bindLabel="label"
-                            placeholder="Seleccionar relación"
-                            [(ngModel)]="beneficiario.tipoResponsable"
-                            name="tipoResponsable"
-                            required
-                          >
-                          </ng-select>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-12 text-right">
-                    <button
-                      (click)="actualizarResponsable()"
-                      type="button"
-                      class="btn btn-success btn-sm"
-                    >
-                      <i class="fas fa-sync mr-1"></i>
-                      Actualizar responsable
-                    </button>
-                  </div>
-                </div>
-              </div>
+                <mat-icon class="clipboard-icon">content_copy</mat-icon>
+              </button>
+            </div>
+            <div
+              class="badge-status alert"
+              [ngClass]="{
+                'alert-primary': data.estado === 'Pendiente vincular',
+                'alert-warning': data.estado === 'Pendiente desvincular',
+                'alert-info': data.estado === 'Dato sensible',
+                'alert-danger': data.estado === 'Concurrencia',
+                'alert-success': data.estado === 'Vinculado',
+                'alert-secondary': data.estado === 'Desvinculado'
+              }"
+            >
+              <div
+                class="status-indicator"
+                [ngClass]="{
+                  'bg-primary': data.estado === 'Pendiente vincular',
+                  'bg-warning': data.estado === 'Pendiente desvincular',
+                  'bg-info': data.estado === 'Dato sensible',
+                  'bg-danger': data.estado === 'Concurrencia',
+                  'bg-success': data.estado === 'Vinculado',
+                  'bg-secondary': data.estado === 'Desvinculado'
+                }"
+              ></div>
+              <span class="status-text">{{ data.estado }}</span>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <mat-tab-group dynamicHeight>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="mr-2">account_box</mat-icon>
+          Beneficiario
+        </ng-template>
+        <div class="beneficiario-data p-4">
+          <div class="d-flex flex-row">
+            <div class="mr-5">
+              <div
+                class="form-field sexo"
+                matTooltip="Sexo"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  wc
+                </mat-icon>
+                <div class="label">
+                  {{ data.sexo }}
+                </div>
+              </div>
+              <div
+                class="form-field nacimiento"
+                matTooltip="Nacimiento"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  cake
+                </mat-icon>
+                <div class="label">
+                  {{ data.nacimiento }}
+                </div>
+              </div>
+              <div
+                class="form-field lugarNacimiento"
+                matTooltip="Lugar de nacimiento"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  public
+                </mat-icon>
+                <div class="label text-nowrap">
+                  {{ data.paisNacimiento }} > {{ data.dptoNacimiento }} >
+                  {{ data.municipioNacimiento }}
+                </div>
+              </div>
+              <div
+                class="form-field ingreso"
+                matTooltip="Ingreso"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  event
+                </mat-icon>
+                <div class="label">
+                  {{ data.ingreso }}
+                </div>
+              </div>
+              <div
+                class="form-field discapacidad"
+                matTooltip="Discapacidad"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  accessible
+                </mat-icon>
+                <div class="label">
+                  <div
+                    class="badge-status alert"
+                    [ngClass]="{
+                      'alert-secondary': !data.discapacidad,
+                      'alert-warning': data.discapacidad
+                    }"
+                  >
+                    <div
+                      class="status-indicator"
+                      [ngClass]="{
+                        'bg-secondary': !data.discapacidad,
+                        'bg-warning': data.discapacidad
+                      }"
+                    ></div>
+                    <span class="status-text">
+                      <span *ngIf="!data.discapacidad"
+                        >No presenta discapacidad</span
+                      >
+                      <span *ngIf="data.discapacidad"
+                        >Presenta discapacidad</span
+                      >
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div
+                class="form-field direccion"
+                matTooltip="Dirección"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  place
+                </mat-icon>
+                <div class="label text-nowrap">
+                  {{ data.direccion }}, {{ data.barrio }}
+                </div>
+              </div>
+              <div class="form-field telefono">
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  phone
+                </mat-icon>
+                <div class="label" id="telefono">
+                  {{ data.telefono }}
+                </div>
+                <button
+                  type="button"
+                  (click)="copiar('telefono')"
+                  mat-icon-button
+                  matTooltip="Copiar"
+                  matTooltipPosition="right"
+                  class="mat-btn-sm ml-2"
+                >
+                  <mat-icon class="clipboard-icon">content_copy</mat-icon>
+                </button>
+              </div>
+              <div
+                class="form-field autorreconocimiento"
+                matTooltip="Autorreconocimiento"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  groups
+                </mat-icon>
+                <div class="label">
+                  {{ data.autorreconocimiento }}
+                </div>
+              </div>
+              <div
+                class="form-field criterio"
+                matTooltip="Criterio"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  rule
+                </mat-icon>
+                <div class="label">
+                  {{ data.criterio }}, {{ data.infoCriterio }}
+                </div>
+              </div>
+              <div
+                class="form-field relacion-acudiente"
+                matTooltip="Relación acudiente"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  escalator_warning
+                </mat-icon>
+                <div class="label">
+                  {{ data.tipoResponsable }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="data.egreso !== ''" class="data-egreso">
+            <mat-divider></mat-divider>
+            <h2 class="mb-2 text-danger">
+              Información de egreso
+            </h2>
+            <div
+              class="form-field egreso"
+              matTooltip="Egreso"
+              matTooltipPosition="left"
+            >
+              <mat-icon
+                fontSet="material-icons-two-tone"
+                class="form-field-icon"
+              >
+                event_busy
+              </mat-icon>
+              <div class="label">
+                {{ data.egreso }}
+              </div>
+            </div>
+            <div
+              class="form-field motivoEgreso"
+              matTooltip="Motivo de egreso"
+              matTooltipPosition="left"
+            >
+              <mat-icon
+                fontSet="material-icons-two-tone"
+                class="form-field-icon"
+              >
+                contact_support
+              </mat-icon>
+              <div class="label">
+                {{ data.motivoEgreso }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="mr-2">escalator_warning</mat-icon>
+          Acudiente
+        </ng-template>
+        <div class="responsable-data p-4">
+          <div class="d-flex flex-row">
+            <div class="mr-5">
+              <div
+                class="form-field nombre1"
+                matTooltip="Nombre 1"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  label
+                </mat-icon>
+                <div class="label">
+                  {{ data.responsableId.nombre1 }}
+                </div>
+              </div>
+              <div
+                class="form-field nombre2"
+                matTooltip="Nombre 2"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  label
+                </mat-icon>
+                <div class="label">
+                  {{ data.responsableId.nombre2 }}
+                </div>
+              </div>
+              <div
+                class="form-field apellido1"
+                matTooltip="Apellido 1"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  label
+                </mat-icon>
+                <div class="label">
+                  {{ data.responsableId.apellido1 }}
+                </div>
+              </div>
+              <div
+                class="form-field apellido2"
+                matTooltip="Apellido 2"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  label
+                </mat-icon>
+                <div class="label">
+                  {{ data.responsableId.apellido2 }}
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="form-field nacimiento">
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  account_box
+                </mat-icon>
+                <div class="label">
+                  {{ data.responsableId.tipoDoc }}.
+                  <span id="respDoc">{{ data.responsableId.documento }}</span>
+                  <button
+                    type="button"
+                    (click)="copiar('respDoc')"
+                    mat-icon-button
+                    matTooltip="Copiar"
+                    matTooltipPosition="right"
+                    class="mat-btn-sm ml-2"
+                  >
+                    <mat-icon class="clipboard-icon">content_copy</mat-icon>
+                  </button>
+                </div>
+              </div>
+              <div
+                class="form-field nacimiento"
+                matTooltip="Nacimiento"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  cake
+                </mat-icon>
+                <div class="label">
+                  {{ data.responsableId.nacimiento }}
+                </div>
+              </div>
+              <div
+                class="form-field sexo"
+                matTooltip="Sexo"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  wc
+                </mat-icon>
+                <div class="label text-nowrap">
+                  {{ data.responsableId.sexo }}
+                </div>
+              </div>
+              <div
+                class="form-field lugarNacimiento"
+                matTooltip="Lugar de nacimiento"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  public
+                </mat-icon>
+                <div class="label text-nowrap">
+                  {{ data.responsableId.paisNacimiento }} >
+                  {{ data.responsableId.dptoNacimiento }} >
+                  {{ data.responsableId.municipioNacimiento }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab *ngIf="data.madreId !== null">
+        <ng-template mat-tab-label>
+          <mat-icon class="mr-2">person</mat-icon>
+          Madre
+        </ng-template>
+        <div class="madre-data p-4">
+          <div class="d-flex flex-row">
+            <div class="mr-5">
+              <div
+                class="form-field nombre1"
+                matTooltip="Nombre 1"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  label
+                </mat-icon>
+                <div class="label">
+                  {{ data.madreId.nombre1 }}
+                </div>
+              </div>
+              <div
+                class="form-field nombre2"
+                matTooltip="Nombre 2"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  label
+                </mat-icon>
+                <div class="label">
+                  {{ data.madreId.nombre2 }}
+                </div>
+              </div>
+              <div
+                class="form-field apellido1"
+                matTooltip="Apellido 1"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  label
+                </mat-icon>
+                <div class="label">
+                  {{ data.madreId.apellido1 }}
+                </div>
+              </div>
+              <div
+                class="form-field apellido2"
+                matTooltip="Apellido 2"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  label
+                </mat-icon>
+                <div class="label">
+                  {{ data.madreId.apellido2 }}
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="form-field nacimiento">
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  account_box
+                </mat-icon>
+                <div class="label">
+                  {{ data.madreId.tipoDoc }}.
+                  <span id="madreDoc">{{ data.madreId.documento }}</span>
+                  <button
+                    type="button"
+                    (click)="copiar('madreDoc')"
+                    mat-icon-button
+                    matTooltip="Copiar"
+                    matTooltipPosition="right"
+                    class="mat-btn-sm ml-2"
+                  >
+                    <mat-icon class="clipboard-icon">content_copy</mat-icon>
+                  </button>
+                </div>
+              </div>
+              <div
+                class="form-field nacimiento"
+                matTooltip="Nacimiento"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  cake
+                </mat-icon>
+                <div class="label">
+                  {{ data.madreId.nacimiento }}
+                </div>
+              </div>
+              <div
+                class="form-field sexo"
+                matTooltip="Sexo"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  wc
+                </mat-icon>
+                <div class="label text-nowrap">
+                  {{ data.madreId.sexo }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab *ngIf="data.padreId !== null">
+        <ng-template mat-tab-label>
+          <mat-icon class="mr-2">person</mat-icon>
+          Padre
+        </ng-template>
+        <div class="padre-data p-4">
+          <div class="d-flex flex-row">
+            <div class="mr-5">
+              <div
+                class="form-field nombre1"
+                matTooltip="Nombre 1"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  label
+                </mat-icon>
+                <div class="label">
+                  {{ data.padreId.nombre1 }}
+                </div>
+              </div>
+              <div
+                class="form-field nombre2"
+                matTooltip="Nombre 2"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  label
+                </mat-icon>
+                <div class="label">
+                  {{ data.padreId.nombre2 }}
+                </div>
+              </div>
+              <div
+                class="form-field apellido1"
+                matTooltip="Apellido 1"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  label
+                </mat-icon>
+                <div class="label">
+                  {{ data.padreId.apellido1 }}
+                </div>
+              </div>
+              <div
+                class="form-field apellido2"
+                matTooltip="Apellido 2"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  label
+                </mat-icon>
+                <div class="label">
+                  {{ data.padreId.apellido2 }}
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="form-field nacimiento">
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  account_box
+                </mat-icon>
+                <div class="label">
+                  {{ data.padreId.tipoDoc }}.
+                  <span id="madreDoc">{{ data.padreId.documento }}</span>
+                  <button
+                    type="button"
+                    (click)="copiar('madreDoc')"
+                    mat-icon-button
+                    matTooltip="Copiar"
+                    matTooltipPosition="right"
+                    class="mat-btn-sm ml-2"
+                  >
+                    <mat-icon class="clipboard-icon">content_copy</mat-icon>
+                  </button>
+                </div>
+              </div>
+              <div
+                class="form-field nacimiento"
+                matTooltip="Nacimiento"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  cake
+                </mat-icon>
+                <div class="label">
+                  {{ data.padreId.nacimiento }}
+                </div>
+              </div>
+              <div
+                class="form-field sexo"
+                matTooltip="Sexo"
+                matTooltipPosition="left"
+              >
+                <mat-icon
+                  fontSet="material-icons-two-tone"
+                  class="form-field-icon"
+                >
+                  wc
+                </mat-icon>
+                <div class="label text-nowrap">
+                  {{ data.padreId.sexo }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+    <div class="d-flex flex-row align-items-center mb-2">
+      <span>Comentario</span>
+      <button
+        type="button"
+        (click)="editarComentario()"
+        mat-icon-button
+        matTooltip="Editar comentario"
+        matTooltipPosition="right"
+        class="ml-2"
+      >
+        <mat-icon class="clipboard-icon">rate_review</mat-icon>
+      </button>
+    </div>
+    <div
+      *ngIf="
+        data.comentario === null || data.comentario === '';
+        else comentario
+      "
+      class="comentario alert alert-secondary"
+    >
+      Sin comentario
+      {{ data.comentario }}
+    </div>
+    <ng-template #comentario>
+      <div class="comentario alert alert-info">
+        {{ data.comentario }}
+        <!-- falta quien reporta y cuando -->
+      </div>
+    </ng-template>
   </div>
-</div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>

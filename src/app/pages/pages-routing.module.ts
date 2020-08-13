@@ -24,6 +24,8 @@ import { AdminGuard } from '../services/guards/admin.guard';
 import { VerificaTokenGuard } from '../services/guards/verifica-token.guard';
 import { UsuarioComponent } from './usuarios/usuario/usuario.component';
 import { DashboardUdsComponent } from './dashboard/dashboard-uds/dashboard-uds.component';
+import { BeneficiariosUdsComponent } from './beneficiarios/tabla-beneficiarios/beneficiarios-uds.component';
+import { BeneficiariosEstadoComponent } from './beneficiarios/tabla-beneficiarios/beneficiarios-estado.component';
 
 const routes: Routes = [
   {
@@ -72,6 +74,10 @@ const routes: Routes = [
     path: 'beneficiarios',
     canActivate: [VerificaTokenGuard],
     component: BeneficiariosComponent,
+    children: [
+      { path: 'uds/:udsId', component: BeneficiariosUdsComponent },
+      { path: 'estado/:estado', component: BeneficiariosEstadoComponent }
+    ],
     data: { nombrePagina: 'Beneficiarios' }
   },
   {
@@ -85,12 +91,6 @@ const routes: Routes = [
     canActivate: [VerificaTokenGuard],
     component: NovedadesComponent,
     data: { nombrePagina: 'Reporte de novedades' }
-  },
-  {
-    path: 'beneficiarios/:id',
-    canActivate: [VerificaTokenGuard],
-    component: BeneficiarioComponent,
-    data: { nombrePagina: 'Beneficiarios' }
   },
   {
     path: 'administrar',

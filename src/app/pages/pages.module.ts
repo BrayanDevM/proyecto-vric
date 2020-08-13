@@ -33,6 +33,8 @@ import { BusquedaComponent } from './busqueda/busqueda.component';
 import { UsuarioComponent } from './usuarios/usuario/usuario.component';
 import { DashboardUdsComponent } from './dashboard/dashboard-uds/dashboard-uds.component';
 import { MaterialModule } from '../material/material.module';
+import { BeneficiariosUdsComponent } from './beneficiarios/tabla-beneficiarios/beneficiarios-uds.component';
+import { BeneficiariosEstadoComponent } from './beneficiarios/tabla-beneficiarios/beneficiarios-estado.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +55,9 @@ import { MaterialModule } from '../material/material.module';
     CrearUsuarioComponent,
     BusquedaComponent,
     UsuarioComponent,
-    DashboardUdsComponent
+    DashboardUdsComponent,
+    BeneficiariosUdsComponent,
+    BeneficiariosEstadoComponent
   ],
   imports: [
     CommonModule,

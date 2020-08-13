@@ -168,7 +168,7 @@
             </div>
           </td>
         </ng-container>
-        <tr mat-header-row *matHeaderRowDef="tablaColumnas"></tr>
+        <tr mat-header-row *matHeaderRowDef="tablaColumnas; sticky: true"></tr>
         <tr
           mat-row
           (click)="verUsuario(usuario._id)"

@@ -1,0 +1,140 @@
+<div
+  *ngIf="beneficiarios.length > 0; else noBeneficiarios"
+  class="table-section-info border-bottom BDM_fadeInUp"
+>
+  <!-- Pendiente vincular badge -->
+  <div class="badge-status alert alert-primary mr-2">
+    <div class="status-indicator bg-primary"></div>
+    <span class="status-text"
+      >Pendiente vincular ({{ pendientesVincular }})</span
+    >
+  </div>
+  <!-- Pendiente desvincular badge -->
+  <div class="badge-status alert alert-warning mr-2">
+    <div class="status-indicator bg-warning"></div>
+    <span class="status-text"
+      >Pendiente desvincular ({{ pendientesDesvincular }})</span
+    >
+  </div>
+  <!-- Dato sensible badge -->
+  <div class="badge-status alert alert-info mr-2">
+    <div class="status-indicator bg-info"></div>
+    <span class="status-text">Dato sensible ({{ datosSensibles }})</span>
+  </div>
+  <!-- Concurrencia badge -->
+  <div class="badge-status alert alert-danger mr-2">
+    <div class="status-indicator bg-danger"></div>
+    <span class="status-text">Concurrencia ({{ concurrencias }})</span>
+  </div>
+  <!-- Vinculado badge -->
+  <div class="badge-status alert alert-success mr-2">
+    <div class="status-indicator bg-success"></div>
+    <span class="status-text">Vinculado ({{ vinculados }})</span>
+  </div>
+  <!-- Desvinculado badge -->
+  <div class="badge-status alert alert-secondary mr-2">
+    <div class="status-indicator bg-secondary"></div>
+    <span class="status-text">Desvinculado ({{ desvinculados }})</span>
+  </div>
+</div>
+<table
+  mat-table
+  *ngIf="beneficiarios.length > 0"
+  [dataSource]="tablaData"
+  class="mat-table contratos-lista mat-elevation-z8 BDM_fadeInUp"
+>
+  <!-- Position Column -->
+  <ng-container matColumnDef="tipoDoc">
+    <th mat-header-cell *matHeaderCellDef>Doc.</th>
+    <td mat-cell *matCellDef="let beneficiario">
+      {{ beneficiario.tipoDoc }}
+    </td>
+  </ng-container>
+  <!-- Position Column -->
+  <ng-container matColumnDef="documento">
+    <th mat-header-cell *matHeaderCellDef>NUIP</th>
+    <td mat-cell *matCellDef="let beneficiario">
+      {{ beneficiario.documento }}
+    </td>
+  </ng-container>
+  <!-- Name Column -->
+  <ng-container matColumnDef="nombre1">
+    <th mat-header-cell *matHeaderCellDef>Primer nombre</th>
+    <td mat-cell *matCellDef="let beneficiario">
+      {{ beneficiario.nombre1 | nombrePropio }}
+    </td>
+  </ng-container>
+  <!-- Name Column -->
+  <ng-container matColumnDef="nombre2">
+    <th mat-header-cell *matHeaderCellDef>Segundo nombre</th>
+    <td mat-cell *matCellDef="let beneficiario">
+      {{ beneficiario.nombre2 | nombrePropio }}
+    </td>
+  </ng-container>
+  <!-- Name Column -->
+  <ng-container matColumnDef="apellido1">
+    <th mat-header-cell *matHeaderCellDef>Primer apellido</th>
+    <td mat-cell *matCellDef="let beneficiario">
+      {{ beneficiario.apellido1 | nombrePropio }}
+    </td>
+  </ng-container>
+  <!-- Name Column -->
+  <ng-container matColumnDef="apellido2">
+    <th mat-header-cell *matHeaderCellDef>Segundo apellido</th>
+    <td mat-cell *matCellDef="let beneficiario">
+      {{ beneficiario.apellido2 | nombrePropio }}
+    </td>
+  </ng-container>
+  <!-- Name Column -->
+  <ng-container matColumnDef="nacimiento">
+    <th mat-header-cell *matHeaderCellDef>F. Nacimiento</th>
+    <td mat-cell *matCellDef="let beneficiario">
+      {{ beneficiario.nacimiento }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="estado">
+    <th mat-header-cell *matHeaderCellDef>Estado</th>
+    <td mat-cell *matCellDef="let beneficiario">
+      <div
+        class="badge-status alert"
+        [ngClass]="{
+          'alert-primary': beneficiario.estado === 'Pendiente vincular',
+          'alert-warning': beneficiario.estado === 'Pendiente desvincular',
+          'alert-info': beneficiario.estado === 'Dato sensible',
+          'alert-danger': beneficiario.estado === 'Concurrencia',
+          'alert-success': beneficiario.estado === 'Vinculado',
+          'alert-secondary': beneficiario.estado === 'Desvinculado'
+        }"
+      >
+        <div
+          class="status-indicator"
+          [ngClass]="{
+            'bg-primary': beneficiario.estado === 'Pendiente vincular',
+            'bg-warning': beneficiario.estado === 'Pendiente desvincular',
+            'bg-info': beneficiario.estado === 'Dato sensible',
+            'bg-danger': beneficiario.estado === 'Concurrencia',
+            'bg-success': beneficiario.estado === 'Vinculado',
+            'bg-secondary': beneficiario.estado === 'Desvinculado'
+          }"
+        ></div>
+        <span class="status-text">{{ beneficiario.estado }}</span>
+      </div>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="tablaColumnas; sticky: true"></tr>
+  <tr
+    mat-row
+    (click)="openDialog(beneficiario)"
+    *matRowDef="let row; let beneficiario; columns: tablaColumnas"
+  ></tr>
+  <!-- Row shown when there is no matching data. -->
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="8">
+      No se encontraton beneficiarios con "{{ criterioBusqueda }}"
+    </td>
+  </tr>
+</table>
+
+<ng-template #noBeneficiarios>
+  <h2>No hay datos!</h2>
+</ng-template>
