@@ -137,7 +137,7 @@
                 </div>
               </div>
               <div
-                class="form-field discapacidad"
+                class="form-field discapacidad mb-0"
                 matTooltip="Discapacidad"
                 matTooltipPosition="left"
               >
@@ -242,7 +242,7 @@
                 </div>
               </div>
               <div
-                class="form-field relacion-acudiente"
+                class="form-field relacion-acudiente mb-0"
                 matTooltip="Relación acudiente"
                 matTooltipPosition="left"
               >
@@ -351,7 +351,7 @@
                 </div>
               </div>
               <div
-                class="form-field apellido2"
+                class="form-field apellido2 mb-0"
                 matTooltip="Apellido 2"
                 matTooltipPosition="left"
               >
@@ -420,7 +420,7 @@
                 </div>
               </div>
               <div
-                class="form-field lugarNacimiento"
+                class="form-field lugarNacimiento mb-0"
                 matTooltip="Lugar de nacimiento"
                 matTooltipPosition="left"
               >
@@ -494,7 +494,7 @@
                 </div>
               </div>
               <div
-                class="form-field apellido2"
+                class="form-field apellido2 mb-0"
                 matTooltip="Apellido 2"
                 matTooltipPosition="left"
               >
@@ -548,7 +548,7 @@
                 </div>
               </div>
               <div
-                class="form-field sexo"
+                class="form-field sexo mb-0"
                 matTooltip="Sexo"
                 matTooltipPosition="left"
               >
@@ -620,7 +620,7 @@
                 </div>
               </div>
               <div
-                class="form-field apellido2"
+                class="form-field apellido2 mb-0"
                 matTooltip="Apellido 2"
                 matTooltipPosition="left"
               >
@@ -674,7 +674,7 @@
                 </div>
               </div>
               <div
-                class="form-field sexo"
+                class="form-field sexo mb-0"
                 matTooltip="Sexo"
                 matTooltipPosition="left"
               >
@@ -693,11 +693,12 @@
         </div>
       </mat-tab>
     </mat-tab-group>
-    <div class="d-flex flex-row align-items-center mb-2">
+    <div class="comentario-actions d-flex flex-row align-items-center mb-2">
       <span>Comentario</span>
       <button
         type="button"
-        (click)="editarComentario()"
+        *ngIf="!editando"
+        (click)="editando = true"
         mat-icon-button
         matTooltip="Editar comentario"
         matTooltipPosition="right"
@@ -705,23 +706,57 @@
       >
         <mat-icon class="clipboard-icon">rate_review</mat-icon>
       </button>
+      <button
+        type="button"
+        *ngIf="editando"
+        (click)="cancelarComentario()"
+        mat-icon-button
+        matTooltip="Cancelar"
+        matTooltipPosition="right"
+        class="ml-2"
+      >
+        <mat-icon class="clipboard-icon">cancel</mat-icon>
+      </button>
     </div>
-    <div
-      *ngIf="
-        data.comentario === null || data.comentario === '';
-        else comentario
-      "
-      class="comentario alert alert-secondary"
-    >
-      Sin comentario
-      {{ data.comentario }}
+    <div *ngIf="!editando" class="form-field comentario-no-edit">
+      <div
+        *ngIf="
+          data.comentario === null || data.comentario === '';
+          else tieneComentario
+        "
+        class="comentario-no-edit alert alert-secondary mb-0"
+      >
+        Sin comentario
+      </div>
     </div>
-    <ng-template #comentario>
-      <div class="comentario alert alert-info">
+    <ng-template #tieneComentario>
+      <div class="comentario-no-edit alert alert-info mb-0">
         {{ data.comentario }}
-        <!-- falta quien reporta y cuando -->
       </div>
     </ng-template>
+    <div *ngIf="editando" class="form-field comentario-edit">
+      <mat-form-field appearance="outline">
+        <mat-label>Editar comentario</mat-label>
+        <textarea
+          matInput
+          placeholder="Escribe aquí algo que quieras destacar"
+          cdkTextareaAutosize
+          #autosize="cdkTextareaAutosize"
+          cdkAutosizeMinRows="2"
+          cdkAutosizeMaxRows="5"
+          [(ngModel)]="data.comentario"
+        ></textarea>
+        <button
+          type="button"
+          mat-mini-fab
+          matSuffix
+          color="primary"
+          (click)="guardarComentario()"
+        >
+          <mat-icon>save</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
   </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">

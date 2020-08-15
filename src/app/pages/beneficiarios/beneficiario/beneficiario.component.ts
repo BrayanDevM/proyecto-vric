@@ -1,21 +1,17 @@
 import {
   Component,
   OnInit,
+  Inject,
   ViewChild,
   ElementRef,
-  Inject
+  NgZone
 } from '@angular/core';
 import { Beneficiario } from 'src/app/models/beneficiario.model';
-import { ActivatedRoute, Params, Router } from '@angular/router';
 import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
-import listaDatosColombia from 'src/app/config/colombia.json';
-import Swal from 'sweetalert2';
-import { RespBeneficiariosService } from 'src/app/services/resp-beneficiarios.service';
-import { RespBeneficiario } from 'src/app/models/respBeneficiario.model';
-import { NgOption } from '@ng-select/ng-select';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-declare var moment: any;
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-beneficiario',
@@ -23,13 +19,27 @@ declare var moment: any;
   styleUrls: ['./beneficiario.component.css']
 })
 export class BeneficiarioComponent implements OnInit {
+  editando = false;
+  beneficiario: Beneficiario;
+  comentario: string;
+
+  @ViewChild('autosize') autosize: CdkTextareaAutosize;
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: Beneficiario,
     private beneficiarios$: BeneficiariosService,
-    private responsables$: RespBeneficiariosService,
-    private router: Router,
-    private snackBar$: MatSnackBar
-  ) {}
+    private snackBar$: MatSnackBar,
+    private ngZone: NgZone
+  ) {
+    this.comentario = this.data.comentario;
+  }
+
+  triggerResize() {
+    // Espera cambios en textarea para cambiar altura
+    this.ngZone.onStable
+      .pipe(take(1))
+      .subscribe(() => this.autosize.resizeToFitContent(true));
+  }
 
   ngOnInit() {}
 
@@ -61,7 +71,68 @@ export class BeneficiarioComponent implements OnInit {
     });
   }
 
-  editarComentario() {
-    console.log('editando...');
+  cancelarComentario() {
+    this.data.comentario = this.comentario;
+    this.editando = false;
+  }
+
+  guardarComentario() {
+    let madreId = '';
+    let padreId = '';
+    const creadoPor = this.data.creadoPor._id;
+    if (this.data.madreId !== null) {
+      madreId = this.data.madreId._id;
+    }
+    if (this.data.padreId !== null) {
+      padreId = this.data.madreId._id;
+    }
+    // reasigno _id de populates
+    this.beneficiario = new Beneficiario(
+      this.data.tipoDoc,
+      this.data.documento,
+      this.data.nombre1,
+      this.data.nombre2,
+      this.data.apellido1,
+      this.data.apellido2,
+      this.data.sexo,
+      this.data.nacimiento,
+      this.data.paisNacimiento,
+      this.data.dptoNacimiento,
+      this.data.municipioNacimiento,
+      this.data.discapacidad,
+      this.data.direccion,
+      this.data.barrio,
+      this.data.telefono,
+      this.data.autorreconocimiento,
+      this.data.criterio,
+      this.data.infoCriterio,
+      this.data.ingreso,
+      this.data.tipoResponsable,
+      this.data.responsableId._id,
+      this.data.estado,
+      this.data.uds,
+      madreId,
+      padreId,
+      null,
+      this.data.comentario,
+      this.data.egreso,
+      this.data.creadoEl,
+      creadoPor,
+      this.data.motivoEgreso,
+      this.data._id
+    );
+    // actualizo registro
+    this.beneficiarios$
+      .actualizarBeneficiario(this.beneficiario)
+      .subscribe((resp: any) => {
+        if (resp.ok) {
+          this.editando = false;
+          console.log(this.data, 'en modal');
+
+          this.snackBar$.open('Comentario actualizado', null, {
+            duration: 4000
+          });
+        }
+      });
   }
 }

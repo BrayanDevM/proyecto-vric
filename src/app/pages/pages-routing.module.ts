@@ -13,7 +13,6 @@ import { PerfilComponent } from './perfil/perfil.component';
 import { UnidadComponent } from './uds/unidad/unidad.component';
 import { CrearUdsComponent } from './uds/crear-uds/crear-uds.component';
 import { CrearContratoComponent } from './contratos/crear-contrato/crear-contrato.component';
-import { MisBeneficiariosComponent } from './beneficiarios/mis-beneficiarios/mis-beneficiarios.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { CrearUsuarioComponent } from './usuarios/crear-usuario/crear-usuario.component';
 import { BusquedaComponent } from './busqueda/busqueda.component';
@@ -78,12 +77,6 @@ const routes: Routes = [
       { path: 'uds/:udsId', component: BeneficiariosUdsComponent },
       { path: 'estado/:estado', component: BeneficiariosEstadoComponent }
     ],
-    data: { nombrePagina: 'Beneficiarios' }
-  },
-  {
-    path: 'beneficiarios/mis-beneficiarios',
-    canActivate: [VerificaTokenGuard],
-    component: MisBeneficiariosComponent,
     data: { nombrePagina: 'Beneficiarios' }
   },
   {

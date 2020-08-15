@@ -48,7 +48,6 @@ export class BeneficiariosUdsComponent implements OnInit, OnDestroy {
     private dialog: MatDialog
   ) {
     this.obtenerInfoRuta().subscribe(udsId => {
-      console.log(udsId, 'id url uds padre');
       this.obtenerUds_beneficiarios_responsables(udsId);
     });
   }
@@ -73,8 +72,6 @@ export class BeneficiariosUdsComponent implements OnInit, OnDestroy {
     this.uds$
       .obtenerUnidad_beneficiarios_responsables(id)
       .subscribe((resp: any) => {
-        console.log(resp, 'resp');
-
         this.beneficiarios = resp.unidad.beneficiarios;
         this.contarEstados(this.beneficiarios);
         this.tablaData = new MatTableDataSource(this.beneficiarios);

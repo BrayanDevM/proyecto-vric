@@ -187,7 +187,8 @@ button:focus {
 .contratos-lista tr.mat-row {
   position: relative;
 }
-.contratos-lista tr.mat-row:hover {
+.contratos-lista tr.mat-row:hover,
+.contratos-lista tr.mat-row:active {
   background-color: #f1f5ff;
 }
 .contratos-lista tr.mat-row td:first-child,
@@ -342,6 +343,15 @@ h5.card-title {
   flex-direction: row;
   align-items: center;
   margin-bottom: 20px;
+}
+.info-beneficiario-wrapper .form-field .mat-form-field {
+  width: 100%;
+}
+.info-beneficiario-wrapper .form-field .mat-form-field-wrapper {
+  padding: 0;
+}
+.info-beneficiario-wrapper .form-field .comentario-no-edit {
+  width: 100%;
 }
 
 .info-beneficiario-wrapper .form-field-icon {
