@@ -31,6 +31,11 @@ button:focus {
   flex: 1 1 auto;
 }
 
+.mat-tab-label-content,
+.mat-tab-group .card {
+  font-family: Inter, Roboto, Arial !important;
+}
+
 .mat-divider {
   margin: 8px 0 !important;
 }
@@ -89,9 +94,15 @@ button:focus {
   padding: 2rem;
 }
 
+.header-dashboard {
+  margin: 16px 0;
+}
+
 .header {
   padding: 40px 32px;
 }
+.header-dashboard h1,
+.header-dashboard h2,
 .header h1,
 .header h2,
 .page-title .title {
@@ -243,6 +254,7 @@ button:focus {
 }
 
 .mat-tab-header {
+  background-color: #fff;
   padding: 0 32px;
 }
 
@@ -268,6 +280,11 @@ h5.card-title {
   font-weight: 700;
   color: #272727;
   margin-bottom: 1.5rem;
+}
+p.card-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 500;
 }
 
 .texto-tachado {

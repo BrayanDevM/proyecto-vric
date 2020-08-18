@@ -33,10 +33,12 @@
   <mat-sidenav-content>
     <div class="page-content bg-blue-grey">
       <div class="container-fluid BDM_fadeInUp">
-        <div class="header row">
+        <div class="header-dashboard row">
           <div class="page-title col-xl-6 p-0">
-            <h2 class="m-0">Dashboard</h2>
-            <div class="text-muted">Métricas generales del contrato</div>
+            <h2 class="m-0">Panel de análisis</h2>
+            <div class="text-muted">
+              Supervisión de métricas generales del contrato
+            </div>
           </div>
           <div class="page-actions col-xl-6 p-0">
             <button
@@ -194,7 +196,9 @@
                     >
                   </p>
                 </mat-list-option>
-                <mat-list-option>
+                <mat-list-option
+                  [routerLink]="['/beneficiarios/estado/Concurrencia']"
+                >
                   <p class="mt-3 mb-3">
                     <span [matBadge]="enConcurrencia" matBadgeColor="accent"
                       >Beneficiarios en concurrencia</span

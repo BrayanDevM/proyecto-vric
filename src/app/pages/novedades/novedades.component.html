@@ -1,0 +1,66 @@
+<div class="page-wrapper bg-blue-grey BDM_fadeInUp">
+  <div class="header row m-0 bg-white">
+    <div class="page-title col-xl-6 p-0">
+      <h2 class="title-bold m-0">Novedades</h2>
+      <div class="text-muted ml-1">
+        <div>Movimiento de beneficiarios en el servicio</div>
+      </div>
+    </div>
+    <div class="page-actions col-xl-6 p-0">
+      <!-- nothing -->
+    </div>
+  </div>
+  <!-- PAGE CONTENT -->
+  <mat-tab-group dynamicHeight>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon mr-2">person_add</mat-icon>
+        Reportar ingreso
+      </ng-template>
+      <!-- TAB CONTENT -->
+      <div class="page-content">
+        <app-form-ingresos [udsAsignadas]="udsAsignadas"></app-form-ingresos>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon mr-2">person_remove</mat-icon>
+        Reportar egreso
+      </ng-template>
+      <!-- TAB CONTENT -->
+      <div class="page-content">
+        <div class="card">
+          <app-form-egresos [udsAsignadas]="udsAsignadas"></app-form-egresos>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon mr-2">child_friendly</mat-icon>
+        Reportar nacimiento
+      </ng-template>
+      <!-- TAB CONTENT -->
+      <div class="page-content">
+        <div class="card">
+          <div class="alert alert-warning alert-dismissible fade show">
+            El reporte de nacimiento y/o cambio de mujer gestante debe
+            realizarse en la última o primera semana del mes vigente, esto
+            permite tener un control mensual de un ingreso nuevo para cargue de
+            acompañamientos en la plataforma SPES y talleres de formación en
+            CUÉNTAME.
+            <button
+              type="button"
+              class="close"
+              data-dismiss="alert"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <app-form-cambios [udsAsignadas]="udsAsignadas"></app-form-cambios>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

@@ -48,35 +48,19 @@
       </div>
     </div>
   </div>
-  <div class="navigation-group">
+  <div *ngFor="let menu of menuUsuario" class="navigation-group">
     <div class="navigation-title-wrapper">
-      <div class="navigation-group-title">Dashboards</div>
-      <div class="navigation-group-subtitle">Subtitulo</div>
+      <div class="navigation-group-title">{{ menu.titulo }}</div>
+      <div class="navigation-group-subtitle">{{ menu.subtitulo }}</div>
     </div>
     <div
       class="navigation-item"
-      *ngFor="let menuItem of menuUsuario"
+      *ngFor="let menuItem of menu.items"
       routerLinkActive="active"
     >
       <a [routerLink]="menuItem.url" class="navigation-link">
         <mat-icon>{{ menuItem.gIcon }}</mat-icon>
-        <div class="navigation-link-text">{{ menuItem.titulo }}</div>
-      </a>
-    </div>
-    <div
-      *ngIf="usuario.rol === 'DOCENTE' || usuario.rol === 'ADMIN'"
-      class="navigation-item"
-      routerLinkActive="active"
-    >
-      <a routerLink="/beneficiarios/novedades" class="navigation-link">
-        <mat-icon>add_task</mat-icon>
-        <div class="navigation-link-text">Novedades</div>
-      </a>
-    </div>
-    <div class="navigation-item" routerLinkActive="active">
-      <a routerLink="/beneficiarios" class="navigation-link">
-        <mat-icon>people</mat-icon>
-        <div class="navigation-link-text">Beneficiarios</div>
+        <div class="navigation-link-text">{{ menuItem.nombre }}</div>
       </a>
     </div>
   </div>

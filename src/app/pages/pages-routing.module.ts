@@ -6,9 +6,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ContratosComponent } from './contratos/contratos.component';
 import { ContratoComponent } from './contratos/contrato/contrato.component';
 import { UdsComponent } from './uds/uds.component';
-import { NovedadesComponent } from './beneficiarios/novedades/novedades.component';
+import { NovedadesComponent } from './novedades/novedades.component';
 import { BeneficiariosComponent } from './beneficiarios/beneficiarios.component';
-import { BeneficiarioComponent } from './beneficiarios/beneficiario/beneficiario.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { UnidadComponent } from './uds/unidad/unidad.component';
 import { CrearUdsComponent } from './uds/crear-uds/crear-uds.component';
@@ -17,15 +16,16 @@ import { UsuariosComponent } from './usuarios/usuarios.component';
 import { CrearUsuarioComponent } from './usuarios/crear-usuario/crear-usuario.component';
 import { BusquedaComponent } from './busqueda/busqueda.component';
 import { AdministrarComponent } from './administrar/administrar.component';
-
-// Guards
-import { AdminGuard } from '../services/guards/admin.guard';
-import { VerificaTokenGuard } from '../services/guards/verifica-token.guard';
-import { UsuarioComponent } from './usuarios/usuario/usuario.component';
 import { DashboardUdsComponent } from './dashboard/dashboard-uds/dashboard-uds.component';
 import { BeneficiariosUdsComponent } from './beneficiarios/tabla-beneficiarios/beneficiarios-uds.component';
 import { BeneficiariosEstadoComponent } from './beneficiarios/tabla-beneficiarios/beneficiarios-estado.component';
 import { BeneficiarioFormComponent } from './beneficiarios/beneficiario-form/beneficiario-form.component';
+import { UsuarioComponent } from './usuarios/usuario/usuario.component';
+
+// Guards
+import { VerificaTokenGuard } from '../services/guards/verifica-token.guard';
+import { AdminGuard } from '../services/guards/admin.guard';
+import { SupervisorGuard } from '../services/guards/supervisor.guard';
 
 const routes: Routes = [
   {
@@ -43,7 +43,7 @@ const routes: Routes = [
   {
     path: 'contratos',
     component: ContratosComponent,
-    canActivate: [AdminGuard, VerificaTokenGuard],
+    canActivate: [SupervisorGuard, VerificaTokenGuard],
     children: [
       { path: 'contrato/:id', component: ContratoComponent },
       { path: 'crear', component: CrearContratoComponent }
@@ -53,7 +53,7 @@ const routes: Routes = [
   {
     path: 'unidades-de-servicio',
     component: UdsComponent,
-    canActivate: [AdminGuard, VerificaTokenGuard],
+    canActivate: [SupervisorGuard, VerificaTokenGuard],
     children: [
       { path: 'unidad/:id', component: UnidadComponent },
       { path: 'crear', component: CrearUdsComponent }
@@ -95,10 +95,10 @@ const routes: Routes = [
     data: { nombrePagina: 'Edición de beneficiario' }
   },
   {
-    path: 'beneficiarios/novedades',
+    path: 'novedades',
     canActivate: [VerificaTokenGuard],
     component: NovedadesComponent,
-    data: { nombrePagina: 'Reporte de novedades' }
+    data: { nombrePagina: 'Novedades' }
   },
   {
     path: 'administrar',

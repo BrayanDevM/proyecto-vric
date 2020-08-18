@@ -20,7 +20,7 @@ import { ContratosComponent } from './contratos/contratos.component';
 import { UdsComponent } from './uds/uds.component';
 import { BeneficiariosComponent } from './beneficiarios/beneficiarios.component';
 import { BeneficiarioComponent } from './beneficiarios/beneficiario/beneficiario.component';
-import { NovedadesComponent } from './beneficiarios/novedades/novedades.component';
+import { NovedadesComponent } from './novedades/novedades.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { ContratoComponent } from './contratos/contrato/contrato.component';
 import { UnidadComponent } from './uds/unidad/unidad.component';
