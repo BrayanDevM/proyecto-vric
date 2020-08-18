@@ -35,7 +35,6 @@ export class UsuariosComponent implements OnInit {
   usuarioInfo: Usuario = null;
   tablaColumnas: string[] = ['nombre', 'correo', 'telefono', 'rol', 'activo'];
   tablaData: MatTableDataSource<any>;
-  numRegistros = 0;
   abrirSidenav = false;
   usuariosFiltrados = false;
 
@@ -58,17 +57,19 @@ export class UsuariosComponent implements OnInit {
     this.subsUsuarioActualizado();
   }
 
+  get cantRegistros(): number {
+    return this.tablaData.filteredData.length;
+  }
+
   obtenerUsuarios() {
     this.ususarios$.obtenerUsuarios().subscribe((usuarios: Usuario[]) => {
       this.usuarios = usuarios;
-      this.numRegistros = this.usuarios.length;
       this.tablaData = new MatTableDataSource(this.usuarios);
     });
   }
   obtenerUsuariosFiltro(query: string) {
     this.ususarios$.obtenerUsuarios(query).subscribe((resp: any) => {
       this.usuarios = resp.usuarios;
-      this.numRegistros = this.usuarios.length;
       this.tablaData = new MatTableDataSource(this.usuarios);
       this.usuariosFiltrados = true;
     });
@@ -118,7 +119,6 @@ export class UsuariosComponent implements OnInit {
       (usuario: Usuario) => {
         this.usuarios.push(usuario);
         this.tablaData = new MatTableDataSource(this.usuarios);
-        this.numRegistros++;
       }
     );
   }
@@ -133,7 +133,6 @@ export class UsuariosComponent implements OnInit {
         const i = this.usuarios.findIndex(usuario => usuario._id === id);
         this.usuarios.splice(i, 1);
         this.tablaData = new MatTableDataSource(this.usuarios);
-        this.numRegistros--;
       }
     );
   }

@@ -34,6 +34,7 @@ import { DashboardUdsComponent } from './dashboard/dashboard-uds/dashboard-uds.c
 import { MaterialModule } from '../material/material.module';
 import { BeneficiariosUdsComponent } from './beneficiarios/tabla-beneficiarios/beneficiarios-uds.component';
 import { BeneficiariosEstadoComponent } from './beneficiarios/tabla-beneficiarios/beneficiarios-estado.component';
+import { BeneficiarioFormComponent } from './beneficiarios/beneficiario-form/beneficiario-form.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { BeneficiariosEstadoComponent } from './beneficiarios/tabla-beneficiario
     UsuarioComponent,
     DashboardUdsComponent,
     BeneficiariosUdsComponent,
-    BeneficiariosEstadoComponent
+    BeneficiariosEstadoComponent,
+    BeneficiarioFormComponent
   ],
   imports: [
     CommonModule,

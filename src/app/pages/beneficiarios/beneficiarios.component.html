@@ -3,29 +3,29 @@
     <div class="page-title col-xl-6 p-0">
       <h2 class="title-bold m-0">Beneficiarios</h2>
       <div class="text-muted ml-1">
-        <div>Lista de beneficiarios registrados</div>
+        <div>{{ subtituloPagina }}</div>
       </div>
     </div>
     <div class="page-actions col-xl-6 p-0">
       <div class="mr-3">
-        <mat-form-field appearance="outline" class="search-input">
-          <!-- <mat-label></mat-label> -->
-          <input
-            matInput
-            (keyup)="filtrarTabla($event)"
-            placeholder="Buscar beneficiarios"
-            autocomplete="off"
-            #buscar
-          />
-          <mat-icon matPrefix>search</mat-icon>
-          <!-- <mat-hint>Hint</mat-hint> -->
+        <mat-form-field appearance="outlined" class="select">
+          <mat-select
+            #selectEstado
+            [(value)]="estadoSeleccionado"
+            (selectionChange)="obtenerBeneficiarios_porEstado($event.value)"
+            placeholder="Seleccionar estado"
+          >
+            <mat-option *ngFor="let estado of estados" [value]="estado.value">
+              {{ estado.label }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>trip_origin</mat-icon>
         </mat-form-field>
       </div>
-      <!-- nothing -->
       <mat-form-field appearance="outlined" class="select">
-        <!-- <mat-label>Filtrar por UDS</mat-label> -->
         <mat-select
-          [(value)]="udsValue"
+          #selectUds
+          [(value)]="udsSeleccionada"
           (selectionChange)="
             obtenerUds_beneficiarios_responsables($event.value)
           "
@@ -45,49 +45,10 @@
     <!-- <div class="table-section">
       Título Sección
     </div> -->
-    <div
-      *ngIf="beneficiarios.length > 0"
-      class="table-section-info border-bottom BDM_fadeInUp"
-    >
-      <!-- Pendiente vincular badge -->
-      <div class="badge-status alert alert-primary mr-2">
-        <div class="status-indicator bg-primary"></div>
-        <span class="status-text"
-          >Pendiente vincular ({{ pendientesVincular }})</span
-        >
-      </div>
-      <!-- Pendiente desvincular badge -->
-      <div class="badge-status alert alert-warning mr-2">
-        <div class="status-indicator bg-warning"></div>
-        <span class="status-text"
-          >Pendiente desvincular ({{ pendientesDesvincular }})</span
-        >
-      </div>
-      <!-- Dato sensible badge -->
-      <div class="badge-status alert alert-info mr-2">
-        <div class="status-indicator bg-info"></div>
-        <span class="status-text">Dato sensible ({{ datosSensibles }})</span>
-      </div>
-      <!-- Concurrencia badge -->
-      <div class="badge-status alert alert-danger mr-2">
-        <div class="status-indicator bg-danger"></div>
-        <span class="status-text">Concurrencia ({{ concurrencias }})</span>
-      </div>
-      <!-- Vinculado badge -->
-      <div class="badge-status alert alert-success mr-2">
-        <div class="status-indicator bg-success"></div>
-        <span class="status-text">Vinculado ({{ vinculados }})</span>
-      </div>
-      <!-- Desvinculado badge -->
-      <div class="badge-status alert alert-secondary mr-2">
-        <div class="status-indicator bg-secondary"></div>
-        <span class="status-text">Desvinculado ({{ desvinculados }})</span>
-      </div>
-    </div>
 
     <div *ngIf="!rutaHijaActiva" class="no-data border-top BDM_fadeInUp">
       <img src="assets/img/svg/Business concep - VRIC.svg" />
-      <span>No hay beneficiarios, ya intentaste seleccionar una UDS?</span>
+      <span>Selecciona un elemento de las listas</span>
     </div>
     <router-outlet
       (activate)="rutaHijaActiva = true"

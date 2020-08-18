@@ -11,9 +11,13 @@
       <div class="header row border-bottom m-0 bg-white">
         <div class="page-title col-xl-6 p-0">
           <h2 class="title-bold m-0">Usuarios</h2>
-          <div class="text-muted ml-1">
-            <span *ngIf="numRegistros !== 1">{{ numRegistros }} Usuarios</span>
-            <span *ngIf="numRegistros === 1">{{ numRegistros }} Usuario</span>
+          <div *ngIf="tablaData" class="text-muted ml-1">
+            <span *ngIf="cantRegistros !== 1">
+              {{ cantRegistros }} Usuarios
+            </span>
+            <span *ngIf="cantRegistros === 1">
+              {{ cantRegistros }} Usuario
+            </span>
           </div>
         </div>
         <div class="page-actions col-xl-6 p-0">

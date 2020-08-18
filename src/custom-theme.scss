@@ -16,7 +16,7 @@ $custom-typography: mat-typography-config(
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $Proyecto-VRIC-primary: mat-palette($mat-teal);
-$Proyecto-VRIC-accent: mat-palette($mat-pink, A200, A100, A400);
+$Proyecto-VRIC-accent: mat-palette($mat-amber);
 
 // The warn palette is optional (defaults to red).
 $Proyecto-VRIC-warn: mat-palette($mat-red);

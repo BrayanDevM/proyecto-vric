@@ -18,7 +18,8 @@ export class BeneficiariosService {
   benficiario: Beneficiario;
   API_URL = Config.REST.PRINCIPAL.URL + '/beneficiarios';
   // observables
-  inputSearch$ = new EventEmitter<string>();
+  beneficiarioEliminado = new EventEmitter<any>();
+  subtituloPag$ = new EventEmitter<string>();
 
   constructor(
     private usuario$: UsuarioService,

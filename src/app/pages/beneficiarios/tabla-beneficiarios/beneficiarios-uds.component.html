@@ -1,45 +1,83 @@
 <div
-  *ngIf="beneficiarios.length > 0; else noBeneficiarios"
-  class="table-section-info border-bottom BDM_fadeInUp"
+  class="table-page-header d-flex justify-content-between border-bottom BDM_fadeInUp"
 >
-  <!-- Pendiente vincular badge -->
-  <div class="badge-status alert alert-primary mr-2">
-    <div class="status-indicator bg-primary"></div>
-    <span class="status-text"
-      >Pendiente vincular ({{ pendientesVincular }})</span
+  <div
+    *ngIf="beneficiarios.length > 0"
+    class="table-actions d-flex flex-row align-items-center"
+  >
+    <div>
+      <mat-form-field appearance="outline" class="search-input">
+        <!-- <mat-label></mat-label> -->
+        <input
+          matInput
+          (keyup)="filtrarTabla($event)"
+          placeholder="Buscar beneficiarios"
+          autocomplete="off"
+          #buscar
+        />
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
+  <div *ngIf="beneficiarios.length > 0" class="table-section-info">
+    <!-- Pendiente vincular badge -->
+    <div
+      (click)="filtrarTabla(null, 'Pendiente vincular')"
+      class="badge-status alert alert-primary mr-2 pointer"
     >
-  </div>
-  <!-- Pendiente desvincular badge -->
-  <div class="badge-status alert alert-warning mr-2">
-    <div class="status-indicator bg-warning"></div>
-    <span class="status-text"
-      >Pendiente desvincular ({{ pendientesDesvincular }})</span
+      <div class="status-indicator bg-primary"></div>
+      <span class="status-text"
+        >Pendiente vincular ({{ pendientesVincular }})</span
+      >
+    </div>
+    <!-- Pendiente desvincular badge -->
+    <div
+      (click)="filtrarTabla(null, 'Pendiente desvincular')"
+      class="badge-status alert alert-warning mr-2 pointer"
     >
-  </div>
-  <!-- Dato sensible badge -->
-  <div class="badge-status alert alert-info mr-2">
-    <div class="status-indicator bg-info"></div>
-    <span class="status-text">Dato sensible ({{ datosSensibles }})</span>
-  </div>
-  <!-- Concurrencia badge -->
-  <div class="badge-status alert alert-danger mr-2">
-    <div class="status-indicator bg-danger"></div>
-    <span class="status-text">Concurrencia ({{ concurrencias }})</span>
-  </div>
-  <!-- Vinculado badge -->
-  <div class="badge-status alert alert-success mr-2">
-    <div class="status-indicator bg-success"></div>
-    <span class="status-text">Vinculado ({{ vinculados }})</span>
-  </div>
-  <!-- Desvinculado badge -->
-  <div class="badge-status alert alert-secondary mr-2">
-    <div class="status-indicator bg-secondary"></div>
-    <span class="status-text">Desvinculado ({{ desvinculados }})</span>
+      <div class="status-indicator bg-warning"></div>
+      <span class="status-text"
+        >Pendiente desvincular ({{ pendientesDesvincular }})</span
+      >
+    </div>
+    <!-- Dato sensible badge -->
+    <div
+      (click)="filtrarTabla(null, 'Dato sensible')"
+      class="badge-status alert alert-info mr-2 pointer"
+    >
+      <div class="status-indicator bg-info"></div>
+      <span class="status-text">Dato sensible ({{ datosSensibles }})</span>
+    </div>
+    <!-- Concurrencia badge -->
+    <div
+      (click)="filtrarTabla(null, 'Concurrencia')"
+      class="badge-status alert alert-danger mr-2 pointer"
+    >
+      <div class="status-indicator bg-danger"></div>
+      <span class="status-text">Concurrencia ({{ concurrencias }})</span>
+    </div>
+    <!-- Vinculado badge -->
+    <div
+      (click)="filtrarTabla(null, 'Vinculado')"
+      class="badge-status alert alert-success mr-2 pointer"
+    >
+      <div class="status-indicator bg-success"></div>
+      <span class="status-text">Vinculado ({{ vinculados }})</span>
+    </div>
+    <!-- Desvinculado badge -->
+    <div
+      (click)="filtrarTabla(null, 'Desvinculado')"
+      class="badge-status alert alert-secondary mr-2 pointer"
+    >
+      <div class="status-indicator bg-secondary"></div>
+      <span class="status-text">Desvinculado ({{ desvinculados }})</span>
+    </div>
   </div>
 </div>
+
 <table
   mat-table
-  *ngIf="beneficiarios.length > 0"
+  *ngIf="beneficiarios.length > 0; else noBeneficiarios"
   [dataSource]="tablaData"
   class="mat-table contratos-lista mat-elevation-z8 BDM_fadeInUp"
 >
@@ -136,5 +174,8 @@
 </table>
 
 <ng-template #noBeneficiarios>
-  <h2>No hay datos!</h2>
+  <div class="no-data p-4 mt-5 BDM_fadeInUp">
+    <img src="assets/img/svg/meditation.svg" />
+    <span>No tienes beneficiarios registrados</span>
+  </div>
 </ng-template>

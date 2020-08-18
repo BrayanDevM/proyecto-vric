@@ -18,6 +18,10 @@ button:focus {
   outline: none;
 }
 
+.pointer:hover {
+  cursor: pointer;
+}
+
 .btn {
   padding-bottom: 0.2rem !important;
   padding-top: 0.2rem !important;
@@ -98,7 +102,7 @@ button:focus {
   font-weight: 600;
 }
 
-.header .search-input .mat-form-field-wrapper {
+.search-input .mat-form-field-wrapper {
   padding-bottom: 0;
   margin: 0;
 }
@@ -110,13 +114,13 @@ button:focus {
   background-color: #fff;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
-.header .search-input .mat-form-field-flex:hover .mat-form-field-outline-start,
-.header .search-input .mat-form-field-flex:hover .mat-form-field-outline-gap,
-.header .search-input .mat-form-field-flex:hover .mat-form-field-outline-end {
+.search-input .mat-form-field-flex:hover .mat-form-field-outline-start,
+.search-input .mat-form-field-flex:hover .mat-form-field-outline-gap,
+.search-input .mat-form-field-flex:hover .mat-form-field-outline-end {
   // border-color: #cfd8e3;
   border-width: 1px;
 }
-.header .search-input .mat-form-field-prefix {
+.search-input .mat-form-field-prefix {
   color: #97a6ba;
   display: inline-flex;
   align-items: center;
@@ -124,7 +128,7 @@ button:focus {
   height: 40px;
   width: 30px;
 }
-.header .search-input .mat-form-field-infix {
+.search-input .mat-form-field-infix {
   display: flex;
   width: 160px;
   height: 40px;
@@ -132,7 +136,7 @@ button:focus {
   padding: 0;
   margin-left: 2px;
 }
-.header .search-input .mat-form-field-infix input::-webkit-input-placeholder {
+.search-input .mat-form-field-infix input::-webkit-input-placeholder {
   font-weight: 500;
 }
 
@@ -175,7 +179,8 @@ button:focus {
   cursor: pointer;
 }
 .contratos-lista tr.mat-header-row {
-  background-color: #fcfdff;
+  // background-color: #fcfdff;
+  background-color: #f1f4f9;
 }
 .contratos-lista tr.mat-header-row th {
   text-transform: capitalize;
@@ -270,6 +275,10 @@ h5.card-title {
   opacity: 0.7;
 }
 
+.table-page-header {
+  padding: 0 32px;
+}
+
 .table-section,
 .table-section-info {
   height: 56px;
@@ -279,14 +288,11 @@ h5.card-title {
   // border-top-width: 2px;
   display: flex;
   align-items: center;
-  padding: 0 32px;
+  // padding: 0 32px;
   font-size: 1.3rem;
 }
 .table-section {
   background-color: #f1f5f9;
-}
-.table-section-info {
-  background-color: #fff;
 }
 
 // MAT-SELECT ESTILOS
@@ -321,6 +327,14 @@ h5.card-title {
 }
 
 // INFO BENEFICIARIO DIALOG STYLES
+.mat-dialog-container {
+  position: relative;
+}
+.dialog-actions {
+  position: absolute;
+  top: 21.5px;
+  right: 24px;
+}
 .info-beneficiario-wrapper {
   font-family: Inter, Roboto, Arial, Helvetica, sans-serif;
 }

@@ -12,6 +12,9 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { take } from 'rxjs/operators';
+import { alertDanger } from 'src/app/helpers/swal2.config';
+import { UsuarioService } from 'src/app/services/usuario.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-beneficiario',
@@ -19,7 +22,19 @@ import { take } from 'rxjs/operators';
   styleUrls: ['./beneficiario.component.css']
 })
 export class BeneficiarioComponent implements OnInit {
-  editando = false;
+  // variables de configuración
+  estados = [
+    { value: 'Pendiente vincular', label: 'Pendiente vincular' },
+    { value: 'Pendiente desvincular', label: 'Pendiente desvincular' },
+    // { value: 'Vinculado', label: 'Vinculado' },
+    { value: 'Dato sensible', label: 'Dato sensible' },
+    { value: 'Concurrencia', label: 'Concurrencia' },
+    { value: 'Desvinculado', label: 'Desvinculado' }
+  ];
+  puedeEditar = false;
+  edicionRapida = false;
+  editandoComentario = false;
+  // variables de uso
   beneficiario: Beneficiario;
   comentario: string;
 
@@ -27,11 +42,19 @@ export class BeneficiarioComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: Beneficiario,
+    private usuario$: UsuarioService,
+    private router: Router,
     private beneficiarios$: BeneficiariosService,
     private snackBar$: MatSnackBar,
     private ngZone: NgZone
   ) {
     this.comentario = this.data.comentario;
+    if (
+      this.usuario$.usuario.rol === 'GESTOR' ||
+      this.usuario$.usuario.rol === 'ADMIN'
+    ) {
+      this.puedeEditar = true;
+    }
   }
 
   triggerResize() {
@@ -65,18 +88,16 @@ export class BeneficiarioComponent implements OnInit {
     document.body.removeChild(element);
 
     this.snackBar$.open('Copiado al portapapeles', 'Cerrar', {
-      duration: 4500,
-      horizontalPosition: 'end',
-      verticalPosition: 'bottom'
+      duration: 4500
     });
   }
 
   cancelarComentario() {
     this.data.comentario = this.comentario;
-    this.editando = false;
+    this.editandoComentario = false;
   }
 
-  guardarComentario() {
+  actualizarBeneficiario() {
     let madreId = '';
     let padreId = '';
     const creadoPor = this.data.creadoPor._id;
@@ -126,12 +147,30 @@ export class BeneficiarioComponent implements OnInit {
       .actualizarBeneficiario(this.beneficiario)
       .subscribe((resp: any) => {
         if (resp.ok) {
-          this.editando = false;
-          console.log(this.data, 'en modal');
-
-          this.snackBar$.open('Comentario actualizado', null, {
+          this.editandoComentario = false;
+          // console.log(this.data, 'en modal');
+          this.edicionRapida = false;
+          this.snackBar$.open('Beneficiario actualizado', null, {
             duration: 4000
           });
+        }
+      });
+  }
+
+  editarBeneficiario() {
+    this.router.navigate(['/beneficiario/editar', this.data._id]);
+  }
+
+  eliminarBeneficiario(beneficiario: Beneficiario): void {
+    alertDanger
+      .fire({
+        title: 'Beneficiarios',
+        html: `Eliminar a <b>${beneficiario.nombre1}</b> esta acción no puede deshacerse.`,
+        confirmButtonText: 'Si, eliminar'
+      })
+      .then(resp => {
+        if (resp.value) {
+          this.beneficiarios$.beneficiarioEliminado.emit(beneficiario);
         }
       });
   }

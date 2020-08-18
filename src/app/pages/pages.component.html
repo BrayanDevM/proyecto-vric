@@ -11,28 +11,28 @@
     <!-------------------------------------- HEADER -------------------------------------->
     <div class="header-toolbar">
       <mat-toolbar color="primary">
-        <button
-          (click)="sidenav.toggle()"
-          mat-icon-button
-          class="example-icon"
-          aria-label="Example icon-button with menu icon"
-        >
+        <button (click)="sidenav.toggle()" mat-icon-button class="example-icon">
           <mat-icon>menu</mat-icon>
         </button>
         <span class="mat-spacer"></span>
-        <button
-          mat-icon-button
-          class="example-icon favorite-icon"
-          aria-label="Example icon-button with heart icon"
-        >
+        <button mat-icon-button>
           <mat-icon>search</mat-icon>
         </button>
         <button
+          *ngIf="!pantallaCompleta"
+          (click)="openFullscreen()"
           mat-icon-button
-          class="example-icon"
-          aria-label="Example icon-button with share icon"
+          matTooltip="Pantalla completa"
         >
-          <mat-icon>share</mat-icon>
+          <mat-icon>fullscreen</mat-icon>
+        </button>
+        <button
+          *ngIf="pantallaCompleta"
+          (click)="closeFullscreen()"
+          mat-icon-button
+          matTooltip="Salir de pantalla completa"
+        >
+          <mat-icon>fullscreen_exit</mat-icon>
         </button>
       </mat-toolbar>
     </div>

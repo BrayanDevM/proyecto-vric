@@ -66,6 +66,16 @@ export class UdsService {
     }
   }
 
+  obtenerUds_codigos(query?: string) {
+    if (!query) {
+      return this.http.get(this.API_URL + `/codigos?token=${this.token}`);
+    } else {
+      return this.http.get(
+        this.API_URL + `/codigos?${query}&token=${this.token}`
+      );
+    }
+  }
+
   obtenerUnidad(id: string) {
     return this.http.get(this.API_URL + `/${id}?token=${this.token}`);
   }

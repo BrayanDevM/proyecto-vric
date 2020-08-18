@@ -25,6 +25,7 @@ import { UsuarioComponent } from './usuarios/usuario/usuario.component';
 import { DashboardUdsComponent } from './dashboard/dashboard-uds/dashboard-uds.component';
 import { BeneficiariosUdsComponent } from './beneficiarios/tabla-beneficiarios/beneficiarios-uds.component';
 import { BeneficiariosEstadoComponent } from './beneficiarios/tabla-beneficiarios/beneficiarios-estado.component';
+import { BeneficiarioFormComponent } from './beneficiarios/beneficiario-form/beneficiario-form.component';
 
 const routes: Routes = [
   {
@@ -74,10 +75,24 @@ const routes: Routes = [
     canActivate: [VerificaTokenGuard],
     component: BeneficiariosComponent,
     children: [
-      { path: 'uds/:udsId', component: BeneficiariosUdsComponent },
-      { path: 'estado/:estado', component: BeneficiariosEstadoComponent }
+      {
+        path: 'uds/:udsId',
+        component: BeneficiariosUdsComponent,
+        data: { nombrePagina: 'Beneficiarios' }
+      },
+      {
+        path: 'estado/:estado',
+        component: BeneficiariosEstadoComponent,
+        data: { nombrePagina: 'Beneficiarios' }
+      }
     ],
     data: { nombrePagina: 'Beneficiarios' }
+  },
+  {
+    path: 'beneficiario/editar/:id',
+    canActivate: [VerificaTokenGuard],
+    component: BeneficiarioFormComponent,
+    data: { nombrePagina: 'Edición de beneficiario' }
   },
   {
     path: 'beneficiarios/novedades',

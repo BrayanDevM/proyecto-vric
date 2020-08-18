@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivationEnd, ActivatedRoute } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import { Observable, Subscription } from 'rxjs';
@@ -14,15 +14,8 @@ import { BeneficiarioComponent } from '../beneficiario/beneficiario.component';
   templateUrl: './beneficiarios-uds.component.html',
   styles: []
 })
-export class BeneficiariosUdsComponent implements OnInit, OnDestroy {
-  beneficiarios: Beneficiario[] = [];
-  pendientesVincular: number;
-  pendientesDesvincular: number;
-  datosSensibles: number;
-  concurrencias: number;
-  vinculados: number;
-  desvinculados: number;
-
+export class BeneficiariosUdsComponent implements OnInit {
+  // variables de configuración
   tablaColumnas: string[] = [
     'tipoDoc',
     'documento',
@@ -33,12 +26,23 @@ export class BeneficiariosUdsComponent implements OnInit, OnDestroy {
     'nacimiento',
     'estado'
   ];
+  abrirSidenav = false;
+  // variables de uso
+  beneficiarios: Beneficiario[] = [];
   tablaData: MatTableDataSource<any>;
-
-  nuevaBusqueda: Subscription;
+  pendientesVincular: number;
+  pendientesDesvincular: number;
+  datosSensibles: number;
+  concurrencias: number;
+  vinculados: number;
+  desvinculados: number;
   criterioBusqueda = '';
 
-  abrirSidenav = false;
+  // elementos DOM
+  @ViewChild('buscar') iBuscar: ElementRef;
+
+  // observables
+  nuevaBusqueda: Subscription;
 
   constructor(
     private router: Router,
@@ -52,13 +56,7 @@ export class BeneficiariosUdsComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
-    this.subsInputSearch();
-  }
-
-  ngOnDestroy(): void {
-    this.desuscribir();
-  }
+  ngOnInit(): void {}
 
   obtenerInfoRuta(): Observable<any> {
     return this.router.events.pipe(
@@ -75,6 +73,9 @@ export class BeneficiariosUdsComponent implements OnInit, OnDestroy {
         this.beneficiarios = resp.unidad.beneficiarios;
         this.contarEstados(this.beneficiarios);
         this.tablaData = new MatTableDataSource(this.beneficiarios);
+        this.beneficiarios$.subtituloPag$.emit(
+          `${this.beneficiarios.length} Beneficiarios`
+        );
       });
   }
 
@@ -109,26 +110,26 @@ export class BeneficiariosUdsComponent implements OnInit, OnDestroy {
     });
   }
 
-  // verBeneficiario(id: string) {
-  //   this.router.navigate(['beneficiario', id], { relativeTo: this.ar });
-  // }
-
   openDialog(beneficiario: Beneficiario) {
     this.dialog.open(BeneficiarioComponent, {
+      minWidth: '640px',
       data: beneficiario
     });
   }
 
-  subsInputSearch() {
-    this.nuevaBusqueda = this.beneficiarios$.inputSearch$.subscribe(
-      (criterioBusqueda: string) => {
-        this.criterioBusqueda = criterioBusqueda;
-        this.tablaData.filter = criterioBusqueda.trim().toLowerCase();
-      }
+  filtrarTabla(event: Event, texto?: string) {
+    let criterioBusqueda: string;
+    if (texto !== undefined) {
+      this.iBuscar.nativeElement.value = texto;
+      this.criterioBusqueda = texto;
+      criterioBusqueda = texto.trim().toLowerCase();
+    } else {
+      criterioBusqueda = (event.target as HTMLInputElement).value;
+      this.criterioBusqueda = criterioBusqueda;
+    }
+    this.tablaData.filter = criterioBusqueda.trim().toLowerCase();
+    this.beneficiarios$.subtituloPag$.emit(
+      `${this.tablaData.filteredData.length} Beneficiarios`
     );
-  }
-
-  desuscribir() {
-    this.nuevaBusqueda.unsubscribe();
   }
 }
