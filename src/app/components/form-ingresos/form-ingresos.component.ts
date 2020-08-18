@@ -13,7 +13,8 @@ import { RespBeneficiariosService } from 'src/app/services/resp-beneficiarios.se
 import {
   alertDanger,
   alertSuccess,
-  alertConfirm
+  alertConfirm,
+  alertError
 } from 'src/app/helpers/swal2.config';
 declare var moment: any;
 
@@ -675,9 +676,8 @@ export class FormIngresosComponent implements OnInit {
       .then((result: any) => {
         if (result.value) {
           this.creando = true;
-          this.beneficiarios$
-            .crearBeneficiario(this.fv)
-            .subscribe((resp: any) => {
+          this.beneficiarios$.crearBeneficiario(this.fv).subscribe(
+            (resp: any) => {
               if (resp.ok) {
                 this.creando = false;
                 this.formIngreso.reset();
@@ -687,7 +687,17 @@ export class FormIngresosComponent implements OnInit {
               } else {
                 this.creando = false;
               }
-            });
+            },
+            error => {
+              this.creando = false;
+              alertError.fire({
+                title: 'Beneficiarios',
+                text:
+                  'No fue posible establecer contacto con el servidor, por favor intentalo nuevamente.',
+                confirmButtonText: 'Entendido'
+              });
+            }
+          );
         }
       });
   }
