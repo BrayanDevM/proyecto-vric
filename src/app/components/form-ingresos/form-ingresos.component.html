@@ -1,624 +1,1255 @@
-<form
-  ngNativeValidate
-  [formGroup]="formIngreso"
-  (ngSubmit)="ingresarBeneficiario()"
->
-  <!------------------- Sección datos básicos ------------------->
+<form [formGroup]="formIngreso" (ngSubmit)="ingresarBeneficiario()">
+  <!--**********//********** Sección datos básicos **********//**********-->
   <div class="card border-0 shadow-sm mb-5 p-4">
-    <div class="card-body">
-      <p class="card-title">Información básica</p>
+    <div class="card-body form-datos-basicos">
+      <p class="card-title">Información básica del beneficiario</p>
       <p class="text-muted m-0">
-        Escribe aquí la información personal del beneficiario
+        Escribe aquí la información básica personal del beneficiario
       </p>
       <div class="mt-4 mb-5">
         <mat-divider></mat-divider>
       </div>
-      <div class="row">
-        <div class="col-lg-3 col-xl-2">
+      <div class="row datos-basicos">
+        <!--********************** CAMPO TIPO DE DOCUMENTO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="tipoDoc">Tipo de documento</label>
-            <ng-select
-              #tipoDoc
-              [items]="tiposDeDocumento"
-              bindValue="value"
-              bindLabel="label"
-              groupBy="group"
-              placeholder="Seleccionar tipo de documento"
-              (change)="comprobarSD($event)"
-              formControlName="tipoDoc"
-              name="tipoDoc"
-              required
-            >
-              <ng-template ng-label-tmp let-item="item">
-                <i [class]="item.icon"></i>
-                {{ item.label }}
-              </ng-template>
-            </ng-select>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                (selectionChange)="comprobarSD($event, 'documento')"
+                name="tipoDoc"
+                formControlName="tipoDoc"
+                placeholder="Seleccionar documento"
+              >
+                <mat-optgroup
+                  *ngFor="let doc of tiposDeDocumento"
+                  [label]="doc.pais"
+                >
+                  <mat-option
+                    *ngFor="let tipoDoc of doc.documentos"
+                    [value]="tipoDoc.value"
+                  >
+                    <mat-icon
+                      matSuffix
+                      fontSet="fad"
+                      [fontIcon]="tipoDoc.icon"
+                    ></mat-icon>
+                    {{ tipoDoc.label }}
+                  </mat-option>
+                </mat-optgroup>
+              </mat-select>
+              <mat-icon matPrefix>account_box</mat-icon>
+              <mat-error *ngIf="fc.tipoDoc.errors?.required">
+                Debes seleccionar un tipo de documento
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO NUMERO DE DOCUMENTO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="documento">NUIP</label>
-            <input
-              #documento
-              [ngModel]="formIngreso.value.documento | documento"
-              (ngModelChange)="formIngreso.value.documento = $event"
-              formControlName="documento"
-              name="documento"
-              type="text"
-              class="form-control"
-              placeholder="Número de NUIP"
-              autocomplete="off"
-              required
-            />
+            <mat-form-field appearance="outline" class="bdm-input">
+              <!-- <mat-label>Outline form field</mat-label> -->
+              <input
+                matInput
+                [ngModel]="fv.documento | documento"
+                (ngModelChange)="fv.documento = $event"
+                formControlName="documento"
+                name="documento"
+                placeholder="Número de documento"
+              />
+              <mat-icon matPrefix>account_box</mat-icon>
+              <mat-error *ngIf="fc.documento.errors?.required">
+                El documento es obligatorio
+              </mat-error>
+              <mat-error *ngIf="fc.documento.errors?.minlength">
+                El documento debe tener mínimo 8 dígitos
+              </mat-error>
+              <mat-error *ngIf="fc.documento.errors?.maxlength">
+                El documento debe tener máximo 10 dígitos
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO NOMBRE 1 **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="nombre1">Primer nombre</label>
-            <input
-              #nombre1
-              formControlName="nombre1"
-              name="nombre1"
-              type="text"
-              class="form-control"
-              placeholder="Escribe un nombre"
-              required
-            />
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                formControlName="nombre1"
+                name="nombre1"
+                placeholder="ej. Brayan"
+              />
+              <mat-icon matPrefix>account_box</mat-icon>
+              <mat-error *ngIf="fc.nombre1.errors?.required">
+                El primer nombre es obligatorio
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO NOMBRE 2 **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="nombre2">Segundo nombre</label>
-            <input
-              #nombre2
-              formControlName="nombre2"
-              name="nombre2"
-              type="text"
-              class="form-control"
-              placeholder="Escribe un nombre"
-            />
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input matInput formControlName="nombre2" name="nombre2" />
+              <mat-icon matPrefix>account_box</mat-icon>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO APELLIDO 1 **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="apellido1">Primer apellido</label>
-            <input
-              #apellido1
-              formControlName="apellido1"
-              name="apellido1"
-              type="text"
-              class="form-control"
-              placeholder="Escribe un apellido"
-              required
-            />
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                formControlName="apellido1"
+                name="apellido1"
+                placeholder="ej. Devia"
+              />
+              <mat-icon matPrefix>account_box</mat-icon>
+              <mat-error *ngIf="fc.apellido1.errors?.required">
+                El primer apellido es obligatorio
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO APELLIDO 2 **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="apellido2">Segundo apellido</label>
-            <input
-              #apellido2
-              formControlName="apellido2"
-              name="apellido2"
-              type="text"
-              class="form-control"
-              placeholder="Escribe un apellido"
-            />
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input matInput formControlName="apellido2" name="apellido2" />
+              <mat-icon matPrefix>account_box</mat-icon>
+            </mat-form-field>
           </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO SEXO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="sexo">Sexo</label>
-            <ng-select
-              #sexo
-              [items]="sexos"
-              bindValue="value"
-              bindLabel="label"
-              placeholder="Seleccionar sexo"
-              formControlName="sexo"
-              name="sexo"
-              required
-            >
-              <ng-template ng-label-tmp let-item="item">
-                <i [class]="item.icon"></i>
-                {{ item.label }}
-              </ng-template>
-            </ng-select>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                placeholder="Seleccionar sexo"
+                name="sexo"
+                formControlName="sexo"
+              >
+                <mat-option *ngFor="let sexo of sexos" [value]="sexo.value">
+                  <mat-icon
+                    matSuffix
+                    fontSet="fad"
+                    [fontIcon]="sexo.icon"
+                  ></mat-icon>
+                  {{ sexo.label }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>accessibility_new</mat-icon>
+              <mat-error *ngIf="fc.sexo.errors?.required">
+                El sexo es obligatorio
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO NACIMIENTO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
-            <label class="label-control" for="nacimiento"
-              >Fecha nacimiento</label
-            >
-            <input
-              formControlName="nacimiento"
-              name="nacimiento"
-              type="date"
-              class="form-control"
-              autocomplete="off"
-            />
+            <label for="nacimiento">Fecha de nacimiento</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                [matDatepicker]="nacimiento"
+                [min]="minNacimiento"
+                [max]="maxNacimiento"
+                name="nacimiento"
+                formControlName="nacimiento"
+                autocomplete="off"
+                placeholder="Elige una fecha"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="nacimiento"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #nacimiento></mat-datepicker>
+              <mat-error *ngIf="fc.nacimiento.errors?.required">
+                Debes seleccionar una fecha de nacimiento
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO PAIS NACIMIENTO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="paisNacimiento">País de nacimiento</label>
-            <ng-select
-              #paisNacimiento
-              [items]="paises"
-              bindValue="value"
-              bindLabel="label"
-              placeholder="Seleccionar país"
-              (change)="cambiarDepartamentos($event)"
-              formControlName="paisNacimiento"
-              name="paisNacimiento"
-              required
-            >
-            </ng-select>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                (selectionChange)="cambiarDepartamentos($event)"
+                name="paisNacimiento"
+                formControlName="paisNacimiento"
+                placeholder="Seleccionar país"
+              >
+                <mat-option *ngFor="let pais of paises" [value]="pais.value">
+                  {{ pais.label }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>language</mat-icon>
+              <mat-error *ngIf="fc.paisNacimiento.errors?.required">
+                Debes seleccionar país de nacimiento
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO DEPTO NACIMIENTO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
-            <label for="dptoNacimiento">Dpto. de nacimiento</label>
-            <ng-select
-              #dptoNacimiento
-              [items]="listaDepartamentos"
-              bindValue="departamento"
-              bindLabel="departamento"
-              placeholder="Seleccionar departamento"
-              (change)="cambiarCiudades($event)"
-              formControlName="dptoNacimiento"
-              name="dptoNacimiento"
-              required
-            >
-            </ng-select>
+            <label for="dptoNacimiento">Departamento de nacimiento</label>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                (selectionChange)="cambiarCiudades($event)"
+                name="dptoNacimiento"
+                formControlName="dptoNacimiento"
+                placeholder="Seleccionar dpto."
+              >
+                <mat-option
+                  *ngFor="let dpto of listaDepartamentos"
+                  [value]="dpto.departamento"
+                >
+                  {{ dpto.departamento }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>language</mat-icon>
+              <mat-error *ngIf="fc.dptoNacimiento.errors?.required">
+                Debes seleccionar departamento de nacimiento
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO MUNICIPIO NACIMIENTO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="municipioNacimiento">Municipio de nacimiento</label>
-            <ng-select
-              #municipioNacimiento
-              [items]="listaMunicipios"
-              bindValue="municipio"
-              bindLabel="municipio"
-              placeholder="Seleccionar municipio"
-              formControlName="municipioNacimiento"
-              name="municipioNacimiento"
-              required
-            >
-            </ng-select>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                name="municipioNacimiento"
+                formControlName="municipioNacimiento"
+                placeholder="Seleccionar municipio"
+              >
+                <mat-option
+                  *ngFor="let municipio of listaMunicipios"
+                  [value]="municipio"
+                >
+                  {{ municipio }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>language</mat-icon>
+              <mat-error *ngIf="fc.municipioNacimiento.errors?.required">
+                Debes seleccionar municipio de nacimiento
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO AUTORRECONOCIMIENTO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="autorreconocimiento">Autorreconocimiento</label>
-            <ng-select
-              #autorreconocimiento
-              [items]="reconocimientos"
-              bindValue="value"
-              bindLabel="label"
-              placeholder="Seleccionar autorreconocimiento"
-              formControlName="autorreconocimiento"
-              name="autorreconocimiento"
-              required
-            >
-            </ng-select>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                name="autorreconocimiento"
+                formControlName="autorreconocimiento"
+                placeholder="Seleccionar autorreconocimiento"
+              >
+                <mat-option
+                  *ngFor="let rec of reconocimientos"
+                  [value]="rec.value"
+                >
+                  {{ rec.label }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>perm_identity</mat-icon>
+              <mat-error *ngIf="fc.autorreconocimiento.errors?.required">
+                Debes seleccionar si tiene autorreconocimiento
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
-          <div class="form-group">
+        <!--********************** CAMPO DISCAPACIDAD **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group mb-0">
             <label for="discapacidad">Discapacidad</label>
-            <ng-select
-              #discapacidad
-              [items]="discapacidades"
-              bindValue="value"
-              bindLabel="label"
-              placeholder="Seleccionar autorreconocimiento"
-              formControlName="discapacidad"
-              name="discapacidad"
-              required
-            >
-            </ng-select>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                name="discapacidad"
+                formControlName="discapacidad"
+                placeholder="Seleccionar discapacidad"
+              >
+                <mat-option
+                  *ngFor="let disc of discapacidades"
+                  [value]="disc.value"
+                >
+                  {{ disc.label }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>accessible</mat-icon>
+              <mat-error *ngIf="fc.discapacidad.errors?.required">
+                Debes seleccionar si tiene discapacidad
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!------------------- Sección datos de ubicación ------------------->
-  <div class="card mb-3">
-    <div class="card-body">
-      <h5 class="card-title text-success">
-        <i class="fas fa-map-marked"></i> Datos de ubicación
-      </h5>
-      <div class="row">
-        <div class="col-lg-5 col-xl-4">
+  <!--**********//********** Sección datos de ubicación **********//**********-->
+  <div class="card border-0 shadow-sm mb-5 p-4">
+    <div class="card-body form-datos-ubicacion">
+      <p class="card-title">Ubicación y criterio de atención</p>
+      <p class="text-muted m-0">
+        Escribe aquí la información sobre el lugar de residencia, datos de
+        contacto y el criterio de atención al servicio
+      </p>
+      <div class="mt-4 mb-5">
+        <mat-divider></mat-divider>
+      </div>
+      <div class="row datos-ubicacion">
+        <!--********************** CAMPO DIRECCIÓN **********************-->
+        <div class="col-sm-12 col-md-7 col-xl-4">
           <div class="form-group">
-            <label for="direccion">Dirección</label>
-            <input
-              #direccion
-              formControlName="direccion"
-              name="direccion"
-              type="text"
-              class="form-control"
-              placeholder="Dirección exacta"
-              autocomplete="off"
-              required
-            />
-            <small class="form-text text-muted">
-              <b>Ejemplo rural:</b> Subiendo por vía principal casa verde a lado
-              de tienda Pepita
-            </small>
+            <label for="direccion">Dirección de la residencia</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                formControlName="direccion"
+                name="direccion"
+                autocomplete="off"
+                placeholder="ej. Subiendo por vía principal casa verde a lado de tienda Pepita"
+              />
+              <mat-icon matPrefix>place</mat-icon>
+              <mat-error *ngIf="fc.direccion.errors?.required">
+                Debes indicar la dirección de residencia
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-4 col-xl-2">
+        <!--********************** CAMPO BARRIO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
-            <label for="barrio">Barrio</label>
-            <input
-              #barrio
-              formControlName="barrio"
-              name="barrio"
-              type="text"
-              class="form-control"
-              placeholder="Barrio"
-              autocomplete="off"
-              required
-            />
+            <label for="barrio">Barrio/zona rural</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                formControlName="barrio"
+                name="barrio"
+                autocomplete="off"
+                placeholder="ej. Prados del sur"
+              />
+              <mat-icon matPrefix>map</mat-icon>
+              <mat-error *ngIf="fc.barrio.errors?.required">
+                Debes indicar el barrio o zona rural
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO TELEFONO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="telefono">Teléfono</label>
-            <input
-              #telefono
-              formControlName="telefono"
-              name="telefono"
-              type="text"
-              class="form-control"
-              placeholder="Telefono"
-              autocomplete="off"
-              required
-            />
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                formControlName="telefono"
+                name="telefono"
+                autocomplete="off"
+                placeholder="ej. 311 507 1561"
+              />
+              <mat-icon matPrefix>phone</mat-icon>
+              <mat-error *ngIf="fc.telefono.errors?.required">
+                El teléfono es obligatorio
+              </mat-error>
+              <mat-error *ngIf="fc.telefono.errors?.minlength">
+                Debe tener mínimo 7 dígitos
+              </mat-error>
+              <mat-error *ngIf="fc.telefono.errors?.maxlength">
+                Debe tener máximo 10 dígitos
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
-          <div class="form-group">
-            <label for="autorreconocimiento">Criterio de atención</label>
-            <ng-select
-              #criterio
-              [items]="criterios"
-              bindValue="value"
-              bindLabel="label"
-              placeholder="Seleccionar criterio"
-              (change)="validarCriterio($event)"
-              formControlName="criterio"
-              name="criterio"
-              required
-            >
-            </ng-select>
+        <!--********************** CAMPO CRITERIO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group mb-0">
+            <label for="criterio">Criterio de atención</label>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                name="criterio"
+                formControlName="criterio"
+                (selectionChange)="validarCriterio($event)"
+                placeholder="Seleccionar criterio"
+              >
+                <mat-option
+                  *ngFor="let criterio of criterios"
+                  [value]="criterio.value"
+                >
+                  {{ criterio.label }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>fact_check</mat-icon>
+              <mat-error *ngIf="fc.criterio.errors?.required">
+                Debes seleccionar el criterio de atención
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
-          <div class="form-group">
+        <!--********************** CAMPO DETALLE CRITERIO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group mb-0">
             <label for="infoCriterio">{{ labelInputInfoCriterio }}</label>
-            <input
-              #infoCriterio
-              formControlName="infoCriterio"
-              name="infoCriterio"
-              [attr.type]="tipoInputInfoCriterio"
-              class="form-control"
-              placeholder="Escriba"
-              autocomplete="off"
-              required
-            />
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                [attr.type]="tipoInputInfoCriterio"
+                formControlName="infoCriterio"
+                name="infoCriterio"
+                autocomplete="off"
+              />
+              <mat-icon matPrefix>done</mat-icon>
+              <mat-error *ngIf="fc.infoCriterio.errors?.required">
+                El detalle del criterio es obligatorio
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!------------------- Sección datos de acudiente ------------------->
-
-  <div class="card mb-3">
-    <div class="card-body">
-      <h5 class="card-title text-success">
-        <i class="fas fa-users mr-2"></i>Datos de responsable o acudiente
-      </h5>
-      <div class="row">
-        <div class="col-lg-3 col-xl-2">
+  <!--**********//********** Sección datos de acudiente **********//**********-->
+  <div class="card border-0 shadow-sm mb-5 p-4">
+    <div class="card-body form-datos-acudiente">
+      <p class="card-title">Información básica del acudiente</p>
+      <p class="text-muted m-0">
+        Escribe aquí la información básica personal de la persona que se hace
+        responsable del beneficiario
+      </p>
+      <div class="mt-4 mb-5">
+        <mat-divider></mat-divider>
+      </div>
+      <div class="row datos-acudiente">
+        <!--********************** CAMPO TIPO DE DOCUMENTO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="respTipoDoc">Tipo de documento</label>
-            <ng-select
-              #respTipoDoc
-              [items]="tiposDeDocumento"
-              bindValue="value"
-              bindLabel="label"
-              groupBy="group"
-              labelForId="respTipoDoc"
-              placeholder="Seleccionar tipo de documento"
-              (change)="comprobarRespSD($event)"
-              formControlName="respTipoDoc"
-              name="respTipoDoc"
-              required
-            >
-              <ng-template ng-label-tmp let-item="item">
-                <i [class]="item.icon"></i>
-                {{ item.label }}
-              </ng-template>
-            </ng-select>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                (selectionChange)="comprobarSD($event, 'respDocumento')"
+                name="respTipoDoc"
+                formControlName="respTipoDoc"
+                placeholder="Seleccionar documento"
+              >
+                <mat-optgroup
+                  *ngFor="let doc of tiposDeDocumento"
+                  [label]="doc.pais"
+                >
+                  <mat-option
+                    *ngFor="let tipoDoc of doc.documentos"
+                    [value]="tipoDoc.value"
+                  >
+                    <mat-icon
+                      matSuffix
+                      fontSet="fad"
+                      [fontIcon]="tipoDoc.icon"
+                    ></mat-icon>
+                    {{ tipoDoc.label }}
+                  </mat-option>
+                </mat-optgroup>
+              </mat-select>
+              <mat-icon matPrefix>account_box</mat-icon>
+              <mat-error *ngIf="fc.respTipoDoc.errors?.required">
+                Debes seleccionar un tipo de documento
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO NUMERO DE DOCUMENTO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
-            <label for="documento">NUIP</label>
-            <input
-              #respDocumento
-              [ngModel]="formIngreso.value.respDocumento | documento"
-              (ngModelChange)="formIngreso.value.respDocumento = $event"
-              (focusout)="buscarRespBeneficiario($event.target.value)"
-              formControlName="respDocumento"
-              name="respDocumento"
-              type="text"
-              class="form-control"
-              [ngClass]="{ 'is-valid': respExiste }"
-              placeholder="Número de NUIP"
-              autocomplete="off"
-              required
-            />
-            <div *ngIf="respExiste" class="valid-feedback">
-              Responsable existente
-            </div>
+            <label for="respDocumento">NUIP</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                [ngModel]="fv.respDocumento | documento"
+                (ngModelChange)="fv.respDocumento = $event"
+                (focusout)="buscarRespBeneficiario($event.target.value)"
+                formControlName="respDocumento"
+                name="respDocumento"
+                placeholder="Número de documento"
+              />
+              <mat-icon matPrefix>account_box</mat-icon>
+              <mat-hint
+                *ngIf="respExiste"
+                class="d-flex flex-align-center text-success"
+              >
+                Reponsable existente
+                <mat-icon style="margin: 1px 0 0 2px">check_circle</mat-icon>
+              </mat-hint>
+              <mat-error *ngIf="fc.respDocumento.errors?.required">
+                El documento es obligatorio
+              </mat-error>
+              <mat-error *ngIf="fc.respDocumento.errors?.minlength">
+                El documento debe tener mínimo 8 dígitos
+              </mat-error>
+              <mat-error *ngIf="fc.respDocumento.errors?.maxlength">
+                El documento debe tener máximo 10 dígitos
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO NOMBRE 1 **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="respNombre1">Primer nombre</label>
-            <input
-              #respNombre1
-              formControlName="respNombre1"
-              name="respNombre1"
-              type="text"
-              class="form-control"
-              placeholder="Escribe un nombre"
-              required
-            />
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                formControlName="respNombre1"
+                name="respNombre1"
+                placeholder="ej. Brayan"
+              />
+              <mat-icon matPrefix>account_box</mat-icon>
+              <mat-error *ngIf="fc.respNombre1.errors?.required">
+                El primer nombre es obligatorio
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO NOMBRE 2 **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="respNombre2">Segundo nombre</label>
-            <input
-              #respNombre2
-              formControlName="respNombre2"
-              name="respNombre2"
-              type="text"
-              class="form-control"
-              placeholder="Escribe un nombre"
-            />
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                formControlName="respNombre2"
+                name="respNombre2"
+              />
+              <mat-icon matPrefix>account_box</mat-icon>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO APELLIDO 1 **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="respApellido1">Primer apellido</label>
-            <input
-              #respApellido1
-              formControlName="respApellido1"
-              name="respApellido1"
-              type="text"
-              class="form-control"
-              placeholder="Escribe un apellido"
-              required
-            />
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                formControlName="respApellido1"
+                name="respApellido1"
+                placeholder="ej. Devia"
+              />
+              <mat-icon matPrefix>account_box</mat-icon>
+              <mat-error *ngIf="fc.respApellido1.errors?.required">
+                El primer apellido es obligatorio
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO APELLIDO 2 **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="respApellido2">Segundo apellido</label>
-            <input
-              #respApellido2
-              formControlName="respApellido2"
-              name="respApellido2"
-              type="text"
-              class="form-control"
-              placeholder="Escribe un apellido"
-            />
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                formControlName="respApellido2"
+                name="respApellido2"
+              />
+              <mat-icon matPrefix>account_box</mat-icon>
+            </mat-form-field>
           </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO SEXO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="respSexo">Sexo</label>
-            <ng-select
-              #respSexo
-              [items]="sexos"
-              bindValue="value"
-              bindLabel="label"
-              labelForId="respSexo"
-              placeholder="Seleccionar sexo"
-              formControlName="respSexo"
-              name="respSexo"
-              required
-            >
-              <ng-template ng-label-tmp let-item="item">
-                <i [class]="item.icon"></i>
-                {{ item.label }}
-              </ng-template>
-            </ng-select>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                placeholder="Seleccionar sexo"
+                name="respSexo"
+                formControlName="respSexo"
+              >
+                <mat-option *ngFor="let sexo of sexos" [value]="sexo.value">
+                  <mat-icon
+                    matSuffix
+                    fontSet="fad"
+                    [fontIcon]="sexo.icon"
+                  ></mat-icon>
+                  {{ sexo.label }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>accessibility_new</mat-icon>
+              <mat-error *ngIf="fc.respSexo.errors?.required">
+                El sexo es obligatorio
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO NACIMIENTO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
-            <label class="label-control" for="respNacimiento"
-              >Fecha nacimiento</label
-            >
-            <input
-              #respNacimiento
-              formControlName="respNacimiento"
-              name="respNacimiento"
-              id="respNacimiento"
-              type="date"
-              class="form-control"
-              autocomplete="off"
-            />
+            <label for="respNacimiento">Fecha de nacimiento</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                [matDatepicker]="respNacimiento"
+                [min]="minNacimiento"
+                [max]="maxNacimiento"
+                name="respNacimiento"
+                formControlName="respNacimiento"
+                autocomplete="off"
+                placeholder="Elige una fecha"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="respNacimiento"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #respNacimiento></mat-datepicker>
+              <mat-error *ngIf="fc.respNacimiento.errors?.required">
+                Debes seleccionar una fecha de nacimiento
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO PAIS NACIMIENTO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="respPaisNacimiento">País de nacimiento</label>
-            <ng-select
-              #respPaisNac
-              [items]="paises"
-              bindValue="value"
-              bindLabel="label"
-              labelForId="respPaisNacimiento"
-              placeholder="Seleccionar país"
-              (change)="cambiarDepartamentosResp($event)"
-              formControlName="respPaisNacimiento"
-              name="respPaisNacimiento"
-              required
-            >
-            </ng-select>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                (selectionChange)="cambiarDepartamentosResp($event)"
+                name="respPaisNacimiento"
+                formControlName="respPaisNacimiento"
+                placeholder="Seleccionar país"
+              >
+                <mat-option *ngFor="let pais of paises" [value]="pais.value">
+                  {{ pais.label }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>language</mat-icon>
+              <mat-error *ngIf="fc.respPaisNacimiento.errors?.required">
+                Debes seleccionar país de nacimiento
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO DEPTO NACIMIENTO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
-            <label for="respDptoNacimiento">Dpto. de nacimiento</label>
-            <ng-select
-              #respDptoNac
-              [items]="listaDepartamentosResp"
-              bindValue="departamento"
-              bindLabel="departamento"
-              labelForId="respDptoNacimiento"
-              placeholder="Seleccionar departamento"
-              (change)="cambiarCiudadesResp($event)"
-              formControlName="respDptoNacimiento"
-              name="respDptoNacimiento"
-              required
-            >
-            </ng-select>
+            <label for="respDptoNacimiento">Departamento de nacimiento</label>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                (selectionChange)="cambiarCiudadesResp($event)"
+                name="respDptoNacimiento"
+                formControlName="respDptoNacimiento"
+                placeholder="Seleccionar dpto."
+              >
+                <mat-option
+                  *ngFor="let dpto of listaDepartamentosResp"
+                  [value]="dpto.departamento"
+                >
+                  {{ dpto.departamento }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>language</mat-icon>
+              <mat-error *ngIf="fc.respDptoNacimiento.errors?.required">
+                Debes seleccionar departamento de nacimiento
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO MUNICIPIO NACIMIENTO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="respMunicipioNacimiento">Municipio de nacimiento</label>
-            <ng-select
-              #respMunicipioNac
-              [items]="listaMunicipiosResp"
-              bindValue="municipio"
-              bindLabel="municipio"
-              labelForId="respMunicipioNacimiento"
-              placeholder="Seleccionar municipio"
-              formControlName="respMunicipioNacimiento"
-              name="respMunicipioNacimiento"
-              required
-            >
-            </ng-select>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                name="respMunicipioNacimiento"
+                formControlName="respMunicipioNacimiento"
+                placeholder="Seleccionar municipio"
+              >
+                <mat-option
+                  *ngFor="let municipio of listaMunicipiosResp"
+                  [value]="municipio"
+                >
+                  {{ municipio }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>language</mat-icon>
+              <mat-error *ngIf="fc.respMunicipioNacimiento.errors?.required">
+                Debes seleccionar municipio de nacimiento
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
-          <div class="form-group">
-            <label for="tipoResponsable">Tipo de acudiente</label>
-            <ng-select
-              #respTipoResp
-              [items]="tipoResponsables"
-              bindValue="value"
-              bindLabel="label"
-              placeholder="Seleccionar relación"
-              formControlName="tipoResponsable"
-              name="tipoResponsable"
-              required
-            >
-            </ng-select>
+        <!--********************** CAMPO TIPO DE ACUEDIENTE **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group mb-0">
+            <label for="tipoResponsable">Relación del acudiente</label>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                name="tipoResponsable"
+                formControlName="tipoResponsable"
+                placeholder="Seleccionar relación"
+              >
+                <mat-option
+                  *ngFor="let responsable of tipoResponsables"
+                  [value]="responsable.value"
+                >
+                  {{ responsable.label }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>supervisor_account</mat-icon>
+              <mat-error *ngIf="fc.tipoResponsable.errors?.required">
+                Debes seleccionar la relación de acudiente
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!------------------- Sección UDS e Ingreso ------------------->
-  <div class="card mb-3">
-    <div class="card-body">
-      <h5 class="card-title text-success">
-        <i class="fas fa-address-book mr-2"></i>Datos de ingreso
-      </h5>
-      <div class="row">
-        <div class="col-lg-4 col-xl-2">
+  <!--**********//********** Sección datos de madre **********//**********-->
+  <div class="card border-0 shadow-sm mb-5 p-4">
+    <div class="card-body form-datos-madre">
+      <p class="card-title">Información básica de la madre del beneficiario</p>
+      <p class="text-muted m-0">
+        Escribe aquí la información básica personal de la madre del beneficiario
+      </p>
+      <div class="mt-4 mb-3">
+        <mat-divider></mat-divider>
+      </div>
+      <div class="row datos-madre">
+        <!--********************** CHECKS DE VALIDACIÓN **********************-->
+        <div class="col-12 mb-4">
+          <mat-checkbox
+            class="mr-3"
+            (change)="validarMadre()"
+            [(ngModel)]="tieneMadre"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            Tiene madre
+          </mat-checkbox>
+          <mat-checkbox
+            *ngIf="tieneMadre"
+            (change)="madreEsAcudiente()"
+            [(ngModel)]="madreEsMismoAcudiente"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            Es el mismo acudiente
+          </mat-checkbox>
+        </div>
+        <!--********************** CAMPO TIPO DE DOCUMENTO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group">
+            <label for="madreTipoDoc">Tipo de documento</label>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                (selectionChange)="comprobarSD($event, 'madreDocumento')"
+                name="madreTipoDoc"
+                formControlName="madreTipoDoc"
+                placeholder="Seleccionar documento"
+              >
+                <mat-optgroup
+                  *ngFor="let doc of tiposDeDocumento"
+                  [label]="doc.pais"
+                >
+                  <mat-option
+                    *ngFor="let tipoDoc of doc.documentos"
+                    [value]="tipoDoc.value"
+                  >
+                    <mat-icon
+                      matSuffix
+                      fontSet="fad"
+                      [fontIcon]="tipoDoc.icon"
+                    ></mat-icon>
+                    {{ tipoDoc.label }}
+                  </mat-option>
+                </mat-optgroup>
+              </mat-select>
+              <mat-icon matPrefix>account_box</mat-icon>
+              <mat-error *ngIf="fc.madreTipoDoc.errors?.required">
+                Debes seleccionar un tipo de documento
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <!--********************** CAMPO NUMERO DE DOCUMENTO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group">
+            <label for="madreDocumento">NUIP</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                [ngModel]="fv.madreDocumento | documento"
+                (ngModelChange)="fv.madreDocumento = $event"
+                (focusout)="buscarRespBeneficiario($event.target.value)"
+                formControlName="madreDocumento"
+                name="madreDocumento"
+                placeholder="Número de documento"
+              />
+              <mat-icon matPrefix>account_box</mat-icon>
+              <mat-hint
+                *ngIf="respExiste"
+                class="d-flex flex-align-center text-success"
+              >
+                Reponsable existente
+                <mat-icon style="margin: 1px 0 0 2px">check_circle</mat-icon>
+              </mat-hint>
+              <mat-error *ngIf="fc.madreDocumento.errors?.required">
+                El documento es obligatorio
+              </mat-error>
+              <mat-error *ngIf="fc.madreDocumento.errors?.minlength">
+                El documento debe tener mínimo 8 dígitos
+              </mat-error>
+              <mat-error *ngIf="fc.madreDocumento.errors?.maxlength">
+                El documento debe tener máximo 10 dígitos
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <!--********************** CAMPO NOMBRE 1 **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group">
+            <label for="madreNombre1">Primer nombre</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                formControlName="madreNombre1"
+                name="madreNombre1"
+                placeholder="ej. Brayan"
+              />
+              <mat-icon matPrefix>account_box</mat-icon>
+              <mat-error *ngIf="fc.madreNombre1.errors?.required">
+                El primer nombre es obligatorio
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <!--********************** CAMPO NOMBRE 2 **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group">
+            <label for="madreNombre2">Segundo nombre</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                formControlName="madreNombre2"
+                name="madreNombre2"
+              />
+              <mat-icon matPrefix>account_box</mat-icon>
+            </mat-form-field>
+          </div>
+        </div>
+        <!--********************** CAMPO APELLIDO 1 **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group">
+            <label for="madreApellido1">Primer apellido</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                formControlName="madreApellido1"
+                name="madreApellido1"
+                placeholder="ej. Devia"
+              />
+              <mat-icon matPrefix>account_box</mat-icon>
+              <mat-error *ngIf="fc.madreApellido1.errors?.required">
+                El primer apellido es obligatorio
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <!--********************** CAMPO APELLIDO 2 **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group">
+            <label for="madreApellido2">Segundo apellido</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                formControlName="madreApellido2"
+                name="madreApellido2"
+              />
+              <mat-icon matPrefix>account_box</mat-icon>
+            </mat-form-field>
+          </div>
+        </div>
+        <!--********************** CAMPO SEXO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group">
+            <label for="madreSexo">Sexo</label>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                placeholder="Seleccionar sexo"
+                name="madreSexo"
+                formControlName="madreSexo"
+              >
+                <mat-option *ngFor="let sexo of sexos" [value]="sexo.value">
+                  <mat-icon
+                    matSuffix
+                    fontSet="fad"
+                    [fontIcon]="sexo.icon"
+                  ></mat-icon>
+                  {{ sexo.label }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>accessibility_new</mat-icon>
+              <mat-error *ngIf="fc.madreSexo.errors?.required">
+                El sexo es obligatorio
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <!--********************** CAMPO NACIMIENTO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group">
+            <label for="madreNacimiento">Fecha de nacimiento</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                [matDatepicker]="madreNacimiento"
+                [min]="minNacimiento"
+                [max]="maxNacimiento"
+                name="madreNacimiento"
+                formControlName="madreNacimiento"
+                autocomplete="off"
+                placeholder="Elige una fecha"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="madreNacimiento"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #madreNacimiento></mat-datepicker>
+              <mat-error *ngIf="fc.madreNacimiento.errors?.required">
+                Debes seleccionar una fecha de nacimiento
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--**********//********** Sección datos de padre **********//**********-->
+  <div class="card border-0 shadow-sm mb-5 p-4">
+    <div class="card-body form-datos-padre">
+      <p class="card-title">Información básica del padre del beneficiario</p>
+      <p class="text-muted m-0">
+        Escribe aquí la información básica personal del padre del beneficiario
+      </p>
+      <div class="mt-4 mb-3">
+        <mat-divider></mat-divider>
+      </div>
+      <div class="row datos-padre">
+        <!--********************** CHECKS DE VALIDACIÓN **********************-->
+        <div class="col-12 mb-4">
+          <mat-checkbox
+            class="mr-3"
+            (change)="validarPadre()"
+            [(ngModel)]="tienePadre"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            Tiene padre
+          </mat-checkbox>
+          <mat-checkbox
+            *ngIf="tienePadre"
+            (change)="padreEsAcudiente()"
+            [(ngModel)]="padreEsMismoAcudiente"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            Es el mismo acudiente
+          </mat-checkbox>
+        </div>
+        <!--********************** CAMPO TIPO DE DOCUMENTO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group">
+            <label for="padreTipoDoc">Tipo de documento</label>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                (selectionChange)="comprobarSD($event, 'padreDocumento')"
+                name="padreTipoDoc"
+                formControlName="padreTipoDoc"
+                placeholder="Seleccionar documento"
+              >
+                <mat-optgroup
+                  *ngFor="let doc of tiposDeDocumento"
+                  [label]="doc.pais"
+                >
+                  <mat-option
+                    *ngFor="let tipoDoc of doc.documentos"
+                    [value]="tipoDoc.value"
+                  >
+                    <mat-icon
+                      matSuffix
+                      fontSet="fad"
+                      [fontIcon]="tipoDoc.icon"
+                    ></mat-icon>
+                    {{ tipoDoc.label }}
+                  </mat-option>
+                </mat-optgroup>
+              </mat-select>
+              <mat-icon matPrefix>account_box</mat-icon>
+              <mat-error *ngIf="fc.padreTipoDoc.errors?.required">
+                Debes seleccionar un tipo de documento
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <!--********************** CAMPO NUMERO DE DOCUMENTO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group">
+            <label for="padreDocumento">NUIP</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                [ngModel]="fv.padreDocumento | documento"
+                (ngModelChange)="fv.padreDocumento = $event"
+                (focusout)="buscarRespBeneficiario($event.target.value)"
+                formControlName="padreDocumento"
+                name="padreDocumento"
+                placeholder="Número de documento"
+              />
+              <mat-icon matPrefix>account_box</mat-icon>
+              <mat-hint
+                *ngIf="respExiste"
+                class="d-flex flex-align-center text-success"
+              >
+                Reponsable existente
+                <mat-icon style="margin: 1px 0 0 2px">check_circle</mat-icon>
+              </mat-hint>
+              <mat-error *ngIf="fc.padreDocumento.errors?.required">
+                El documento es obligatorio
+              </mat-error>
+              <mat-error *ngIf="fc.padreDocumento.errors?.minlength">
+                El documento debe tener mínimo 8 dígitos
+              </mat-error>
+              <mat-error *ngIf="fc.padreDocumento.errors?.maxlength">
+                El documento debe tener máximo 10 dígitos
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <!--********************** CAMPO NOMBRE 1 **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group">
+            <label for="padreNombre1">Primer nombre</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                formControlName="padreNombre1"
+                name="padreNombre1"
+                placeholder="ej. Brayan"
+              />
+              <mat-icon matPrefix>account_box</mat-icon>
+              <mat-error *ngIf="fc.padreNombre1.errors?.required">
+                El primer nombre es obligatorio
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <!--********************** CAMPO NOMBRE 2 **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group">
+            <label for="padreNombre2">Segundo nombre</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                formControlName="padreNombre2"
+                name="padreNombre2"
+              />
+              <mat-icon matPrefix>account_box</mat-icon>
+            </mat-form-field>
+          </div>
+        </div>
+        <!--********************** CAMPO APELLIDO 1 **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group">
+            <label for="padreApellido1">Primer apellido</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                formControlName="padreApellido1"
+                name="padreApellido1"
+                placeholder="ej. Devia"
+              />
+              <mat-icon matPrefix>account_box</mat-icon>
+              <mat-error *ngIf="fc.padreApellido1.errors?.required">
+                El primer apellido es obligatorio
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <!--********************** CAMPO APELLIDO 2 **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group">
+            <label for="padreApellido2">Segundo apellido</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                formControlName="padreApellido2"
+                name="padreApellido2"
+              />
+              <mat-icon matPrefix>account_box</mat-icon>
+            </mat-form-field>
+          </div>
+        </div>
+        <!--********************** CAMPO SEXO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group">
+            <label for="padreSexo">Sexo</label>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                placeholder="Seleccionar sexo"
+                name="padreSexo"
+                formControlName="padreSexo"
+              >
+                <mat-option *ngFor="let sexo of sexos" [value]="sexo.value">
+                  <mat-icon
+                    matSuffix
+                    fontSet="fad"
+                    [fontIcon]="sexo.icon"
+                  ></mat-icon>
+                  {{ sexo.label }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>accessibility_new</mat-icon>
+              <mat-error *ngIf="fc.padreSexo.errors?.required">
+                El sexo es obligatorio
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <!--********************** CAMPO NACIMIENTO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
+          <div class="form-group">
+            <label for="padreNacimiento">Fecha de nacimiento</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                [matDatepicker]="padreNacimiento"
+                [min]="minNacimiento"
+                [max]="maxNacimiento"
+                name="padreNacimiento"
+                formControlName="padreNacimiento"
+                autocomplete="off"
+                placeholder="Elige una fecha"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="padreNacimiento"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #padreNacimiento></mat-datepicker>
+              <mat-error *ngIf="fc.padreNacimiento.errors?.required">
+                Debes seleccionar una fecha de nacimiento
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--**********//********** Sección UDS e Ingreso **********//**********-->
+  <div class="card border-0 shadow-sm mb-5 p-4">
+    <div class="card-body form-datos-ingreso">
+      <p class="card-title">Ingreso</p>
+      <p class="text-muted m-0">
+        Selecciona la Unidad De Servicio dónde ingresa el beneficiario y la
+        fecha del inicio del servicio.
+      </p>
+      <div class="mt-4 mb-5">
+        <mat-divider></mat-divider>
+      </div>
+      <div class="row datos-ingreso">
+        <!--********************** CAMPO UDS **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
             <label for="udsId">Unidad De Servicio</label>
-            <ng-select
-              [items]="udsAsignadas"
-              bindValue="_id"
-              bindLabel="nombre"
-              [loading]="!udsAsignadas"
-              placeholder="Seleccionar Unidad de Servicio"
-              (change)="cambiarCodigoUds($event)"
-              formControlName="udsId"
-              name="udsId"
-              required
-            >
-            </ng-select>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                (selectionChange)="cambiarCodigoUds($event)"
+                name="udsId"
+                formControlName="udsId"
+                placeholder="Seleccionar UDS."
+              >
+                <mat-option *ngFor="let uds of udsAsignadas" [value]="uds._id">
+                  {{ uds.nombre }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>home_work</mat-icon>
+              <mat-hint>Cód. UDS: {{ codigoUdsSeleccionada }}</mat-hint>
+              <mat-error *ngIf="fc.udsId.errors?.required">
+                Debes seleccionar la UDS
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-3 col-xl-2">
-          <div class="form-group text-muted">
-            <label for="codigo">Código</label>
-            <input
-              [ngModel]="codigoUdsSeleccionada"
-              formControlName="codigo"
-              name="codigo"
-              type="text"
-              class="form-control"
-              disabled
-            />
-          </div>
-        </div>
-        <div class="col-lg-3 col-xl-2">
+        <!--********************** CAMPO FECHA DE INGRESO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
-            <label class="label-control" for="ingreso">Fecha de ingreso</label>
-            <input
-              formControlName="ingreso"
-              name="ingreso"
-              type="date"
-              class="form-control"
-              autocomplete="off"
-              required
-            />
+            <label for="ingreso">Fecha de ingreso</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                [matDatepicker]="ingreso"
+                [matDatepickerFilter]="filtroFinDeSemana"
+                [min]="minIngreso"
+                [max]="maxIngreso"
+                name="ingreso"
+                formControlName="ingreso"
+                autocomplete="off"
+                placeholder="Elige una fecha"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="ingreso"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #ingreso></mat-datepicker>
+              <mat-error *ngIf="fc.ingreso.errors?.required">
+                Debes seleccionar una fecha de ingreso
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-4 col-xl-4">
+        <!--********************** CAMPO COMENTARIO **********************-->
+        <div class="col-sm-12 col-md-8 col-xl-4">
           <div class="form-group">
-            <label for="comentario">Comentario (opcional)</label>
-            <input
-              formControlName="comentario"
-              name="comentario"
-              type="text"
-              class="form-control"
-            />
+            <label for="comentario">Cometario adicional</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                formControlName="comentario"
+                name="comentario"
+                placeholder="ej. El beneficiario no ha recibido su RC"
+              />
+              <mat-icon matPrefix>feedback</mat-icon>
+            </mat-form-field>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <!--**********//********** ACCIONES DEL FORMULARIO **********//**********-->
   <div class="row">
     <div class="col-lg-12 col-xl-12 text-right">
-      <button *ngIf="!creando" type="submit" class="btn btn-success btn-sm">
-        <i class="fas fa-user-plus mr-1"></i>
-        Reportar ingreso
-      </button>
       <button
-        *ngIf="creando"
-        [disabled]="creando"
+        (click)="limpiarFormulario()"
+        mat-button
         type="button"
-        class="btn btn-success btn-sm"
+        class="mr-2"
       >
-        <span
-          class="spinner-border spinner-border-sm"
-          role="status"
-          aria-hidden="true"
-        ></span>
-        Reportando...
+        <mat-icon>clear</mat-icon>
+        Limpiar formulario
+      </button>
+      <button mat-flat-button color="primary" type="submit">
+        <mat-icon>how_to_reg</mat-icon>
+        Reportar ingreso
       </button>
     </div>
   </div>

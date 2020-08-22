@@ -1,8 +1,14 @@
 // @import '~@ng-select/ng-select/themes/default.theme.css';
 @import '~@ng-select/ng-select/themes/material.theme.css';
-@import '~bootstrap/scss/bootstrap';
+// @import '~bootstrap/scss/bootstrap';
+@import '~bootstrap/scss/bootstrap-utilities';
 @import '~bootstrap/scss/bootstrap-reboot';
 @import '~bootstrap/scss/bootstrap-grid';
+@import '~bootstrap/scss/card';
+@import '~bootstrap/scss/alert';
+@import '~bootstrap/scss/badge';
+
+// Fonts
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 html,
@@ -117,9 +123,7 @@ button:focus {
   padding-bottom: 0;
   margin: 0;
 }
-.mat-form-field-wrapper .mat-form-field-subscript-wrapper {
-  margin-top: 2.166667em;
-}
+
 .header .search-input .mat-form-field-flex {
   min-height: 40px;
   background-color: #fff;
@@ -274,6 +278,12 @@ button:focus {
   margin-bottom: 1rem;
 }
 
+.card-header {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+}
+
 h5.card-title {
   font-family: Inter, Roboto, Arial;
   font-size: 1.3rem;
@@ -312,7 +322,77 @@ p.card-title {
   background-color: #f1f5f9;
 }
 
-// MAT-SELECT ESTILOS
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  color: #27303f;
+  font-weight: 500;
+}
+// MAT-INPUT ESTILOS (ESTE SI) ***********************************************
+.mat-form-field-wrapper .mat-form-field-subscript-wrapper {
+  position: inherit;
+}
+
+.bdm-input .mat-form-field-wrapper {
+  padding-bottom: 0;
+}
+.bdm-input .mat-form-field-wrapper .mat-form-field-prefix .mat-icon,
+.bdm-input .mat-form-field-wrapper .mat-form-field-suffix .mat-icon {
+  color: #97a6ba;
+}
+.bdm-input .mat-form-field-wrapper .mat-form-field-prefix {
+  margin-right: 8px;
+}
+.bdm-input .mat-form-field-wrapper .mat-form-field-suffix {
+  margin-left: 8px;
+}
+.bdm-input .mat-form-field-wrapper .mat-form-field-flex {
+  padding: 0 16px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.bdm-input .mat-form-field-wrapper .mat-form-field-infix {
+  border-top: 5px solid transparent;
+}
+// disabled input y select
+.bdm-input.mat-form-field-disabled .mat-form-field-outline-start,
+.bdm-input.mat-form-field-disabled .mat-form-field-outline-end,
+.bdm-select.mat-form-field-disabled .mat-form-field-outline-start,
+.bdm-select.mat-form-field-disabled .mat-form-field-outline-end {
+  background-color: aliceblue;
+}
+
+// MAT-SELECT ESTILOS (ESTE SI) ***********************************************
+.bdm-select .mat-form-field-wrapper {
+  padding-bottom: 0;
+}
+
+.bdm-select .mat-form-field-wrapper .mat-form-field-prefix .mat-icon,
+.bdm-select .mat-form-field-wrapper .mat-form-field-suffix .mat-icon {
+  color: #97a6ba;
+}
+.bdm-select .mat-form-field-wrapper .mat-form-field-prefix {
+  margin-right: 8px;
+}
+.bdm-select .mat-form-field-wrapper .mat-form-field-suffix {
+  margin-left: 8px;
+}
+
+.bdm-select .mat-form-field-wrapper .mat-form-field-flex {
+  padding: 0 16px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.bdm-select .mat-form-field-wrapper .mat-form-field-infix {
+  border-top: 5px solid transparent;
+}
+.bdm-select .mat-form-field-wrapper .mat-select-arrow-wrapper {
+  padding-top: 7px;
+}
+// ************************************************************************
+
 .select .mat-form-field-wrapper {
   padding-bottom: 0;
 }
