@@ -30,9 +30,7 @@
       </ng-template>
       <!-- TAB CONTENT -->
       <div class="page-content">
-        <div class="card">
-          <app-form-egresos [udsAsignadas]="udsAsignadas"></app-form-egresos>
-        </div>
+        <app-form-egresos [udsAsignadas]="udsAsignadas"></app-form-egresos>
       </div>
     </mat-tab>
     <mat-tab>
@@ -42,24 +40,21 @@
       </ng-template>
       <!-- TAB CONTENT -->
       <div class="page-content">
-        <div class="card">
-          <div class="alert alert-warning alert-dismissible fade show">
-            El reporte de nacimiento y/o cambio de mujer gestante debe
-            realizarse en la última o primera semana del mes vigente, esto
-            permite tener un control mensual de un ingreso nuevo para cargue de
-            acompañamientos en la plataforma SPES y talleres de formación en
-            CUÉNTAME.
-            <button
-              type="button"
-              class="close"
-              data-dismiss="alert"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <app-form-cambios [udsAsignadas]="udsAsignadas"></app-form-cambios>
+        <div class="alert alert-warning alert-dismissible fade show">
+          El reporte de nacimiento y/o cambio de mujer gestante debe realizarse
+          en la última o primera semana del mes vigente, esto permite tener un
+          control mensual de un ingreso nuevo para cargue de acompañamientos en
+          la plataforma SPES y talleres de formación en CUÉNTAME.
+          <button
+            type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
+        <app-form-cambios [udsAsignadas]="udsAsignadas"></app-form-cambios>
       </div>
     </mat-tab>
   </mat-tab-group>

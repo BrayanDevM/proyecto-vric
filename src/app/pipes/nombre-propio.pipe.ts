@@ -5,6 +5,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class NombrePropioPipe implements PipeTransform {
   transform(value: string, minusculas = true): string {
+    if (value === null) {
+      return;
+    }
     return (minusculas
       ? value.toLowerCase()
       : value

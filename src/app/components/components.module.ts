@@ -24,6 +24,7 @@ import { ApexLineChartTimeseriesComponent } from './apexchart/apex-line-chart-ti
 import { ApexLineChartMinComponent } from './apexchart/apex-line-chart-min/apex-line-chart-min.component';
 import { ApexBarChartStackedComponent } from './apexchart/apex-bar-chart-stacked/apex-bar-chart-stacked.component';
 import { AppPipesModule } from '../pipes/app-pipes.module';
+import { DialogFormIngresoComponent } from './dialogs/dialog-form-ingreso/dialog-form-ingreso.component';
 
 const components = [
   HeaderComponent,
@@ -40,7 +41,8 @@ const components = [
   ApexPieChartComponent,
   ApexLineChartMinComponent,
   ApexLineChartTimeseriesComponent,
-  ApexBarChartStackedComponent
+  ApexBarChartStackedComponent,
+  DialogFormIngresoComponent
 ];
 
 @NgModule({

@@ -1,4 +1,4 @@
-<form [formGroup]="formIngreso" (ngSubmit)="ingresarBeneficiario()">
+<form [formGroup]="formIngreso" (ngSubmit)="confirmarIngreso()">
   <!--**********//********** Sección datos básicos **********//**********-->
   <div class="card border-0 shadow-sm mb-5 p-4">
     <div class="card-body form-datos-basicos">
@@ -53,10 +53,10 @@
               <!-- <mat-label>Outline form field</mat-label> -->
               <input
                 matInput
-                [ngModel]="fv.documento | documento"
-                (ngModelChange)="fv.documento = $event"
+                [value]="fv.documento | documento"
                 formControlName="documento"
                 name="documento"
+                autocomplete="off"
                 placeholder="Número de documento"
               />
               <mat-icon matPrefix>account_box</mat-icon>
@@ -79,6 +79,7 @@
             <mat-form-field appearance="outline" class="bdm-input">
               <input
                 matInput
+                [value]="fv.nombre1 | uppercase"
                 formControlName="nombre1"
                 name="nombre1"
                 placeholder="ej. Brayan"
@@ -95,7 +96,12 @@
           <div class="form-group">
             <label for="nombre2">Segundo nombre</label>
             <mat-form-field appearance="outline" class="bdm-input">
-              <input matInput formControlName="nombre2" name="nombre2" />
+              <input
+                matInput
+                [value]="fv.nombre2 | uppercase"
+                formControlName="nombre2"
+                name="nombre2"
+              />
               <mat-icon matPrefix>account_box</mat-icon>
             </mat-form-field>
           </div>
@@ -107,6 +113,7 @@
             <mat-form-field appearance="outline" class="bdm-input">
               <input
                 matInput
+                [value]="fv.apellido1 | uppercase"
                 formControlName="apellido1"
                 name="apellido1"
                 placeholder="ej. Devia"
@@ -123,7 +130,12 @@
           <div class="form-group">
             <label for="apellido2">Segundo apellido</label>
             <mat-form-field appearance="outline" class="bdm-input">
-              <input matInput formControlName="apellido2" name="apellido2" />
+              <input
+                matInput
+                [value]="fv.apellido2 | uppercase"
+                formControlName="apellido2"
+                name="apellido2"
+              />
               <mat-icon matPrefix>account_box</mat-icon>
             </mat-form-field>
           </div>
@@ -321,6 +333,7 @@
             <mat-form-field appearance="outline" class="bdm-input">
               <input
                 matInput
+                [value]="fv.direccion | uppercase"
                 formControlName="direccion"
                 name="direccion"
                 autocomplete="off"
@@ -340,6 +353,7 @@
             <mat-form-field appearance="outline" class="bdm-input">
               <input
                 matInput
+                [value]="fv.barrio | uppercase"
                 formControlName="barrio"
                 name="barrio"
                 autocomplete="off"
@@ -478,11 +492,11 @@
             <mat-form-field appearance="outline" class="bdm-input">
               <input
                 matInput
-                [ngModel]="fv.respDocumento | documento"
-                (ngModelChange)="fv.respDocumento = $event"
+                [value]="fv.respDocumento | documento"
                 (focusout)="buscarRespBeneficiario($event.target.value)"
                 formControlName="respDocumento"
                 name="respDocumento"
+                autocomplete="off"
                 placeholder="Número de documento"
               />
               <mat-icon matPrefix>account_box</mat-icon>
@@ -791,21 +805,13 @@
             <mat-form-field appearance="outline" class="bdm-input">
               <input
                 matInput
-                [ngModel]="fv.madreDocumento | documento"
-                (ngModelChange)="fv.madreDocumento = $event"
-                (focusout)="buscarRespBeneficiario($event.target.value)"
+                [value]="fv.madreDocumento | documento"
                 formControlName="madreDocumento"
                 name="madreDocumento"
+                autocomplete="off"
                 placeholder="Número de documento"
               />
               <mat-icon matPrefix>account_box</mat-icon>
-              <mat-hint
-                *ngIf="respExiste"
-                class="d-flex flex-align-center text-success"
-              >
-                Reponsable existente
-                <mat-icon style="margin: 1px 0 0 2px">check_circle</mat-icon>
-              </mat-hint>
               <mat-error *ngIf="fc.madreDocumento.errors?.required">
                 El documento es obligatorio
               </mat-error>
@@ -825,6 +831,7 @@
             <mat-form-field appearance="outline" class="bdm-input">
               <input
                 matInput
+                [value]="fv.madreNombre1 | uppercase"
                 formControlName="madreNombre1"
                 name="madreNombre1"
                 placeholder="ej. Brayan"
@@ -843,6 +850,7 @@
             <mat-form-field appearance="outline" class="bdm-input">
               <input
                 matInput
+                [value]="fv.madreNombre2 | uppercase"
                 formControlName="madreNombre2"
                 name="madreNombre2"
               />
@@ -857,6 +865,7 @@
             <mat-form-field appearance="outline" class="bdm-input">
               <input
                 matInput
+                [value]="fv.madreApellido1 | uppercase"
                 formControlName="madreApellido1"
                 name="madreApellido1"
                 placeholder="ej. Devia"
@@ -875,6 +884,7 @@
             <mat-form-field appearance="outline" class="bdm-input">
               <input
                 matInput
+                [value]="fv.madreApellido2 | uppercase"
                 formControlName="madreApellido2"
                 name="madreApellido2"
               />
@@ -1009,21 +1019,13 @@
             <mat-form-field appearance="outline" class="bdm-input">
               <input
                 matInput
-                [ngModel]="fv.padreDocumento | documento"
-                (ngModelChange)="fv.padreDocumento = $event"
-                (focusout)="buscarRespBeneficiario($event.target.value)"
+                [value]="fv.padreDocumento | documento"
                 formControlName="padreDocumento"
                 name="padreDocumento"
+                autocomplete="off"
                 placeholder="Número de documento"
               />
               <mat-icon matPrefix>account_box</mat-icon>
-              <mat-hint
-                *ngIf="respExiste"
-                class="d-flex flex-align-center text-success"
-              >
-                Reponsable existente
-                <mat-icon style="margin: 1px 0 0 2px">check_circle</mat-icon>
-              </mat-hint>
               <mat-error *ngIf="fc.padreDocumento.errors?.required">
                 El documento es obligatorio
               </mat-error>
@@ -1043,6 +1045,7 @@
             <mat-form-field appearance="outline" class="bdm-input">
               <input
                 matInput
+                [value]="fv.padreNombre1 | uppercase"
                 formControlName="padreNombre1"
                 name="padreNombre1"
                 placeholder="ej. Brayan"
@@ -1061,6 +1064,7 @@
             <mat-form-field appearance="outline" class="bdm-input">
               <input
                 matInput
+                [value]="fv.padreNombre2 | uppercase"
                 formControlName="padreNombre2"
                 name="padreNombre2"
               />
@@ -1075,6 +1079,7 @@
             <mat-form-field appearance="outline" class="bdm-input">
               <input
                 matInput
+                [value]="fv.padreApellido1 | uppercase"
                 formControlName="padreApellido1"
                 name="padreApellido1"
                 placeholder="ej. Devia"
@@ -1093,6 +1098,7 @@
             <mat-form-field appearance="outline" class="bdm-input">
               <input
                 matInput
+                [value]="fv.padreApellido2 | uppercase"
                 formControlName="padreApellido2"
                 name="padreApellido2"
               />

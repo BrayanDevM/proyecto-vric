@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class DocumentoPipe implements PipeTransform {
   transform(documento: any): any {
     if (documento === null || documento === undefined) {
-      return;
+      return '';
     }
 
     const esExtranjero = this.comprobarDocumentoExtranjero(documento);

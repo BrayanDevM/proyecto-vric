@@ -1,22 +1,23 @@
-import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormGroupDirective
+} from '@angular/forms';
+import { Usuario } from 'src/app/models/usuario.model';
+import { Uds } from 'src/app/models/uds.model';
+import { RespBeneficiario } from 'src/app/models/respBeneficiario.model';
+import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
+import { UsuarioService } from 'src/app/services/usuario.service';
+import { RespBeneficiariosService } from 'src/app/services/resp-beneficiarios.service';
+import { DateAdapter } from '@angular/material/core';
+import { alertSuccess } from 'src/app/helpers/swal2.config';
 // Importo municipios y ciudades de Colombia
 import listaDatosColombia from 'src/app/config/colombia.json';
-import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
-import { Uds } from 'src/app/models/uds.model';
-import { UsuarioService } from 'src/app/services/usuario.service';
-import Swal from 'sweetalert2/src/sweetalert2.js';
-import { Usuario } from 'src/app/models/usuario.model';
-import { RespBeneficiario } from 'src/app/models/respBeneficiario.model';
-import { NgOption, NgSelectComponent } from '@ng-select/ng-select';
-import { RespBeneficiariosService } from 'src/app/services/resp-beneficiarios.service';
-import {
-  alertDanger,
-  alertSuccess,
-  alertConfirm
-} from 'src/app/helpers/swal2.config';
-import { DateAdapter } from '@angular/material/core';
-declare var moment: any;
+import { MatDialog } from '@angular/material/dialog';
+import { DialogFormIngresoComponent } from '../dialogs/dialog-form-ingreso/dialog-form-ingreso.component';
+declare const moment: any;
 
 @Component({
   selector: 'app-form-ingresos',
@@ -132,12 +133,15 @@ export class FormIngresosComponent implements OnInit {
   maxIngreso: Date;
   minIngreso: Date;
 
+  @ViewChild(FormGroupDirective) formGroupDirective: FormGroupDirective;
+
   constructor(
     private fb: FormBuilder,
     private usuario$: UsuarioService,
     private beneficiarios$: BeneficiariosService,
     private respBen$: RespBeneficiariosService,
-    private adaptadorFecha: DateAdapter<any>
+    private adaptadorFecha: DateAdapter<any>,
+    private dialog: MatDialog
   ) {
     // para Material
     this.adaptadorFecha.setLocale('es');
@@ -163,9 +167,9 @@ export class FormIngresosComponent implements OnInit {
           Validators.maxLength(13)
         ]
       ],
-      nombre1: [null, Validators.required],
+      nombre1: ['', Validators.required],
       nombre2: '',
-      apellido1: [null, Validators.required],
+      apellido1: ['', Validators.required],
       apellido2: '',
       sexo: [null, Validators.required],
       nacimiento: [null, Validators.required],
@@ -175,17 +179,16 @@ export class FormIngresosComponent implements OnInit {
       autorreconocimiento: [null, Validators.required],
       discapacidad: [null, Validators.required],
       infoDiscapacidad: null,
-      direccion: [null, Validators.required],
-      barrio: [null, Validators.required],
+      direccion: ['', Validators.required],
+      barrio: ['', Validators.required],
       telefono: [
-        null,
+        '',
         [Validators.required, Validators.minLength(7), Validators.maxLength(10)]
       ],
       criterio: [null, Validators.required],
       infoCriterio: [null, Validators.required],
       tipoResponsable: [null, Validators.required],
       udsId: [null, Validators.required],
-      // codigo: 'Seleccionar UDS',
       ingreso: [null, Validators.required],
       comentario: null,
       // Información de responsable
@@ -249,13 +252,14 @@ export class FormIngresosComponent implements OnInit {
   get f() {
     return this.formIngreso;
   }
-
   get fc() {
     return this.formIngreso.controls;
   }
-
   get fv() {
     return this.formIngreso.value;
+  }
+  get frv() {
+    return this.formIngreso.getRawValue();
   }
 
   filtroFinDeSemana = (d: Date | null): boolean => {
@@ -297,8 +301,6 @@ export class FormIngresosComponent implements OnInit {
   }
 
   cambiarCiudades(departamento: any) {
-    console.log(departamento, 'dep');
-
     if (departamento === undefined) {
       return;
     }
@@ -316,7 +318,7 @@ export class FormIngresosComponent implements OnInit {
           (data: any) => data.departamento === departamento.value
         );
         this.listaMunicipios = this.listaDepartamentos[i].ciudades;
-        console.log(this.listaMunicipios, 'lista mun');
+        // console.log(this.listaMunicipios, 'lista mun');
       }
     } else {
       if (departamento === 'Extranjero') {
@@ -327,29 +329,9 @@ export class FormIngresosComponent implements OnInit {
           (data: any) => data.departamento === departamento.trim()
         );
         this.listaMunicipios = this.listaDepartamentos[i].ciudades;
-        console.log(this.listaMunicipios, 'lista mun');
+        // console.log(this.listaMunicipios, 'lista mun');
       }
     }
-  }
-
-  comprobarSD($event: any, campo: string) {
-    if ($event.value === 'SD') {
-      const documentoAleatorio = this.generarDocumento(13);
-      this.f.get(campo).patchValue(documentoAleatorio);
-    } else {
-      this.f.get(campo).patchValue(null);
-    }
-  }
-  generarDocumento(longitud: number) {
-    let resultado = '';
-    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    const caracteresLength = caracteres.length;
-    for (let i = 0; i < longitud; i++) {
-      resultado += caracteres.charAt(
-        Math.floor(Math.random() * caracteresLength)
-      );
-    }
-    return resultado;
   }
 
   cambiarDepartamentosResp(pais: any) {
@@ -398,6 +380,26 @@ export class FormIngresosComponent implements OnInit {
     }
   }
 
+  comprobarSD($event: any, campo: string) {
+    if ($event.value === 'SD') {
+      const documentoAleatorio = this.generarDocumento(13);
+      this.f.get(campo).patchValue(documentoAleatorio);
+    } else {
+      this.f.get(campo).patchValue('');
+    }
+  }
+  generarDocumento(longitud: number) {
+    let resultado = '';
+    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const caracteresLength = caracteres.length;
+    for (let i = 0; i < longitud; i++) {
+      resultado += caracteres.charAt(
+        Math.floor(Math.random() * caracteresLength)
+      );
+    }
+    return resultado;
+  }
+
   validarCriterio($event: any) {
     if ($event.value === 'Sisbén') {
       this.tipoInputInfoCriterio = 'numeric';
@@ -422,6 +424,15 @@ export class FormIngresosComponent implements OnInit {
       this.f.get('madreNacimiento').enable();
       this.f.get('madreSexo').enable();
     } else {
+      this.madreEsMismoAcudiente = false;
+      this.f.get('madreTipoDoc').patchValue(null);
+      this.f.get('madreDocumento').patchValue(null);
+      this.f.get('madreNombre1').patchValue(null);
+      this.f.get('madreNombre2').patchValue('');
+      this.f.get('madreApellido1').patchValue(null);
+      this.f.get('madreApellido2').patchValue('');
+      this.f.get('madreNacimiento').patchValue(null);
+      this.f.get('madreSexo').patchValue(null);
       this.f.get('madreTipoDoc').disable();
       this.f.get('madreDocumento').disable();
       this.f.get('madreNombre1').disable();
@@ -434,16 +445,18 @@ export class FormIngresosComponent implements OnInit {
   }
 
   madreEsAcudiente() {
-    this.padreEsMismoAcudiente = false;
     if (this.madreEsMismoAcudiente) {
-      this.f.get('madreTipoDoc').patchValue(this.fv.respTipoDoc);
-      this.f.get('madreDocumento').patchValue(this.fv.respDocumento);
-      this.f.get('madreNombre1').patchValue(this.fv.respNombre1);
-      this.f.get('madreNombre2').patchValue(this.fv.respNombre2);
-      this.f.get('madreApellido1').patchValue(this.fv.respApellido1);
-      this.f.get('madreApellido2').patchValue(this.fv.respApellido2);
-      this.f.get('madreNacimiento').patchValue(this.fv.respNacimiento);
-      this.f.get('madreSexo').patchValue(this.fv.respSexo);
+      this.padreEsMismoAcudiente = false;
+      this.padreEsAcudiente();
+
+      this.f.get('madreTipoDoc').patchValue(this.frv.respTipoDoc);
+      this.f.get('madreDocumento').patchValue(this.frv.respDocumento);
+      this.f.get('madreNombre1').patchValue(this.frv.respNombre1);
+      this.f.get('madreNombre2').patchValue(this.frv.respNombre2);
+      this.f.get('madreApellido1').patchValue(this.frv.respApellido1);
+      this.f.get('madreApellido2').patchValue(this.frv.respApellido2);
+      this.f.get('madreNacimiento').patchValue(this.frv.respNacimiento);
+      this.f.get('madreSexo').patchValue(this.frv.respSexo);
     } else {
       this.f.get('madreTipoDoc').patchValue(null);
       this.f.get('madreDocumento').patchValue(null);
@@ -467,6 +480,15 @@ export class FormIngresosComponent implements OnInit {
       this.f.get('padreNacimiento').enable();
       this.f.get('padreSexo').enable();
     } else {
+      this.padreEsMismoAcudiente = false;
+      this.f.get('padreTipoDoc').patchValue(null);
+      this.f.get('padreDocumento').patchValue(null);
+      this.f.get('padreNombre1').patchValue(null);
+      this.f.get('padreNombre2').patchValue('');
+      this.f.get('padreApellido1').patchValue(null);
+      this.f.get('padreApellido2').patchValue('');
+      this.f.get('padreNacimiento').patchValue(null);
+      this.f.get('padreSexo').patchValue(null);
       this.f.get('padreTipoDoc').disable();
       this.f.get('padreDocumento').disable();
       this.f.get('padreNombre1').disable();
@@ -479,16 +501,18 @@ export class FormIngresosComponent implements OnInit {
   }
 
   padreEsAcudiente() {
-    this.madreEsMismoAcudiente = false;
     if (this.padreEsMismoAcudiente) {
-      this.f.get('padreTipoDoc').patchValue(this.fv.respTipoDoc);
-      this.f.get('padreDocumento').patchValue(this.fv.respDocumento);
-      this.f.get('padreNombre1').patchValue(this.fv.respNombre1);
-      this.f.get('padreNombre2').patchValue(this.fv.respNombre2);
-      this.f.get('padreApellido1').patchValue(this.fv.respApellido1);
-      this.f.get('padreApellido2').patchValue(this.fv.respApellido2);
-      this.f.get('padreNacimiento').patchValue(this.fv.respNacimiento);
-      this.f.get('padreSexo').patchValue(this.fv.respSexo);
+      this.madreEsMismoAcudiente = false;
+      this.madreEsAcudiente();
+
+      this.f.get('padreTipoDoc').patchValue(this.frv.respTipoDoc);
+      this.f.get('padreDocumento').patchValue(this.frv.respDocumento);
+      this.f.get('padreNombre1').patchValue(this.frv.respNombre1);
+      this.f.get('padreNombre2').patchValue(this.frv.respNombre2);
+      this.f.get('padreApellido1').patchValue(this.frv.respApellido1);
+      this.f.get('padreApellido2').patchValue(this.frv.respApellido2);
+      this.f.get('padreNacimiento').patchValue(this.frv.respNacimiento);
+      this.f.get('padreSexo').patchValue(this.frv.respSexo);
     } else {
       this.f.get('padreTipoDoc').patchValue(null);
       this.f.get('padreDocumento').patchValue(null);
@@ -501,87 +525,82 @@ export class FormIngresosComponent implements OnInit {
     }
   }
 
-  cambiarCodigoUds($event: any) {
-    if ($event === undefined) {
-      return;
-    }
-    this.formIngreso.value.codigo = $event.value;
-    const index = this.udsAsignadas.findIndex(
-      (unidad: Uds) => unidad._id === $event.value
-    );
-    this.codigoUdsSeleccionada = this.udsAsignadas[index].codigo;
-  }
-
   buscarRespBeneficiario(documento: string) {
     if (documento === '') {
       this.despejarCamposResponsable();
       this.respExiste = false;
       return;
     }
-    this.ultResponsableBuscado = documento;
-    this.respBen$
-      .obtenerResponsables(`documento=${documento}`)
-      .subscribe((resp: any) => {
-        if (resp.ok) {
-          // console.log(resp);
-          if (resp.respBeneficiarios.length > 0) {
-            const responsable: RespBeneficiario = resp.respBeneficiarios[0];
-            this.respExiste = true;
+    if (this.ultResponsableBuscado === documento) {
+      return;
+    } else {
+      this.ultResponsableBuscado = documento;
+      this.respBen$
+        .obtenerResponsables(`documento=${documento}`)
+        .subscribe((resp: any) => {
+          if (resp.ok) {
+            // console.log(resp);
+            if (resp.respBeneficiarios.length > 0) {
+              const responsable: RespBeneficiario = resp.respBeneficiarios[0];
+              this.respExiste = true;
 
-            this.f.get('respTipoDoc').patchValue(responsable.tipoDoc);
-            this.f.get('respTipoDoc').disable();
+              this.f.get('respTipoDoc').patchValue(responsable.tipoDoc);
+              this.f.get('respTipoDoc').disable();
 
-            this.f.get('respNombre1').patchValue(responsable.nombre1);
-            this.f.get('respNombre1').disable();
+              this.f.get('respNombre1').patchValue(responsable.nombre1);
+              this.f.get('respNombre1').disable();
 
-            this.f.get('respNombre2').patchValue(responsable.nombre2);
-            this.f.get('respNombre2').disable();
+              this.f.get('respNombre2').patchValue(responsable.nombre2);
+              this.f.get('respNombre2').disable();
 
-            this.f.get('respApellido1').patchValue(responsable.apellido1);
-            this.f.get('respApellido1').disable();
+              this.f.get('respApellido1').patchValue(responsable.apellido1);
+              this.f.get('respApellido1').disable();
 
-            this.f.get('respApellido2').patchValue(responsable.apellido2);
-            this.f.get('respApellido2').disable();
+              this.f.get('respApellido2').patchValue(responsable.apellido2);
+              this.f.get('respApellido2').disable();
 
-            this.f
-              .get('respNacimiento')
-              .patchValue(
-                new Date(moment(responsable.nacimiento, 'DD/MM/YYYY'))
-              );
+              this.f
+                .get('respNacimiento')
+                .patchValue(
+                  new Date(moment(responsable.nacimiento, 'DD/MM/YYYY'))
+                );
 
-            this.f.get('respNacimiento').disable();
+              this.f.get('respNacimiento').disable();
 
-            this.f.get('respSexo').patchValue(responsable.sexo);
-            this.f.get('respSexo').disable();
+              this.f.get('respSexo').patchValue(responsable.sexo);
+              this.f.get('respSexo').disable();
 
-            this.f
-              .get('respPaisNacimiento')
-              .patchValue(responsable.paisNacimiento);
-            this.f.get('respPaisNacimiento').disable();
-            this.cambiarDepartamentosResp(responsable.paisNacimiento);
+              this.f
+                .get('respPaisNacimiento')
+                .patchValue(responsable.paisNacimiento);
+              this.f.get('respPaisNacimiento').disable();
+              this.cambiarDepartamentosResp(responsable.paisNacimiento);
 
-            this.f
-              .get('respDptoNacimiento')
-              .patchValue(responsable.dptoNacimiento);
-            this.f.get('respDptoNacimiento').disable();
-            this.cambiarCiudadesResp(responsable.dptoNacimiento);
+              this.f
+                .get('respDptoNacimiento')
+                .patchValue(responsable.dptoNacimiento);
+              this.f.get('respDptoNacimiento').disable();
+              this.cambiarCiudadesResp(responsable.dptoNacimiento);
 
-            this.f
-              .get('respMunicipioNacimiento')
-              .patchValue(responsable.municipioNacimiento);
-            this.f.get('respMunicipioNacimiento').disable();
+              this.f
+                .get('respMunicipioNacimiento')
+                .patchValue(responsable.municipioNacimiento);
+              this.f.get('respMunicipioNacimiento').disable();
+            } else {
+              this.respExiste = false;
+              this.despejarCamposResponsable();
+            }
           } else {
             this.respExiste = false;
             // this.despejarCamposResponsable();
           }
-        } else {
-          this.respExiste = false;
-          // this.despejarCamposResponsable();
-        }
-      });
+        });
+    }
   }
-
   despejarCamposResponsable() {
+    // this.f.get('respTipoDoc').patchValue(null);
+    this.f.get('respTipoDoc').enable();
+
     this.f.get('respNombre1').patchValue(null);
     this.f.get('respNombre1').enable();
 
@@ -596,9 +615,6 @@ export class FormIngresosComponent implements OnInit {
 
     this.f.get('respNacimiento').patchValue(null);
     this.f.get('respNacimiento').enable();
-
-    this.f.get('respTipoDoc').patchValue(null);
-    this.f.get('respTipoDoc').enable();
 
     this.f.get('respSexo').patchValue(null);
     this.f.get('respSexo').enable();
@@ -615,66 +631,96 @@ export class FormIngresosComponent implements OnInit {
     this.f.get('respMunicipioNacimiento').enable();
   }
 
-  formatearFechas() {
-    this.formIngreso.value.fecha = moment().format('DD/MM/YYYY');
-    this.formIngreso.value.nacimiento = moment(
-      this.formIngreso.value.nacimiento,
-      'YYYY-MM-DD'
-    ).format('DD/MM/YYYY');
-    this.formIngreso.value.respNacimiento = moment(
-      this.formIngreso.value.nacimiento,
-      'YYYY-MM-DD'
-    ).format('DD/MM/YYYY');
-    this.formIngreso.value.ingreso = moment(
-      this.formIngreso.value.ingreso,
-      'YYYY-MM-DD'
-    ).format('DD/MM/YYYY');
+  cambiarCodigoUds($event: any) {
+    if ($event === undefined) {
+      return;
+    }
+    this.formIngreso.value.codigo = $event.value;
+    const index = this.udsAsignadas.findIndex(
+      (unidad: Uds) => unidad._id === $event.value
+    );
+    this.codigoUdsSeleccionada = this.udsAsignadas[index].codigo;
   }
 
   limpiarFormulario() {
     this.formIngreso.reset();
   }
 
-  ingresarBeneficiario() {
+  procesarFormulario() {
+    return new Promise((resolve, reject) => {
+      // formateo fechas
+      this.fv.ingreso = moment(this.fv.ingreso).format('DD/MM/YYYY');
+      this.fv.nacimiento = moment(this.fv.nacimiento).format('DD/MM/YYYY');
+      this.fv.fecha = moment().format('DD/MM/YYYY');
+
+      // obtengo valores de padre si estan deshabilitadas
+      this.fv.respTipoDoc = this.frv.respTipoDoc;
+      this.fv.respDocumento = this.frv.respDocumento;
+      this.fv.respNombre1 = this.frv.respNombre1;
+      this.fv.respNombre2 = this.frv.respNombre2;
+      this.fv.respApellido1 = this.frv.respApellido1;
+      this.fv.respApellido2 = this.frv.respApellido2;
+      this.fv.respSexo = this.frv.respSexo;
+      this.fv.respNacimiento = moment(this.frv.respNacimiento).format(
+        'DD/MM/YYYY'
+      );
+      this.fv.respPaisNacimiento = this.frv.respPaisNacimiento;
+      this.fv.respDptoNacimiento = this.frv.respDptoNacimiento;
+      this.fv.respMunicipioNacimiento = this.frv.respMunicipioNacimiento;
+
+      // obtengo valores de padres si existen
+      if (this.fv.padreNacimiento) {
+        this.fv.padreNacimiento = moment(this.fv.padreNacimiento).format(
+          'DD/MM/YYYY'
+        );
+      }
+      if (this.fv.madreNacimiento) {
+        this.fv.madreNacimiento = moment(this.fv.madreNacimiento).format(
+          'DD/MM/YYYY'
+        );
+      }
+      resolve(true);
+    });
+  }
+
+  dialogConfirmar(form: FormGroup): void {
+    const confirmar = this.dialog.open(DialogFormIngresoComponent, {
+      width: '480px',
+      data: form
+    });
+    confirmar.afterClosed().subscribe(confirmacion => {
+      this.ingresarBeneficiario(confirmacion);
+    });
+  }
+
+  confirmarIngreso() {
     if (this.formIngreso.invalid) {
       this.formIngreso.markAllAsTouched();
       return;
     }
-    this.formatearFechas();
-    alertConfirm
-      .fire({
-        title: 'Novedades',
-        html: `<span>Deseas reportar al beneficiario:</span>
-        <ul class="mt-2">
-          <li>
-            ${this.formIngreso.value.nombre1}
-            ${this.formIngreso.value.nombre2}
-            ${this.formIngreso.value.apellido1}
-            ${this.formIngreso.value.apellido2}
-          </li>
-          <li>${this.formIngreso.value.tipoDoc}: ${this.formIngreso.value.documento}</li>
-          <li>Nacimiento: ${this.formIngreso.value.nacimiento}</li>
-        </ul>
-      `,
-        confirmButtonText: 'Sí, reportar ingreso'
-      })
-      .then((result: any) => {
-        if (result.value) {
-          // this.creando = true;
-          this.beneficiarios$
-            .crearBeneficiario(this.formIngreso.value)
-            .subscribe((resp: any) => {
-              if (resp.ok) {
-                // this.creando = false;
-                this.formIngreso.reset();
-                alertSuccess.fire({
-                  title: 'Beneficiario reportado'
-                });
-              } else {
-                // this.creando = false;
-              }
-            });
-        }
-      });
+    this.dialogConfirmar(this.formIngreso);
+  }
+
+  async ingresarBeneficiario(confirmaIngreso: boolean) {
+    if (confirmaIngreso) {
+      const formularioProcesado = await this.procesarFormulario();
+      if (formularioProcesado) {
+        this.beneficiarios$
+          .crearBeneficiario(this.formIngreso.value)
+          .subscribe((resp: any) => {
+            if (resp.ok) {
+              alertSuccess.fire('Beneficiario reportado');
+              // reseteamos el formulario
+              this.padreEsMismoAcudiente = false;
+              this.madreEsMismoAcudiente = false;
+              this.tieneMadre = true;
+              this.tienePadre = true;
+              this.respExiste = false;
+              this.formIngreso.enable();
+              this.formGroupDirective.resetForm();
+            }
+          });
+      }
+    }
   }
 }

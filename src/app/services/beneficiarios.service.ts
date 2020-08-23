@@ -59,32 +59,7 @@ export class BeneficiariosService {
   }
 
   crearBeneficiario(form: any) {
-    return this.http.post(this.API_URL + `?token=${this.token}`, form).pipe(
-      map((resp: any) => {
-        if (resp.ok === true) {
-          Swal.fire({
-            title: 'Reportar ingreso',
-            html: `El beneficiario fue reportado correctamente`,
-            icon: 'success'
-          });
-          return resp;
-        }
-      }),
-      catchError(err => {
-        console.log(err);
-        if (err.status === 400) {
-          if (err.error.error.message === undefined) {
-            err.error.error.message = '';
-          }
-          Swal.fire({
-            title: 'Reportar ingreso',
-            html: `${err.error.mensaje}.</br>${err.error.error.message} `,
-            icon: 'error'
-          });
-        }
-        return throwError(err);
-      })
-    );
+    return this.http.post(this.API_URL + `?token=${this.token}`, form);
     // El bakcend toma cada uno y los crea en su respectiva colección
   }
 
