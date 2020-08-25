@@ -311,28 +311,35 @@ export class DashboardComponent implements OnInit {
     const estado = beneficiario.estado;
 
     if (
-      (edadMeses <= 6 && estado === 'Vinculado') ||
-      (edadMeses <= 6 && estado === 'Dato sensible') ||
-      (edadMeses <= 6 && estado === 'Pendiente desvincular')
+      (edadMeses < 6 && estado === 'Vinculado') ||
+      (edadMeses < 6 && estado === 'Dato sensible') ||
+      (edadMeses < 6 && estado === 'Pendiente desvincular')
     ) {
       this.totalLactantes += 1;
       // console.log(beneficiario);
     }
     if (
-      (edadMeses >= 7 && edadMeses <= 60 && estado === 'Vinculado') ||
-      (edadMeses >= 7 && edadMeses <= 60 && estado === 'Dato sensible') ||
-      (edadMeses >= 7 && edadMeses <= 60 && estado === 'Pendiente desvincular')
+      (edadMeses >= 6 && edadMeses <= 120 && estado === 'Vinculado') ||
+      (edadMeses >= 6 && edadMeses <= 120 && estado === 'Dato sensible') ||
+      (edadMeses >= 6 && edadMeses <= 120 && estado === 'Pendiente desvincular')
     ) {
+      // 120 meses (10 años)
       this.totalMayoresSeisMeses += 1;
       // console.log(beneficiario);
     }
     if (
-      (edadMeses > 60 && estado === 'Vinculado') ||
-      (edadMeses > 60 && estado === 'Dato sensible') ||
-      (edadMeses > 60 && estado === 'Pendiente desvincular')
+      (edadMeses > 120 && estado === 'Vinculado') ||
+      (edadMeses > 120 && estado === 'Dato sensible') ||
+      (edadMeses > 120 && estado === 'Pendiente desvincular')
     ) {
       this.totalMG += 1;
-      // console.log(beneficiario);
+      console.log(
+        beneficiario.nacimiento,
+        beneficiario.tipoDoc,
+        '-',
+        estado,
+        '<-MG'
+      );
     }
   }
   contarSexo(beneficiario: Beneficiario) {
