@@ -30,7 +30,6 @@
                     [value]="tipoDoc.value"
                   >
                     <mat-icon
-                      matSuffix
                       fontSet="fad"
                       [fontIcon]="tipoDoc.icon"
                     ></mat-icon>
@@ -751,6 +750,7 @@
             (change)="validarMadre()"
             [(ngModel)]="tieneMadre"
             [ngModelOptions]="{ standalone: true }"
+            color="primary"
           >
             Tiene madre
           </mat-checkbox>
@@ -759,6 +759,7 @@
             (change)="madreEsAcudiente()"
             [(ngModel)]="madreEsMismoAcudiente"
             [ngModelOptions]="{ standalone: true }"
+            color="primary"
           >
             Es el mismo acudiente
           </mat-checkbox>
@@ -965,6 +966,7 @@
             (change)="validarPadre()"
             [(ngModel)]="tienePadre"
             [ngModelOptions]="{ standalone: true }"
+            color="primary"
           >
             Tiene padre
           </mat-checkbox>
@@ -973,6 +975,7 @@
             (change)="padreEsAcudiente()"
             [(ngModel)]="padreEsMismoAcudiente"
             [ngModelOptions]="{ standalone: true }"
+            color="primary"
           >
             Es el mismo acudiente
           </mat-checkbox>

@@ -20,6 +20,7 @@ import {
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { Config } from 'src/app/config/config';
 
 @Component({
   selector: 'app-contrato',
@@ -27,12 +28,11 @@ import { filter, map } from 'rxjs/operators';
   styleUrls: ['./contrato.component.css']
 })
 export class ContratoComponent implements OnInit {
-  // datos ng-select -----------------------------
-  estadoContrato: NgOption[] = [
-    { value: true, label: 'Activo' },
-    { value: false, label: 'Inactivo' }
-  ];
-  // ----------------------------------------------
+  // selects
+  estadoContrato: any[] = Config.SELECTS.centrosZonales;
+  centrosZonales: any[] = Config.SELECTS.centrosZonales;
+  regionales: any[] = Config.SELECTS.regionalesICBF;
+
   contrato: Contrato;
   // Arreglo de uds enContrato = contrato._id || null
   udsDisponibles: Uds[] = [];
@@ -55,7 +55,7 @@ export class ContratoComponent implements OnInit {
     private router: Router
   ) {
     this.formActualizarContrato = this.fb.group({
-      codigo: [null, Validators.required],
+      codigo: [null, [Validators.required, Validators.pattern('^[0-9]*$')]],
       cupos: [null, Validators.required],
       regional: [null, Validators.required],
       cz: [null, Validators.required],
@@ -82,6 +82,9 @@ export class ContratoComponent implements OnInit {
 
   get fv() {
     return this.formActualizarContrato.value;
+  }
+  get fc() {
+    return this.formActualizarContrato.controls;
   }
 
   ngOnInit() {}
@@ -157,13 +160,13 @@ export class ContratoComponent implements OnInit {
   agregarUdsContrato(event: any) {
     // obtengo datos de la Unidad en arreglo
     const UdsSeleccionada: any = this.udsDisponibles.find(
-      (unidad: Uds) => unidad._id === event._id
+      (unidad: Uds) => unidad._id === event.value
     );
     const i = this.udsDisponibles.findIndex(
-      (unidad: Uds) => unidad._id === event._id
+      (unidad: Uds) => unidad._id === event.value
     );
     // Agrego id a selección
-    this.IdUdsSeleccionadas.push(event._id);
+    this.IdUdsSeleccionadas.push(event.value);
     // Agrego datos de UDS para mostrar
     this.udsEnContrato.unshift(UdsSeleccionada);
     // Elimino de las disponibles
@@ -240,9 +243,7 @@ export class ContratoComponent implements OnInit {
         this.actualizarForm(resp.contratoActualizado);
         this.obtenerUdsDisponibles(resp.contratoActualizado._id);
         this.editMode = false;
-        alertSuccess.fire({
-          title: 'Contrato actualizado'
-        });
+        alertSuccess.fire('Contrato actualizado');
       } else {
         this.editMode = false;
       }
@@ -260,9 +261,7 @@ export class ContratoComponent implements OnInit {
         if (result.value) {
           this.contratos$.eliminarContrato(contrato).subscribe((resp: any) => {
             if (resp.ok) {
-              alertSuccess.fire({
-                title: 'Contrato eliminado'
-              });
+              alertSuccess.fire('Contrato eliminado');
               this.contratos$.contratoEliminado$.emit(contrato._id);
               this.router.navigate(['/contratos']);
             } else {

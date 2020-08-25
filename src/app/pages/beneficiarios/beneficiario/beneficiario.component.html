@@ -20,7 +20,7 @@
   </mat-menu>
   <div *ngIf="edicionRapida" class="dialog-actions-edit">
     <button
-      (click)="edicionRapida = false"
+      (click)="cancelarEdicionRapida()"
       mat-icon-button
       matTooltip="Cancelar"
     >
@@ -114,12 +114,18 @@
               <mat-select
                 #selectEstado
                 [(ngModel)]="data.estado"
+                (selectionChange)="obtenerIconoEstado()"
                 placeholder="Seleccionar estado"
               >
                 <mat-option
                   *ngFor="let estado of estados"
                   [value]="estado.value"
                 >
+                  <mat-icon
+                    fontSet="fas"
+                    fontIcon="fa-circle"
+                    [class]="estado.iconColor"
+                  ></mat-icon>
                   {{ estado.label }}
                 </mat-option>
               </mat-select>

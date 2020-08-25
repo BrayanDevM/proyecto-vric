@@ -11,6 +11,16 @@
 // Fonts
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
+:root {
+  // text
+  --text-dark-1: #303030;
+  --text-dark-2: #2b2b2b;
+  --text-dark-3: #1f1f1f;
+  --text-dark-4: #1b1c1e;
+  // color
+  --color-warn: #f44236;
+}
+
 html,
 body {
   height: 100%;
@@ -667,30 +677,35 @@ p.card-title {
 }
 
 .swal2-icon-error .swal2-icon.swal2-error [class^='swal2-x-mark-line'] {
-  top: 0.6125em;
   width: 1em;
   height: 0.1125em;
 }
 
-.swal2-icon-error .swal2-header .swal2-icon .swal2-x-mark-line-left {
-  left: 0.2625em !important;
-}
+.swal2-icon-error .swal2-header .swal2-icon .swal2-x-mark-line-left,
 .swal2-icon-error .swal2-header .swal2-icon .swal2-x-mark-line-right {
-  right: 0.2625em !important;
+  position: absolute;
+  top: 0;
+  left: 0 !important;
+  bottom: 0;
+  right: 0 !important;
+  margin: auto;
 }
 
 .swal2-icon-warning .swal2-header .swal2-icon > .swal2-icon-content,
 .swal2-icon-error .swal2-header .swal2-icon > .swal2-icon-content {
-  display: flex;
-  align-items: center;
+  // display: flex;
+  // align-items: center;
   font-size: 1.35em;
+  margin-left: 1px;
 }
 
-.swal2-icon-warning .swal2-title,
-.swal2-icon-error .swal2-title {
+.swal2-icon-warning .swal2-header h2.swal2-title,
+.swal2-icon-error .swal2-header h2.swal2-title {
+  margin-bottom: 0;
+  font-family: Inter, Roboto, Arial, Helvetica, sans-serif !important;
   font-weight: 500;
   font-size: 1.5rem;
-  margin-bottom: 0;
+  color: var(--text-dark-2);
 }
 
 .swal2-icon-warning .swal2-content,
@@ -711,18 +726,27 @@ p.card-title {
 }
 
 .swal2-icon-warning .swal2-header .swal2-icon,
-.swal2-icon-error .swal2-header .swal2-title {
-  color: #dc3546;
-  border-color: #dc3546;
+.swal2-icon-error .swal2-header .swal2-icon {
+  color: var(--color-warn);
+  border-color: var(--color-warn);
 }
 
 .swal2-icon-success .swal2-header .swal2-icon {
   margin: 0.8rem 0;
 }
 
+.swal2-popup .swal2-icon.swal2-success [class^='swal2-success-line'] {
+  background-color: #008f82;
+}
+.swal2-popup .swal2-icon.swal2-success .swal2-success-ring {
+  border: 0.25em solid rgb(0 143 130 / 0.3);
+}
+
 .swal2-icon-success .swal2-title {
+  font-family: Inter, Roboto, Arial, Helvetica, sans-serif;
   font-weight: 300;
   margin-bottom: 0.5rem;
+  color: var(--text-dark-2);
 }
 /************************* FIN ESTILOS SweetAlert2 **********************************/
 /************************************************************************************/

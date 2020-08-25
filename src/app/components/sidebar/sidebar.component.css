@@ -117,8 +117,10 @@
 }
 
 .sidebar .navigation-group .navigation-title-wrapper .navigation-group-title {
-  color: #8da2fb;
+  /* color: #8da2fb; */
+  color: #00bfa5;
   text-transform: uppercase;
+  font-weight: 600;
 }
 
 .sidebar
@@ -127,6 +129,7 @@
   .navigation-group-subtitle {
   color: #64748b;
   font-weight: 100;
+  font-size: 0.857rem;
 }
 
 .sidebar .navigation-group .navigation-item .navigation-link:hover {

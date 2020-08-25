@@ -45,8 +45,16 @@ const routes: Routes = [
     component: ContratosComponent,
     canActivate: [SupervisorGuard, VerificaTokenGuard],
     children: [
-      { path: 'contrato/:id', component: ContratoComponent },
-      { path: 'crear', component: CrearContratoComponent }
+      {
+        path: 'contrato/:id',
+        component: ContratoComponent,
+        data: { nombrePagina: 'Ver contrato' }
+      },
+      {
+        path: 'crear',
+        component: CrearContratoComponent,
+        data: { nombrePagina: 'Crear contrato' }
+      }
     ],
     data: { nombrePagina: 'Contratos' }
   },
@@ -55,8 +63,16 @@ const routes: Routes = [
     component: UdsComponent,
     canActivate: [SupervisorGuard, VerificaTokenGuard],
     children: [
-      { path: 'unidad/:id', component: UnidadComponent },
-      { path: 'crear', component: CrearUdsComponent }
+      {
+        path: 'unidad/:id',
+        component: UnidadComponent,
+        data: { nombrePagina: 'Ver UDS' }
+      },
+      {
+        path: 'crear',
+        component: CrearUdsComponent,
+        data: { nombrePagina: 'Crear UDS' }
+      }
     ],
     data: { nombrePagina: 'Unidades De Servicio' }
   },
@@ -65,8 +81,16 @@ const routes: Routes = [
     component: UsuariosComponent,
     canActivate: [AdminGuard, VerificaTokenGuard],
     children: [
-      { path: 'usuario/:id', component: UsuarioComponent },
-      { path: 'crear', component: CrearUsuarioComponent }
+      {
+        path: 'usuario/:id',
+        component: UsuarioComponent,
+        data: { nombrePagina: 'Ver usuario' }
+      },
+      {
+        path: 'crear',
+        component: CrearUsuarioComponent,
+        data: { nombrePagina: 'Crear usuario' }
+      }
     ],
     data: { nombrePagina: 'Usuarios' }
   },

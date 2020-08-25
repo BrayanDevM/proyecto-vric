@@ -4,7 +4,6 @@ import { UsuarioService } from 'src/app/services/usuario.service';
 import { ContratosService } from 'src/app/services/contratos.service';
 import { Contrato } from 'src/app/models/contrato.model';
 import { Usuario } from 'src/app/models/usuario.model';
-import { NgOption } from '@ng-select/ng-select';
 import {
   alertError,
   alertSuccess,
@@ -22,27 +21,38 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./usuario.component.css']
 })
 export class UsuarioComponent implements OnInit {
+  roles: any[] = [
+    {
+      value: 'ADMIN',
+      label: 'Administrador',
+      icon: 'fa-user',
+      iconColor: 'text-danger'
+    },
+    {
+      value: 'GESTOR',
+      label: 'Gestor',
+      icon: 'fa-user',
+      iconColor: 'text-primary'
+    },
+    {
+      value: 'COORDINADOR',
+      label: 'Coordinador',
+      icon: 'fa-user',
+      iconColor: 'text-info'
+    },
+    {
+      value: 'DOCENTE',
+      label: 'Docente',
+      icon: 'fa-user',
+      iconColor: 'text-secondary'
+    }
+  ];
   usuario: Usuario;
   contratosDisponibles: Contrato[] = [];
   contratosAsignados: Contrato[] = [];
   formActualizarUsuario: FormGroup;
   editMode = false;
   hide = true;
-  // data ng-select
-  roles: NgOption = [
-    {
-      value: 'ADMIN',
-      label: 'Administrador',
-      icon: 'fas fa-user-shield text-danger'
-    },
-    { value: 'GESTOR', label: 'Gestor', icon: 'fas fa-user text-success' },
-    {
-      value: 'COORDINADOR',
-      label: 'Coordinador',
-      icon: 'fas fa-user text-primary'
-    },
-    { value: 'DOCENTE', label: 'Docente', icon: 'fas fa-user text-secondary' }
-  ];
 
   constructor(
     private contrato$: ContratosService,
@@ -124,10 +134,7 @@ export class UsuarioComponent implements OnInit {
 
     this.usuarios$.actualizarUsuario(this.usuario).subscribe((resp: any) => {
       if (resp.ok) {
-        alertSuccess.fire({
-          title: 'Usuario',
-          html: `Usuario ${this.usuario.nombre} actualizado correctamente`
-        });
+        alertSuccess.fire('Usuario actualizado');
         this.usuarios$.usuarioActualizado$.emit(resp.usuarioActualizado);
         this.editMode = false;
       } else {
@@ -158,6 +165,7 @@ export class UsuarioComponent implements OnInit {
             .eliminarUsuario(this.usuario)
             .subscribe((resp: any) => {
               if (resp.ok) {
+                alertSuccess.fire('Usuario eliminado');
                 this.usuarios$.usuarioEliminado$.emit(this.usuario._id);
                 this.volver();
               }

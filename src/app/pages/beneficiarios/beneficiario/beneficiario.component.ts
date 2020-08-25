@@ -1,11 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Inject,
-  ViewChild,
-  ElementRef,
-  NgZone
-} from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, NgZone } from '@angular/core';
 import { Beneficiario } from 'src/app/models/beneficiario.model';
 import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -15,6 +8,7 @@ import { take } from 'rxjs/operators';
 import { alertDanger } from 'src/app/helpers/swal2.config';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { Router } from '@angular/router';
+import { Config } from 'src/app/config/config';
 
 @Component({
   selector: 'app-beneficiario',
@@ -23,14 +17,10 @@ import { Router } from '@angular/router';
 })
 export class BeneficiarioComponent implements OnInit {
   // variables de configuración
-  estados = [
-    { value: 'Pendiente vincular', label: 'Pendiente vincular' },
-    { value: 'Pendiente desvincular', label: 'Pendiente desvincular' },
-    // { value: 'Vinculado', label: 'Vinculado' },
-    { value: 'Dato sensible', label: 'Dato sensible' },
-    { value: 'Concurrencia', label: 'Concurrencia' },
-    { value: 'Desvinculado', label: 'Desvinculado' }
-  ];
+  estados = Config.SELECTS.estadosBeneficiarios;
+  estadoData: any;
+  estadoInicial: string;
+
   puedeEditar = false;
   edicionRapida = false;
   editandoComentario = false;
@@ -49,12 +39,26 @@ export class BeneficiarioComponent implements OnInit {
     private ngZone: NgZone
   ) {
     this.comentario = this.data.comentario;
+    this.estadoInicial = this.data.estado;
+    this.obtenerIconoEstado();
+
     if (
       this.usuario$.usuario.rol === 'GESTOR' ||
       this.usuario$.usuario.rol === 'ADMIN'
     ) {
       this.puedeEditar = true;
     }
+  }
+
+  obtenerIconoEstado() {
+    this.estadoData = this.estados.find(
+      estado => estado.value === this.data.estado
+    );
+  }
+
+  cancelarEdicionRapida() {
+    this.edicionRapida = false;
+    this.data.estado = this.estadoInicial;
   }
 
   triggerResize() {

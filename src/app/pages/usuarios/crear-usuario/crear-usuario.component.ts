@@ -1,14 +1,16 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormGroupDirective
+} from '@angular/forms';
 import { ContratosService } from 'src/app/services/contratos.service';
 import { Contrato } from 'src/app/models/contrato.model';
-import { UdsService } from 'src/app/services/uds.service';
-import Swal from 'sweetalert2/src/sweetalert2.js';
 import { UsuarioService } from 'src/app/services/usuario.service';
-import { NgOption } from '@ng-select/ng-select';
-import { alertConfirm } from 'src/app/helpers/swal2.config';
 import { Router } from '@angular/router';
-declare var moment: any;
+import { alertSuccess } from 'src/app/helpers/swal2.config';
+declare const moment: any;
 
 @Component({
   selector: 'app-crear-usuario',
@@ -16,20 +18,31 @@ declare var moment: any;
   styleUrls: ['./crear-usuario.component.css']
 })
 export class CrearUsuarioComponent implements OnInit {
-  // data ng-select
-  roles: NgOption = [
+  roles: any[] = [
     {
       value: 'ADMIN',
       label: 'Administrador',
-      icon: 'fas fa-user-shield text-danger'
+      icon: 'fa-user',
+      iconColor: 'text-danger'
     },
-    { value: 'GESTOR', label: 'Gestor', icon: 'fas fa-user text-success' },
+    {
+      value: 'GESTOR',
+      label: 'Gestor',
+      icon: 'fa-user',
+      iconColor: 'text-primary'
+    },
     {
       value: 'COORDINADOR',
       label: 'Coordinador',
-      icon: 'fas fa-user text-primary'
+      icon: 'fa-user',
+      iconColor: 'text-info'
     },
-    { value: 'DOCENTE', label: 'Docente', icon: 'fas fa-user text-secondary' }
+    {
+      value: 'DOCENTE',
+      label: 'Docente',
+      icon: 'fa-user',
+      iconColor: 'text-secondary'
+    }
   ];
   // ---------------------
   formUsuario: FormGroup;
@@ -39,6 +52,8 @@ export class CrearUsuarioComponent implements OnInit {
   verPassword = 'password';
   correoExiste = false;
   hide = true;
+
+  @ViewChild(FormGroupDirective) formGroupDirective: FormGroupDirective;
 
   @ViewChild('password', { static: true }) iPasword: ElementRef;
 
@@ -86,21 +101,14 @@ export class CrearUsuarioComponent implements OnInit {
       return;
     }
     this.formUsuario.value.creadoEl = moment().format('YYYY-MM-DD');
-    alertConfirm
-      .fire({
-        title: 'Usuarios',
-        html: `¿Estas seguro de crear al usuario ${this.formUsuario.value.nombre}?`,
-        confirmButtonText: 'Crear usuario'
-      })
-      .then((result: any) => {
-        if (result.value) {
-          this.creandoUsuario = true;
-          this.usuarios$
-            .crearUsuario(this.formUsuario.value)
-            .subscribe((resp: any) => {
-              this.usuarios$.usuarioNuevo$.emit(resp.usuarioCreado);
-              this.formUsuario.reset();
-            });
+
+    this.usuarios$
+      .crearUsuario(this.formUsuario.value)
+      .subscribe((resp: any) => {
+        if (resp.ok) {
+          alertSuccess.fire('Usuario creado');
+          this.usuarios$.usuarioNuevo$.emit(resp.usuarioCreado);
+          this.formGroupDirective.resetForm();
         }
       });
   }

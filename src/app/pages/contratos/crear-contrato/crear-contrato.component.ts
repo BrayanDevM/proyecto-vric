@@ -1,13 +1,24 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  ViewChild
+} from '@angular/core';
 import { Contrato } from 'src/app/models/contrato.model';
 import { Uds } from 'src/app/models/uds.model';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormGroupDirective
+} from '@angular/forms';
 import { ContratosService } from 'src/app/services/contratos.service';
 import { UdsService } from 'src/app/services/uds.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
-import { NgOption } from '@ng-select/ng-select';
 import { alertSuccess, alertError } from 'src/app/helpers/swal2.config';
 import { Router } from '@angular/router';
+import { Config } from 'src/app/config/config';
 declare var moment: any;
 
 @Component({
@@ -16,12 +27,11 @@ declare var moment: any;
   styleUrls: ['./crear-contrato.component.css']
 })
 export class CrearContratoComponent implements OnInit {
-  // datos ng-select -----------------------------
-  estadoContrato: NgOption[] = [
-    { value: true, label: 'Activo' },
-    { value: false, label: 'Inactivo' }
-  ];
-  // ----------------------------------------------
+  // datos select
+  estadoContrato: any[] = Config.SELECTS.centrosZonales;
+  centrosZonales: any[] = Config.SELECTS.centrosZonales;
+  regionales: any[] = Config.SELECTS.regionalesICBF;
+
   contrato: Contrato;
   // Arreglo de uds enContrato = null
   udsDisponibles: Uds[] = [];
@@ -31,8 +41,10 @@ export class CrearContratoComponent implements OnInit {
   udsEnContrato: Uds[] = [];
   cargandoUdsDisponibles = false;
   formContrato: FormGroup;
-  creando = false;
+
   @Output() nuevoContrato: EventEmitter<any> = new EventEmitter();
+
+  @ViewChild(FormGroupDirective) formGroupDirective: FormGroupDirective;
 
   constructor(
     public contrato$: ContratosService,
@@ -42,7 +54,7 @@ export class CrearContratoComponent implements OnInit {
     private router: Router
   ) {
     this.formContrato = this.fb.group({
-      codigo: [null, Validators.required],
+      codigo: [null, [Validators.required, Validators.pattern('^[0-9]*$')]],
       cupos: [null, Validators.required],
       regional: [null, Validators.required],
       cz: [null, Validators.required],
@@ -54,6 +66,9 @@ export class CrearContratoComponent implements OnInit {
 
   get fv() {
     return this.formContrato.value;
+  }
+  get fc() {
+    return this.formContrato.controls;
   }
 
   ngOnInit() {
@@ -79,14 +94,14 @@ export class CrearContratoComponent implements OnInit {
   agregarUdsContrato(event: any) {
     // obtengo datos de la Unidad en arreglo
     const UdsSeleccionada = this.udsDisponibles.find(
-      (unidad: Uds) => unidad._id === event._id
+      (unidad: Uds) => unidad._id === event.value
     );
     // obtenfo indice de la Unidad en arreglo
     const i = this.udsDisponibles.findIndex(
-      (unidad: any) => unidad._id === event._id
+      (unidad: any) => unidad._id === event.value
     );
     // Agrego id a selección
-    this.IdUdsSeleccionadas.push(event._id);
+    this.IdUdsSeleccionadas.push(event.value);
     // Agrego datos de UDS para mostrar
     this.udsEnContrato.unshift(UdsSeleccionada);
     // Elimino de las disponibles
@@ -111,9 +126,8 @@ export class CrearContratoComponent implements OnInit {
   }
 
   crearContrato() {
-    this.creando = true;
     if (this.formContrato.invalid) {
-      this.creando = false;
+      this.formContrato.markAllAsTouched();
       return;
     }
     // Guardo datos en nueva variable, así no reemplaza las UDS en this.contrato para visualizar
@@ -131,20 +145,16 @@ export class CrearContratoComponent implements OnInit {
     );
     this.contrato$.crearContrato(contrato).subscribe((resp: any) => {
       if (resp.ok) {
-        alertSuccess.fire({
-          title: 'Contrato creado'
-        });
-        this.creando = false;
+        alertSuccess.fire('Contrato creado');
         this.contrato$.contratoNuevo$.emit(resp.contratoCreado);
-        // this.formContrato.reset();
-        this.router.navigate(['/contratos']);
-        // this.router.navigate(['contratos', { outlets: { contrato: [resp.contratoCreado._id] } }]);
+        this.formGroupDirective.resetForm();
+        this.udsEnContrato = [];
+        // this.router.navigate(['/contratos']);
       } else {
         alertError.fire({
           title: 'Crear contrato',
           text: 'No se ha podido crear el contrato, intentalo nuevamente'
         });
-        this.creando = false;
       }
     });
   }

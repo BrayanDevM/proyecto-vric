@@ -1,9 +1,8 @@
 <h2 mat-dialog-title>Confirmación de ingreso</h2>
 <mat-dialog-content>
   <p>
-    Por favor, confirma que los siguientes datos están escritos correctamente,
-    si por alguna razón los datos se encuentran mal escritos podría resultar en
-    un Dato Sensible de urgencia.
+    Confirmas que los siguientes datos están escritos correctamente, en caso de
+    error podría resultar en un <b>Dato Sensible</b>.
   </p>
   <mat-list>
     <div mat-subheader>Beneficiario</div>
@@ -43,6 +42,11 @@
       <mat-icon mat-list-icon>account_box</mat-icon>
       <div mat-line>{{ form.respTipoDoc }}: {{ form.respDocumento }}</div>
       <div mat-line class="text-muted">Documento de identidad</div>
+    </mat-list-item>
+    <mat-list-item>
+      <mat-icon mat-list-icon>cake</mat-icon>
+      <div mat-line>{{ nacimientoResp }}</div>
+      <div mat-line class="text-muted">Fecha de nacimiento</div>
     </mat-list-item>
   </mat-list>
 </mat-dialog-content>

@@ -1,10 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Usuario } from 'src/app/models/usuario.model';
 import { Uds } from 'src/app/models/uds.model';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormGroupDirective
+} from '@angular/forms';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { UdsService } from 'src/app/services/uds.service';
-import { NgOption } from '@ng-select/ng-select';
 import { alertSuccess } from 'src/app/helpers/swal2.config';
 import { Router } from '@angular/router';
 declare function moment(): any;
@@ -15,16 +19,15 @@ declare function moment(): any;
   styleUrls: ['./crear-uds.component.css']
 })
 export class CrearUdsComponent implements OnInit {
-  // ------------------------
   uds: Uds;
-  coordinadores: Usuario[];
-  cargandoCoords = false;
-  gestores: Usuario[];
-  cargandoGestores = false;
-  docentes: Usuario[];
-  cargandoDocentes = false;
+  coordinadores: Usuario[] = [];
+  gestores: Usuario[] = [];
+  docentes: Usuario[] = [];
+  docentesSeleccionadas: any[] = [];
   docentesEnUds: [string, string];
   formCrearUds: FormGroup;
+
+  @ViewChild(FormGroupDirective) formGroupDirective: FormGroupDirective;
 
   constructor(
     private usuarios$: UsuarioService,
@@ -34,20 +37,26 @@ export class CrearUdsComponent implements OnInit {
   ) {
     // Intancio nuevo formulario
     this.formCrearUds = this.fb.group({
-      codigo: [null, Validators.required],
       nombre: [null, [Validators.required, Validators.minLength(5)]],
-      cupos: null,
-      ubicacion: null,
-      coordinador: null,
-      gestor: null,
-      docentes: null,
+      codigo: [null, [Validators.required, Validators.pattern('^[0-9]*$')]],
+      cupos: [null, Validators.required],
+      ubicacion: [null, Validators.required],
+      coordinador: [null, Validators.required],
+      gestor: [null, Validators.required],
+      docentes: [null, Validators.required],
       creadoEl: null,
       arriendo: null
     });
   }
 
+  get f() {
+    return this.formCrearUds;
+  }
   get fv() {
     return this.formCrearUds.value;
+  }
+  get fc() {
+    return this.formCrearUds.controls;
   }
 
   ngOnInit() {
@@ -57,67 +66,52 @@ export class CrearUdsComponent implements OnInit {
     this.obtenerGestores();
   }
 
+  maxTwoSelected() {
+    if (this.fv.docentes.length < 3) {
+      this.docentesSeleccionadas = this.fv.docentes;
+    } else {
+      this.f.get('docentes').patchValue(this.docentesSeleccionadas);
+    }
+  }
+
   cancelar() {
     this.router.navigate(['/unidades-de-servicio']);
   }
 
   obtenerDocentes() {
-    this.cargandoDocentes = true;
-    this.usuarios$.obtenerUsuarios().subscribe((resp: any) => {
-      if (resp.ok) {
-        const arreglo = [];
-        resp.usuarios.forEach((usuario: Usuario) => {
-          if (usuario.rol === 'DOCENTE') {
-            arreglo.push(usuario);
-          }
-        });
-        this.docentes = arreglo;
-        this.cargandoDocentes = false;
-      } else {
-        this.cargandoDocentes = false;
-      }
+    this.usuarios$.obtenerUsuarios().subscribe((docentes: Usuario[]) => {
+      const arreglo = [];
+      docentes.forEach((usuario: Usuario) => {
+        if (usuario.rol === 'DOCENTE') {
+          arreglo.push(usuario);
+        }
+      });
+      this.docentes = arreglo;
     });
   }
 
   obtenerCoordinadores() {
-    this.cargandoCoords = true;
-    this.usuarios$.obtenerUsuarios().subscribe((resp: any) => {
-      if (resp.ok) {
-        const arreglo = [];
-        resp.usuarios.forEach((usuario: Usuario) => {
-          if (usuario.rol === 'COORDINADOR') {
-            arreglo.push(usuario);
-          }
-        });
-        this.coordinadores = arreglo;
-        this.cargandoCoords = false;
-      } else {
-        this.cargandoCoords = false;
-      }
+    this.usuarios$.obtenerUsuarios().subscribe((coords: Usuario[]) => {
+      const arreglo = [];
+      coords.forEach((usuario: Usuario) => {
+        if (usuario.rol === 'COORDINADOR') {
+          arreglo.push(usuario);
+        }
+      });
+      this.coordinadores = arreglo;
     });
   }
 
   obtenerGestores() {
-    this.cargandoGestores = true;
-    this.usuarios$.obtenerUsuarios().subscribe((resp: any) => {
-      if (resp.ok) {
-        const arreglo = [];
-        resp.usuarios.forEach((usuario: Usuario) => {
-          if (usuario.rol === 'ADMIN') {
-            arreglo.push(usuario);
-          }
-        });
-        this.gestores = arreglo;
-        this.cargandoGestores = false;
-      } else {
-        this.cargandoGestores = false;
-      }
+    this.usuarios$.obtenerUsuarios().subscribe((gestores: Usuario[]) => {
+      const arreglo = [];
+      gestores.forEach((usuario: Usuario) => {
+        if (usuario.rol === 'ADMIN') {
+          arreglo.push(usuario);
+        }
+      });
+      this.gestores = arreglo;
     });
-  }
-
-  // Conveniente para acceder rápidamente a las validaciones
-  get f() {
-    return this.formCrearUds.controls;
   }
 
   crear() {
@@ -141,10 +135,8 @@ export class CrearUdsComponent implements OnInit {
     this.uds$.crearUds(this.uds).subscribe((resp: any) => {
       if (resp.ok) {
         this.uds$.udsNueva$.emit(resp.udsCreada);
-        alertSuccess.fire({
-          title: 'Unidad de Servicio creada'
-        });
-        this.formCrearUds.reset();
+        alertSuccess.fire('Unidad De Servicio creada');
+        this.formGroupDirective.resetForm();
       }
     });
   }

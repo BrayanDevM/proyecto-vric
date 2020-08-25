@@ -147,7 +147,7 @@ export class BeneficiariosComponent implements OnInit, OnDestroy {
       this.udsSeleccionada = null;
       return;
     } else if (params.hasOwnProperty('udsId')) {
-      console.log('envió uds: ' + params.udsId);
+      // console.log('envió uds: ' + params.udsId);
       this.udsSeleccionada = params.udsId;
       this.estadoSeleccionado = null;
       return;

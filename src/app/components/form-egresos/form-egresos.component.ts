@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import {
   FormGroup,
   FormBuilder,
@@ -55,7 +55,7 @@ export class FormEgresosComponent implements OnInit {
   formEgreso: FormGroup;
   usuario: Usuario;
   @Input() udsAsignadas: Uds[];
-  beneficiarios: Beneficiario[];
+  beneficiarios: Beneficiario[] = [];
   cargandoBeneficiarios = false;
   beneficiarioEgreso: Beneficiario;
 
@@ -75,7 +75,7 @@ export class FormEgresosComponent implements OnInit {
     const anioActual = new Date().getFullYear();
     const mesActual = new Date().getMonth();
 
-    this.minEgreso = new Date(anioActual, mesActual, 1); // mes vigente
+    this.minEgreso = new Date(anioActual, mesActual - 1, 1); // mes vigente
     this.maxEgreso = new Date(moment()); // Hoy
 
     this.formEgreso = this.fb.group({

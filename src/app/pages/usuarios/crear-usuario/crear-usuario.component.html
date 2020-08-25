@@ -85,35 +85,41 @@
       <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
         >supervisor_account</mat-icon
       >
-      <ng-select
-        [items]="roles"
-        bindValue="value"
-        bindLabel="label"
-        [searchable]="false"
-        placeholder="Establecer rol"
-        name="rol"
-        formControlName="rol"
-      >
-        <ng-template ng-label-tmp let-item="item">
-          <i [class]="item.icon"></i>
-          {{ item.label }}
-        </ng-template>
-      </ng-select>
+      <mat-form-field appearance="outline" class="bdm-select">
+        <mat-select
+          placeholder="Establecer rol"
+          name="rol"
+          formControlName="rol"
+        >
+          <mat-option *ngFor="let rol of roles" [value]="rol.value">
+            <mat-icon
+              fontSet="fas"
+              [fontIcon]="rol.icon"
+              [class]="rol.iconColor"
+            ></mat-icon>
+            {{ rol.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
     <div class="form-field contratos">
       <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
         >book</mat-icon
       >
-      <ng-select
-        [items]="contratosDisponibles"
-        bindValue="_id"
-        bindLabel="codigo"
-        [searchable]="false"
-        [multiple]="true"
-        placeholder="Seleccionar contrato"
-        name="contratos"
-        formControlName="contratos"
-      ></ng-select>
+      <mat-form-field appearance="outline" class="bdm-select">
+        <mat-select
+          name="contratos"
+          formControlName="contratos"
+          placeholder="Asignar contratos"
+          multiple
+        >
+          <mat-option
+            *ngFor="let contrato of contratosDisponibles"
+            [value]="contrato._id"
+            >{{ contrato.codigo }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
     </div>
     <div class="form-field password">
       <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"

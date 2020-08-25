@@ -137,6 +137,12 @@
             name="codigo"
             placeholder="Código de contrato"
           />
+          <mat-error *ngIf="fc.codigo.errors?.required">
+            Código es obligatorio
+          </mat-error>
+          <mat-error *ngIf="fc.codigo.errors?.pattern">
+            Sólo puedes introducir números
+          </mat-error>
         </mat-form-field>
       </div>
       <div class="activo form-field mt-4">
@@ -149,23 +155,35 @@
         <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
           >place</mat-icon
         >
-        <mat-form-field appearance="outline">
-          <mat-label>Regional ICBF</mat-label>
-          <input
-            matInput
+        <mat-form-field appearance="outline" class="ml-2">
+          <mat-label>Regional IBCF</mat-label>
+          <mat-select
             formControlName="regional"
             name="regional"
-            placeholder="Departamento..."
-          />
+            placeholder="Regional"
+          >
+            <mat-option
+              *ngFor="let regional of regionales"
+              [value]="regional.value"
+            >
+              {{ regional.label }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="fc.regional.errors?.required">
+            Regional es obligatorio
+          </mat-error>
         </mat-form-field>
+        <!--  -->
         <mat-form-field appearance="outline" class="ml-2">
-          <mat-label>Centro Zonal</mat-label>
-          <input
-            matInput
-            formControlName="cz"
-            name="cz"
-            placeholder="Centro zonal..."
-          />
+          <mat-label>Centro zonal</mat-label>
+          <mat-select formControlName="cz" name="cz" placeholder="Centro zonal">
+            <mat-option *ngFor="let cz of centrosZonales" [value]="cz.value">
+              {{ cz.label }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="fc.cz.errors?.required">
+            Centro zonal es obligatorio
+          </mat-error>
         </mat-form-field>
       </div>
       <div class="form-field eas">
@@ -180,6 +198,9 @@
             name="eas"
             placeholder="Entidad Administradora de Servicios..."
           />
+          <mat-error *ngIf="fc.eas.errors?.required">
+            Entidad Administradora es obligatoria
+          </mat-error>
         </mat-form-field>
       </div>
       <div class="form-field nit">
@@ -194,6 +215,9 @@
             name="nit"
             placeholder="NIT..."
           />
+          <mat-error *ngIf="fc.nit.errors?.required">
+            El NIT es obligatorio
+          </mat-error>
         </mat-form-field>
       </div>
       <div class="form-field cupos">
@@ -209,6 +233,9 @@
             name="cupos"
             placeholder="Cupos asignados..."
           />
+          <mat-error *ngIf="fc.cupos.errors?.required">
+            Debes asignar cupos al contrato
+          </mat-error>
         </mat-form-field>
       </div>
       <div class="form-field uds">
@@ -218,15 +245,19 @@
         <div class="label">Unidades De Servicio (UDS)</div>
       </div>
       <div class="form-field agregar-uds mt-1">
-        <ng-select
-          #udsDisp
-          [items]="udsDisponibles"
-          bindLabel="nombre"
-          bindValue="_id"
-          placeholder="Asignar UDS disponible"
-          [loading]="cargandoUdsDisponibles"
-          (change)="agregarUdsContrato($event)"
-        ></ng-select>
+        <mat-form-field appearance="outline" class="bdm-select">
+          <mat-select
+            (selectionChange)="agregarUdsContrato($event)"
+            placeholder="Asignar UDS disponible"
+          >
+            <mat-option *ngFor="let uds of udsDisponibles" [value]="uds._id">
+              {{ uds.nombre }}
+            </mat-option>
+          </mat-select>
+          <mat-hint *ngIf="udsDisponibles.length === 0"
+            >No hay UDS disponibles</mat-hint
+          >
+        </mat-form-field>
       </div>
       <div class="list-uds">
         <mat-divider></mat-divider>

@@ -143,7 +143,7 @@ export class FormIngresosComponent implements OnInit {
     private adaptadorFecha: DateAdapter<any>,
     private dialog: MatDialog
   ) {
-    // para Material
+    // para Material Datetime-Picker
     this.adaptadorFecha.setLocale('es');
     const anioActual = new Date().getFullYear();
     const mesActual = new Date().getMonth();
@@ -242,6 +242,7 @@ export class FormIngresosComponent implements OnInit {
       padreApellido2: null,
       padreSexo: [null, Validators.required],
       padreNacimiento: [null, Validators.required],
+      // otro
       fecha: null,
       estado: 'Pendiente vincular'
     });
@@ -635,7 +636,6 @@ export class FormIngresosComponent implements OnInit {
     if ($event === undefined) {
       return;
     }
-    this.formIngreso.value.codigo = $event.value;
     const index = this.udsAsignadas.findIndex(
       (unidad: Uds) => unidad._id === $event.value
     );
@@ -647,45 +647,41 @@ export class FormIngresosComponent implements OnInit {
   }
 
   procesarFormulario() {
-    return new Promise((resolve, reject) => {
+    this.formIngreso.patchValue({
       // formateo fechas
-      this.fv.ingreso = moment(this.fv.ingreso).format('DD/MM/YYYY');
-      this.fv.nacimiento = moment(this.fv.nacimiento).format('DD/MM/YYYY');
-      this.fv.fecha = moment().format('DD/MM/YYYY');
-
+      ingreso: moment(this.fv.ingreso).format('DD/MM/YYYY'),
+      nacimiento: moment(this.fv.nacimiento).format('DD/MM/YYYY'),
+      fecha: moment().format('DD/MM/YYYY'),
       // obtengo valores de padre si estan deshabilitadas
-      this.fv.respTipoDoc = this.frv.respTipoDoc;
-      this.fv.respDocumento = this.frv.respDocumento;
-      this.fv.respNombre1 = this.frv.respNombre1;
-      this.fv.respNombre2 = this.frv.respNombre2;
-      this.fv.respApellido1 = this.frv.respApellido1;
-      this.fv.respApellido2 = this.frv.respApellido2;
-      this.fv.respSexo = this.frv.respSexo;
-      this.fv.respNacimiento = moment(this.frv.respNacimiento).format(
-        'DD/MM/YYYY'
-      );
-      this.fv.respPaisNacimiento = this.frv.respPaisNacimiento;
-      this.fv.respDptoNacimiento = this.frv.respDptoNacimiento;
-      this.fv.respMunicipioNacimiento = this.frv.respMunicipioNacimiento;
-
-      // obtengo valores de padres si existen
-      if (this.fv.padreNacimiento) {
-        this.fv.padreNacimiento = moment(this.fv.padreNacimiento).format(
-          'DD/MM/YYYY'
-        );
-      }
-      if (this.fv.madreNacimiento) {
-        this.fv.madreNacimiento = moment(this.fv.madreNacimiento).format(
-          'DD/MM/YYYY'
-        );
-      }
-      resolve(true);
+      respTipoDoc: this.frv.respTipoDoc,
+      respDocumento: this.frv.respDocumento,
+      respNombre1: this.frv.respNombre1,
+      respNombre2: this.frv.respNombre2,
+      respApellido1: this.frv.respApellido1,
+      respApellido2: this.frv.respApellido2,
+      respSexo: this.frv.respSexo,
+      respNacimiento: moment(this.frv.respNacimiento).format('DD/MM/YYYY'),
+      respPaisNacimiento: this.frv.respPaisNacimiento,
+      respDptoNacimiento: this.frv.respDptoNacimiento,
+      respMunicipioNacimiento: this.frv.respMunicipioNacimiento
     });
+
+    // obtengo valores de padres si existen
+    if (this.fv.padreNacimiento) {
+      this.formIngreso.patchValue({
+        padreNacimiento: moment(this.fv.padreNacimiento).format('DD/MM/YYYY')
+      });
+    }
+    if (this.fv.madreNacimiento) {
+      this.formIngreso.patchValue({
+        madreNacimiento: moment(this.fv.madreNacimiento).format('DD/MM/YYYY')
+      });
+    }
   }
 
   dialogConfirmar(form: FormGroup): void {
     const confirmar = this.dialog.open(DialogFormIngresoComponent, {
-      width: '480px',
+      width: '516px',
       data: form
     });
     confirmar.afterClosed().subscribe(confirmacion => {
@@ -701,26 +697,24 @@ export class FormIngresosComponent implements OnInit {
     this.dialogConfirmar(this.formIngreso);
   }
 
-  async ingresarBeneficiario(confirmaIngreso: boolean) {
+  ingresarBeneficiario(confirmaIngreso: boolean) {
     if (confirmaIngreso) {
-      const formularioProcesado = await this.procesarFormulario();
-      if (formularioProcesado) {
-        this.beneficiarios$
-          .crearBeneficiario(this.formIngreso.value)
-          .subscribe((resp: any) => {
-            if (resp.ok) {
-              alertSuccess.fire('Beneficiario reportado');
-              // reseteamos el formulario
-              this.padreEsMismoAcudiente = false;
-              this.madreEsMismoAcudiente = false;
-              this.tieneMadre = true;
-              this.tienePadre = true;
-              this.respExiste = false;
-              this.formIngreso.enable();
-              this.formGroupDirective.resetForm();
-            }
-          });
-      }
+      this.procesarFormulario();
+      this.beneficiarios$
+        .crearBeneficiario(this.formIngreso.value)
+        .subscribe((resp: any) => {
+          if (resp.ok) {
+            alertSuccess.fire('Beneficiario reportado');
+            // reseteamos el formulario
+            this.padreEsMismoAcudiente = false;
+            this.madreEsMismoAcudiente = false;
+            this.tieneMadre = true;
+            this.tienePadre = true;
+            this.respExiste = false;
+            this.formIngreso.enable();
+            this.formGroupDirective.resetForm();
+          }
+        });
     }
   }
 }
