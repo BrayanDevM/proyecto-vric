@@ -3,7 +3,10 @@
     <app-breadcrumb></app-breadcrumb>
     <div class="row">
       <div class="col-12">
-        <div class="card BDM_fadeInUp">
+        <div
+          class="card BDM_fadeInUp border-0"
+          style="background-color: #f1f4f9;"
+        >
           <div class="card-header">
             <ul class="nav nav-tabs card-header-tabs" data-tabs="tabs">
               <li class="nav-item">
@@ -26,7 +29,7 @@
               </li>
             </ul>
           </div>
-          <div class="card-body ">
+          <div class="card-body p-0">
             <div class="tab-content">
               <!-------------------------------------------- 
                 Formulario para ingreso de participantes
@@ -48,12 +51,12 @@
                 Formulario para nacimientos de participantes
                --------------------------------------------->
               <div class="tab-pane" id="nacimiento">
-                <div class="alert alert-warning alert-dismissible fade show">
-                  El reporte de nacimiento y/o cambio de mujer gestante debe
-                  realizarse en la última o primera semana del mes vigente, esto
-                  permite tener un control mensual de un ingreso nuevo para
-                  cargue de acompañamientos en la plataforma SPES y talleres de
-                  formación en CUÉNTAME.
+                <div
+                  class="alert alert-danger alert-dismissible fade show mt-3 mb-4 shadow-sm"
+                >
+                  Realizar los reportes de cambios de mujer gestante al cambio
+                  de mes, es decir, <b>la primera semana de {{ proximoMes }}</b
+                  >.
                   <button
                     type="button"
                     class="close"

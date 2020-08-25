@@ -15,6 +15,12 @@ a,
   cursor: pointer;
 }
 
+.form-group label {
+  margin-bottom: 0.2rem;
+  font-weight: 500;
+  color: #303030;
+}
+
 input.form-control::placeholder {
   color: #999;
   font-size: 0.95rem;
@@ -429,6 +435,12 @@ input.form-control::placeholder {
 
 .form-control {
   min-height: 33px;
+}
+
+form .card .card-title {
+  margin-bottom: 16px;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
 }
 
 /* defines the animation */

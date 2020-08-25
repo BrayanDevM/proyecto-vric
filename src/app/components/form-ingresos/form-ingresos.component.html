@@ -4,7 +4,7 @@
   (ngSubmit)="ingresarBeneficiario()"
 >
   <!------------------- Sección datos básicos ------------------->
-  <div class="card mb-4 shadow-sm">
+  <div class="card mt-3 mb-5 p-3 border-0 shadow-sm">
     <div class="card-body">
       <h5 class="card-title text-success">
         <i class="fas fa-clipboard-user mr-2"></i>Datos básicos
@@ -20,7 +20,7 @@
               bindLabel="label"
               groupBy="group"
               placeholder="Seleccionar tipo de documento"
-              (change)="comprobarSD($event)"
+              (change)="comprobarSD($event, 'documento')"
               formControlName="tipoDoc"
               name="tipoDoc"
               required
@@ -30,6 +30,12 @@
                 {{ item.label }}
               </ng-template>
             </ng-select>
+            <div
+              *ngIf="fc.tipoDoc.errors?.required && !fc.tipoDoc.pristine"
+              class="invalid-feedback"
+            >
+              Debes seleccionar un tipo de documento
+            </div>
           </div>
         </div>
         <div class="col-lg-3 col-xl-2">
@@ -37,16 +43,33 @@
             <label for="documento">NUIP</label>
             <input
               #documento
-              [ngModel]="fv.documento | documento"
-              (ngModelChange)="fv.documento = $event"
+              [value]="fv.documento | documento"
               formControlName="documento"
               name="documento"
               type="text"
               class="form-control"
+              [ngClass]="
+                fc.documento.errors && fc.documento.touched ? 'is-invalid' : ''
+              "
               placeholder="Número de NUIP"
               autocomplete="off"
               required
             />
+            <div *ngIf="fc.documento.errors?.required" class="invalid-feedback">
+              El NUIP es obligatorio
+            </div>
+            <div
+              *ngIf="fc.documento.errors?.minlength"
+              class="invalid-feedback"
+            >
+              Debe tener mínimo 7 dígitos
+            </div>
+            <div
+              *ngIf="fc.documento.errors?.maxlength"
+              class="invalid-feedback"
+            >
+              Debe tener máximo 10 dígitos
+            </div>
           </div>
         </div>
         <div class="col-lg-3 col-xl-2">
@@ -54,11 +77,12 @@
             <label for="nombre1">Primer nombre</label>
             <input
               #nombre1
+              [value]="fv.nombre1 | uppercase"
               formControlName="nombre1"
               name="nombre1"
               type="text"
               class="form-control"
-              placeholder="Escribe un nombre"
+              placeholder="ej. Brayan"
               required
             />
           </div>
@@ -68,11 +92,12 @@
             <label for="nombre2">Segundo nombre</label>
             <input
               #nombre2
+              [value]="fv.nombre2 | uppercase"
               formControlName="nombre2"
               name="nombre2"
               type="text"
               class="form-control"
-              placeholder="Escribe un nombre"
+              placeholder="..."
             />
           </div>
         </div>
@@ -81,11 +106,12 @@
             <label for="apellido1">Primer apellido</label>
             <input
               #apellido1
+              [value]="fv.apellido1 | uppercase"
               formControlName="apellido1"
               name="apellido1"
               type="text"
               class="form-control"
-              placeholder="Escribe un apellido"
+              placeholder="ej. Devia"
               required
             />
           </div>
@@ -95,16 +121,16 @@
             <label for="apellido2">Segundo apellido</label>
             <input
               #apellido2
+              [value]="fv.apellido2 | uppercase"
               formControlName="apellido2"
               name="apellido2"
               type="text"
               class="form-control"
-              placeholder="Escribe un apellido"
+              placeholder="..."
             />
           </div>
         </div>
-      </div>
-      <div class="row">
+
         <div class="col-lg-3 col-xl-2">
           <div class="form-group">
             <label for="sexo">Sexo</label>
@@ -225,7 +251,7 @@
     </div>
   </div>
   <!------------------- Sección datos de ubicación ------------------->
-  <div class="card mb-4 shadow-sm">
+  <div class="card mb-5 p-3 border-0 shadow-sm">
     <div class="card-body">
       <h5 class="card-title text-success">
         <i class="fas fa-map-marked"></i> Datos de ubicación
@@ -236,17 +262,17 @@
             <label for="direccion">Dirección</label>
             <input
               #direccion
+              [value]="fv.direccion | uppercase"
               formControlName="direccion"
               name="direccion"
               type="text"
               class="form-control"
-              placeholder="Dirección exacta"
+              placeholder="ej. Subiendo por vía principal, 3ra casa izquierda de colegio"
               autocomplete="off"
               required
             />
             <small class="form-text text-muted">
-              <b>Ejemplo rural:</b> Subiendo por vía principal casa verde a lado
-              de tienda Pepita
+              Dirección exacta
             </small>
           </div>
         </div>
@@ -255,6 +281,7 @@
             <label for="barrio">Barrio</label>
             <input
               #barrio
+              [value]="fv.barrio | uppercase"
               formControlName="barrio"
               name="barrio"
               type="text"
@@ -274,10 +301,22 @@
               name="telefono"
               type="text"
               class="form-control"
+              [ngClass]="
+                fc.telefono.errors && fc.telefono.touched ? 'is-invalid' : ''
+              "
               placeholder="Telefono"
               autocomplete="off"
               required
             />
+            <div *ngIf="fc.telefono.errors?.required" class="invalid-feedback">
+              El telefono es obligatorio
+            </div>
+            <div *ngIf="fc.telefono.errors?.minlength" class="invalid-feedback">
+              Debe tener mínimo 7 dígitos
+            </div>
+            <div *ngIf="fc.telefono.errors?.maxlength" class="invalid-feedback">
+              Debe tener máximo 10 dígitos
+            </div>
           </div>
         </div>
         <div class="col-lg-3 col-xl-2">
@@ -316,7 +355,7 @@
     </div>
   </div>
   <!------------------- Sección datos de acudiente ------------------->
-  <div class="card mb-4 shadow-sm">
+  <div class="card mb-5 p-3 border-0 shadow-sm">
     <div class="card-body">
       <h5 class="card-title text-success">
         <i class="fas fa-users mr-2"></i>Datos de responsable o acudiente
@@ -333,7 +372,7 @@
               groupBy="group"
               labelForId="respTipoDoc"
               placeholder="Seleccionar tipo de documento"
-              (change)="comprobarRespSD($event)"
+              (change)="comprobarSD($event, 'respDocumento')"
               formControlName="respTipoDoc"
               name="respTipoDoc"
               required
@@ -350,20 +389,42 @@
             <label for="documento">NUIP</label>
             <input
               #respDocumento
-              [ngModel]="fv.respDocumento | documento"
-              (ngModelChange)="fv.respDocumento = $event"
+              [value]="fv.respDocumento | documento"
               (focusout)="buscarRespBeneficiario($event.target.value)"
               formControlName="respDocumento"
               name="respDocumento"
               type="text"
               class="form-control"
               [ngClass]="{ 'is-valid': respExiste }"
+              [ngClass]="
+                fc.respDocumento.errors && fc.respDocumento.touched
+                  ? 'is-invalid'
+                  : ''
+              "
               placeholder="Número de NUIP"
               autocomplete="off"
               required
             />
             <div *ngIf="respExiste" class="valid-feedback">
               Responsable existente
+            </div>
+            <div
+              *ngIf="fc.respDocumento.errors?.required"
+              class="invalid-feedback"
+            >
+              El NUIP es obligatorio
+            </div>
+            <div
+              *ngIf="fc.respDocumento.errors?.minlength"
+              class="invalid-feedback"
+            >
+              Debe tener mínimo 7 dígitos
+            </div>
+            <div
+              *ngIf="fc.respDocumento.errors?.maxlength"
+              class="invalid-feedback"
+            >
+              Debe tener máximo 10 dígitos
             </div>
           </div>
         </div>
@@ -376,7 +437,7 @@
               name="respNombre1"
               type="text"
               class="form-control"
-              placeholder="Escribe un nombre"
+              placeholder="ej. John"
               required
             />
           </div>
@@ -390,7 +451,7 @@
               name="respNombre2"
               type="text"
               class="form-control"
-              placeholder="Escribe un nombre"
+              placeholder="..."
             />
           </div>
         </div>
@@ -403,7 +464,7 @@
               name="respApellido1"
               type="text"
               class="form-control"
-              placeholder="Escribe un apellido"
+              placeholder="ej. Doe"
               required
             />
           </div>
@@ -417,12 +478,12 @@
               name="respApellido2"
               type="text"
               class="form-control"
-              placeholder="Escribe un apellido"
+              placeholder="...
+              "
             />
           </div>
         </div>
-      </div>
-      <div class="row">
+
         <div class="col-lg-3 col-xl-2">
           <div class="form-group">
             <label for="respSexo">Sexo</label>
@@ -533,40 +594,36 @@
     </div>
   </div>
   <!------------------- Sección datos de madre ------------------->
-  <div class="card mb-4 shadow-sm">
+  <div class="card mb-5 p-3 border-0 shadow-sm">
     <div class="card-body">
       <h5 class="card-title text-info">
         <i class="fas fa-female mr-2"></i>Datos madre del beneficiario
       </h5>
-      <div class="card-actions mb-3">
-        <!--******************************** Toggle tiene o no madre ********************************-->
-        <div class="custom-control custom-switch">
+      <div class="card-actions d-flex flex-row mb-1 mt-3">
+        <!--******************************** Toggle tiene o no Padre ********************************-->
+        <div class="form-group form-check">
           <input
+            (change)="desactivarCamposMadre()"
             [(ngModel)]="tieneMadre"
             [ngModelOptions]="{ standalone: true }"
-            (change)="desactivarCamposMadre()"
             type="checkbox"
-            id="madre"
-            class="custom-control-input"
+            class="form-check-input"
+            id="tieneMadre"
           />
-          <label class="custom-control-label" for="madre">
-            <span *ngIf="tieneMadre">Tiene madre</span>
-            <span *ngIf="!tieneMadre">No tiene madre</span>
-          </label>
+          <label class="form-check-label" for="tieneMadre">Tiene madre</label>
         </div>
-        <!--*************************** Toggle Madre igual a acudiente ***************************-->
-        <div *ngIf="tieneMadre" class="custom-control custom-switch">
+        <!--*************************** Toggle Padre igual a acudiente ***************************-->
+        <div class="form-group form-check ml-3">
           <input
+            (change)="madreIgualResponsable()"
             [(ngModel)]="madreIgualAResp"
             [ngModelOptions]="{ standalone: true }"
-            (change)="madreIgualResponsable()"
             type="checkbox"
-            id="madreIgualResp"
-            class="custom-control-input"
+            class="form-check-input"
+            id="madreAcudiente"
           />
-          <label class="custom-control-label" for="madreIgualResp">
-            <span *ngIf="madreIgualAResp">Es el mismo acudiente</span>
-            <span *ngIf="!madreIgualAResp">No es el mismo acudiente</span>
+          <label class="form-check-label" for="madreAcudiente">
+            Es el mismo acudiente
           </label>
         </div>
       </div>
@@ -582,7 +639,7 @@
               groupBy="group"
               labelForId="madreTipoDoc"
               placeholder="Seleccionar tipo de documento"
-              (change)="comprobarMadreSD($event)"
+              (change)="comprobarSD($event, 'madreDocumento')"
               formControlName="madreTipoDoc"
               name="madreTipoDoc"
               required
@@ -599,16 +656,38 @@
             <label for="documento">NUIP</label>
             <input
               #madreDocumento
-              [ngModel]="fv.madreDocumento | documento"
-              (ngModelChange)="fv.madreDocumento = $event"
+              [value]="fv.madreDocumento | documento"
               formControlName="madreDocumento"
               name="madreDocumento"
               type="text"
               class="form-control"
+              [ngClass]="
+                fc.madreDocumento.errors && fc.madreDocumento.touched
+                  ? 'is-invalid'
+                  : ''
+              "
               placeholder="Número de NUIP"
               autocomplete="off"
               required
             />
+            <div
+              *ngIf="fc.madreDocumento.errors?.required"
+              class="invalid-feedback"
+            >
+              El NUIP es obligatorio
+            </div>
+            <div
+              *ngIf="fc.madreDocumento.errors?.minlength"
+              class="invalid-feedback"
+            >
+              Debe tener mínimo 7 dígitos
+            </div>
+            <div
+              *ngIf="fc.madreDocumento.errors?.maxlength"
+              class="invalid-feedback"
+            >
+              Debe tener máximo 10 dígitos
+            </div>
           </div>
         </div>
         <div class="col-lg-3 col-xl-2">
@@ -620,7 +699,7 @@
               name="madreNombre1"
               type="text"
               class="form-control"
-              placeholder="Escribe un nombre"
+              placeholder="ej. María"
               required
             />
           </div>
@@ -634,7 +713,7 @@
               name="madreNombre2"
               type="text"
               class="form-control"
-              placeholder="Escribe un nombre"
+              placeholder="..."
             />
           </div>
         </div>
@@ -647,7 +726,7 @@
               name="madreApellido1"
               type="text"
               class="form-control"
-              placeholder="Escribe un apellido"
+              placeholder="ej. Lozano"
               required
             />
           </div>
@@ -661,12 +740,11 @@
               name="madreApellido2"
               type="text"
               class="form-control"
-              placeholder="Escribe un apellido"
+              placeholder="..."
             />
           </div>
         </div>
-      </div>
-      <div class="row">
+
         <div class="col-lg-3 col-xl-2">
           <div class="form-group">
             <label for="madreSexo">Sexo</label>
@@ -708,40 +786,36 @@
     </div>
   </div>
   <!-----------------*******************-- Sección datos de padre --*******************----------------->
-  <div class="card mb-4 shadow-sm">
+  <div class="card mb-5 p-3 border-0 shadow-sm">
     <div class="card-body">
       <h5 class="card-title text-info">
         <i class="fas fa-male mr-2"></i>Datos padre del beneficiario
       </h5>
-      <div class="card-actions mb-3">
-        <!--******************************** Toggle tiene o no madre ********************************-->
-        <div class="custom-control custom-switch">
+      <div class="card-actions d-flex flex-row mb-1 mt-3">
+        <!--******************************** Toggle tiene o no Padre ********************************-->
+        <div class="form-group form-check">
           <input
+            (change)="desactivarCamposPadre()"
             [(ngModel)]="tienePadre"
             [ngModelOptions]="{ standalone: true }"
-            (change)="desactivarCamposPadre()"
             type="checkbox"
-            id="padre"
-            class="custom-control-input"
+            class="form-check-input"
+            id="tienePadre"
           />
-          <label class="custom-control-label" for="padre">
-            <span *ngIf="tienePadre">Tiene padre</span>
-            <span *ngIf="!tienePadre">No tiene padre</span>
-          </label>
+          <label class="form-check-label" for="tienePadre">Tiene padre</label>
         </div>
-        <!--*************************** Toggle Madre igual a acudiente ***************************-->
-        <div *ngIf="tienePadre" class="custom-control custom-switch">
+        <!--*************************** Toggle Padre igual a acudiente ***************************-->
+        <div class="form-group form-check ml-3">
           <input
             [(ngModel)]="padreIgualAResp"
             [ngModelOptions]="{ standalone: true }"
             (change)="padreIgualResponsable()"
             type="checkbox"
-            id="padreIgualResp"
-            class="custom-control-input"
+            class="form-check-input"
+            id="padreAcudiente"
           />
-          <label class="custom-control-label" for="padreIgualResp">
-            <span *ngIf="padreIgualAResp">Es el mismo acudiente</span>
-            <span *ngIf="!padreIgualAResp">No es el mismo acudiente</span>
+          <label class="form-check-label" for="padreAcudiente">
+            Es el mismo acudiente
           </label>
         </div>
       </div>
@@ -757,7 +831,7 @@
               groupBy="group"
               labelForId="padreTipoDoc"
               placeholder="Seleccionar tipo de documento"
-              (change)="comprobarPadreSD($event)"
+              (change)="comprobarSD($event, 'padreDocumento')"
               formControlName="padreTipoDoc"
               name="padreTipoDoc"
               required
@@ -774,16 +848,38 @@
             <label for="documento">NUIP</label>
             <input
               #padreDocumento
-              [ngModel]="fv.padreDocumento | documento"
-              (ngModelChange)="fv.padreDocumento = $event"
+              [value]="fv.padreDocumento | documento"
               formControlName="padreDocumento"
               name="padreDocumento"
               type="text"
               class="form-control"
+              [ngClass]="
+                fc.padreDocumento.errors && fc.padreDocumento.touched
+                  ? 'is-invalid'
+                  : ''
+              "
               placeholder="Número de NUIP"
               autocomplete="off"
               required
             />
+            <div
+              *ngIf="fc.padreDocumento.errors?.required"
+              class="invalid-feedback"
+            >
+              El NUIP es obligatorio
+            </div>
+            <div
+              *ngIf="fc.padreDocumento.errors?.minlength"
+              class="invalid-feedback"
+            >
+              Debe tener mínimo 7 dígitos
+            </div>
+            <div
+              *ngIf="fc.padreDocumento.errors?.maxlength"
+              class="invalid-feedback"
+            >
+              Debe tener máximo 10 dígitos
+            </div>
           </div>
         </div>
         <div class="col-lg-3 col-xl-2">
@@ -795,7 +891,7 @@
               name="padreNombre1"
               type="text"
               class="form-control"
-              placeholder="Escribe un nombre"
+              placeholder="ej. Miguel"
               required
             />
           </div>
@@ -809,7 +905,7 @@
               name="padreNombre2"
               type="text"
               class="form-control"
-              placeholder="Escribe un nombre"
+              placeholder="..."
             />
           </div>
         </div>
@@ -822,7 +918,7 @@
               name="padreApellido1"
               type="text"
               class="form-control"
-              placeholder="Escribe un apellido"
+              placeholder="ej. Devia"
               required
             />
           </div>
@@ -836,12 +932,10 @@
               name="padreApellido2"
               type="text"
               class="form-control"
-              placeholder="Escribe un apellido"
+              placeholder="..."
             />
           </div>
         </div>
-      </div>
-      <div class="row">
         <div class="col-lg-3 col-xl-2">
           <div class="form-group">
             <label for="padreSexo">Sexo</label>
@@ -883,7 +977,7 @@
     </div>
   </div>
   <!------------------- Sección UDS e Ingreso ------------------->
-  <div class="card mb-3 shadow-sm">
+  <div class="card mb-3 p-3 border-0 shadow-sm">
     <div class="card-body">
       <h5 class="card-title text-success">
         <i class="fas fa-address-book mr-2"></i>Datos de ingreso
@@ -940,6 +1034,7 @@
               name="comentario"
               type="text"
               class="form-control"
+              placeholder="ej. El padre falleció/Extranjero con documento colombiano"
             />
           </div>
         </div>
@@ -948,7 +1043,7 @@
   </div>
   <div class="row">
     <div class="col-lg-12 col-xl-12 text-right">
-      <button *ngIf="!creando" type="submit" class="btn btn-success btn-sm">
+      <button *ngIf="!creando" type="submit" class="btn btn-success">
         <i class="fas fa-user-plus mr-1"></i>
         Reportar ingreso
       </button>
@@ -956,7 +1051,7 @@
         *ngIf="creando"
         [disabled]="creando"
         type="button"
-        class="btn btn-success btn-sm"
+        class="btn btn-success"
       >
         <span
           class="spinner-border spinner-border-sm"

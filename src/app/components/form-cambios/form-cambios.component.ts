@@ -51,6 +51,38 @@ export class FormCambiosComponent implements OnInit {
       icon: 'fas fa-question-square'
     }
   ];
+  tiposDeDocumentoAdultos: NgOption = [
+    {
+      value: 'RC',
+      label: 'Registro Civil',
+      group: 'Colombianas/os',
+      icon: 'fad fa-id-card'
+    },
+    {
+      value: 'TI',
+      label: 'Tarjeta de Identidad',
+      group: 'Colombianas/os',
+      icon: 'fad fa-id-card'
+    },
+    {
+      value: 'CC',
+      label: 'Cédula de Ciudadanía',
+      group: 'Colombianas/os',
+      icon: 'fad fa-id-card'
+    },
+    {
+      value: 'PEP',
+      label: 'Permiso Especial de Permanencia',
+      group: 'Extranjeras/os',
+      icon: 'fas fa-user-clock'
+    },
+    {
+      value: 'SD',
+      label: 'Sin Documento',
+      group: 'Extranjeras/os',
+      icon: 'fas fa-question-square'
+    }
+  ];
   sexos: NgOption = [
     {
       value: 'Mujer',
@@ -122,6 +154,8 @@ export class FormCambiosComponent implements OnInit {
   listaMunicipios = ['Extranjero'];
   codigoUdsSeleccionada: any;
 
+  tienePadre = true;
+
   constructor(
     private fb: FormBuilder,
     private usuario$: UsuarioService,
@@ -133,11 +167,14 @@ export class FormCambiosComponent implements OnInit {
       selectUds: null,
       beneficiarioId: null,
       tipoDoc: [null, Validators.required],
-      documento: [null, Validators.required],
-      nombre1: [null, Validators.required],
-      nombre2: null,
-      apellido1: [null, Validators.required],
-      apellido2: null,
+      documento: [
+        '',
+        [Validators.required, Validators.minLength(9), Validators.maxLength(13)]
+      ],
+      nombre1: ['', Validators.required],
+      nombre2: [''],
+      apellido1: ['', Validators.required],
+      apellido2: [''],
       sexo: [null, Validators.required],
       discapacidad: [false, Validators.required],
       infoDiscapacidad: null,
@@ -151,25 +188,56 @@ export class FormCambiosComponent implements OnInit {
       autorreconocimiento: [null, Validators.required],
       criterio: [null, Validators.required],
       infoCriterio: [null, Validators.required],
-      tipoResponsable: [null, Validators.required],
+      tipoResponsable: ['Madre'],
       comentario: null,
       udsId: null,
       codigo: 'Seleccionar UDS',
       ingreso: null,
       // Información de responsable
-      respTipoDoc: [null, Validators.required],
-      respDocumento: [null, Validators.required],
-      respNombre1: [null, Validators.required],
-      respNombre2: null,
-      respApellido1: [null, Validators.required],
-      respApellido2: null,
-      respSexo: [null, Validators.required],
-      respNacimiento: [null, Validators.required],
-      respPaisNacimiento: [null, Validators.required],
-      respDptoNacimiento: [null, Validators.required],
-      respMunicipioNacimiento: [null, Validators.required],
-      fecha: null
+      respTipoDoc: [null],
+      respDocumento: [null],
+      respNombre1: [''],
+      respNombre2: '',
+      respApellido1: [''],
+      respApellido2: '',
+      respSexo: [null],
+      respNacimiento: [null],
+      respPaisNacimiento: [null],
+      respDptoNacimiento: [null],
+      respMunicipioNacimiento: [null],
+      fecha: null,
+      // Información Padre
+      madreTipoDoc: [null],
+      madreDocumento: [''],
+      madreNombre1: [''],
+      madreNombre2: '',
+      madreApellido1: [''],
+      madreApellido2: '',
+      madreSexo: [null],
+      madreNacimiento: [null],
+      // Información Madre
+      padreTipoDoc: [null, Validators.required],
+      padreDocumento: [
+        '',
+        [Validators.required, Validators.minLength(9), Validators.maxLength(13)]
+      ],
+      padreNombre1: ['', Validators.required],
+      padreNombre2: '',
+      padreApellido1: ['', Validators.required],
+      padreApellido2: '',
+      padreSexo: [null, Validators.required],
+      padreNacimiento: [null, Validators.required]
     });
+  }
+
+  get f() {
+    return this.formCambio;
+  }
+  get fv() {
+    return this.formCambio.value;
+  }
+  get fc() {
+    return this.formCambio.controls;
   }
 
   ngOnInit() {
@@ -226,29 +294,6 @@ export class FormCambiosComponent implements OnInit {
     this.madreSeleccionada = this.beneficiarios[index];
   }
 
-  reemplazarInfoForm(madre: Beneficiario) {
-    // Info ubicación
-    this.formCambio.value.direccion = madre.direccion;
-    this.formCambio.value.barrio = madre.barrio;
-    this.formCambio.value.telefono = madre.telefono;
-    this.formCambio.value.criterio = 'Otro';
-    this.formCambio.value.infoCriterio = 'Cambio de Mujer Gestante';
-    // Info responsable
-    this.formCambio.value.respNombre1 = madre.nombre1;
-    this.formCambio.value.respNombre2 = madre.nombre2;
-    this.formCambio.value.respApellido1 = madre.apellido1;
-    this.formCambio.value.respApellido2 = madre.apellido2;
-    this.formCambio.value.respTipoDoc = madre.tipoDoc;
-    this.formCambio.value.respDocumento = madre.documento;
-    this.formCambio.value.respNacimiento = madre.nacimiento;
-    this.formCambio.value.respSexo = madre.sexo;
-    this.formCambio.value.respPaisNacimiento = madre.paisNacimiento;
-    this.formCambio.value.respDptoNacimiento = madre.dptoNacimiento;
-    this.formCambio.value.respMunicipioNacimiento = madre.municipioNacimiento;
-    this.formCambio.value.tipoResponsable = 'Madre';
-    this.formCambio.value.fecha = moment().format('DD/MM/YYYY');
-  }
-
   /**
    *
    * @param $event
@@ -259,13 +304,12 @@ export class FormCambiosComponent implements OnInit {
    * undefined, por qué?
    * Pendiente solucionar para usar patchvalue en formulario de ingresos
    */
-  comprobarSD($event: any) {
+  comprobarSD($event: any, campo: string) {
     if ($event.value === 'SD') {
-      this.formCambio.get('documento').patchValue(this.generarDocumento(15));
-      this.docReadOnly = true;
+      const documentoAleatorio = this.generarDocumento(13);
+      this.f.get(campo).patchValue(documentoAleatorio);
     } else {
-      this.formCambio.get('documento').setValue('');
-      this.docReadOnly = false;
+      this.f.get(campo).patchValue('');
     }
   }
 
@@ -342,6 +386,28 @@ export class FormCambiosComponent implements OnInit {
     }
   }
 
+  desactivarCamposPadre() {
+    if (!this.tienePadre) {
+      this.f.get('padreTipoDoc').disable();
+      this.f.get('padreDocumento').disable();
+      this.f.get('padreNombre1').disable();
+      this.f.get('padreNombre2').disable();
+      this.f.get('padreApellido1').disable();
+      this.f.get('padreApellido2').disable();
+      this.f.get('padreSexo').disable();
+      this.f.get('padreNacimiento').disable();
+    } else {
+      this.f.get('padreTipoDoc').enable();
+      this.f.get('padreDocumento').enable();
+      this.f.get('padreNombre1').enable();
+      this.f.get('padreNombre2').enable();
+      this.f.get('padreApellido1').enable();
+      this.f.get('padreApellido2').enable();
+      this.f.get('padreSexo').enable();
+      this.f.get('padreNacimiento').enable();
+    }
+  }
+
   formatearFechas() {
     this.formCambio.value.ingreso = moment(
       this.formCambio.value.ingreso,
@@ -353,8 +419,51 @@ export class FormCambiosComponent implements OnInit {
     ).format('DD/MM/YYYY');
   }
 
+  reemplazarInfoForm(madre: Beneficiario) {
+    this.formCambio.patchValue({
+      // Info ubicación
+      direccion: madre.direccion,
+      barrio: madre.barrio,
+      telefono: madre.telefono,
+      criterio: 'Otro',
+      infoCriterio: 'Cambio de Mujer Gestante',
+      // Info responsable
+      respNombre1: madre.nombre1,
+      respNombre2: madre.nombre2,
+      respApellido1: madre.apellido1,
+      respApellido2: madre.apellido2,
+      respTipoDoc: madre.tipoDoc,
+      respDocumento: madre.documento,
+      respNacimiento: madre.nacimiento,
+      respSexo: madre.sexo,
+      respPaisNacimiento: madre.paisNacimiento,
+      respDptoNacimiento: madre.dptoNacimiento,
+      respMunicipioNacimiento: madre.municipioNacimiento,
+      tipoResponsable: 'Madre',
+      fecha: moment().format('DD/MM/YYYY'),
+      // Info madre
+      madreTipoDoc: madre.tipoDoc,
+      madreDocumento: madre.documento,
+      madreNombre1: madre.nombre1,
+      madreNombre2: madre.nombre2,
+      madreApellido1: madre.apellido1,
+      madreApellido2: madre.apellido2,
+      madreNacimiento: madre.nacimiento,
+      madreSexo: madre.sexo
+    });
+    if (this.tienePadre) {
+      this.formCambio.patchValue({
+        padreNacimiento: moment(this.fv.padreNacimiento, 'YYYY-MM-DD').format(
+          'DD/MM/YYYY'
+        )
+      });
+    }
+  }
+
   reportarCambio() {
     this.reemplazarInfoForm(this.madreSeleccionada);
+    console.log(this.fv, 'form to send');
+    return;
     this.formatearFechas();
     alertConfirm
       .fire({

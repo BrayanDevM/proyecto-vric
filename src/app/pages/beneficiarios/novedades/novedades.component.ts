@@ -4,6 +4,7 @@ import { UdsService } from 'src/app/services/uds.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { CookieService } from 'ngx-cookie-service';
 import { Usuario } from 'src/app/models/usuario.model';
+declare const moment: any;
 
 @Component({
   selector: 'app-novedades',
@@ -14,6 +15,9 @@ export class NovedadesComponent implements OnInit {
   usuario: Usuario;
   udsAsignadas: Uds[];
   query = '';
+  proximoMes = moment()
+    .add(1, 'M')
+    .format('MMMM');
 
   constructor(
     private usuario$: UsuarioService,

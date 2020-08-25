@@ -1,5 +1,5 @@
 <form ngNativeValidate [formGroup]="formEgreso" (ngSubmit)="reportarEgreso()">
-  <div class="card shadow-sm mb-3">
+  <div class="card card mt-3 mb-3 p-3 border-0 shadow-sm">
     <div class="card-body">
       <h5 class="card-title text-danger">
         <i class="fas fa-calendar-times"></i>
@@ -78,31 +78,27 @@
           </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-12 text-right">
-          <button
-            *ngIf="!actualizando"
-            type="submit"
-            class="btn btn-danger btn-sm"
-          >
-            <i class="fas fa-user-times mr-1"></i>
-            Reportar egreso
-          </button>
-          <button
-            *ngIf="actualizando"
-            [disabled]="actualizando"
-            type="button"
-            class="btn btn-danger btn-sm"
-          >
-            <span
-              class="spinner-border spinner-border-sm"
-              role="status"
-              aria-hidden="true"
-            ></span>
-            Reportando...
-          </button>
-        </div>
-      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 text-right">
+      <button *ngIf="!actualizando" type="submit" class="btn btn-danger">
+        <i class="fas fa-user-times mr-1"></i>
+        Reportar egreso
+      </button>
+      <button
+        *ngIf="actualizando"
+        [disabled]="actualizando"
+        type="button"
+        class="btn btn-danger"
+      >
+        <span
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        Reportando...
+      </button>
     </div>
   </div>
 </form>

@@ -1,5 +1,5 @@
 <form ngNativeValidate [formGroup]="formCambio" (ngSubmit)="reportarCambio()">
-  <div class="card shadow-sm mb-3">
+  <div class="card card mt-3 mb-5 p-3 border-0 shadow-sm">
     <div class="card-body">
       <h5 class="card-title text-success">
         <i class="fas fa-female mr-2"></i>Madre del beneficiario
@@ -24,7 +24,7 @@
         </div>
         <div class="col-lg-4 col-xl-3">
           <div class="form-group">
-            <label for="beneficiarioId">Seleccionar Madre de bebé</label>
+            <label for="beneficiarioId">Seleccionar Madre del bebé</label>
             <ng-select
               [items]="beneficiarios"
               bindValue="_id"
@@ -55,7 +55,7 @@
   </div>
   <div *ngIf="madreSeleccionada !== null">
     <!------------------- Sección datos básicos ------------------->
-    <div class="card shadow-sm mb-3">
+    <div class="card card mb-5 p-3 border-0 shadow-sm">
       <div class="card-body">
         <h5 class="card-title text-success">
           <i class="fas fa-clipboard-user mr-2"></i>Datos básicos del bebé
@@ -71,7 +71,7 @@
                 bindLabel="label"
                 groupBy="group"
                 placeholder="Seleccionar tipo de documento"
-                (change)="comprobarSD($event)"
+                (change)="comprobarSD($event, 'documento')"
                 formControlName="tipoDoc"
                 name="tipoDoc"
                 required
@@ -88,16 +88,38 @@
               <label for="documento">NUIP</label>
               <input
                 #documento
-                [ngModel]="formCambio.value.documento | documento"
-                [readOnly]="docReadOnly"
+                [value]="fv.documento | documento"
                 formControlName="documento"
                 name="documento"
                 type="text"
                 class="form-control"
+                [ngClass]="
+                  fc.documento.errors && fc.documento.touched
+                    ? 'is-invalid'
+                    : ''
+                "
                 placeholder="Número de NUIP"
                 autocomplete="off"
                 required
               />
+              <div
+                *ngIf="fc.documento.errors?.required"
+                class="invalid-feedback"
+              >
+                El NUIP es obligatorio
+              </div>
+              <div
+                *ngIf="fc.documento.errors?.minlength"
+                class="invalid-feedback"
+              >
+                Debe tener mínimo 7 dígitos
+              </div>
+              <div
+                *ngIf="fc.documento.errors?.maxlength"
+                class="invalid-feedback"
+              >
+                Debe tener máximo 10 dígitos
+              </div>
             </div>
           </div>
           <div class="col-lg-3 col-xl-2">
@@ -109,7 +131,7 @@
                 name="nombre1"
                 type="text"
                 class="form-control"
-                placeholder="Escribe un nombre"
+                placeholder="ej. Brayan"
                 required
               />
             </div>
@@ -123,7 +145,7 @@
                 name="nombre2"
                 type="text"
                 class="form-control"
-                placeholder="Escribe un nombre"
+                placeholder="..."
               />
             </div>
           </div>
@@ -136,7 +158,7 @@
                 name="apellido1"
                 type="text"
                 class="form-control"
-                placeholder="Escribe un apellido"
+                placeholder="ej. Devia"
                 required
               />
             </div>
@@ -150,7 +172,7 @@
                 name="apellido2"
                 type="text"
                 class="form-control"
-                placeholder="Escribe un apellido"
+                placeholder="..."
               />
             </div>
           </div>
@@ -276,76 +298,253 @@
       </div>
     </div>
     <!------------------- Carta datos acudiente ------------------->
-    <div class="card shadow-sm mb-3">
+    <div class="card card mb-5 p-3 border-0 shadow-sm">
       <div class="card-body">
         <h5 class="card-title text-success">
-          <i class="fas fa-users mr-2"></i>Datos de acudiente
+          <i class="fas fa-users mr-2"></i>Datos de acudiente y madre
         </h5>
         <div class="row">
           <div class="col-12">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-lg-6 col-xl-5">
-                    <ul class="list-unstyled">
-                      <li>
-                        <b>Nombre completo: </b>
-                        {{ madreSeleccionada.nombre1 }}
-                        {{ madreSeleccionada.nombre2 }}
-                        {{ madreSeleccionada.apellido1 }}
-                        {{ madreSeleccionada.apellido2 }}
-                      </li>
-                      <li>
-                        <b>Fecha nacimiento: </b>
-                        {{ madreSeleccionada.nacimiento }}
-                      </li>
-                      <li>
-                        <b>Lugar de nacimiento:</b>
-                        {{ madreSeleccionada.paisNacimiento }},
-                        {{ madreSeleccionada.dptoNacimiento }} -
-                        {{ madreSeleccionada.municipioNacimiento }}
-                      </li>
-                    </ul>
-                  </div>
-                  <div class="col-lg-2 col-xl-3">
-                    <ul class="list-unstyled">
-                      <li>
-                        <b>{{ madreSeleccionada.tipoDoc }}: </b>
-                        {{ madreSeleccionada.documento }}
-                      </li>
-                      <li>
-                        <b>Sexo: </b>
-                        {{ madreSeleccionada.sexo }}
-                      </li>
-                    </ul>
-                  </div>
-                  <div class="col-lg-4 col-xl-4">
-                    <ul class="list-unstyled">
-                      <li>
-                        <b>Dirección: </b>
-                        {{ madreSeleccionada.direccion }}
-                      </li>
-                      <li>
-                        <b>Barrio/Rural: </b>
-                        {{ madreSeleccionada.barrio }}
-                      </li>
-                      <li><b>Telefono: </b>{{ madreSeleccionada.telefono }}</li>
-                      <li>
-                        <b>Criterio de atención: </b>
-                        {{ madreSeleccionada.criterio }},
-                        {{ madreSeleccionada.infoCriterio }}
-                      </li>
-                    </ul>
-                  </div>
-                </div>
+            <div class="row">
+              <div class="col-lg-6 col-xl-5">
+                <ul class="list-unstyled">
+                  <li>
+                    <b>Nombre completo: </b>
+                    {{ madreSeleccionada.nombre1 }}
+                    {{ madreSeleccionada.nombre2 }}
+                    {{ madreSeleccionada.apellido1 }}
+                    {{ madreSeleccionada.apellido2 }}
+                  </li>
+                  <li>
+                    <b>Fecha nacimiento: </b>
+                    {{ madreSeleccionada.nacimiento }}
+                  </li>
+                  <li>
+                    <b>Lugar de nacimiento:</b>
+                    {{ madreSeleccionada.paisNacimiento }},
+                    {{ madreSeleccionada.dptoNacimiento }} -
+                    {{ madreSeleccionada.municipioNacimiento }}
+                  </li>
+                </ul>
+              </div>
+              <div class="col-lg-2 col-xl-3">
+                <ul class="list-unstyled">
+                  <li>
+                    <b>{{ madreSeleccionada.tipoDoc }}: </b>
+                    {{ madreSeleccionada.documento }}
+                  </li>
+                  <li>
+                    <b>Sexo: </b>
+                    {{ madreSeleccionada.sexo }}
+                  </li>
+                </ul>
+              </div>
+              <div class="col-lg-4 col-xl-4">
+                <ul class="list-unstyled">
+                  <li>
+                    <b>Dirección: </b>
+                    {{ madreSeleccionada.direccion }}
+                  </li>
+                  <li>
+                    <b>Barrio/Rural: </b>
+                    {{ madreSeleccionada.barrio }}
+                  </li>
+                  <li><b>Telefono: </b>{{ madreSeleccionada.telefono }}</li>
+                  <li>
+                    <b>Criterio de atención: </b>
+                    {{ madreSeleccionada.criterio }},
+                    {{ madreSeleccionada.infoCriterio }}
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <!-----------------*******************-- Sección datos de padre --*******************----------------->
+    <div class="card card mb-5 p-3 border-0 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title text-info">
+          <i class="fas fa-male mr-2"></i>Datos padre del beneficiario
+        </h5>
+        <div class="card-actions mb-3">
+          <!--******************************** Toggle tiene o no madre ********************************-->
+          <div class="form-group form-check">
+            <input
+              (change)="desactivarCamposPadre()"
+              [(ngModel)]="tienePadre"
+              [ngModelOptions]="{ standalone: true }"
+              type="checkbox"
+              class="form-check-input"
+              id="exampleCheck1"
+            />
+            <label class="form-check-label" for="exampleCheck1"
+              >Tiene padre</label
+            >
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-xl-2">
+            <div class="form-group">
+              <label for="padreTipoDoc">Tipo de documento</label>
+              <ng-select
+                #padreTipoDoc
+                [items]="tiposDeDocumentoAdultos"
+                bindValue="value"
+                bindLabel="label"
+                groupBy="group"
+                labelForId="padreTipoDoc"
+                placeholder="Seleccionar tipo de documento"
+                (change)="comprobarSD($event, 'padreDocumento')"
+                formControlName="padreTipoDoc"
+                name="padreTipoDoc"
+                required
+              >
+                <ng-template ng-label-tmp let-item="item">
+                  <i [class]="item.icon"></i>
+                  {{ item.label }}
+                </ng-template>
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-lg-3 col-xl-2">
+            <div class="form-group">
+              <label for="documento">NUIP</label>
+              <input
+                #padreDocumento
+                [value]="fv.padreDocumento | documento"
+                formControlName="padreDocumento"
+                name="padreDocumento"
+                type="text"
+                class="form-control"
+                [ngClass]="
+                  fc.padreDocumento.errors && fc.padreDocumento.touched
+                    ? 'is-invalid'
+                    : ''
+                "
+                placeholder="Número de NUIP"
+                autocomplete="off"
+                required
+              />
+              <div
+                *ngIf="fc.padreDocumento.errors?.required"
+                class="invalid-feedback"
+              >
+                El NUIP es obligatorio
+              </div>
+              <div
+                *ngIf="fc.padreDocumento.errors?.minlength"
+                class="invalid-feedback"
+              >
+                Debe tener mínimo 7 dígitos
+              </div>
+              <div
+                *ngIf="fc.padreDocumento.errors?.maxlength"
+                class="invalid-feedback"
+              >
+                Debe tener máximo 10 dígitos
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-xl-2">
+            <div class="form-group">
+              <label for="padreNombre1">Primer nombre</label>
+              <input
+                #padreNombre1
+                formControlName="padreNombre1"
+                name="padreNombre1"
+                type="text"
+                class="form-control"
+                placeholder="ej. Miguel"
+                required
+              />
+            </div>
+          </div>
+          <div class="col-lg-3 col-xl-2">
+            <div class="form-group">
+              <label for="padreNombre2">Segundo nombre</label>
+              <input
+                #padreNombre2
+                formControlName="padreNombre2"
+                name="padreNombre2"
+                type="text"
+                class="form-control"
+                placeholder="..."
+              />
+            </div>
+          </div>
+          <div class="col-lg-3 col-xl-2">
+            <div class="form-group">
+              <label for="padreApellido1">Primer apellido</label>
+              <input
+                #padreApellido1
+                formControlName="padreApellido1"
+                name="padreApellido1"
+                type="text"
+                class="form-control"
+                placeholder="ej. Devia"
+                required
+              />
+            </div>
+          </div>
+          <div class="col-lg-3 col-xl-2">
+            <div class="form-group">
+              <label for="padreApellido2">Segundo apellido</label>
+              <input
+                #padreApellido2
+                formControlName="padreApellido2"
+                name="padreApellido2"
+                type="text"
+                class="form-control"
+                placeholder="..."
+              />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-xl-2">
+            <div class="form-group">
+              <label for="padreSexo">Sexo</label>
+              <ng-select
+                #padreSexo
+                [items]="sexos"
+                bindValue="value"
+                bindLabel="label"
+                labelForId="padreSexo"
+                placeholder="Seleccionar sexo"
+                formControlName="padreSexo"
+                name="padreSexo"
+                required
+              >
+                <ng-template ng-label-tmp let-item="item">
+                  <i [class]="item.icon"></i>
+                  {{ item.label }}
+                </ng-template>
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-lg-3 col-xl-2">
+            <div class="form-group">
+              <label class="label-control" for="padreNacimiento"
+                >Fecha nacimiento</label
+              >
+              <input
+                #padreNacimiento
+                formControlName="padreNacimiento"
+                name="padreNacimiento"
+                id="padreNacimiento"
+                type="date"
+                class="form-control"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <!------------------- Sección UDS e Ingreso ------------------->
-    <div class="card shadow-sm mb-3">
+    <div class="card card mb-3 p-3 border-0 shadow-sm">
       <div class="card-body">
         <h5 class="card-title text-success">
           <i class="fas fa-address-book mr-2"></i>Datos de ingreso
@@ -410,7 +609,7 @@
     </div>
     <div class="row">
       <div class="col-12 text-right">
-        <button *ngIf="!creando" type="submit" class="btn btn-success btn-sm">
+        <button *ngIf="!creando" type="submit" class="btn btn-success">
           <i class="fas fa-user-plus mr-1"></i>
           Reportar ingreso
         </button>
@@ -418,7 +617,7 @@
           *ngIf="creando"
           [disabled]="creando"
           type="submit"
-          class="btn btn-success btn-sm"
+          class="btn btn-success"
         >
           <span
             class="spinner-border spinner-border-sm"

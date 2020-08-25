@@ -185,20 +185,26 @@ export class FormIngresosComponent implements OnInit {
     this.formIngreso = this.fb.group({
       // Información de beneficiario
       tipoDoc: [null, Validators.required],
-      documento: ['', Validators.required],
-      nombre1: [null, Validators.required],
-      nombre2: null,
-      apellido1: [null, Validators.required],
-      apellido2: null,
+      documento: [
+        '',
+        [Validators.required, Validators.minLength(9), Validators.maxLength(13)]
+      ],
+      nombre1: ['', Validators.required],
+      nombre2: '',
+      apellido1: ['', Validators.required],
+      apellido2: '',
       sexo: [null, Validators.required],
-      discapacidad: [false, Validators.required],
+      discapacidad: [null, Validators.required],
       infoDiscapacidad: null,
       nacimiento: [null, Validators.required],
       paisNacimiento: [null, Validators.required],
       dptoNacimiento: [null, Validators.required],
       municipioNacimiento: [null, Validators.required],
       direccion: [null, Validators.required],
-      telefono: [null, Validators.required],
+      telefono: [
+        null,
+        [Validators.required, Validators.minLength(7), Validators.maxLength(10)]
+      ],
       barrio: [null, Validators.required],
       autorreconocimiento: [null, Validators.required],
       criterio: [null, Validators.required],
@@ -210,11 +216,14 @@ export class FormIngresosComponent implements OnInit {
       ingreso: [null, Validators.required],
       // Información de responsable
       respTipoDoc: [null, Validators.required],
-      respDocumento: ['', Validators.required],
-      respNombre1: [null, Validators.required],
-      respNombre2: null,
-      respApellido1: [null, Validators.required],
-      respApellido2: null,
+      respDocumento: [
+        '',
+        [Validators.required, Validators.minLength(9), Validators.maxLength(13)]
+      ],
+      respNombre1: ['', Validators.required],
+      respNombre2: '',
+      respApellido1: ['', Validators.required],
+      respApellido2: '',
       respSexo: [null, Validators.required],
       respNacimiento: [null, Validators.required],
       respPaisNacimiento: [null, Validators.required],
@@ -224,20 +233,26 @@ export class FormIngresosComponent implements OnInit {
       estado: 'Pendiente vincular',
       // Información Padre
       madreTipoDoc: [null, Validators.required],
-      madreDocumento: ['', Validators.required],
-      madreNombre1: [null, Validators.required],
-      madreNombre2: null,
-      madreApellido1: [null, Validators.required],
-      madreApellido2: null,
+      madreDocumento: [
+        '',
+        [Validators.required, Validators.minLength(9), Validators.maxLength(13)]
+      ],
+      madreNombre1: ['', Validators.required],
+      madreNombre2: '',
+      madreApellido1: ['', Validators.required],
+      madreApellido2: '',
       madreSexo: [null, Validators.required],
       madreNacimiento: [null, Validators.required],
       // Información Madre
       padreTipoDoc: [null, Validators.required],
-      padreDocumento: ['', Validators.required],
-      padreNombre1: [null, Validators.required],
-      padreNombre2: null,
-      padreApellido1: [null, Validators.required],
-      padreApellido2: null,
+      padreDocumento: [
+        '',
+        [Validators.required, Validators.minLength(9), Validators.maxLength(13)]
+      ],
+      padreNombre1: ['', Validators.required],
+      padreNombre2: '',
+      padreApellido1: ['', Validators.required],
+      padreApellido2: '',
       padreSexo: [null, Validators.required],
       padreNacimiento: [null, Validators.required]
     });
@@ -250,6 +265,12 @@ export class FormIngresosComponent implements OnInit {
   }
   get fv(): any {
     return this.formIngreso.value;
+  }
+  get fc() {
+    return this.formIngreso.controls;
+  }
+  get frv(): any {
+    return this.formIngreso.getRawValue();
   }
 
   cambiarDepartamentos(pais: any) {
@@ -316,15 +337,12 @@ export class FormIngresosComponent implements OnInit {
     }
   }
 
-  comprobarSD($event: any) {
+  comprobarSD($event: any, campo: string) {
     if ($event.value === 'SD') {
-      const documentoAleatorio = this.generarDocumento(15);
-      this.iDocumento.nativeElement.value = documentoAleatorio;
-      this.fv.documento = documentoAleatorio;
-      this.iDocumento.nativeElement.disabled = true;
+      const documentoAleatorio = this.generarDocumento(13);
+      this.f.get(campo).patchValue(documentoAleatorio);
     } else {
-      this.iDocumento.nativeElement.value = null;
-      this.iDocumento.nativeElement.disabled = false;
+      this.f.get(campo).patchValue('');
     }
   }
 
@@ -371,18 +389,6 @@ export class FormIngresosComponent implements OnInit {
         );
         this.listaMunicipiosResp = this.listaDepartamentosResp[i].ciudades;
       }
-    }
-  }
-
-  comprobarRespSD($event: any) {
-    if ($event.value === 'SD') {
-      const documentoAleatorio = this.generarDocumento(15);
-      this.iRespDocumento.nativeElement.value = documentoAleatorio;
-      this.fv.respDocumento = documentoAleatorio;
-      this.iRespDocumento.nativeElement.disabled = true;
-    } else {
-      this.iRespDocumento.nativeElement.value = null;
-      this.iRespDocumento.nativeElement.disabled = false;
     }
   }
 
@@ -528,21 +534,6 @@ export class FormIngresosComponent implements OnInit {
     this.iRespMunicipioNac.setDisabledState(false);
   }
 
-  comprobarMadreSD($event: any) {
-    if ($event.value === 'SD') {
-      const documentoAleatorio = this.generarDocumento(15);
-      this.fv.madreDocumento = documentoAleatorio;
-      this.f.get('madreDocumento').patchValue(documentoAleatorio);
-    }
-  }
-  comprobarPadreSD($event: any) {
-    if ($event.value === 'SD') {
-      const documentoAleatorio = this.generarDocumento(15);
-      this.fv.madreDocumento = documentoAleatorio;
-      this.f.get('padreDocumento').patchValue(documentoAleatorio);
-    }
-  }
-
   desactivarCamposPadre() {
     if (!this.tienePadre) {
       this.f.get('padreTipoDoc').disable();
@@ -589,21 +580,21 @@ export class FormIngresosComponent implements OnInit {
     if (this.madreIgualAResp) {
       this.padreIgualAResp = false;
       this.padreIgualResponsable();
-      this.f.get('madreTipoDoc').patchValue(this.fv.respTipoDoc);
-      this.f.get('madreDocumento').patchValue(this.fv.respDocumento);
-      this.f.get('madreNombre1').patchValue(this.fv.respNombre1);
-      this.f.get('madreNombre2').patchValue(this.fv.respNombre2);
-      this.f.get('madreApellido1').patchValue(this.fv.respApellido1);
-      this.f.get('madreApellido2').patchValue(this.fv.respApellido2);
-      this.f.get('madreSexo').patchValue(this.fv.respSexo);
-      this.f.get('madreNacimiento').patchValue(this.fv.respNacimiento);
+      this.f.get('madreTipoDoc').patchValue(this.frv.respTipoDoc);
+      this.f.get('madreDocumento').patchValue(this.frv.respDocumento);
+      this.f.get('madreNombre1').patchValue(this.frv.respNombre1);
+      this.f.get('madreNombre2').patchValue(this.frv.respNombre2);
+      this.f.get('madreApellido1').patchValue(this.frv.respApellido1);
+      this.f.get('madreApellido2').patchValue(this.frv.respApellido2);
+      this.f.get('madreSexo').patchValue(this.frv.respSexo);
+      this.f.get('madreNacimiento').patchValue(this.frv.respNacimiento);
     } else {
       this.f.get('madreTipoDoc').patchValue(null);
       this.f.get('madreDocumento').patchValue(null);
-      this.f.get('madreNombre1').patchValue(null);
-      this.f.get('madreNombre2').patchValue(null);
-      this.f.get('madreApellido1').patchValue(null);
-      this.f.get('madreApellido2').patchValue(null);
+      this.f.get('madreNombre1').patchValue('');
+      this.f.get('madreNombre2').patchValue('');
+      this.f.get('madreApellido1').patchValue('');
+      this.f.get('madreApellido2').patchValue('');
       this.f.get('madreSexo').patchValue(null);
       this.f.get('madreNacimiento').patchValue(null);
     }
@@ -623,10 +614,10 @@ export class FormIngresosComponent implements OnInit {
     } else {
       this.f.get('padreTipoDoc').patchValue(null);
       this.f.get('padreDocumento').patchValue(null);
-      this.f.get('padreNombre1').patchValue(null);
-      this.f.get('padreNombre2').patchValue(null);
-      this.f.get('padreApellido1').patchValue(null);
-      this.f.get('padreApellido2').patchValue(null);
+      this.f.get('padreNombre1').patchValue('');
+      this.f.get('padreNombre2').patchValue('');
+      this.f.get('padreApellido1').patchValue('');
+      this.f.get('padreApellido2').patchValue('');
       this.f.get('padreSexo').patchValue(null);
       this.f.get('padreNacimiento').patchValue(null);
     }
@@ -655,6 +646,10 @@ export class FormIngresosComponent implements OnInit {
   }
 
   ingresarBeneficiario() {
+    if (this.formIngreso.invalid) {
+      this.formIngreso.markAllAsTouched();
+      return;
+    }
     this.formatearFechas();
     alertConfirm
       .fire({
