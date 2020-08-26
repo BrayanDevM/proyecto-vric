@@ -29,8 +29,10 @@ export class DashboardUdsComponent implements OnInit {
   totalHombres = 0;
   totalMujeres = 0;
 
-  // total por población
-  totalExtranjeros = 0;
+  // Segregado por población
+  totalLactantes = 0;
+  totalMayoresSeisMeses = 0;
+  totalMG = 0;
 
   // Segregado por fecha
   ingresosPorMes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -54,7 +56,6 @@ export class DashboardUdsComponent implements OnInit {
   conDiscapacidad = 0;
 
   mgAdolescente = 0;
-  totalMG = 0;
 
   constructor(private rutaActual: ActivatedRoute, private uds$: UdsService) {}
 
@@ -65,7 +66,7 @@ export class DashboardUdsComponent implements OnInit {
       this.codigo = unidad.codigo;
       this.contarCupos(unidad.beneficiarios);
       unidad.beneficiarios.forEach((beneficiario: Beneficiario) => {
-        this.contarPoblacion(beneficiario);
+        this.contarTipoBeneficiario(beneficiario);
         this.contarIngresosPorMes(beneficiario);
         this.contarConDiscapacidad(beneficiario);
         this.contarMgAdolescente(beneficiario);
@@ -112,41 +113,35 @@ export class DashboardUdsComponent implements OnInit {
     });
   }
 
-  contarPoblacion(beneficiario: Beneficiario) {
+  contarTipoBeneficiario(beneficiario: Beneficiario) {
     // datos
     const nacimiento = moment(beneficiario.nacimiento, 'DD/MM/YYYY');
-    const edadAnios = this.hoy.diff(nacimiento, 'years');
-    const sexo = beneficiario.sexo;
+    const edadMeses = this.hoy.diff(nacimiento, 'months');
     const estado = beneficiario.estado;
-    const tipoDoc = beneficiario.tipoDoc;
 
     if (
-      (sexo === 'Hombre' && edadAnios <= 5 && estado === 'Vinculado') ||
-      (sexo === 'Hombre' && edadAnios <= 5 && estado === 'Dato sensible')
+      (edadMeses < 6 && estado === 'Vinculado') ||
+      (edadMeses < 6 && estado === 'Dato sensible') ||
+      (edadMeses < 6 && estado === 'Pendiente desvincular')
     ) {
-      this.totalHombres += 1;
+      this.totalLactantes += 1;
       // console.log(beneficiario);
     }
     if (
-      (sexo === 'Mujer' && edadAnios <= 5 && estado === 'Vinculado') ||
-      (sexo === 'Mujer' && edadAnios <= 5 && estado === 'Dato sensible')
+      (edadMeses >= 6 && edadMeses <= 120 && estado === 'Vinculado') ||
+      (edadMeses >= 6 && edadMeses <= 120 && estado === 'Dato sensible') ||
+      (edadMeses >= 6 && edadMeses <= 120 && estado === 'Pendiente desvincular')
     ) {
-      this.totalMujeres += 1;
+      // 120 meses (10 años)
+      this.totalMayoresSeisMeses += 1;
       // console.log(beneficiario);
     }
     if (
-      (edadAnios > 5 && estado === 'Vinculado') ||
-      (edadAnios > 5 && estado === 'Dato sensible')
+      (edadMeses > 120 && estado === 'Vinculado') ||
+      (edadMeses > 120 && estado === 'Dato sensible') ||
+      (edadMeses > 120 && estado === 'Pendiente desvincular')
     ) {
       this.totalMG += 1;
-      // console.log(beneficiario);
-    }
-    if (
-      (tipoDoc === 'SD' && estado === 'Vinculado') ||
-      (tipoDoc === 'SD' && estado === 'Dato sensible')
-    ) {
-      this.totalExtranjeros += 1;
-      // console.log(beneficiario);
     }
   }
 

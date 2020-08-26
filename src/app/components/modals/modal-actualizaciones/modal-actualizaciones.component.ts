@@ -11,6 +11,6 @@ export class ModalActualizacionesComponent implements OnInit {
   ngOnInit(): void {}
 
   actualizacionVista() {
-    localStorage.setItem('cerrarUpdateModal-v1.6.0', 'true');
+    localStorage.setItem('cerrarUpdateModal-v1.6.1', 'true');
   }
 }

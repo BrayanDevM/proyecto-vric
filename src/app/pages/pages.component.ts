@@ -19,6 +19,7 @@ export class PagesComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     localStorage.removeItem('cerrarUpdateModal');
     localStorage.removeItem('cerrarUpdateModal-v1.5.1');
+    localStorage.removeItem('cerrarUpdateModal-v1.6.0');
   }
 
   ngAfterViewInit() {
@@ -35,7 +36,7 @@ export class PagesComponent implements OnInit, AfterViewInit {
   }
 
   mostrarModalActualizaciones() {
-    const modalVisto = localStorage.getItem('cerrarUpdateModal-v1.6.0');
+    const modalVisto = localStorage.getItem('cerrarUpdateModal-v1.6.1');
     if (modalVisto === 'true') {
       return;
     } else {

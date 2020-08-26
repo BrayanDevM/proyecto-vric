@@ -16,7 +16,7 @@
             ></app-pie-chart>
 
             <div class="card-graphic-info">
-              <i class="fas fa-user" style="color: #4de2b8;"></i>
+              <i class="fas fa-user" style="color: #51d0c5;"></i>
               <span class="graphic-number">{{
                 totalVinculados + totalDS
               }}</span>
@@ -46,10 +46,15 @@
         </div> -->
         <div class="col-3">
           <div class="card card-body pb-5">
-            <h5 class="card-title">Población</h5>
+            <h5 class="card-title">Tipos de beneficiarios</h5>
             <app-pie-chart
-              [pieChartData]="[totalMG, totalMujeres, totalHombres]"
-              [bgColors]="['#70bbfe', '#fd4962', '#f6da6d', '#4de2b8']"
+              [pieChartData]="[totalMG, totalLactantes, totalMayoresSeisMeses]"
+              [bgColors]="['#f06495', '#2dc6d6', '#02abc0']"
+              [labels]="[
+                'Mujer gestante',
+                'Menores de seis meses',
+                'Mayores de seis meses'
+              ]"
               [holeSize]="70"
               [legendDisplay]="true"
             ></app-pie-chart>

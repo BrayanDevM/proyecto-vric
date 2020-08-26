@@ -8,9 +8,10 @@ import { Color, BaseChartDirective, Label } from 'ng2-charts';
   styleUrls: ['./pie-chart.component.css']
 })
 export class PieChartComponent implements OnInit {
-  @Input() bgColors = ['#4de2b8', '#eee'];
-  @Input() holeSize = 89;
+  @Input() bgColors = ['#51d0c5', '#eee'];
+  @Input() holeSize = 88;
   @Input() legendDisplay = false;
+  @Input() labels = ['Mujeres gestantes', 'Niñas', 'Niños'];
 
   // Pie
   pieChartOptions: ChartOptions = {
@@ -37,12 +38,7 @@ export class PieChartComponent implements OnInit {
       }
     }
   };
-  pieChartLabels: Label[] = [
-    'Mujeres gestantes',
-    'Niñas',
-    'Niños'
-    // 'Extranjeros'
-  ];
+  pieChartLabels: Label[] = ['Mujeres gestantes', 'Niñas', 'Niños'];
   @Input() pieChartData: number[] = [1250, 1688];
   pieChartType: ChartType = 'doughnut';
   pieChartLegend = true;
@@ -62,6 +58,7 @@ export class PieChartComponent implements OnInit {
       this.pieChartColors = [{ backgroundColor: this.bgColors }];
       this.pieChartOptions.cutoutPercentage = this.holeSize;
       this.pieChartOptions.legend.display = this.legendDisplay;
+      this.pieChartLabels = this.labels;
     }
   }
 }
