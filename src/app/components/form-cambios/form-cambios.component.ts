@@ -440,10 +440,10 @@ export class FormCambiosComponent implements OnInit {
       criterio: 'Otro',
       infoCriterio: 'Cambio de Mujer Gestante',
       // Info responsable
-      respNombre1: madre.nombre1.toUpperCase(),
-      respNombre2: madre.nombre2.toUpperCase(),
-      respApellido1: madre.apellido1.toUpperCase(),
-      respApellido2: madre.apellido2.toUpperCase(),
+      respNombre1: madre.nombre1,
+      respNombre2: madre.nombre2,
+      respApellido1: madre.apellido1,
+      respApellido2: madre.apellido2,
       respTipoDoc: madre.tipoDoc,
       respDocumento: madre.documento.split('.').join(''),
       respNacimiento: madre.nacimiento,
@@ -456,10 +456,10 @@ export class FormCambiosComponent implements OnInit {
       // Info madre
       madreTipoDoc: madre.tipoDoc,
       madreDocumento: madre.documento.split('.').join(''),
-      madreNombre1: madre.nombre1.toUpperCase(),
-      madreNombre2: madre.nombre2.toUpperCase(),
-      madreApellido1: madre.apellido1.toUpperCase(),
-      madreApellido2: madre.apellido2.toUpperCase(),
+      madreNombre1: madre.nombre1,
+      madreNombre2: madre.nombre2,
+      madreApellido1: madre.apellido1,
+      madreApellido2: madre.apellido2,
       madreNacimiento: madre.nacimiento,
       madreSexo: madre.sexo
     });
