@@ -180,7 +180,7 @@ export class FormCambiosComponent implements OnInit {
       apellido1: ['', Validators.required],
       apellido2: [''],
       sexo: [null, Validators.required],
-      discapacidad: [false, Validators.required],
+      discapacidad: [null, Validators.required],
       infoDiscapacidad: null,
       nacimiento: [null, Validators.required],
       paisNacimiento: [null, Validators.required],
@@ -423,11 +423,11 @@ export class FormCambiosComponent implements OnInit {
     ).format('DD/MM/YYYY');
   }
 
-  reemplazarInfoForm(madre: Beneficiario) {
+  procesarFormulario(madre: Beneficiario) {
     this.formCambio.patchValue({
       // Info ubicación
       direccion: madre.direccion,
-      barrio: madre.barrio,
+      barrio: madre.barrio || 'Sin barrio',
       telefono: madre.telefono,
       criterio: 'Otro',
       infoCriterio: 'Cambio de Mujer Gestante',
@@ -457,6 +457,7 @@ export class FormCambiosComponent implements OnInit {
     });
     if (this.tienePadre) {
       this.formCambio.patchValue({
+        padreDocumento: this.fv.padreDocumento.split('.').join(''),
         padreNacimiento: moment(this.fv.padreNacimiento, 'YYYY-MM-DD').format(
           'DD/MM/YYYY'
         )
@@ -465,6 +466,7 @@ export class FormCambiosComponent implements OnInit {
   }
 
   reportarCambio() {
+    this.procesarFormulario(this.madreSeleccionada);
     if (this.formCambio.invalid) {
       alert('El formulario es inválido');
       console.log(this.formCambio, '<-- Form');
@@ -473,29 +475,27 @@ export class FormCambiosComponent implements OnInit {
       return;
     }
     console.log(this.formCambio, '<-- Form');
-
-    this.reemplazarInfoForm(this.madreSeleccionada);
-    this.formatearFechas();
     alertConfirm
       .fire({
         title: 'Novedades',
         html: `<span>Deseas reportar al beneficiario:</span>
         <ul class="mt-2">
-          <li>
-            ${this.formCambio.value.nombre1}
-            ${this.formCambio.value.nombre2}
-            ${this.formCambio.value.apellido1}
-            ${this.formCambio.value.apellido2}
-          </li>
-          <li>${this.formCambio.value.tipoDoc}: ${this.formCambio.value.documento}</li>
-          <li>Nacimiento: ${this.formCambio.value.nacimiento}</li>
+        <li>
+        ${this.formCambio.value.nombre1}
+        ${this.formCambio.value.nombre2}
+        ${this.formCambio.value.apellido1}
+        ${this.formCambio.value.apellido2}
+        </li>
+        <li>${this.formCambio.value.tipoDoc}: ${this.formCambio.value.documento}</li>
+        <li>Nacimiento: ${this.formCambio.value.nacimiento}</li>
         </ul>
-      `,
+        `,
         confirmButtonText: 'Sí, reportar cambio'
       })
       .then((result: any) => {
         if (result.value) {
           this.creando = true;
+          this.formatearFechas();
           this.beneficiarios$
             .crearBeneficiario(this.formCambio.value)
             .subscribe(
