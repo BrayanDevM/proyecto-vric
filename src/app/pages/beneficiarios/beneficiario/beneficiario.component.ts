@@ -343,6 +343,9 @@ export class BeneficiarioComponent implements OnInit {
       this.beneficiario.egreso,
       'YYYY-MM-DD'
     ).format('DD/MM/YYYY');
+    this.beneficiario.documento = this.beneficiario.documento
+      .split('.')
+      .join('');
     this.beneficiarios$
       .actualizarBeneficiario(this.beneficiario)
       .subscribe((resp: any) => {
@@ -363,6 +366,7 @@ export class BeneficiarioComponent implements OnInit {
       this.responsable.nacimiento,
       'YYYY-MM-DD'
     ).format('DD/MM/YYYY');
+    this.responsable.documento = this.responsable.documento.split('.').join('');
     this.responsables$
       .actualizarResponsable(this.responsable)
       .subscribe((resp: any) => {

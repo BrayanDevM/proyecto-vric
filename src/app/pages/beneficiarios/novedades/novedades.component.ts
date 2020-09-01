@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Uds } from 'src/app/models/uds.model';
 import { UdsService } from 'src/app/services/uds.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
-import { CookieService } from 'ngx-cookie-service';
 import { Usuario } from 'src/app/models/usuario.model';
 declare const moment: any;
 
@@ -15,19 +14,36 @@ export class NovedadesComponent implements OnInit {
   usuario: Usuario;
   udsAsignadas: Uds[];
   query = '';
-  proximoMes = moment()
-    .add(1, 'M')
-    .format('MMMM');
+  semanaActual: any;
+  proximoCambioGestantes: any;
 
-  constructor(
-    private usuario$: UsuarioService,
-    private uds$: UdsService,
-    private cookie$: CookieService
-  ) {}
+  constructor(private usuario$: UsuarioService, private uds$: UdsService) {
+    this.semanaActual = this.weekOfMonth(moment());
+    // console.log(this.semanaActual);
+    if (this.semanaActual === 1) {
+      this.proximoCambioGestantes = 'esta semana';
+    } else {
+      this.proximoCambioGestantes =
+        'el mes siguiente, ' +
+        moment()
+          .add(1, 'M')
+          .format('MMMM');
+    }
+  }
 
   ngOnInit() {
     this.usuario = this.usuario$.usuario;
     this.obtenerUds();
+  }
+
+  weekOfMonth(m) {
+    return (
+      m.week() -
+      moment(m)
+        .startOf('month')
+        .week() +
+      1
+    );
   }
 
   obtenerUds() {

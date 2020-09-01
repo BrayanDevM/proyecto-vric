@@ -114,7 +114,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'uds',
+    path: 'unidades-de-servicio',
     component: UdsComponent,
     canActivate: [AdminGuard, VerificaTokenGuard],
     data: {

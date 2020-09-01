@@ -18,7 +18,7 @@
   <tbody>
     <tr *ngFor="let beneficiario of beneficiarios">
       <td>{{ beneficiario.tipoDoc }}</td>
-      <td>{{ beneficiario.documento }}</td>
+      <td>{{ beneficiario.documento | documento }}</td>
       <td>{{ beneficiario.nombre1 }}</td>
       <td>{{ beneficiario.nombre2 }}</td>
       <td>{{ beneficiario.apellido1 }}</td>

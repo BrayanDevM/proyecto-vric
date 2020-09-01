@@ -9,7 +9,11 @@ import { UsuarioService } from 'src/app/services/usuario.service';
 import Swal from 'sweetalert2/src/sweetalert2.js';
 import { Beneficiario } from 'src/app/models/beneficiario.model';
 import { NgOption } from '@ng-select/ng-select';
-import { alertSuccess, alertConfirm } from 'src/app/helpers/swal2.config';
+import {
+  alertSuccess,
+  alertConfirm,
+  alertError
+} from 'src/app/helpers/swal2.config';
 declare var moment: any;
 
 @Component({
@@ -428,12 +432,12 @@ export class FormCambiosComponent implements OnInit {
       criterio: 'Otro',
       infoCriterio: 'Cambio de Mujer Gestante',
       // Info responsable
-      respNombre1: madre.nombre1,
-      respNombre2: madre.nombre2,
-      respApellido1: madre.apellido1,
-      respApellido2: madre.apellido2,
+      respNombre1: madre.nombre1.toUpperCase(),
+      respNombre2: madre.nombre2.toUpperCase(),
+      respApellido1: madre.apellido1.toUpperCase(),
+      respApellido2: madre.apellido2.toUpperCase(),
       respTipoDoc: madre.tipoDoc,
-      respDocumento: madre.documento,
+      respDocumento: madre.documento.split('.').join(''),
       respNacimiento: madre.nacimiento,
       respSexo: madre.sexo,
       respPaisNacimiento: madre.paisNacimiento,
@@ -443,11 +447,11 @@ export class FormCambiosComponent implements OnInit {
       fecha: moment().format('DD/MM/YYYY'),
       // Info madre
       madreTipoDoc: madre.tipoDoc,
-      madreDocumento: madre.documento,
-      madreNombre1: madre.nombre1,
-      madreNombre2: madre.nombre2,
-      madreApellido1: madre.apellido1,
-      madreApellido2: madre.apellido2,
+      madreDocumento: madre.documento.split('.').join(''),
+      madreNombre1: madre.nombre1.toUpperCase(),
+      madreNombre2: madre.nombre2.toUpperCase(),
+      madreApellido1: madre.apellido1.toUpperCase(),
+      madreApellido2: madre.apellido2.toUpperCase(),
       madreNacimiento: madre.nacimiento,
       madreSexo: madre.sexo
     });
@@ -461,9 +465,16 @@ export class FormCambiosComponent implements OnInit {
   }
 
   reportarCambio() {
+    if (this.formCambio.invalid) {
+      alert('El formulario es inválido');
+      console.log(this.formCambio, '<-- Form');
+
+      this.formCambio.markAllAsTouched();
+      return;
+    }
+    console.log(this.formCambio, '<-- Form');
+
     this.reemplazarInfoForm(this.madreSeleccionada);
-    console.log(this.fv, 'form to send');
-    return;
     this.formatearFechas();
     alertConfirm
       .fire({
@@ -501,7 +512,10 @@ export class FormCambiosComponent implements OnInit {
                   this.creando = false;
                 }
               },
-              error => (this.creando = false)
+              error => {
+                this.creando = false;
+                alertError.fire('Error', error);
+              }
             );
         }
       });

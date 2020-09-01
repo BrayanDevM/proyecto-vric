@@ -444,48 +444,27 @@ export class FormIngresosComponent implements OnInit {
             const responsable: RespBeneficiario = resp.respBeneficiarios[0];
             this.respExiste = true;
 
-            this.formIngreso.get('respTipoDoc').patchValue(responsable.tipoDoc);
-            this.irespTipoDoc.setDisabledState(true);
-
-            this.iRespNombre1.nativeElement.value = responsable.nombre1;
-            this.iRespNombre1.nativeElement.disabled = true;
-
-            this.iRespNombre2.nativeElement.value = responsable.nombre2;
-            this.iRespNombre2.nativeElement.disabled = true;
-
-            this.iRespApellido1.nativeElement.value = responsable.apellido1;
-            this.iRespApellido1.nativeElement.disabled = true;
-
-            this.iRespApellido2.nativeElement.value = responsable.apellido2;
-            this.iRespApellido2.nativeElement.disabled = true;
-
-            this.iRespNacimiento.nativeElement.value = moment(
-              responsable.nacimiento,
-              'DD/MM/YYYY'
-            ).format('YYYY-MM-DD');
-            this.iRespNacimiento.nativeElement.disabled = true;
-
-            this.formIngreso.get('respSexo').patchValue(responsable.sexo);
-            this.iRespSexo.setDisabledState(true);
-
-            this.iRespNacimiento.nativeElement.disabled = true;
-
-            this.formIngreso
-              .get('respPaisNacimiento')
-              .patchValue(responsable.paisNacimiento);
-            this.iRespPaisNac.setDisabledState(true);
+            this.formIngreso.patchValue({
+              respTipoDoc: responsable.tipoDoc,
+              respNombre1: responsable.nombre1,
+              respNombre2: responsable.nombre2,
+              respApellido1: responsable.apellido2,
+              respApellido2: responsable.apellido2,
+              respNacimiento: moment(
+                responsable.nacimiento,
+                'DD/MM/YYYY'
+              ).format('YYYY-MM-DD'),
+              respSexo: responsable.sexo,
+              respPaisNacimiento: responsable.paisNacimiento
+            });
             this.cambiarDepartamentosResp(responsable.paisNacimiento);
-
-            this.formIngreso
-              .get('respDptoNacimiento')
-              .patchValue(responsable.dptoNacimiento);
-            this.iRespDptoNac.setDisabledState(true);
+            this.formIngreso.patchValue({
+              respDptoNacimiento: responsable.dptoNacimiento
+            });
             this.cambiarCiudadesResp(responsable.dptoNacimiento);
-
-            this.formIngreso
-              .get('respMunicipioNacimiento')
-              .patchValue(responsable.municipioNacimiento);
-            this.iRespMunicipioNac.setDisabledState(true);
+            this.formIngreso.patchValue({
+              respMunicipioNacimiento: responsable.municipioNacimiento
+            });
 
             this.iRespTipoResp.focus();
             this.iRespTipoResp.open();
@@ -501,37 +480,19 @@ export class FormIngresosComponent implements OnInit {
   }
 
   despejarCamposResponsable() {
-    this.iRespNombre1.nativeElement.value = null;
-    this.iRespNombre1.nativeElement.disabled = false;
-
-    this.iRespNombre2.nativeElement.value = null;
-    this.iRespNombre2.nativeElement.disabled = false;
-
-    this.iRespApellido1.nativeElement.value = null;
-    this.iRespApellido1.nativeElement.disabled = false;
-
-    this.iRespApellido2.nativeElement.value = null;
-    this.iRespApellido2.nativeElement.disabled = false;
-
-    this.iRespNacimiento.nativeElement.value = null;
-    this.iRespNacimiento.nativeElement.disabled = false;
-
-    this.formIngreso.get('respTipoDoc').patchValue([]);
-    this.irespTipoDoc.setDisabledState(false);
-
-    this.formIngreso.get('respSexo').patchValue([]);
-    this.iRespSexo.setDisabledState(false);
-
-    this.formIngreso.get('respPaisNacimiento').patchValue([]);
-    this.iRespPaisNac.setDisabledState(false);
-    this.cambiarDepartamentosResp([]);
-
-    this.formIngreso.get('respDptoNacimiento').patchValue([]);
-    this.iRespDptoNac.setDisabledState(false);
-    this.cambiarCiudadesResp('Extranjero');
-
-    this.formIngreso.get('respMunicipioNacimiento').patchValue([]);
-    this.iRespMunicipioNac.setDisabledState(false);
+    this.formIngreso.patchValue({
+      respTipoDoc: null,
+      respNombre1: '',
+      respNombre2: '',
+      respApellido1: '',
+      respApellido2: '',
+      respNacimiento: null,
+      respSexo: null,
+      respPaisNacimiento: null,
+      respDptoNacimiento: null,
+      respMunicipioNacimiento: null
+    });
+    this.respExiste = false;
   }
 
   desactivarCamposPadre() {
@@ -580,17 +541,17 @@ export class FormIngresosComponent implements OnInit {
     if (this.madreIgualAResp) {
       this.padreIgualAResp = false;
       this.padreIgualResponsable();
-      this.f.get('madreTipoDoc').patchValue(this.frv.respTipoDoc);
-      this.f.get('madreDocumento').patchValue(this.frv.respDocumento);
-      this.f.get('madreNombre1').patchValue(this.frv.respNombre1);
-      this.f.get('madreNombre2').patchValue(this.frv.respNombre2);
-      this.f.get('madreApellido1').patchValue(this.frv.respApellido1);
-      this.f.get('madreApellido2').patchValue(this.frv.respApellido2);
-      this.f.get('madreSexo').patchValue(this.frv.respSexo);
-      this.f.get('madreNacimiento').patchValue(this.frv.respNacimiento);
+      this.f.get('madreTipoDoc').patchValue(this.fv.respTipoDoc);
+      this.f.get('madreDocumento').patchValue(this.fv.respDocumento);
+      this.f.get('madreNombre1').patchValue(this.fv.respNombre1);
+      this.f.get('madreNombre2').patchValue(this.fv.respNombre2);
+      this.f.get('madreApellido1').patchValue(this.fv.respApellido1);
+      this.f.get('madreApellido2').patchValue(this.fv.respApellido2);
+      this.f.get('madreSexo').patchValue(this.fv.respSexo);
+      this.f.get('madreNacimiento').patchValue(this.fv.respNacimiento);
     } else {
       this.f.get('madreTipoDoc').patchValue(null);
-      this.f.get('madreDocumento').patchValue(null);
+      this.f.get('madreDocumento').patchValue('');
       this.f.get('madreNombre1').patchValue('');
       this.f.get('madreNombre2').patchValue('');
       this.f.get('madreApellido1').patchValue('');
@@ -613,7 +574,7 @@ export class FormIngresosComponent implements OnInit {
       this.f.get('padreNacimiento').patchValue(this.fv.respNacimiento);
     } else {
       this.f.get('padreTipoDoc').patchValue(null);
-      this.f.get('padreDocumento').patchValue(null);
+      this.f.get('padreDocumento').patchValue('');
       this.f.get('padreNombre1').patchValue('');
       this.f.get('padreNombre2').patchValue('');
       this.f.get('padreApellido1').patchValue('');
@@ -623,54 +584,71 @@ export class FormIngresosComponent implements OnInit {
     }
   }
 
-  formatearFechas() {
-    this.fv.fecha = moment().format('DD/MM/YYYY');
-    this.fv.nacimiento = moment(this.fv.nacimiento, 'YYYY-MM-DD').format(
-      'DD/MM/YYYY'
-    );
-    this.fv.respNacimiento = moment(
-      this.fv.respNacimiento,
-      'YYYY-MM-DD'
-    ).format('DD/MM/YYYY');
-    this.fv.madreNacimiento = moment(
-      this.fv.madreNacimiento,
-      'YYYY-MM-DD'
-    ).format('DD/MM/YYYY');
-    this.fv.padreNacimiento = moment(
-      this.fv.padreNacimiento,
-      'YYYY-MM-DD'
-    ).format('DD/MM/YYYY');
-    this.fv.ingreso = moment(this.fv.ingreso, 'YYYY-MM-DD').format(
-      'DD/MM/YYYY'
-    );
+  procesarFormulario() {
+    this.formIngreso.patchValue({
+      documento: this.fv.documento.split('.').join(''),
+      fecha: moment().format('DD/MM/YYYY'),
+      nacimiento: moment(this.fv.nacimiento, 'YYYY-MM-DD').format('DD/MM/YYYY'),
+      respDocumento: this.fv.respDocumento.split('.').join(''),
+      respNacimiento: moment(this.fv.respNacimiento, 'YYYY-MM-DD').format(
+        'DD/MM/YYYY'
+      ),
+      ingreso: moment(this.fv.ingreso, 'YYYY-MM-DD').format('DD/MM/YYYY')
+    });
+    if (this.tieneMadre) {
+      this.formIngreso.patchValue({
+        madreDocumento: this.fv.madreDocumento.split('.').join(''),
+        madreNacimiento: moment(this.fv.madreNacimiento, 'YYYY-MM-DD').format(
+          'DD/MM/YYYY'
+        )
+      });
+    }
+    if (this.tienePadre) {
+      this.formIngreso.patchValue({
+        padreDocumento: this.fv.padreDocumento.split('.').join(''),
+        padreNacimiento: moment(this.fv.padreNacimiento, 'YYYY-MM-DD').format(
+          'DD/MM/YYYY'
+        )
+      });
+    }
   }
 
   ingresarBeneficiario() {
+    this.formIngreso.patchValue({
+      respNombre1: this.f.getRawValue().respNombre1,
+      respNombre2: this.f.getRawValue().respNombre2,
+      respApellido1: this.f.getRawValue().respApellido1,
+      respApellido2: this.f.getRawValue().respApellido2,
+      respNacimiento: this.f.getRawValue().respNacimiento
+    });
     if (this.formIngreso.invalid) {
+      alert('El formulario es inválido');
+      console.log(this.formIngreso, '<-- form');
       this.formIngreso.markAllAsTouched();
       return;
     }
-    this.formatearFechas();
+    console.log(this.formIngreso, '<-- form');
     alertConfirm
       .fire({
         title: 'Novedades',
         html: `<span>Deseas reportar al beneficiario:</span>
         <ul class="mt-2">
-          <li>
-            ${this.fv.nombre1}
+        <li>
+        ${this.fv.nombre1}
             ${this.fv.nombre2}
             ${this.fv.apellido1}
             ${this.fv.apellido2}
-          </li>
-          <li>${this.fv.tipoDoc}: ${this.fv.documento}</li>
-          <li>Nacimiento: ${this.fv.nacimiento}</li>
-        </ul>
-      `,
+            </li>
+            <li>${this.fv.tipoDoc}: ${this.fv.documento}</li>
+            <li>Nacimiento: ${this.fv.nacimiento}</li>
+            </ul>
+            `,
         confirmButtonText: 'Sí, reportar ingreso'
       })
       .then((result: any) => {
         if (result.value) {
           this.creando = true;
+          this.procesarFormulario();
           this.beneficiarios$.crearBeneficiario(this.fv).subscribe(
             (resp: any) => {
               if (resp.ok) {
@@ -687,8 +665,9 @@ export class FormIngresosComponent implements OnInit {
               this.creando = false;
               alertError.fire({
                 title: 'Beneficiarios',
-                text:
-                  'No fue posible establecer contacto con el servidor, por favor intentalo nuevamente.',
+                html: `No fue posible establecer contacto con el servidor, por favor intentalo nuevamente. <br> Error: ${JSON.parse(
+                  error
+                )} `,
                 confirmButtonText: 'Entendido'
               });
             }

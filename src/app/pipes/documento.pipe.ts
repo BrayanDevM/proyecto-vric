@@ -5,9 +5,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class DocumentoPipe implements PipeTransform {
   transform(documento: any): any {
-    if (documento === null || documento === undefined) {
-      return;
+    if (documento === null || documento === undefined || documento === '') {
+      return '';
     }
+    documento += ''; // toString
 
     const esExtranjero = this.comprobarDocumentoExtranjero(documento);
     if (esExtranjero) {

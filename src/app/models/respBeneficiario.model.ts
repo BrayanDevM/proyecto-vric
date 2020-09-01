@@ -1,7 +1,7 @@
 export class RespBeneficiario {
   constructor(
     public tipoDoc: string,
-    public documento: number,
+    public documento: string,
     public nombre1: string,
     public nombre2: string,
     public apellido1: string,

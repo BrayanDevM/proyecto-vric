@@ -371,6 +371,7 @@
               bindLabel="label"
               groupBy="group"
               labelForId="respTipoDoc"
+              [readonly]="respExiste"
               placeholder="Seleccionar tipo de documento"
               (change)="comprobarSD($event, 'respDocumento')"
               formControlName="respTipoDoc"
@@ -437,6 +438,7 @@
               name="respNombre1"
               type="text"
               class="form-control"
+              [readonly]="respExiste"
               placeholder="ej. John"
               required
             />
@@ -451,6 +453,7 @@
               name="respNombre2"
               type="text"
               class="form-control"
+              [readonly]="respExiste"
               placeholder="..."
             />
           </div>
@@ -464,6 +467,7 @@
               name="respApellido1"
               type="text"
               class="form-control"
+              [readonly]="respExiste"
               placeholder="ej. Doe"
               required
             />
@@ -478,6 +482,7 @@
               name="respApellido2"
               type="text"
               class="form-control"
+              [readonly]="respExiste"
               placeholder="...
               "
             />
@@ -493,6 +498,7 @@
               bindValue="value"
               bindLabel="label"
               labelForId="respSexo"
+              [readonly]="respExiste"
               placeholder="Seleccionar sexo"
               formControlName="respSexo"
               name="respSexo"
@@ -517,6 +523,7 @@
               id="respNacimiento"
               type="date"
               class="form-control"
+              [readonly]="respExiste"
               autocomplete="off"
             />
           </div>
@@ -530,6 +537,7 @@
               bindValue="value"
               bindLabel="label"
               labelForId="respPaisNacimiento"
+              [readonly]="respExiste"
               placeholder="Seleccionar país"
               (change)="cambiarDepartamentosResp($event)"
               formControlName="respPaisNacimiento"
@@ -548,6 +556,7 @@
               bindValue="departamento"
               bindLabel="departamento"
               labelForId="respDptoNacimiento"
+              [readonly]="respExiste"
               placeholder="Seleccionar departamento"
               (change)="cambiarCiudadesResp($event)"
               formControlName="respDptoNacimiento"
@@ -566,6 +575,7 @@
               bindValue="municipio"
               bindLabel="municipio"
               labelForId="respMunicipioNacimiento"
+              [readonly]="respExiste"
               placeholder="Seleccionar municipio"
               formControlName="respMunicipioNacimiento"
               name="respMunicipioNacimiento"
