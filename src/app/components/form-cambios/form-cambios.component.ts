@@ -412,7 +412,7 @@ export class FormCambiosComponent implements OnInit {
     }
   }
 
-  formatearFechas() {
+  procesarFormulario() {
     this.formCambio.value.ingreso = moment(
       this.formCambio.value.ingreso,
       'YYYY-MM-DD'
@@ -421,9 +421,17 @@ export class FormCambiosComponent implements OnInit {
       this.formCambio.value.nacimiento,
       'YYYY-MM-DD'
     ).format('DD/MM/YYYY');
+    this.fv.padreDocumento = this.fv.padreDocumento.split('.').join('');
+    if (this.tienePadre) {
+      this.formCambio.patchValue({
+        padreNacimiento: moment(this.fv.padreNacimiento, 'YYYY-MM-DD').format(
+          'DD/MM/YYYY'
+        )
+      });
+    }
   }
 
-  procesarFormulario(madre: Beneficiario) {
+  procesarDatosMadre(madre: Beneficiario) {
     this.formCambio.patchValue({
       // Info ubicación
       direccion: madre.direccion,
@@ -455,18 +463,10 @@ export class FormCambiosComponent implements OnInit {
       madreNacimiento: madre.nacimiento,
       madreSexo: madre.sexo
     });
-    if (this.tienePadre) {
-      this.formCambio.patchValue({
-        padreDocumento: this.fv.padreDocumento.split('.').join(''),
-        padreNacimiento: moment(this.fv.padreNacimiento, 'YYYY-MM-DD').format(
-          'DD/MM/YYYY'
-        )
-      });
-    }
   }
 
   reportarCambio() {
-    this.procesarFormulario(this.madreSeleccionada);
+    this.procesarDatosMadre(this.madreSeleccionada);
     if (this.formCambio.invalid) {
       alert('El formulario es inválido');
       console.log(this.formCambio, '<-- Form');
@@ -474,7 +474,6 @@ export class FormCambiosComponent implements OnInit {
       this.formCambio.markAllAsTouched();
       return;
     }
-    console.log(this.formCambio, '<-- Form');
     alertConfirm
       .fire({
         title: 'Novedades',
@@ -495,7 +494,7 @@ export class FormCambiosComponent implements OnInit {
       .then((result: any) => {
         if (result.value) {
           this.creando = true;
-          this.formatearFechas();
+          this.procesarFormulario();
           this.beneficiarios$
             .crearBeneficiario(this.formCambio.value)
             .subscribe(
