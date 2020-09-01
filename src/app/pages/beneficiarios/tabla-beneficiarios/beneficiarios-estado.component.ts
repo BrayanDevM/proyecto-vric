@@ -56,14 +56,16 @@ export class BeneficiariosEstadoComponent implements OnInit, OnDestroy {
     private notif: MatSnackBar
   ) {
     this.obtenerInfoRuta().subscribe(estado => {
-      this.obtenerUdsAsignadas().then(exito => {
-        if (exito) {
-          this.obtenerBeneficiarios_responsables(
-            estado,
-            this.queryUdsAsignadas
-          );
-        }
-      });
+      if (estado !== undefined) {
+        this.obtenerUdsAsignadas().then(exito => {
+          if (exito) {
+            this.obtenerBeneficiarios_responsables(
+              estado,
+              this.queryUdsAsignadas
+            );
+          }
+        });
+      }
     });
   }
 

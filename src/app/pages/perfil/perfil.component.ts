@@ -4,7 +4,7 @@ import { Usuario } from 'src/app/models/usuario.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UdsService } from 'src/app/services/uds.service';
 import { Uds } from 'src/app/models/uds.model';
-import { debenCoincidir } from 'src/app/helpers/deben-coincidir.validator';
+import { debenCoincidir } from 'src/app/helpers/Validators/deben-coincidir.validator';
 
 @Component({
   selector: 'app-perfil',

@@ -41,6 +41,15 @@
               <mat-error *ngIf="fc.tipoDoc.errors?.required">
                 Debes seleccionar un tipo de documento
               </mat-error>
+              <mat-error *ngIf="fc.tipoDoc.errors?.debeSerRC">
+                Beneficiario menor de 7 años debe tener RC
+              </mat-error>
+              <mat-error *ngIf="fc.tipoDoc.errors?.debeSerTI">
+                Beneficiario menor de 18 años debe tener TI
+              </mat-error>
+              <mat-error *ngIf="fc.tipoDoc.errors?.debeSerCC">
+                Beneficiario mayor de 18 años debe tener CC
+              </mat-error>
             </mat-form-field>
           </div>
         </div>
@@ -209,6 +218,9 @@
               <mat-icon matPrefix>language</mat-icon>
               <mat-error *ngIf="fc.paisNacimiento.errors?.required">
                 Debes seleccionar país de nacimiento
+              </mat-error>
+              <mat-error *ngIf="fc.paisNacimiento.errors?.debeSerDocExtranjero">
+                Un beneficiario extranjero no puede tener documento Colombiano
               </mat-error>
             </mat-form-field>
           </div>
@@ -652,6 +664,11 @@
               <mat-icon matPrefix>language</mat-icon>
               <mat-error *ngIf="fc.respPaisNacimiento.errors?.required">
                 Debes seleccionar país de nacimiento
+              </mat-error>
+              <mat-error
+                *ngIf="fc.respPaisNacimiento.errors?.debeSerDocExtranjero"
+              >
+                Un beneficiario extranjero no puede tener documento Colombiano
               </mat-error>
             </mat-form-field>
           </div>

@@ -4,10 +4,11 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'documento'
 })
 export class DocumentoPipe implements PipeTransform {
-  transform(documento: any): any {
+  transform(documento: string): string {
     if (documento === null || documento === undefined) {
       return '';
     }
+    documento += ''; // toString
 
     const esExtranjero = this.comprobarDocumentoExtranjero(documento);
     if (esExtranjero) {

@@ -294,6 +294,13 @@ button:focus {
   border: none;
 }
 
+.card-actions {
+  background-color: #fcfdff;
+  padding: 1.35rem 2rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
 h5.card-title {
   font-family: Inter, Roboto, Arial;
   font-size: 1.3rem;

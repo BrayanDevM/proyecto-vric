@@ -49,13 +49,13 @@ export class MyUrlSerializer extends DefaultUrlSerializer
   ],
   entryComponents: [DialogAcercaDeComponent],
   providers: [
-    { provide: UrlSerializer, useClass: MyUrlSerializer },
-    { provide: ErrorHandler, useClass: GlobalErrorHandler },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: ServerErrorInterceptor,
-      multi: true
-    }
+    // { provide: UrlSerializer, useClass: MyUrlSerializer }
+    // { provide: ErrorHandler, useClass: GlobalErrorHandler },
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: ServerErrorInterceptor,
+    //   multi: true
+    // }
   ],
   bootstrap: [AppComponent]
 })

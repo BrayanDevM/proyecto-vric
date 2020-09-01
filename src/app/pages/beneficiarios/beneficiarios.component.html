@@ -7,21 +7,19 @@
       </div>
     </div>
     <div class="page-actions col-xl-6 p-0">
-      <div class="mr-3">
-        <mat-form-field appearance="outlined" class="select">
-          <mat-select
-            #selectEstado
-            [(value)]="estadoSeleccionado"
-            (selectionChange)="obtenerBeneficiarios_porEstado($event.value)"
-            placeholder="Seleccionar estado"
-          >
-            <mat-option *ngFor="let estado of estados" [value]="estado.value">
-              {{ estado.label }}
-            </mat-option>
-          </mat-select>
-          <mat-icon matPrefix>trip_origin</mat-icon>
-        </mat-form-field>
-      </div>
+      <mat-form-field appearance="outlined" class="select mr-3">
+        <mat-select
+          #selectEstado
+          [(value)]="estadoSeleccionado"
+          (selectionChange)="obtenerBeneficiarios_porEstado($event.value)"
+          placeholder="Seleccionar estado"
+        >
+          <mat-option *ngFor="let estado of estados" [value]="estado.value">
+            {{ estado.label }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>trip_origin</mat-icon>
+      </mat-form-field>
       <mat-form-field appearance="outlined" class="select">
         <mat-select
           #selectUds

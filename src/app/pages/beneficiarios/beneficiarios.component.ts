@@ -142,7 +142,7 @@ export class BeneficiariosComponent implements OnInit, OnDestroy {
 
   validarCriterioBusqueda(params: any) {
     if (params.hasOwnProperty('estado')) {
-      console.log('envió estado: ' + params.estado);
+      // console.log('envió estado: ' + params.estado);
       this.estadoSeleccionado = params.estado;
       this.udsSeleccionada = null;
       return;

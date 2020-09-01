@@ -92,7 +92,7 @@
   <ng-container matColumnDef="documento">
     <th mat-header-cell *matHeaderCellDef>NUIP</th>
     <td mat-cell *matCellDef="let beneficiario">
-      {{ beneficiario.documento }}
+      {{ beneficiario.documento | documento }}
     </td>
   </ng-container>
   <!-- Name Column -->

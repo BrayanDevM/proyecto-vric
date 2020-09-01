@@ -19,7 +19,7 @@ import { AdministrarComponent } from './administrar/administrar.component';
 import { DashboardUdsComponent } from './dashboard/dashboard-uds/dashboard-uds.component';
 import { BeneficiariosUdsComponent } from './beneficiarios/tabla-beneficiarios/beneficiarios-uds.component';
 import { BeneficiariosEstadoComponent } from './beneficiarios/tabla-beneficiarios/beneficiarios-estado.component';
-import { BeneficiarioFormComponent } from './beneficiarios/beneficiario-form/beneficiario-form.component';
+import { BeneficiarioEditarComponent } from './beneficiarios/beneficiario-editar/beneficiario-editar.component';
 import { UsuarioComponent } from './usuarios/usuario/usuario.component';
 
 // Guards
@@ -35,7 +35,7 @@ const routes: Routes = [
     data: { nombrePagina: 'Dashboard' }
   },
   {
-    path: 'dashboard/uds/:id',
+    path: 'dashboard/uds/:unidadId',
     canActivate: [VerificaTokenGuard],
     component: DashboardUdsComponent,
     data: { nombrePagina: 'Dashboard UDS' }
@@ -46,7 +46,7 @@ const routes: Routes = [
     canActivate: [SupervisorGuard, VerificaTokenGuard],
     children: [
       {
-        path: 'contrato/:id',
+        path: 'contrato/:contratoId',
         component: ContratoComponent,
         data: { nombrePagina: 'Ver contrato' }
       },
@@ -64,7 +64,7 @@ const routes: Routes = [
     canActivate: [SupervisorGuard, VerificaTokenGuard],
     children: [
       {
-        path: 'unidad/:id',
+        path: 'unidad/:udsId',
         component: UnidadComponent,
         data: { nombrePagina: 'Ver UDS' }
       },
@@ -82,7 +82,7 @@ const routes: Routes = [
     canActivate: [AdminGuard, VerificaTokenGuard],
     children: [
       {
-        path: 'usuario/:id',
+        path: 'usuario/:usuarioId',
         component: UsuarioComponent,
         data: { nombrePagina: 'Ver usuario' }
       },
@@ -115,7 +115,7 @@ const routes: Routes = [
   {
     path: 'beneficiario/editar/:id',
     canActivate: [VerificaTokenGuard],
-    component: BeneficiarioFormComponent,
+    component: BeneficiarioEditarComponent,
     data: { nombrePagina: 'Edición de beneficiario' }
   },
   {

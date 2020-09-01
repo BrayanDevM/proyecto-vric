@@ -166,33 +166,33 @@ export class FormCambiosComponent implements OnInit {
       // Información de beneficiario
       selectUds: [null, Validators.required],
       beneficiarioId: [null, Validators.required],
-      tipoDoc: ['RC', Validators.required],
+      tipoDoc: [null, Validators.required],
       documento: [
-        '1.110.556.123',
+        '',
         [
           Validators.required,
           Validators.minLength(10),
           Validators.maxLength(13)
         ]
       ],
-      nombre1: ['Brayan', Validators.required],
+      nombre1: ['', Validators.required],
       nombre2: [''],
-      apellido1: ['Devia', Validators.required],
+      apellido1: ['', Validators.required],
       apellido2: [''],
-      sexo: ['Hombre', Validators.required],
-      nacimiento: [new Date(moment()), Validators.required],
-      paisNacimiento: ['Colombia', Validators.required],
+      sexo: [null, Validators.required],
+      nacimiento: [null, Validators.required],
+      paisNacimiento: [null, Validators.required],
       dptoNacimiento: [null, Validators.required],
       municipioNacimiento: [null, Validators.required],
-      autorreconocimiento: ['Ninguno', Validators.required],
-      discapacidad: [false, Validators.required],
+      autorreconocimiento: [null, Validators.required],
+      discapacidad: [null, Validators.required],
       infoDiscapacidad: null,
       direccion: [null],
       telefono: [null],
       barrio: [null],
       criterio: [null],
       infoCriterio: [null],
-      tipoResponsable: ['Madre'],
+      tipoResponsable: 'Madre',
       comentario: null,
       udsId: [null, Validators.required],
       ingreso: [null, Validators.required],
@@ -218,21 +218,21 @@ export class FormCambiosComponent implements OnInit {
       madreSexo: [null],
       madreNacimiento: [null],
       // Información de padre
-      padreTipoDoc: ['CC', Validators.required],
+      padreTipoDoc: [null, Validators.required],
       padreDocumento: [
-        '93.152.670',
+        '',
         [
           Validators.required,
           Validators.minLength(10),
           Validators.maxLength(13)
         ]
       ],
-      padreNombre1: ['MIGUEL', Validators.required],
-      padreNombre2: ['EDISON'],
-      padreApellido1: ['DEVIA', Validators.required],
-      padreApellido2: ['ALVAREZ'],
-      padreSexo: ['Hombre', Validators.required],
-      padreNacimiento: [new Date(moment([1972, 8, 12])), Validators.required],
+      padreNombre1: ['', Validators.required],
+      padreNombre2: [''],
+      padreApellido1: ['', Validators.required],
+      padreApellido2: [''],
+      padreSexo: [null, Validators.required],
+      padreNacimiento: [null, Validators.required],
       // otro
       fecha: null
     });
@@ -448,7 +448,7 @@ export class FormCambiosComponent implements OnInit {
       respApellido1: madre.apellido1,
       respApellido2: madre.apellido2,
       respTipoDoc: madre.tipoDoc,
-      respDocumento: madre.documento,
+      respDocumento: madre.documento.split('.').join(''),
       respNacimiento: madre.nacimiento,
       respSexo: madre.sexo,
       respPaisNacimiento: madre.paisNacimiento,
@@ -460,7 +460,7 @@ export class FormCambiosComponent implements OnInit {
       madreApellido1: madre.apellido1,
       madreApellido2: madre.apellido2,
       madreTipoDoc: madre.tipoDoc,
-      madreDocumento: madre.documento,
+      madreDocumento: madre.documento.split('.').join(''),
       madreNacimiento: madre.nacimiento,
       madreSexo: madre.sexo
     });
@@ -470,14 +470,16 @@ export class FormCambiosComponent implements OnInit {
    * Formateamos las fechas a formato DD/MM/YYYY para almacenar en
    * la base de datos
    */
-  formatearFechas() {
+  procesarFormulario() {
     this.formCambio.patchValue({
+      documento: this.fv.documento.split('.').join(''),
       fecha: moment().format('DD/MM/YYYY'),
       ingreso: moment(this.fv.ingreso).format('DD/MM/YYYY'),
       nacimiento: moment(this.fv.nacimiento).format('DD/MM/YYYY')
     });
     if (this.tienePadre) {
       this.formCambio.patchValue({
+        padreDocumento: this.fv.padreDocumento.split('.').join(''),
         padreNacimiento: moment(this.fv.padreNacimiento).format('DD/MM/YYYY')
       });
     }
@@ -494,17 +496,20 @@ export class FormCambiosComponent implements OnInit {
   }
 
   async confirmarIngreso() {
-    if (this.formCambio.invalid) {
-      this.formCambio.markAllAsTouched();
-      return;
-    }
+    // if (this.formCambio.invalid) {
+    //   this.formCambio.markAllAsTouched();
+    //   return;
+    // }
     this.reemplazarInfoForm(this.madreSeleccionada);
     this.dialogConfirmar(this.formCambio);
   }
 
   reportarCambio(confirmaIngreso: boolean) {
     if (confirmaIngreso) {
-      this.formatearFechas();
+      this.procesarFormulario();
+      console.log(this.formCambio.value);
+
+      return;
       this.beneficiarios$.crearBeneficiario(this.formCambio.value).subscribe(
         (resp: any) => {
           if (resp.ok) {

@@ -68,7 +68,7 @@
             <div class="form-field documento mb-1">
               <div class="label">
                 {{ data.tipoDoc }}.
-                <span id="documento">{{ data.documento }}</span>
+                <span id="documento">{{ data.documento | documento }}</span>
               </div>
               <button
                 type="button"
@@ -255,9 +255,7 @@
                 >
                   place
                 </mat-icon>
-                <div class="label text-nowrap">
-                  {{ data.direccion }}, {{ data.barrio }}
-                </div>
+                <div class="label">{{ data.direccion }}, {{ data.barrio }}</div>
               </div>
               <div class="form-field telefono">
                 <mat-icon
@@ -445,7 +443,9 @@
                 </mat-icon>
                 <div class="label">
                   {{ data.responsableId.tipoDoc }}.
-                  <span id="respDoc">{{ data.responsableId.documento }}</span>
+                  <span id="respDoc">{{
+                    data.responsableId.documento | documento
+                  }}</span>
                   <button
                     type="button"
                     (click)="copiar('respDoc')"
@@ -588,7 +588,9 @@
                 </mat-icon>
                 <div class="label">
                   {{ data.madreId.tipoDoc }}.
-                  <span id="madreDoc">{{ data.madreId.documento }}</span>
+                  <span id="madreDoc">{{
+                    data.madreId.documento | documento
+                  }}</span>
                   <button
                     type="button"
                     (click)="copiar('madreDoc')"
@@ -714,7 +716,9 @@
                 </mat-icon>
                 <div class="label">
                   {{ data.padreId.tipoDoc }}.
-                  <span id="madreDoc">{{ data.padreId.documento }}</span>
+                  <span id="madreDoc">{{
+                    data.padreId.documento | documento
+                  }}</span>
                   <button
                     type="button"
                     (click)="copiar('madreDoc')"

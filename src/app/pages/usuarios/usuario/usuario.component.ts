@@ -74,12 +74,11 @@ export class UsuarioComponent implements OnInit {
     });
     this.registrarIconos();
     this.obtenerContratos();
-    this.obtenerInfoRuta().subscribe(paramId => {
-      if (paramId === undefined) {
-        return;
+    this.obtenerInfoRuta().subscribe(usuarioId => {
+      if (usuarioId !== undefined) {
+        this.obtenerUsuario(usuarioId);
+        this.editMode = false;
       }
-      this.obtenerUsuario(paramId);
-      this.editMode = false;
     });
   }
 
@@ -97,7 +96,7 @@ export class UsuarioComponent implements OnInit {
     return this.router.events.pipe(
       filter(event => event instanceof ActivationEnd),
       filter((event: ActivationEnd) => event.snapshot.firstChild === null),
-      map((event: ActivationEnd) => event.snapshot.params.id)
+      map((event: ActivationEnd) => event.snapshot.params.usuarioId)
     );
   }
 
@@ -124,7 +123,7 @@ export class UsuarioComponent implements OnInit {
 
   actualizar() {
     this.usuario.nombre = this.fv.nombre;
-    this.usuario.documento = this.fv.documento;
+    this.usuario.documento = this.fv.documento + '';
     this.usuario.correo = this.fv.correo;
     this.usuario.telefono = this.fv.telefono;
     this.usuario.rol = this.fv.rol;

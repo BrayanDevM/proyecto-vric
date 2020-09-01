@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BeneficiarioFormComponent } from './beneficiario-form.component';
+import { BeneficiarioEditarComponent } from './beneficiario-editar.component';
 
-describe('BeneficiarioFormComponent', () => {
-  let component: BeneficiarioFormComponent;
-  let fixture: ComponentFixture<BeneficiarioFormComponent>;
+describe('BeneficiarioEditarComponent', () => {
+  let component: BeneficiarioEditarComponent;
+  let fixture: ComponentFixture<BeneficiarioEditarComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BeneficiarioFormComponent ]
+      declarations: [ BeneficiarioEditarComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BeneficiarioFormComponent);
+    fixture = TestBed.createComponent(BeneficiarioEditarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

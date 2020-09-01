@@ -52,7 +52,9 @@ export class BeneficiariosUdsComponent implements OnInit {
     private dialog: MatDialog
   ) {
     this.obtenerInfoRuta().subscribe(udsId => {
-      this.obtenerUds_beneficiarios_responsables(udsId);
+      if (udsId !== undefined) {
+        this.obtenerUds_beneficiarios_responsables(udsId);
+      }
     });
   }
 

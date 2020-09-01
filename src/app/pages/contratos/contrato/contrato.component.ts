@@ -63,20 +63,19 @@ export class ContratoComponent implements OnInit {
       nit: [null, Validators.required],
       activo: null
     });
-    this.obtenerInfoRuta().subscribe(paramId => {
-      if (paramId === undefined) {
-        return;
+    this.obtenerInfoRuta().subscribe(contratoId => {
+      if (contratoId !== undefined) {
+        this.obtenerContrato(contratoId)
+          .then((contrato: Contrato) => {
+            this.contrato = contrato;
+            this.udsEnContrato = contrato.uds;
+            this.obtenerIdUdsSeleccionadas(contrato.uds);
+            this.actualizarForm(contrato);
+            this.obtenerUdsDisponibles(contrato._id);
+            this.editMode = false;
+          })
+          .catch(error => console.log(error));
       }
-      this.obtenerContrato(paramId)
-        .then((contrato: Contrato) => {
-          this.contrato = contrato;
-          this.udsEnContrato = contrato.uds;
-          this.obtenerIdUdsSeleccionadas(contrato.uds);
-          this.actualizarForm(contrato);
-          this.obtenerUdsDisponibles(contrato._id);
-          this.editMode = false;
-        })
-        .catch(error => console.log(error));
     });
   }
 
@@ -93,7 +92,7 @@ export class ContratoComponent implements OnInit {
     return this.router.events.pipe(
       filter(event => event instanceof ActivationEnd),
       filter((event: ActivationEnd) => event.snapshot.firstChild === null),
-      map((event: ActivationEnd) => event.snapshot.params.id)
+      map((event: ActivationEnd) => event.snapshot.params.contratoId)
     );
   }
 

@@ -53,19 +53,20 @@ export class UnidadComponent implements OnInit {
       activa: false,
       creadoEl: null
     });
-    this.obtenerInfoRuta().subscribe(paramId => {
-      if (paramId === undefined) {
-        return;
+    this.obtenerInfoRuta().subscribe(udsId => {
+      if (udsId !== undefined) {
+        console.log('ejecuta busqueda unidad');
+
+        this.obtenerUnidad(udsId).then((unidad: Uds) => {
+          this.uds = this.formatearFechas(unidad);
+          this.docentesEnUnidad(unidad);
+          this.obtenerCoordinadores();
+          this.obtenerGestores();
+          this.obtenerDocentes();
+          this.actualizarForm(this.uds);
+          this.editMode = false;
+        });
       }
-      this.obtenerUnidad(paramId).then((unidad: Uds) => {
-        this.uds = this.formatearFechas(unidad);
-        this.docentesEnUnidad(unidad);
-        this.obtenerCoordinadores();
-        this.obtenerGestores();
-        this.obtenerDocentes();
-        this.actualizarForm(this.uds);
-        this.editMode = false;
-      });
     });
   }
 
@@ -93,7 +94,7 @@ export class UnidadComponent implements OnInit {
     return this.router.events.pipe(
       filter(event => event instanceof ActivationEnd),
       filter((event: ActivationEnd) => event.snapshot.firstChild === null),
-      map((event: ActivationEnd) => event.snapshot.params.id)
+      map((event: ActivationEnd) => event.snapshot.params.udsId)
     );
   }
 
@@ -159,7 +160,6 @@ export class UnidadComponent implements OnInit {
 
   obtenerCoordinadores() {
     this.cargandoCoords = true;
-    console.log('coords entra');
     this.usuarios$.obtenerUsuarios().subscribe((coords: Usuario[]) => {
       const arreglo = [];
       coords.forEach((usuario: Usuario) => {

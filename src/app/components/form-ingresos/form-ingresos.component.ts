@@ -13,10 +13,13 @@ import { UsuarioService } from 'src/app/services/usuario.service';
 import { RespBeneficiariosService } from 'src/app/services/resp-beneficiarios.service';
 import { DateAdapter } from '@angular/material/core';
 import { alertSuccess } from 'src/app/helpers/swal2.config';
-// Importo municipios y ciudades de Colombia
-import listaDatosColombia from 'src/app/config/colombia.json';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogFormIngresoComponent } from '../dialogs/dialog-form-ingreso/dialog-form-ingreso.component';
+// Validators
+import { documentoExtranjero } from '../../helpers/Validators/documento-extranjero.validator';
+import { debeSerRC } from '../../helpers/Validators/tipo-documento.validator';
+// Importo municipios y ciudades de Colombia
+import listaDatosColombia from 'src/app/config/colombia.json';
 declare const moment: any;
 
 @Component({
@@ -110,7 +113,7 @@ export class FormIngresosComponent implements OnInit {
   @Input() udsAsignadas: Uds[];
   codigoUdsSeleccionada: any = 'Seleccionar UDS';
   listaDepartamentos: any = listaDatosColombia;
-  listaMunicipios: any = [{ ciudades: 'Extranjero' }];
+  listaMunicipios: any = ['Extranjero'];
   respExiste = false;
   ultResponsableBuscado = '';
 
@@ -246,6 +249,11 @@ export class FormIngresosComponent implements OnInit {
       fecha: null,
       estado: 'Pendiente vincular'
     });
+    this.formIngreso.setValidators([
+      debeSerRC('tipoDoc', 'nacimiento'),
+      documentoExtranjero('tipoDoc', 'paisNacimiento'),
+      documentoExtranjero('respTipoDoc', 'respPaisNacimiento')
+    ]);
   }
 
   ngOnInit() {}
@@ -648,32 +656,26 @@ export class FormIngresosComponent implements OnInit {
 
   procesarFormulario() {
     this.formIngreso.patchValue({
+      documento: this.fv.documento.split('.').join(''),
       // formateo fechas
       ingreso: moment(this.fv.ingreso).format('DD/MM/YYYY'),
       nacimiento: moment(this.fv.nacimiento).format('DD/MM/YYYY'),
       fecha: moment().format('DD/MM/YYYY'),
-      // obtengo valores de padre si estan deshabilitadas
-      respTipoDoc: this.frv.respTipoDoc,
-      respDocumento: this.frv.respDocumento,
-      respNombre1: this.frv.respNombre1,
-      respNombre2: this.frv.respNombre2,
-      respApellido1: this.frv.respApellido1,
-      respApellido2: this.frv.respApellido2,
-      respSexo: this.frv.respSexo,
-      respNacimiento: moment(this.frv.respNacimiento).format('DD/MM/YYYY'),
-      respPaisNacimiento: this.frv.respPaisNacimiento,
-      respDptoNacimiento: this.frv.respDptoNacimiento,
-      respMunicipioNacimiento: this.frv.respMunicipioNacimiento
+      // obtengo valores de acudiente si estan deshabilitadas
+      respDocumento: this.frv.respDocumento.split('.').join(''),
+      respNacimiento: moment(this.frv.respNacimiento).format('DD/MM/YYYY')
     });
 
     // obtengo valores de padres si existen
-    if (this.fv.padreNacimiento) {
+    if (this.tienePadre) {
       this.formIngreso.patchValue({
+        padreDocumento: this.fv.padreDocumento.split('.').join(''),
         padreNacimiento: moment(this.fv.padreNacimiento).format('DD/MM/YYYY')
       });
     }
-    if (this.fv.madreNacimiento) {
+    if (this.tieneMadre) {
       this.formIngreso.patchValue({
+        madreDocumento: this.fv.madreDocumento.split('.').join(''),
         madreNacimiento: moment(this.fv.madreNacimiento).format('DD/MM/YYYY')
       });
     }
@@ -701,7 +703,7 @@ export class FormIngresosComponent implements OnInit {
     if (confirmaIngreso) {
       this.procesarFormulario();
       this.beneficiarios$
-        .crearBeneficiario(this.formIngreso.value)
+        .crearBeneficiario(this.formIngreso.getRawValue())
         .subscribe((resp: any) => {
           if (resp.ok) {
             alertSuccess.fire('Beneficiario reportado');

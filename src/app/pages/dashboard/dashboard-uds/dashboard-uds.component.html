@@ -110,6 +110,13 @@
       </div>
     </div>
     <div class="row">
+      <div class="col-sm-12 mb-4 pt-2">
+        <h2 class="subtitle mb-0">Datos populares</h2>
+        <div class="text-muted">
+          Información específica de beneficiarios según porpularidad de datos
+          requeridos
+        </div>
+      </div>
       <div class="col-sm-12 col-xl-3">
         <div class="bg-white shadow-sm pt-3 pb-3 mb-4">
           <div class="p-3 pb-0">
@@ -118,17 +125,31 @@
           </div>
           <mat-selection-list #shoes [multiple]="false">
             <mat-list-option>
-              <p class="mt-3 mb-3">
-                <span [matBadge]="mgAdolescente" matBadgeColor="primary"
-                  >Mujeres gestantes adolescentes</span
-                >
+              <p class="d-flex justify-content-between">
+                <span>Mujeres gestantes adolescentes</span>
+                <span class="badge bg-info">{{ mgAdolescente }}</span>
               </p>
             </mat-list-option>
             <mat-list-option>
-              <p class="mt-3 mb-3">
-                <span [matBadge]="totalConcurrencia" matBadgeColor="accent"
-                  >Beneficiarios en concurrencia</span
-                >
+              <p class="d-flex justify-content-between">
+                <span>
+                  Mayores de 2 años
+                </span>
+                <span class="badge bg-warning">{{ mayoresDe2Anios }}</span>
+              </p>
+            </mat-list-option>
+            <mat-list-option>
+              <p class="d-flex justify-content-between">
+                <span>
+                  Colombianos sin documento
+                </span>
+                <span class="badge bg-info">{{ colombianosSinDoc }}</span>
+              </p>
+            </mat-list-option>
+            <mat-list-option>
+              <p class="d-flex justify-content-between">
+                <span>Beneficiarios en concurrencia</span>
+                <span class="badge bg-danger">{{ enConcurrencia }}</span>
               </p>
             </mat-list-option>
           </mat-selection-list>
