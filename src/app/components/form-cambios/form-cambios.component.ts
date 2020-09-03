@@ -413,17 +413,14 @@ export class FormCambiosComponent implements OnInit {
   }
 
   procesarFormulario() {
-    this.formCambio.value.ingreso = moment(
-      this.formCambio.value.ingreso,
-      'YYYY-MM-DD'
-    ).format('DD/MM/YYYY');
-    this.formCambio.value.nacimiento = moment(
-      this.formCambio.value.nacimiento,
-      'YYYY-MM-DD'
-    ).format('DD/MM/YYYY');
-    this.fv.padreDocumento = this.fv.padreDocumento.split('.').join('');
+    this.formCambio.patchValue({
+      documento: this.fv.documento.split('.').join(''),
+      ingreso: moment(this.fv.ingreso, 'YYYY-MM-DD').format('DD/MM/YYYY'),
+      nacimiento: moment(this.fv.nacimiento, 'YYYY-MM-DD').format('DD/MM/YYYY')
+    });
     if (this.tienePadre) {
       this.formCambio.patchValue({
+        PadreDocumento: this.fv.padreDocumento.split('.').join(''),
         padreNacimiento: moment(this.fv.padreNacimiento, 'YYYY-MM-DD').format(
           'DD/MM/YYYY'
         )
@@ -470,7 +467,6 @@ export class FormCambiosComponent implements OnInit {
     if (this.formCambio.invalid) {
       alert('El formulario es inválido');
       console.log(this.formCambio, '<-- Form');
-
       this.formCambio.markAllAsTouched();
       return;
     }
@@ -479,22 +475,19 @@ export class FormCambiosComponent implements OnInit {
         title: 'Novedades',
         html: `<span>Deseas reportar al beneficiario:</span>
         <ul class="mt-2">
-        <li>
-        ${this.formCambio.value.nombre1}
-        ${this.formCambio.value.nombre2}
-        ${this.formCambio.value.apellido1}
-        ${this.formCambio.value.apellido2}
-        </li>
-        <li>${this.formCambio.value.tipoDoc}: ${this.formCambio.value.documento}</li>
-        <li>Nacimiento: ${this.formCambio.value.nacimiento}</li>
-        </ul>
-        `,
+          <li>
+            ${this.fv.nombre1} ${this.fv.nombre2} ${this.fv.apellido1} ${this.fv.apellido2}
+          </li>
+          <li>${this.fv.tipoDoc}: ${this.fv.documento}</li>
+          <li>Nacimiento: ${this.fv.nacimiento}</li>
+        </ul>`,
         confirmButtonText: 'Sí, reportar cambio'
       })
       .then((result: any) => {
         if (result.value) {
           this.creando = true;
           this.procesarFormulario();
+          console.log(this.formCambio, 'form enviado');
           this.beneficiarios$
             .crearBeneficiario(this.formCambio.value)
             .subscribe(

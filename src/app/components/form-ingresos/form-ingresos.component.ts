@@ -633,16 +633,15 @@ export class FormIngresosComponent implements OnInit {
         title: 'Novedades',
         html: `<span>Deseas reportar al beneficiario:</span>
         <ul class="mt-2">
-        <li>
-        ${this.fv.nombre1}
+          <li>
+            ${this.fv.nombre1}
             ${this.fv.nombre2}
             ${this.fv.apellido1}
             ${this.fv.apellido2}
-            </li>
-            <li>${this.fv.tipoDoc}: ${this.fv.documento}</li>
-            <li>Nacimiento: ${this.fv.nacimiento}</li>
-            </ul>
-            `,
+          </li>
+          <li>${this.fv.tipoDoc}: ${this.fv.documento}</li>
+          <li>Nacimiento: ${this.fv.nacimiento}</li>
+        </ul>`,
         confirmButtonText: 'Sí, reportar ingreso'
       })
       .then((result: any) => {
