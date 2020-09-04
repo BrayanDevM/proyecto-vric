@@ -16,10 +16,19 @@ import { alertSuccess } from 'src/app/helpers/swal2.config';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogFormIngresoComponent } from '../dialogs/dialog-form-ingreso/dialog-form-ingreso.component';
 // Validators
-import { documentoExtranjero } from '../../helpers/Validators/documento-extranjero.validator';
-import { debeSerRC } from '../../helpers/Validators/tipo-documento.validator';
+import {
+  ValidarDocumento,
+  ValidarDocumentoAntiguo
+} from '../../helpers/Validators/documento-validator';
+import { ValidarTelefono } from '../../helpers/Validators/telefono-validator';
+import {
+  ValidarRC,
+  ValidarTI,
+  ValidarCC
+} from '../../helpers/Validators/tipo-documento.validator';
 // Importo municipios y ciudades de Colombia
 import listaDatosColombia from 'src/app/config/colombia.json';
+import { Config } from 'src/app/config/config';
 declare const moment: any;
 
 @Component({
@@ -29,84 +38,13 @@ declare const moment: any;
 })
 export class FormIngresosComponent implements OnInit {
   // variables de configuración
-  tiposDeDocumento: any[] = [
-    {
-      pais: 'Colombianas/os',
-      documentos: [
-        { value: 'RC', label: 'Registro civil', icon: 'fa-id-card' },
-        { value: 'TI', label: 'Tarjeta de Identidad', icon: 'fa-id-card' },
-        { value: 'CC', label: 'Cédula de Ciudadanía', icon: 'fa-id-card' }
-      ]
-    },
-    {
-      pais: 'Extranjeras/os',
-      documentos: [
-        {
-          value: 'PEP',
-          label: 'Permiso Especial de Permanencia',
-          icon: 'fa-user-clock'
-        },
-        { value: 'SD', label: 'Sin Documento', icon: 'fa-question-square' }
-      ]
-    }
-  ];
-  sexos: any[] = [
-    {
-      value: 'Mujer',
-      label: 'Mujer',
-      icon: 'fa-venus'
-    },
-    {
-      value: 'Hombre',
-      label: 'Hombre',
-      icon: 'fa-mars'
-    },
-    {
-      value: 'Otro',
-      label: 'Otro',
-      icon: 'fa-venus-mars'
-    }
-  ];
-  paises: any[] = [
-    { value: 'Colombia', label: 'Colombia' },
-    { value: 'Argentina', label: 'Argentina' },
-    { value: 'Chile', label: 'Chile' },
-    { value: 'Ecuador', label: 'Ecuador' },
-    { value: 'México', label: 'México' },
-    { value: 'Panamá', label: 'Panamá' },
-    { value: 'Perú', label: 'Chile' },
-    { value: 'Venezuela', label: 'Venezuela' }
-  ];
-  reconocimientos: any[] = [
-    { value: 'Afrocolombiano', label: 'Afrocolombiano' },
-    { value: 'Comunidad negra', label: 'Comunidad negra' },
-    { value: 'Indigena', label: 'Indigena' },
-    { value: 'Palenquero', label: 'Palenquero' },
-    { value: 'RROM/Gitano', label: 'RROM/Gitano' },
-    {
-      value: 'Raizal archipielago San Andrés',
-      label: 'Raizal archipielago San Andrés'
-    },
-    { value: 'Ninguno', label: 'Ninguno' }
-  ];
-  discapacidades: any[] = [
-    { value: true, label: 'Si' },
-    { value: false, label: 'No' }
-  ];
-  criterios: any[] = [
-    { value: 'Sisbén', label: 'Puntaje de sisbén' },
-    { value: 'Carta de vulnerabilidad', label: 'Carta de vulnerabilidad' },
-    { value: 'Otro', label: 'Otro' }
-  ];
-  tipoResponsables: any[] = [
-    { value: 'Madre', label: 'Madre' },
-    { value: 'Padre', label: 'Padre' },
-    { value: 'Tia/o', label: 'Tia/o' },
-    { value: 'Abuelo/a', label: 'Abuelo/a' },
-    { value: 'Conyugue', label: 'Conyugue' },
-    { value: 'Si misma', label: 'Si misma' },
-    { value: 'Otro', label: 'Otro' }
-  ];
+  tiposDeDocumento: any[] = Config.SELECTS.tiposDeDocumento;
+  sexos: any[] = Config.SELECTS.sexos;
+  paises: any[] = Config.SELECTS.paises;
+  reconocimientos: any[] = Config.SELECTS.autorreconocimientos;
+  discapacidades: any[] = Config.SELECTS.discapacidades;
+  criterios: any[] = Config.SELECTS.criteriosDeAtencion;
+  tipoResponsables: any[] = Config.SELECTS.tiposDeAcudientes;
   // Variables de uso
   usuario: Usuario;
   formIngreso: FormGroup;
@@ -162,20 +100,16 @@ export class FormIngresosComponent implements OnInit {
     this.formIngreso = this.fb.group({
       // Información de beneficiario
       tipoDoc: [null, Validators.required],
-      documento: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(10),
-          Validators.maxLength(13)
-        ]
-      ],
+      documento: ['', [Validators.required, ValidarDocumento]],
       nombre1: ['', Validators.required],
       nombre2: '',
       apellido1: ['', Validators.required],
       apellido2: '',
       sexo: [null, Validators.required],
-      nacimiento: [null, Validators.required],
+      nacimiento: [
+        null,
+        [Validators.required, ValidarRC, ValidarTI, ValidarCC]
+      ],
       paisNacimiento: [null, Validators.required],
       dptoNacimiento: [null, Validators.required],
       municipioNacimiento: [null, Validators.required],
@@ -184,10 +118,7 @@ export class FormIngresosComponent implements OnInit {
       infoDiscapacidad: null,
       direccion: ['', Validators.required],
       barrio: ['', Validators.required],
-      telefono: [
-        '',
-        [Validators.required, Validators.minLength(7), Validators.maxLength(10)]
-      ],
+      telefono: ['', [Validators.required, ValidarTelefono]],
       criterio: [null, Validators.required],
       infoCriterio: [null, Validators.required],
       tipoResponsable: [null, Validators.required],
@@ -196,14 +127,7 @@ export class FormIngresosComponent implements OnInit {
       comentario: null,
       // Información de responsable
       respTipoDoc: [null, Validators.required],
-      respDocumento: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(10),
-          Validators.maxLength(13)
-        ]
-      ],
+      respDocumento: ['', [Validators.required, ValidarDocumentoAntiguo]],
       respNombre1: [null, Validators.required],
       respNombre2: null,
       respApellido1: [null, Validators.required],
@@ -215,14 +139,7 @@ export class FormIngresosComponent implements OnInit {
       respMunicipioNacimiento: [null, Validators.required],
       // Información de madre
       madreTipoDoc: [null, Validators.required],
-      madreDocumento: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(10),
-          Validators.maxLength(13)
-        ]
-      ],
+      madreDocumento: ['', [Validators.required, ValidarDocumentoAntiguo]],
       madreNombre1: [null, Validators.required],
       madreNombre2: null,
       madreApellido1: [null, Validators.required],
@@ -231,14 +148,7 @@ export class FormIngresosComponent implements OnInit {
       madreNacimiento: [null, Validators.required],
       // Información de padre
       padreTipoDoc: [null, Validators.required],
-      padreDocumento: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(10),
-          Validators.maxLength(13)
-        ]
-      ],
+      padreDocumento: ['', [Validators.required, ValidarDocumentoAntiguo]],
       padreNombre1: [null, Validators.required],
       padreNombre2: null,
       padreApellido1: [null, Validators.required],
@@ -249,11 +159,6 @@ export class FormIngresosComponent implements OnInit {
       fecha: null,
       estado: 'Pendiente vincular'
     });
-    this.formIngreso.setValidators([
-      debeSerRC('tipoDoc', 'nacimiento'),
-      documentoExtranjero('tipoDoc', 'paisNacimiento'),
-      documentoExtranjero('respTipoDoc', 'respPaisNacimiento')
-    ]);
   }
 
   ngOnInit() {}
@@ -391,8 +296,8 @@ export class FormIngresosComponent implements OnInit {
 
   comprobarSD($event: any, campo: string) {
     if ($event.value === 'SD') {
-      const documentoAleatorio = this.generarDocumento(13);
-      this.f.get(campo).patchValue(documentoAleatorio);
+      const documentoAleatorio = this.generarDocumento(15);
+      this.f.get(campo).patchValue('SD-' + documentoAleatorio);
     } else {
       this.f.get(campo).patchValue('');
     }
@@ -656,26 +561,26 @@ export class FormIngresosComponent implements OnInit {
 
   procesarFormulario() {
     this.formIngreso.patchValue({
-      documento: this.fv.documento.split('.').join(''),
+      documento: this.fv.documento,
       // formateo fechas
       ingreso: moment(this.fv.ingreso).format('DD/MM/YYYY'),
       nacimiento: moment(this.fv.nacimiento).format('DD/MM/YYYY'),
       fecha: moment().format('DD/MM/YYYY'),
       // obtengo valores de acudiente si estan deshabilitadas
-      respDocumento: this.frv.respDocumento.split('.').join(''),
+      respDocumento: this.frv.respDocumento,
       respNacimiento: moment(this.frv.respNacimiento).format('DD/MM/YYYY')
     });
 
     // obtengo valores de padres si existen
     if (this.tienePadre) {
       this.formIngreso.patchValue({
-        padreDocumento: this.fv.padreDocumento.split('.').join(''),
+        padreDocumento: this.fv.padreDocumento,
         padreNacimiento: moment(this.fv.padreNacimiento).format('DD/MM/YYYY')
       });
     }
     if (this.tieneMadre) {
       this.formIngreso.patchValue({
-        madreDocumento: this.fv.madreDocumento.split('.').join(''),
+        madreDocumento: this.fv.madreDocumento,
         madreNacimiento: moment(this.fv.madreNacimiento).format('DD/MM/YYYY')
       });
     }

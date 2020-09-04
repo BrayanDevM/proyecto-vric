@@ -16,6 +16,7 @@ import { alertSuccess } from 'src/app/helpers/swal2.config';
 import { DateAdapter } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogFormIngresoComponent } from '../dialogs/dialog-form-ingreso/dialog-form-ingreso.component';
+import { Config } from 'src/app/config/config';
 declare var moment: any;
 
 @Component({
@@ -24,7 +25,6 @@ declare var moment: any;
   styleUrls: ['./form-cambios.component.css']
 })
 export class FormCambiosComponent implements OnInit {
-  // ng-select -------------------
   tiposDeDocumento: any[] = [
     {
       pais: 'Colombianas/os',
@@ -46,7 +46,6 @@ export class FormCambiosComponent implements OnInit {
     {
       pais: 'Colombianas/os',
       documentos: [
-        { value: 'RC', label: 'Registro civil', icon: 'fa-id-card' },
         { value: 'TI', label: 'Tarjeta de Identidad', icon: 'fa-id-card' },
         { value: 'CC', label: 'Cédula de Ciudadanía', icon: 'fa-id-card' }
       ]
@@ -63,63 +62,13 @@ export class FormCambiosComponent implements OnInit {
       ]
     }
   ];
-  sexos: any[] = [
-    {
-      value: 'Mujer',
-      label: 'Mujer',
-      icon: 'fa-venus'
-    },
-    {
-      value: 'Hombre',
-      label: 'Hombre',
-      icon: 'fa-mars'
-    },
-    {
-      value: 'Otro',
-      label: 'Otro',
-      icon: 'fa-venus-mars'
-    }
-  ];
-  paises: any[] = [
-    { value: 'Colombia', label: 'Colombia' },
-    { value: 'Argentina', label: 'Argentina' },
-    { value: 'Chile', label: 'Chile' },
-    { value: 'Ecuador', label: 'Ecuador' },
-    { value: 'México', label: 'México' },
-    { value: 'Panamá', label: 'Panamá' },
-    { value: 'Perú', label: 'Chile' },
-    { value: 'Venezuela', label: 'Venezuela' }
-  ];
-  reconocimientos: any[] = [
-    { value: 'Afrocolombiano', label: 'Afrocolombiano' },
-    { value: 'Comunidad negra', label: 'Comunidad negra' },
-    { value: 'Indigena', label: 'Indigena' },
-    { value: 'Palenquero', label: 'Palenquero' },
-    { value: 'RROM/Gitano', label: 'RROM/Gitano' },
-    {
-      value: 'Raizal archipielago San Andrés',
-      label: 'Raizal archipielago San Andrés'
-    },
-    { value: 'Ninguno', label: 'Ninguno' }
-  ];
-  discapacidades: any[] = [
-    { value: true, label: 'Si' },
-    { value: false, label: 'No' }
-  ];
-  criterios: any[] = [
-    { value: 'Sisbén', label: 'Puntaje de sisbén' },
-    { value: 'Carta de vulnerabilidad', label: 'Carta de vulnerabilidad' },
-    { value: 'Otro', label: 'Otro' }
-  ];
-  tipoResponsables: any[] = [
-    { value: 'Madre', label: 'Madre' },
-    { value: 'Padre', label: 'Padre' },
-    { value: 'Tia/o', label: 'Tia/o' },
-    { value: 'Abuelo/a', label: 'Abuelo/a' },
-    { value: 'Conyugue', label: 'Conyugue' },
-    { value: 'Si misma', label: 'Si misma' },
-    { value: 'Otro', label: 'Otro' }
-  ];
+
+  sexos: any[] = Config.SELECTS.sexos;
+  paises: any[] = Config.SELECTS.paises;
+  reconocimientos: any[] = Config.SELECTS.autorreconocimientos;
+  discapacidades: any[] = Config.SELECTS.discapacidades;
+  criterios: any[] = Config.SELECTS.criteriosDeAtencion;
+  tipoResponsables: any[] = Config.SELECTS.tiposDeAcudientes;
   // -----------------------------
   usuario: any;
   formCambio: FormGroup;

@@ -41,15 +41,6 @@
               <mat-error *ngIf="fc.tipoDoc.errors?.required">
                 Debes seleccionar un tipo de documento
               </mat-error>
-              <mat-error *ngIf="fc.tipoDoc.errors?.debeSerRC">
-                Beneficiario menor de 7 años debe tener RC
-              </mat-error>
-              <mat-error *ngIf="fc.tipoDoc.errors?.debeSerTI">
-                Beneficiario menor de 18 años debe tener TI
-              </mat-error>
-              <mat-error *ngIf="fc.tipoDoc.errors?.debeSerCC">
-                Beneficiario mayor de 18 años debe tener CC
-              </mat-error>
             </mat-form-field>
           </div>
         </div>
@@ -61,21 +52,26 @@
               <!-- <mat-label>Outline form field</mat-label> -->
               <input
                 matInput
-                [value]="fv.documento | documento"
+                [value]="fv.documento"
+                [readonly]="fv.tipoDoc === 'SD'"
                 formControlName="documento"
                 name="documento"
                 autocomplete="off"
                 placeholder="Número de documento"
               />
               <mat-icon matPrefix>account_box</mat-icon>
+              <mat-hint *ngIf="fc.documento.dirty">
+                Valor con separadores: {{ fv.documento | documento }}
+              </mat-hint>
               <mat-error *ngIf="fc.documento.errors?.required">
                 El documento es obligatorio
               </mat-error>
-              <mat-error *ngIf="fc.documento.errors?.minlength">
-                El documento debe tener mínimo 8 dígitos
-              </mat-error>
-              <mat-error *ngIf="fc.documento.errors?.maxlength">
-                El documento debe tener máximo 10 dígitos
+              <mat-error
+                *ngIf="
+                  fc.documento.errors?.documentoInvalido && fc.documento.dirty
+                "
+              >
+                Un NUIP tiene 8 o 10 dígitos
               </mat-error>
             </mat-form-field>
           </div>
@@ -197,6 +193,15 @@
               <mat-error *ngIf="fc.nacimiento.errors?.required">
                 Debes seleccionar una fecha de nacimiento
               </mat-error>
+              <mat-error *ngIf="fc.nacimiento.errors?.tipoDocRcInvalido">
+                Beneficiario menor de 7 años debe tener RC
+              </mat-error>
+              <mat-error *ngIf="fc.nacimiento.errors?.tipoDocTiInvalido">
+                Beneficiario mayor de 7 y menor de 18 años debe tener TI
+              </mat-error>
+              <mat-error *ngIf="fc.nacimiento.errors?.tipoDocCcInvalido">
+                Beneficiario mayor de 18 años debe tener CC
+              </mat-error>
             </mat-form-field>
           </div>
         </div>
@@ -218,9 +223,6 @@
               <mat-icon matPrefix>language</mat-icon>
               <mat-error *ngIf="fc.paisNacimiento.errors?.required">
                 Debes seleccionar país de nacimiento
-              </mat-error>
-              <mat-error *ngIf="fc.paisNacimiento.errors?.debeSerDocExtranjero">
-                Un beneficiario extranjero no puede tener documento Colombiano
               </mat-error>
             </mat-form-field>
           </div>
@@ -393,11 +395,12 @@
               <mat-error *ngIf="fc.telefono.errors?.required">
                 El teléfono es obligatorio
               </mat-error>
-              <mat-error *ngIf="fc.telefono.errors?.minlength">
-                Debe tener mínimo 7 dígitos
-              </mat-error>
-              <mat-error *ngIf="fc.telefono.errors?.maxlength">
-                Debe tener máximo 10 dígitos
+              <mat-error
+                *ngIf="
+                  fc.telefono.errors?.telefonoInvalido && fc.telefono.dirty
+                "
+              >
+                Un teléfono tiene 7 o 10 dígitos
               </mat-error>
             </mat-form-field>
           </div>
@@ -503,7 +506,8 @@
             <mat-form-field appearance="outline" class="bdm-input">
               <input
                 matInput
-                [value]="fv.respDocumento | documento"
+                [value]="fv.respDocumento"
+                [readonly]="fv.respTipoDoc === 'SD'"
                 (focusout)="buscarRespBeneficiario($event.target.value)"
                 formControlName="respDocumento"
                 name="respDocumento"
@@ -518,14 +522,19 @@
                 Reponsable existente
                 <mat-icon style="margin: 1px 0 0 2px">check_circle</mat-icon>
               </mat-hint>
+              <mat-hint *ngIf="fc.respDocumento.dirty && !respExiste">
+                Valor con separadores: {{ fv.respDocumento | documento }}
+              </mat-hint>
               <mat-error *ngIf="fc.respDocumento.errors?.required">
                 El documento es obligatorio
               </mat-error>
-              <mat-error *ngIf="fc.respDocumento.errors?.minlength">
-                El documento debe tener mínimo 8 dígitos
-              </mat-error>
-              <mat-error *ngIf="fc.respDocumento.errors?.maxlength">
-                El documento debe tener máximo 10 dígitos
+              <mat-error
+                *ngIf="
+                  fc.respDocumento.errors?.documentoInvalido &&
+                  fc.respDocumento.dirty
+                "
+              >
+                Un NUIP tiene 7, 8 o 10 dígitos
               </mat-error>
             </mat-form-field>
           </div>
@@ -664,11 +673,6 @@
               <mat-icon matPrefix>language</mat-icon>
               <mat-error *ngIf="fc.respPaisNacimiento.errors?.required">
                 Debes seleccionar país de nacimiento
-              </mat-error>
-              <mat-error
-                *ngIf="fc.respPaisNacimiento.errors?.debeSerDocExtranjero"
-              >
-                Un beneficiario extranjero no puede tener documento Colombiano
               </mat-error>
             </mat-form-field>
           </div>
@@ -823,21 +827,27 @@
             <mat-form-field appearance="outline" class="bdm-input">
               <input
                 matInput
-                [value]="fv.madreDocumento | documento"
+                [value]="fv.madreDocumento"
+                [readonly]="fv.madreTipoDoc === 'SD'"
                 formControlName="madreDocumento"
                 name="madreDocumento"
                 autocomplete="off"
                 placeholder="Número de documento"
               />
               <mat-icon matPrefix>account_box</mat-icon>
+              <mat-hint *ngIf="fc.madreDocumento.dirty">
+                Valor con separadores: {{ fv.madreDocumento | documento }}
+              </mat-hint>
               <mat-error *ngIf="fc.madreDocumento.errors?.required">
                 El documento es obligatorio
               </mat-error>
-              <mat-error *ngIf="fc.madreDocumento.errors?.minlength">
-                El documento debe tener mínimo 8 dígitos
-              </mat-error>
-              <mat-error *ngIf="fc.madreDocumento.errors?.maxlength">
-                El documento debe tener máximo 10 dígitos
+              <mat-error
+                *ngIf="
+                  fc.madreDocumento.errors?.documentoInvalido &&
+                  fc.madreDocumento.dirty
+                "
+              >
+                Un NUIP tiene 7, 8 o 10 dígitos
               </mat-error>
             </mat-form-field>
           </div>
@@ -1039,21 +1049,27 @@
             <mat-form-field appearance="outline" class="bdm-input">
               <input
                 matInput
-                [value]="fv.padreDocumento | documento"
+                [value]="fv.padreDocumento"
+                [readonly]="fv.padreTipoDoc === 'SD'"
                 formControlName="padreDocumento"
                 name="padreDocumento"
                 autocomplete="off"
                 placeholder="Número de documento"
               />
               <mat-icon matPrefix>account_box</mat-icon>
+              <mat-hint *ngIf="fc.padreDocumento.dirty">
+                Valor con separadores: {{ fv.padreDocumento | documento }}
+              </mat-hint>
               <mat-error *ngIf="fc.padreDocumento.errors?.required">
                 El documento es obligatorio
               </mat-error>
-              <mat-error *ngIf="fc.padreDocumento.errors?.minlength">
-                El documento debe tener mínimo 8 dígitos
-              </mat-error>
-              <mat-error *ngIf="fc.padreDocumento.errors?.maxlength">
-                El documento debe tener máximo 10 dígitos
+              <mat-error
+                *ngIf="
+                  fc.padreDocumento.errors?.documentoInvalido &&
+                  fc.padreDocumento.dirty
+                "
+              >
+                Un NUIP tiene 7, 8 o 10 dígitos
               </mat-error>
             </mat-form-field>
           </div>

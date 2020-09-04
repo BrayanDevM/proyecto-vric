@@ -1,71 +1,54 @@
-import { FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl } from '@angular/forms';
 declare const moment: any;
 
-export function debeSerRC(
-  campoTipoDoc: string,
-  campoFechaNacimiento: string
-): ValidatorFn {
-  return (group: FormGroup): ValidationErrors => {
-    const campoDoc = group.controls[campoTipoDoc];
-    const campoNacimiento = group.controls[campoFechaNacimiento];
-
-    const hoy = moment();
-    const edadAnios = hoy.diff(campoNacimiento.value, 'years');
-
+export function ValidarRC(
+  control: AbstractControl
+): { [key: string]: any } | null {
+  const hoy = moment();
+  const edadAnios = hoy.diff(control.value, 'years');
+  if (control.parent) {
     if (
-      (edadAnios < 7 && campoDoc.value === 'TI') ||
-      (edadAnios < 7 && campoDoc.value === 'CC')
+      (control.parent.value.tipoDoc === 'TI' && edadAnios < 7) ||
+      (control.parent.value.tipoDoc === 'CC' && edadAnios < 7)
     ) {
-      campoDoc.setErrors({ debeSerRC: true });
-    } else {
-      campoDoc.setErrors(null);
+      return { tipoDocRcInvalido: true };
     }
-    return;
-  };
+    return null;
+  }
 }
 
-export function debeSerTI(
-  campoTipoDoc: string,
-  campoFechaNacimiento: string
-): ValidatorFn {
-  return (group: FormGroup): ValidationErrors => {
-    const campoDoc = group.controls[campoTipoDoc];
-    const campoNacimiento = group.controls[campoFechaNacimiento];
-
-    const hoy = moment();
-    const edadAnios = hoy.diff(campoNacimiento.value, 'years');
-
+export function ValidarTI(
+  control: AbstractControl
+): { [key: string]: any } | null {
+  const hoy = moment();
+  const edadAnios = hoy.diff(control.value, 'years');
+  if (control.parent) {
     if (
-      (edadAnios >= 7 && edadAnios < 18 && campoDoc.value === 'RC') ||
-      (edadAnios >= 7 && edadAnios < 18 && campoDoc.value === 'CC')
+      (control.parent.value.tipoDoc === 'RC' &&
+        edadAnios >= 7 &&
+        edadAnios < 18) ||
+      (control.parent.value.tipoDoc === 'CC' &&
+        edadAnios >= 7 &&
+        edadAnios < 18)
     ) {
-      campoDoc.setErrors({ debeSerTI: true });
-    } else {
-      campoDoc.setErrors(null);
+      return { tipoDocTiInvalido: true };
     }
-    return;
-  };
+    return null;
+  }
 }
 
-export function debeSerCC(
-  campoTipoDoc: string,
-  campoFechaNacimiento: string
-): ValidatorFn {
-  return (group: FormGroup): ValidationErrors => {
-    const campoDoc = group.controls[campoTipoDoc];
-    const campoNacimiento = group.controls[campoFechaNacimiento];
-
-    const hoy = moment();
-    const edadAnios = hoy.diff(campoNacimiento.value, 'years');
-
+export function ValidarCC(
+  control: AbstractControl
+): { [key: string]: any } | null {
+  const hoy = moment();
+  const edadAnios = hoy.diff(control.value, 'years');
+  if (control.parent) {
     if (
-      (edadAnios >= 18 && campoDoc.value === 'TI') ||
-      (edadAnios >= 18 && campoDoc.value === 'RC')
+      (control.parent.value.tipoDoc === 'RC' && edadAnios > 18) ||
+      (control.parent.value.tipoDoc === 'TI' && edadAnios > 18)
     ) {
-      campoDoc.setErrors({ debeSerCC: true });
-    } else {
-      campoDoc.setErrors(null);
+      return { tipoDocCcInvalido: true };
     }
-    return;
-  };
+    return null;
+  }
 }

@@ -17,8 +17,7 @@ import { Uds } from 'src/app/models/uds.model';
 import { UdsService } from 'src/app/services/uds.service';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 // Validators
-import { documentoExtranjero } from '../../../helpers/Validators/documento-extranjero.validator';
-import { debeSerRC } from '../../../helpers/Validators/tipo-documento.validator';
+// import { documentoExtranjero } from '../../../helpers/Validators/documento-extranjero.validator';
 // Importo municipios y ciudades de Colombia
 import listaDatosColombia from 'src/app/config/colombia.json';
 import { alertSuccess } from 'src/app/helpers/swal2.config';
@@ -196,8 +195,19 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private adaptadorFecha: DateAdapter<any>
   ) {
-    this.adaptadorFecha.setLocale('es');
     this.usuario = this.usuario$.usuario;
+
+    // para Material Datetime-Picker
+    this.adaptadorFecha.setLocale('es');
+    const anioActual = new Date().getFullYear();
+    const mesActual = new Date().getMonth();
+
+    this.minNacimiento = new Date(anioActual - 100, 0, 1); // 100 años atrás enero 1
+    this.maxNacimiento = new Date(moment()); // Hoy
+
+    this.minIngreso = new Date(anioActual, 0, 1); // mes vigente
+    this.maxIngreso = new Date(moment()); // Hoy
+
     this.obtenerUds();
 
     this.obtenerInfoRuta().subscribe(paramId => {
