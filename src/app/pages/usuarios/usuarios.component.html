@@ -148,6 +148,13 @@
               <mat-icon>person</mat-icon>
               <span class="status-text ml-1">{{ usuario.rol }}</span>
             </div>
+            <div
+              *ngIf="usuario.rol === 'VISITANTE'"
+              class="badge-status alert alert-secondary"
+            >
+              <mat-icon>person</mat-icon>
+              <span class="status-text ml-1">{{ usuario.rol }}</span>
+            </div>
           </td>
         </ng-container>
         <ng-container matColumnDef="activo">

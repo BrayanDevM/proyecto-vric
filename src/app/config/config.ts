@@ -9,6 +9,33 @@ export const Config = {
     }
   },
   SELECTS: {
+    usuariosRoles: [
+      {
+        value: 'ADMIN',
+        label: 'Administrador',
+        icon: 'fa-user-shield text-danger'
+      },
+      {
+        value: 'GESTOR',
+        label: 'Gestor',
+        icon: 'fa-user text-success'
+      },
+      {
+        value: 'COORDINADOR',
+        label: 'Coordinador',
+        icon: 'fa-user text-primary'
+      },
+      {
+        value: 'DOCENTE',
+        label: 'Docente',
+        icon: 'fa-user text-secondary'
+      },
+      {
+        value: 'VISITANTE',
+        label: 'Visitante',
+        icon: 'fa-user text-secondary'
+      }
+    ],
     regionalesICBF: [
       { value: 'Cauca', label: 'Cauca' },
       { value: 'Valle del Cauca', label: 'Valle del Cauca' }

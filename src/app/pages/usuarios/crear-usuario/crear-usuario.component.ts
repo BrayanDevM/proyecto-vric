@@ -10,6 +10,7 @@ import { Contrato } from 'src/app/models/contrato.model';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { Router } from '@angular/router';
 import { alertSuccess } from 'src/app/helpers/swal2.config';
+import { Config } from 'src/app/config/config';
 declare const moment: any;
 
 @Component({
@@ -18,32 +19,7 @@ declare const moment: any;
   styleUrls: ['./crear-usuario.component.css']
 })
 export class CrearUsuarioComponent implements OnInit {
-  roles: any[] = [
-    {
-      value: 'ADMIN',
-      label: 'Administrador',
-      icon: 'fa-user',
-      iconColor: 'text-danger'
-    },
-    {
-      value: 'GESTOR',
-      label: 'Gestor',
-      icon: 'fa-user',
-      iconColor: 'text-primary'
-    },
-    {
-      value: 'COORDINADOR',
-      label: 'Coordinador',
-      icon: 'fa-user',
-      iconColor: 'text-info'
-    },
-    {
-      value: 'DOCENTE',
-      label: 'Docente',
-      icon: 'fa-user',
-      iconColor: 'text-secondary'
-    }
-  ];
+  roles: any[] = Config.SELECTS.usuariosRoles;
   // ---------------------
   formUsuario: FormGroup;
   creandoUsuario = false;

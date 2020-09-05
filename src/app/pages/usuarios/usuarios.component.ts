@@ -4,9 +4,9 @@ import { Usuario } from 'src/app/models/usuario.model';
 import { Router } from '@angular/router';
 import { Contrato } from 'src/app/models/contrato.model';
 import { ContratosService } from 'src/app/services/contratos.service';
-import { NgOption } from '@ng-select/ng-select';
 import { Subscription } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
+import { Config } from 'src/app/config/config';
 
 @Component({
   selector: 'app-usuarios',
@@ -15,20 +15,7 @@ import { MatTableDataSource } from '@angular/material/table';
 })
 export class UsuariosComponent implements OnInit {
   // data ng-select
-  roles: NgOption = [
-    {
-      value: 'ADMIN',
-      label: 'Administrador',
-      icon: 'fas fa-user-shield text-danger'
-    },
-    { value: 'GESTOR', label: 'Gestor', icon: 'fas fa-user text-success' },
-    {
-      value: 'COORDINADOR',
-      label: 'Coordinador',
-      icon: 'fas fa-user text-primary'
-    },
-    { value: 'DOCENTE', label: 'Docente', icon: 'fas fa-user text-secondary' }
-  ];
+  roles: any[] = Config.SELECTS.usuariosRoles;
   // ---------------------
   usuarios: Usuario[] = [];
   contratosDisponibles: Contrato[] = [];

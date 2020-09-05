@@ -14,6 +14,7 @@ import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Config } from 'src/app/config/config';
 
 @Component({
   selector: 'app-usuario',
@@ -21,32 +22,7 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./usuario.component.css']
 })
 export class UsuarioComponent implements OnInit {
-  roles: any[] = [
-    {
-      value: 'ADMIN',
-      label: 'Administrador',
-      icon: 'fa-user',
-      iconColor: 'text-danger'
-    },
-    {
-      value: 'GESTOR',
-      label: 'Gestor',
-      icon: 'fa-user',
-      iconColor: 'text-primary'
-    },
-    {
-      value: 'COORDINADOR',
-      label: 'Coordinador',
-      icon: 'fa-user',
-      iconColor: 'text-info'
-    },
-    {
-      value: 'DOCENTE',
-      label: 'Docente',
-      icon: 'fa-user',
-      iconColor: 'text-secondary'
-    }
-  ];
+  roles: any[] = Config.SELECTS.usuariosRoles;
   usuario: Usuario;
   contratosDisponibles: Contrato[] = [];
   contratosAsignados: Contrato[] = [];
