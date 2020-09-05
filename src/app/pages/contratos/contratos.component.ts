@@ -4,6 +4,7 @@ import { ContratosService } from 'src/app/services/contratos.service';
 import { Contrato } from 'src/app/models/contrato.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
+import { UsuarioService } from 'src/app/services/usuario.service';
 
 @Component({
   selector: 'app-contratos',
@@ -16,13 +17,20 @@ export class ContratosComponent implements OnInit, OnDestroy {
   tablaData: MatTableDataSource<any>;
   numRegistros = 0;
   abrirSidenav = false;
+  puedeCrear = false;
 
   // variables para almacenar subscripción y poder desuscribirnos
   contratoNuevo: Subscription;
   contratoEliminado: Subscription;
   contratoActualizado: Subscription;
 
-  constructor(public contratos$: ContratosService, private router: Router) {}
+  constructor(
+    private usuario$: UsuarioService,
+    public contratos$: ContratosService,
+    private router: Router
+  ) {
+    this.comprobarPermisos();
+  }
 
   ngOnInit() {
     this.obtenerContratos();
@@ -106,5 +114,20 @@ export class ContratosComponent implements OnInit, OnDestroy {
     this.contratoNuevo.unsubscribe();
     this.contratoEliminado.unsubscribe();
     this.contratoActualizado.unsubscribe();
+  }
+
+  // permisos para crear
+  comprobarPermisos() {
+    switch (this.usuario$.usuario.rol) {
+      case 'ADMIN':
+        this.puedeCrear = true;
+        break;
+      case 'GESTOR':
+        this.puedeCrear = true;
+        break;
+      default:
+        this.puedeCrear = false;
+        break;
+    }
   }
 }

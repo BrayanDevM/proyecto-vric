@@ -31,6 +31,8 @@ export class UnidadComponent implements OnInit {
   cargandoDocentes = false;
   docentesEnUds = [];
   formActualizarUds: FormGroup;
+
+  puedeEditar = false;
   editMode = false;
 
   constructor(
@@ -40,6 +42,7 @@ export class UnidadComponent implements OnInit {
     private snackBar$: MatSnackBar,
     private fb: FormBuilder
   ) {
+    this.comprobarPermisos();
     // Intancio nuevo formulario
     this.formActualizarUds = this.fb.group({
       nombre: [null, [Validators.required, Validators.minLength(5)]],
@@ -278,5 +281,20 @@ export class UnidadComponent implements OnInit {
       horizontalPosition: 'end',
       verticalPosition: 'bottom'
     });
+  }
+
+  // permisos para crear
+  comprobarPermisos() {
+    switch (this.usuarios$.usuario.rol) {
+      case 'ADMIN':
+        this.puedeEditar = true;
+        break;
+      case 'GESTOR':
+        this.puedeEditar = true;
+        break;
+      default:
+        this.puedeEditar = false;
+        break;
+    }
   }
 }

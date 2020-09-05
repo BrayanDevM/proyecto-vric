@@ -21,12 +21,14 @@ export class BeneficiarioComponent implements OnInit {
   estadoData: any;
   estadoInicial: string;
 
-  puedeEditar = false;
-  edicionRapida = false;
   editandoComentario = false;
   // variables de uso
   beneficiario: Beneficiario;
   comentario: string;
+
+  puedeEditar = false;
+  puedeComentar = false;
+  edicionRapida = false;
 
   @ViewChild('autosize') autosize: CdkTextareaAutosize;
 
@@ -38,16 +40,11 @@ export class BeneficiarioComponent implements OnInit {
     private snackBar$: MatSnackBar,
     private ngZone: NgZone
   ) {
+    this.comprobarPermisos();
+
     this.comentario = this.data.comentario;
     this.estadoInicial = this.data.estado;
     this.obtenerIconoEstado();
-
-    if (
-      this.usuario$.usuario.rol === 'GESTOR' ||
-      this.usuario$.usuario.rol === 'ADMIN'
-    ) {
-      this.puedeEditar = true;
-    }
   }
 
   obtenerIconoEstado() {
@@ -177,5 +174,25 @@ export class BeneficiarioComponent implements OnInit {
           this.beneficiarios$.beneficiarioEliminado.emit(beneficiario);
         }
       });
+  }
+
+  // permisos para crear
+  comprobarPermisos() {
+    switch (this.usuario$.usuario.rol) {
+      case 'ADMIN':
+        this.puedeEditar = true;
+        this.puedeComentar = true;
+        break;
+      case 'GESTOR':
+        this.puedeEditar = true;
+        this.puedeComentar = true;
+        break;
+      case 'DOCENTE':
+        this.puedeComentar = true;
+        break;
+      default:
+        this.puedeEditar = false;
+        break;
+    }
   }
 }

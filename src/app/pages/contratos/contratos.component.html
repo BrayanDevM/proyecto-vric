@@ -17,21 +17,23 @@
           </div>
         </div>
         <div class="page-actions col-xl-6 p-0">
-          <div class="mr-3">
-            <mat-form-field appearance="outline" class="search-input">
-              <!-- <mat-label></mat-label> -->
-              <input
-                matInput
-                (keyup)="filtrarTabla($event)"
-                placeholder="Buscar contratos"
-                autocomplete="off"
-                #buscar
-              />
-              <mat-icon matPrefix>search</mat-icon>
-              <!-- <mat-hint>Hint</mat-hint> -->
-            </mat-form-field>
-          </div>
+          <mat-form-field
+            appearance="outline"
+            class="bdm-input input-search-header mr-3"
+          >
+            <!-- <mat-label></mat-label> -->
+            <input
+              matInput
+              (keyup)="filtrarTabla($event)"
+              placeholder="Buscar contratos"
+              autocomplete="off"
+              #buscar
+            />
+            <mat-icon matPrefix>search</mat-icon>
+            <!-- <mat-hint>Hint</mat-hint> -->
+          </mat-form-field>
           <button
+            *ngIf="puedeCrear"
             (click)="crear()"
             mat-flat-button
             color="primary"

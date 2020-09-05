@@ -770,7 +770,7 @@
       <span>Comentario</span>
       <button
         type="button"
-        *ngIf="!editandoComentario"
+        *ngIf="!editandoComentario && puedeComentar"
         (click)="editandoComentario = true"
         mat-icon-button
         matTooltip="Editar comentario"

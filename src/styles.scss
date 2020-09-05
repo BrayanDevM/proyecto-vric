@@ -129,42 +129,6 @@ button:focus {
   font-weight: 600;
 }
 
-.search-input .mat-form-field-wrapper {
-  padding-bottom: 0;
-  margin: 0;
-}
-
-.header .search-input .mat-form-field-flex {
-  min-height: 40px;
-  background-color: #fff;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-}
-.search-input .mat-form-field-flex:hover .mat-form-field-outline-start,
-.search-input .mat-form-field-flex:hover .mat-form-field-outline-gap,
-.search-input .mat-form-field-flex:hover .mat-form-field-outline-end {
-  // border-color: #cfd8e3;
-  border-width: 1px;
-}
-.search-input .mat-form-field-prefix {
-  color: #97a6ba;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 40px;
-  width: 30px;
-}
-.search-input .mat-form-field-infix {
-  display: flex;
-  width: 160px;
-  height: 40px;
-  border: none;
-  padding: 0;
-  margin-left: 2px;
-}
-.search-input .mat-form-field-infix input::-webkit-input-placeholder {
-  font-weight: 500;
-}
-
 .page-title .title-bold {
   font-weight: 800;
 }
@@ -363,23 +327,40 @@ p.card-title {
 }
 .bdm-input .mat-form-field-wrapper .mat-form-field-prefix {
   margin-right: 8px;
+  top: 0.4em;
 }
 .bdm-input .mat-form-field-wrapper .mat-form-field-suffix {
   margin-left: 8px;
+  top: 0.4em;
 }
 .bdm-input .mat-form-field-wrapper .mat-form-field-flex {
   padding: 0 16px;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 .bdm-input .mat-form-field-wrapper .mat-form-field-infix {
+  display: flex;
+  min-width: 160px;
+  min-height: 40px;
+  border: none;
   border-top: 5px solid transparent;
 }
+
 // disabled input y select
 .bdm-input.mat-form-field-disabled .mat-form-field-outline-start,
-.bdm-input.mat-form-field-disabled .mat-form-field-outline-end,
-.bdm-select.mat-form-field-disabled .mat-form-field-outline-start,
-.bdm-select.mat-form-field-disabled .mat-form-field-outline-end {
+.bdm-input.mat-form-field-disabled .mat-form-field-outline-end {
   background-color: aliceblue;
+}
+// special styles for search input in header of pages
+.bdm-input.input-search-header
+  .mat-form-field-infix
+  input::-webkit-input-placeholder {
+  font-weight: 500;
+}
+
+.bdm-input.input-search-header
+  .mat-form-field-wrapper
+  .mat-form-field-subscript-wrapper {
+  margin-top: 0;
 }
 
 // MAT-SELECT ESTILOS (ESTE SI) ***********************************************
@@ -393,9 +374,11 @@ p.card-title {
 }
 .bdm-select .mat-form-field-wrapper .mat-form-field-prefix {
   margin-right: 8px;
+  top: 0.4em;
 }
 .bdm-select .mat-form-field-wrapper .mat-form-field-suffix {
   margin-left: 8px;
+  top: 0.4em;
 }
 
 .bdm-select .mat-form-field-wrapper .mat-form-field-flex {
@@ -406,39 +389,13 @@ p.card-title {
   border-top: 5px solid transparent;
 }
 .bdm-select .mat-form-field-wrapper .mat-select-arrow-wrapper {
-  padding-top: 7px;
+  border-top: 8px solid transparent;
 }
-// ************************************************************************
-
-.select .mat-form-field-wrapper {
-  padding-bottom: 0;
+.bdm-select.mat-form-field-disabled .mat-form-field-outline-start,
+.bdm-select.mat-form-field-disabled .mat-form-field-outline-end {
+  background-color: aliceblue;
 }
-.select .mat-form-field-wrapper .mat-form-field-prefix mat-icon {
-  margin-right: 12px;
-}
-.select .mat-form-field-infix {
-  font-family: Inter, Roboto, Arial, Helvetica, sans-serif;
-  border-top: none;
-}
-.select .mat-form-field-infix span.mat-select-placeholder {
-  font-family: Inter, Roboto, Arial, Helvetica, sans-serif;
-  font-size: 0.92rem;
-  font-weight: 500;
-}
-
-.select .mat-form-field-flex {
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  padding-top: 5px;
-  background-color: #fff;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  min-height: 41.5px;
-  padding: 0 16px;
-  // ----
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
+// ****************************************************************************
 
 // INFO BENEFICIARIO DIALOG STYLES
 .mat-dialog-container {

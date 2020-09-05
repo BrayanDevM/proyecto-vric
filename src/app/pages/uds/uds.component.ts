@@ -4,6 +4,7 @@ import { Uds } from 'src/app/models/uds.model';
 import { Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
+import { UsuarioService } from 'src/app/services/usuario.service';
 
 @Component({
   selector: 'app-uds',
@@ -30,7 +31,15 @@ export class UdsComponent implements OnInit, OnDestroy {
   udsEliminada: Subscription;
   udsActualizada: Subscription;
 
-  constructor(public uds$: UdsService, private router: Router) {}
+  puedeCrear = false;
+
+  constructor(
+    private usuario$: UsuarioService,
+    public uds$: UdsService,
+    private router: Router
+  ) {
+    this.comprobarPermisos();
+  }
 
   ngOnInit(): void {
     this.obtenerUds();
@@ -121,5 +130,20 @@ export class UdsComponent implements OnInit, OnDestroy {
     this.udsNueva.unsubscribe();
     this.udsEliminada.unsubscribe();
     this.udsActualizada.unsubscribe();
+  }
+
+  // permisos para crear
+  comprobarPermisos() {
+    switch (this.usuario$.usuario.rol) {
+      case 'ADMIN':
+        this.puedeCrear = true;
+        break;
+      case 'GESTOR':
+        this.puedeCrear = true;
+        break;
+      default:
+        this.puedeCrear = false;
+        break;
+    }
   }
 }

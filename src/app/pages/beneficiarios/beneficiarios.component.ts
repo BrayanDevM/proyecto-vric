@@ -102,8 +102,11 @@ export class BeneficiariosComponent implements OnInit, OnDestroy {
       case 'COORDINADOR':
         this.query = `coordinador=${this.usuario._id}`;
         break;
-      default:
+      case 'DOCENTE':
         this.query = `docente=${this.usuario._id}`;
+        break;
+      default:
+        this.query = '';
         break;
     }
     // Si ya ha consultado una vez sólo toma los datos del LS

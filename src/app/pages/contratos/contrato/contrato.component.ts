@@ -1,17 +1,10 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  Output,
-  EventEmitter
-} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivationEnd } from '@angular/router';
 import { Contrato } from 'src/app/models/contrato.model';
 import { ContratosService } from 'src/app/services/contratos.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UdsService } from 'src/app/services/uds.service';
 import { Uds } from 'src/app/models/uds.model';
-import { NgOption, NgSelectComponent } from '@ng-select/ng-select';
 import {
   alertSuccess,
   alertDanger,
@@ -21,6 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { Config } from 'src/app/config/config';
+import { UsuarioService } from 'src/app/services/usuario.service';
 
 @Component({
   selector: 'app-contrato',
@@ -43,17 +37,20 @@ export class ContratoComponent implements OnInit {
   // --------------------------------
   cargandoUdsDisponibles = false;
   formActualizarContrato: FormGroup;
+
+  // permisos
+  puedeEditar = false;
   editMode = false;
 
-  @ViewChild('udsDisp') udsDispSelect: NgSelectComponent;
-
   constructor(
+    private usuario$: UsuarioService,
     public contratos$: ContratosService,
     public uds$: UdsService,
     private fb: FormBuilder,
     private snackBar$: MatSnackBar,
     private router: Router
   ) {
+    this.comprobarPermisos();
     this.formActualizarContrato = this.fb.group({
       codigo: [null, [Validators.required, Validators.pattern('^[0-9]*$')]],
       cupos: [null, Validators.required],
@@ -172,8 +169,6 @@ export class ContratoComponent implements OnInit {
     this.udsDisponibles.splice(i, 1);
     // Refreso arreglo para el select
     this.udsDisponibles = [...this.udsDisponibles];
-
-    this.udsDispSelect.handleClearClick();
   }
 
   sacarUdsContrato(index: number, unidadId: string) {
@@ -273,5 +268,20 @@ export class ContratoComponent implements OnInit {
           });
         }
       });
+  }
+
+  // permisos para crear
+  comprobarPermisos() {
+    switch (this.usuario$.usuario.rol) {
+      case 'ADMIN':
+        this.puedeEditar = true;
+        break;
+      case 'GESTOR':
+        this.puedeEditar = true;
+        break;
+      default:
+        this.puedeEditar = false;
+        break;
+    }
   }
 }
