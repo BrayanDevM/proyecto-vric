@@ -8,7 +8,7 @@ import { ContratoComponent } from './contratos/contrato/contrato.component';
 import { UdsComponent } from './uds/uds.component';
 import { NovedadesComponent } from './novedades/novedades.component';
 import { BeneficiariosComponent } from './beneficiarios/beneficiarios.component';
-import { PerfilComponent } from './perfil/perfil.component';
+import { AjustesComponent } from './ajustes/ajustes.component';
 import { UnidadComponent } from './uds/unidad/unidad.component';
 import { CrearUdsComponent } from './uds/crear-uds/crear-uds.component';
 import { CrearContratoComponent } from './contratos/crear-contrato/crear-contrato.component';
@@ -26,6 +26,8 @@ import { UsuarioComponent } from './usuarios/usuario/usuario.component';
 import { VerificaTokenGuard } from '../services/guards/verifica-token.guard';
 import { AdminGuard } from '../services/guards/admin.guard';
 import { SupervisorGuard } from '../services/guards/supervisor.guard';
+import { AyudaComponent } from './ayuda/ayuda.component';
+import { FaqsComponent } from './ayuda/faqs/faqs.component';
 
 const routes: Routes = [
   {
@@ -131,10 +133,25 @@ const routes: Routes = [
     data: { nombrePagina: 'Administrar' }
   },
   {
-    path: 'perfil',
+    path: 'ajustes',
     canActivate: [VerificaTokenGuard],
-    component: PerfilComponent,
-    data: { nombrePagina: 'Usuarios' }
+    component: AjustesComponent,
+    data: { nombrePagina: 'Ajustes' }
+  },
+  {
+    path: 'ayuda',
+    canActivate: [VerificaTokenGuard],
+    component: AyudaComponent,
+    // children: [
+    //   { path: 'faqs', component: FaqsComponent }
+    // ],
+    data: { nombrePagina: 'Ayuda' }
+  },
+  {
+    path: 'ayuda/faqs',
+    canActivate: [VerificaTokenGuard],
+    component: FaqsComponent,
+    data: { nombrePagina: 'FAQs' }
   },
   {
     path: 'buscar/:criterio',

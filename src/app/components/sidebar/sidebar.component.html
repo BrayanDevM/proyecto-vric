@@ -20,13 +20,11 @@
             <span class="email">{{ usuario.correo }}</span>
           </div>
           <mat-divider></mat-divider>
-          <button mat-menu-item>
-            <mat-icon fontSet="material-icons-two-tone"
-              >account_circle</mat-icon
-            >
-            <span>Perfil</span>
+          <button (click)="irAyuda()" mat-menu-item>
+            <mat-icon fontSet="material-icons-two-tone">help</mat-icon>
+            <span>Ayuda</span>
           </button>
-          <button mat-menu-item>
+          <button (click)="irAjustes()" mat-menu-item>
             <mat-icon fontSet="material-icons-two-tone">settings</mat-icon>
             <span>Ajustes</span>
           </button>
@@ -38,7 +36,7 @@
         </mat-menu>
       </div>
     </div>
-    <div class="user">
+    <div class="user-profile">
       <div class="avatar">
         <img src="./assets/img/developer.png" width="100%" alt="" />
       </div>
@@ -64,7 +62,7 @@
       </a>
     </div>
   </div>
-  <div class="navigation-group group-bottom">
+  <div *ngIf="false" class="navigation-group group-bottom">
     <div class="navigation-item" routerLinkActive="active">
       <a href="#" class="navigation-link">
         <mat-icon>sms_failed</mat-icon>

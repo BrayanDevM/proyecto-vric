@@ -219,11 +219,6 @@ export class UsuarioService {
     const URL = this.API_URL + `/usuarios/${usuario._id}?token=${this.token}`;
     return this.http.put(URL, usuario).pipe(
       map((resp: any) => {
-        Swal.fire({
-          title: 'Usuario',
-          text: resp.mensaje,
-          icon: 'success'
-        });
         if (usuario._id === this.usuario._id) {
           this.crearCookieSesion(
             this.token,

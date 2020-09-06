@@ -34,7 +34,7 @@
       <mat-icon fontSet="material-icons-two-tone">save</mat-icon>
     </button>
     <button
-      (click)="eliminarBeneficiario(data)"
+      (click)="eliminarBeneficiario('Eliminar')"
       mat-icon-button
       matTooltip="Eliminar"
     >
@@ -108,8 +108,8 @@
             </div>
             <mat-form-field
               *ngIf="edicionRapida"
-              appearance="outlined"
-              class="select"
+              appearance="outline"
+              class="bdm-select"
             >
               <mat-select
                 #selectEstado
@@ -833,5 +833,12 @@
   </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
+  <button
+    (click)="eliminarBeneficiario('Cancela ingreso')"
+    mat-button
+    color="warn"
+  >
+    Cancelar ingreso
+  </button>
   <button mat-button mat-dialog-close>Cerrar</button>
 </mat-dialog-actions>

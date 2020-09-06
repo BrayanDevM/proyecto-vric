@@ -21,7 +21,7 @@ import { UdsComponent } from './uds/uds.component';
 import { BeneficiariosComponent } from './beneficiarios/beneficiarios.component';
 import { BeneficiarioComponent } from './beneficiarios/beneficiario/beneficiario.component';
 import { NovedadesComponent } from './novedades/novedades.component';
-import { PerfilComponent } from './perfil/perfil.component';
+import { AjustesComponent } from './ajustes/ajustes.component';
 import { ContratoComponent } from './contratos/contrato/contrato.component';
 import { UnidadComponent } from './uds/unidad/unidad.component';
 import { CrearUdsComponent } from './uds/crear-uds/crear-uds.component';
@@ -35,6 +35,10 @@ import { MaterialModule } from '../material/material.module';
 import { BeneficiariosUdsComponent } from './beneficiarios/tabla-beneficiarios/beneficiarios-uds.component';
 import { BeneficiariosEstadoComponent } from './beneficiarios/tabla-beneficiarios/beneficiarios-estado.component';
 import { BeneficiarioEditarComponent } from './beneficiarios/beneficiario-editar/beneficiario-editar.component';
+import { AyudaComponent } from './ayuda/ayuda.component';
+import { FaqsComponent } from './ayuda/faqs/faqs.component';
+import { GuiasComponent } from './ayuda/guias/guias.component';
+import { SoporteComponent } from './ayuda/soporte/soporte.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +49,7 @@ import { BeneficiarioEditarComponent } from './beneficiarios/beneficiario-editar
     BeneficiarioComponent,
     NovedadesComponent,
     AdministrarComponent,
-    PerfilComponent,
+    AjustesComponent,
     ContratoComponent,
     UnidadComponent,
     CrearUdsComponent,
@@ -57,7 +61,11 @@ import { BeneficiarioEditarComponent } from './beneficiarios/beneficiario-editar
     DashboardUdsComponent,
     BeneficiariosUdsComponent,
     BeneficiariosEstadoComponent,
-    BeneficiarioEditarComponent
+    BeneficiarioEditarComponent,
+    AyudaComponent,
+    FaqsComponent,
+    GuiasComponent,
+    SoporteComponent
   ],
   imports: [
     CommonModule,

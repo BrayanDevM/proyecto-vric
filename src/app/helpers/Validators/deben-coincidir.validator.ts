@@ -1,18 +1,18 @@
-import { FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl } from '@angular/forms';
 
-// custom validator para verificar que dos campos coincidan
-export function debenCoincidir(
-  controlName: string,
-  controlName2: string
-): ValidatorFn {
-  return (group: FormGroup): ValidationErrors => {
-    const campo1 = group.controls[controlName];
-    const campo2 = group.controls[controlName2];
-    if (campo1.value === campo2.value) {
-      campo2.setErrors(null);
-    } else {
-      campo2.setErrors({ noSonIguales: true });
+export function ValidarCoincidencia(
+  control: AbstractControl
+): { [key: string]: any } | null {
+  if (control.parent) {
+    console.log(control.parent.value.password, '<- contraseña');
+    console.log(control.value, '<- confirma');
+    if (control.parent.value.password !== control.value) {
+      console.log('no coinciden?');
+      return { noCoinciden: true };
     }
-    return;
-  };
+    console.log(control.parent.value.password, '<- contraseña');
+    console.log(control.value, '<- confirma');
+    console.log('coinciden');
+    return null;
+  }
 }

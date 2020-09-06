@@ -1,0 +1,69 @@
+<div
+  class="page-wrapper d-flex justify-content-center bg-blue-grey help-center"
+>
+  <div class="main">
+    <div class="header text-center">
+      <h1>Bienvenido! cómo te podemos ayudar hoy?</h1>
+      <div class="help-categories">
+        <a [routerLink]="['/ayuda/faqs']" class="category">
+          <mat-icon>description</mat-icon>
+          <span class="title">FAQs</span>
+          <span class="subtitle">
+            Preguntas y respuestas realizadas frecuentemente
+          </span>
+        </a>
+        <a href="#" class="category">
+          <mat-icon>local_library</mat-icon>
+          <span class="title">Guías</span>
+          <span class="subtitle">Artículos y recursos que te ayudarán</span>
+        </a>
+        <a href="#" class="category">
+          <mat-icon>support</mat-icon>
+          <span class="title">Soporte</span>
+          <span class="subtitle">
+            Contactanos para un soporte más detallado
+          </span>
+        </a>
+      </div>
+    </div>
+    <div class="faqs">
+      <div class="header text-center">
+        <h2 class="m-0">Preguntas realizadas frecuentemente</h2>
+        <h4 class="text-muted">
+          Aquí están las preguntas más frecuentes, puedes revisarlas antes de
+          empezar
+        </h4>
+      </div>
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Puedo eliminar un beneficiario después de reportado?
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <p class="text-muted">
+            Puedes eliminar sólo los beneficiarios reportados como nuevo
+            ingreso, sin embargo, esto sólo si el Gestor antes no ha realizado
+            el cambio de estado a "Vinculado" ya que una vez realizdo el cambio
+            de estado, este registro ya no se podrá eliminar.
+          </p>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Por qué no puedo reportar un nacimiento después de la primera
+              semana?
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <p class="text-muted">
+            Lo mejor para llevar el registro de un beneficiario Lactante (menor
+            de seis meses) es hacerlo al inicio de un mes, puesto que, permite
+            que el acompañamiento y cargue de formación se dé de manera
+            armónica, hacerlo de otra manera es posible, sin embargo, presenta
+            una dificultad al realizar su seguimiento en las plataformas.
+          </p>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+</div>

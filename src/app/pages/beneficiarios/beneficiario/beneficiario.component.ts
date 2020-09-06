@@ -162,16 +162,30 @@ export class BeneficiarioComponent implements OnInit {
     this.router.navigate(['/beneficiario/editar', this.data._id]);
   }
 
-  eliminarBeneficiario(beneficiario: Beneficiario): void {
+  eliminarBeneficiario(caso: string): void {
+    let mensaje = `<b>${this.data.nombre1} ${this.data.nombre2} ${this.data.apellido1} ${this.data.apellido2}</b>?, esta acción no puede deshacerse.`;
+    let confirmBtn = 'Si, cancelar ingreso';
+    if (caso === 'Cancela ingreso') {
+      mensaje = '¿Deseas cancelar el reporte de ingreso de ' + mensaje;
+    } else {
+      mensaje = '¿Deseas eliminar a ' + mensaje;
+      confirmBtn = 'Si, eliminar';
+    }
     alertDanger
       .fire({
         title: 'Beneficiarios',
-        html: `Eliminar a <b>${beneficiario.nombre1}</b> esta acción no puede deshacerse.`,
-        confirmButtonText: 'Si, eliminar'
+        html: mensaje,
+        confirmButtonText: confirmBtn
       })
-      .then(resp => {
-        if (resp.value) {
-          this.beneficiarios$.beneficiarioEliminado.emit(beneficiario);
+      .then(confirm => {
+        if (confirm.value) {
+          this.beneficiarios$
+            .eliminarBeneficiario(this.data)
+            .subscribe((resp: any) => {
+              if (resp.ok) {
+                this.beneficiarios$.beneficiarioEliminado.emit(this.data);
+              }
+            });
         }
       });
   }

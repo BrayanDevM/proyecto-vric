@@ -5,6 +5,7 @@ import Swal from 'sweetalert2/src/sweetalert2.js';
 import { SidebarService } from 'src/app/services/sidebar.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { Usuario } from 'src/app/models/usuario.model';
+import { Router } from '@angular/router';
 declare var moment: any;
 declare var jQuery: any;
 
@@ -22,15 +23,23 @@ export class SidebarComponent implements OnInit {
   constructor(
     private usuario$: UsuarioService,
     private sidebar$: SidebarService,
-    private reporte$: ReportesService
+    private reporte$: ReportesService,
+    private router: Router
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.menuUsuario = this.sidebar$.obtenerMenu();
     this.usuario = this.usuario$.usuario;
   }
 
-  cerrarSesion() {
+  irAjustes(): void {
+    this.router.navigate(['/ajustes']);
+  }
+  irAyuda(): void {
+    this.router.navigate(['/ayuda']);
+  }
+
+  cerrarSesion(): void {
     this.usuario$.logout();
   }
 

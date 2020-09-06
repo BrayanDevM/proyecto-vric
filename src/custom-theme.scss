@@ -5,7 +5,7 @@
 $custom-typography: mat-typography-config(
   $font-family: 'Inter, Roboto, monospace',
   $headline: mat-typography-level(32px, 48px, 700),
-  $body-1: mat-typography-level(16px, 24px, 500)
+  $body-1: mat-typography-level(14px, 24px, 400)
 );
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
@@ -37,3 +37,6 @@ $Proyecto-VRIC-theme: mat-light-theme(
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include angular-material-theme($Proyecto-VRIC-theme);
+// Override typography CSS classes (e.g., mat-h1, mat-display-1, mat-typography, etc.).
+// @include mat-base-typography($custom-typography);
+@include angular-material-typography($custom-typography);
