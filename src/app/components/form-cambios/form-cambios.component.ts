@@ -84,6 +84,9 @@ export class FormCambiosComponent implements OnInit {
 
   tienePadre = true;
 
+  semanaActual: any;
+  proximoCambioGestantes: any;
+
   // Máximo fechas mat-DatePicker
   maxNacimiento: Date;
   minNacimiento: Date;
@@ -189,6 +192,17 @@ export class FormCambiosComponent implements OnInit {
 
   ngOnInit() {
     this.usuario = this.usuario$.usuario;
+    this.semanaActual = this.weekOfMonth(moment());
+  }
+
+  weekOfMonth(m: any) {
+    return (
+      m.week() -
+      moment(m)
+        .startOf('month')
+        .week() +
+      1
+    );
   }
 
   get f() {

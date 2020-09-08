@@ -1,5 +1,9 @@
-<form [formGroup]="formCambio" (ngSubmit)="confirmarIngreso()">
-  <!--**********//********** Selecci+on de madre **********//**********-->
+<form
+  *ngIf="semanaActual < 3; else formBlocked"
+  [formGroup]="formCambio"
+  (ngSubmit)="confirmarIngreso()"
+>
+  <!--**********//********** Seleccion de madre **********//**********-->
   <div class="card border-0 shadow-sm mb-5 p-4">
     <div class="card-body form-datos-madre">
       <p class="card-title">Madre del beneficiario</p>
@@ -797,3 +801,27 @@
     </div>
   </div>
 </form>
+<ng-template #formBlocked>
+  <div class="card card-body border-0 shadow-sm">
+    <div class="container">
+      <div class="row d-flex align-items-center justify-content-center p-4">
+        <div class="col-sm-12 col-md-4 col-lg-3">
+          <img src="assets/img/svg/directions-colour.svg" alt="" />
+        </div>
+        <div class="col">
+          <h1>Reporte de nacimiento</h1>
+          <p class="m-0">
+            El formulario para realizar reporte de nacimientos se encuentra
+            actualmente bloqueado, recuerda que sólo se pueden reportar
+            nacimientos durantes las dos primeras semanas del mes, actualmente
+            nos encontramos en la {{ semanaActual }} semana.
+          </p>
+          <p class="mt-2">
+            Para más información puedes ver la guía de
+            <a href="">reporte de nacimiento</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

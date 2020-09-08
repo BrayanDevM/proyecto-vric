@@ -28,6 +28,8 @@ import { AdminGuard } from '../services/guards/admin.guard';
 import { SupervisorGuard } from '../services/guards/supervisor.guard';
 import { AyudaComponent } from './ayuda/ayuda.component';
 import { FaqsComponent } from './ayuda/faqs/faqs.component';
+import { GuiasComponent } from './ayuda/guias/guias.component';
+import { SoporteComponent } from './ayuda/soporte/soporte.component';
 
 const routes: Routes = [
   {
@@ -152,6 +154,18 @@ const routes: Routes = [
     canActivate: [VerificaTokenGuard],
     component: FaqsComponent,
     data: { nombrePagina: 'FAQs' }
+  },
+  {
+    path: 'ayuda/guias',
+    canActivate: [VerificaTokenGuard],
+    component: GuiasComponent,
+    data: { nombrePagina: 'Guías y recursos' }
+  },
+  {
+    path: 'ayuda/soporte',
+    canActivate: [VerificaTokenGuard],
+    component: SoporteComponent,
+    data: { nombrePagina: 'Soporte' }
   },
   {
     path: 'buscar/:criterio',

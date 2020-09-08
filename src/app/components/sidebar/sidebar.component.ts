@@ -18,12 +18,10 @@ export class SidebarComponent implements OnInit {
   usuario: Usuario;
   usuarioRol: string;
   menuUsuario: any = [];
-  reporte = new Reporte('Fallo', '', moment().format('DD/MM/YYYY'));
 
   constructor(
     private usuario$: UsuarioService,
     private sidebar$: SidebarService,
-    private reporte$: ReportesService,
     private router: Router
   ) {}
 
@@ -41,20 +39,5 @@ export class SidebarComponent implements OnInit {
 
   cerrarSesion(): void {
     this.usuario$.logout();
-  }
-
-  crearReporte() {
-    this.reporte$.crearReporte(this.reporte).subscribe((resp: any) => {
-      console.log(resp);
-      if (resp.ok === true) {
-        Swal.fire({
-          title: 'Reportar ingreso',
-          html: `Reporte enviado al administrador, muchas gracias por tu tiempo`,
-          icon: 'success'
-        });
-        jQuery('#modal-reporte').modal('hide');
-        this.reporte = new Reporte('Fallo', '', moment().format('DD/MM/YYYY'));
-      }
-    });
   }
 }

@@ -834,6 +834,7 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button
+    *ngIf="data.estado === 'Pendiente vincular'"
     (click)="eliminarBeneficiario('Cancela ingreso')"
     mat-button
     color="warn"

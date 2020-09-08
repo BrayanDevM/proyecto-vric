@@ -47,6 +47,7 @@
                 <mat-checkbox
                   class="example-margin"
                   [(ngModel)]="reporte.completado"
+                  (change)="actualizarReporte(reporte)"
                   >Completado</mat-checkbox
                 >
               </div>

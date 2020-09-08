@@ -21,11 +21,13 @@ span.beta {
 }
 
 .mat-toolbar {
-  background-color: #f9fafc;
+  /* background-color: #f9fafc; */
+  background-color: #f1f4f9;
 }
 
 .login-wrapper {
-  background-color: #f9fafc;
+  /* background-color: #f9fafc; */
+  background-color: #f1f4f9;
   /* height: calc(100vh - 64px); */
   height: 100vh;
   display: flex;
@@ -78,9 +80,9 @@ span.beta {
   display: none;
 }
 
-mat-form-field.mat-form-field {
+/* mat-form-field.mat-form-field {
   font-size: 1rem;
-}
+} */
 
 .login-form .form-submit {
   margin-bottom: 2rem;
