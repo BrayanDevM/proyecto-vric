@@ -1,4 +1,5 @@
 <div
+  *ngIf="!rutaHijaActiva"
   class="page-wrapper d-flex justify-content-center bg-blue-grey help-center"
 >
   <div class="main">
@@ -7,7 +8,7 @@
         <div class="col-12">
           <div class="header text-left">
             <a
-              routerLink="/ayuda"
+              [routerLink]="['/ayuda']"
               mat-button
               color="primary"
               class="btn-back mb-4"
@@ -26,7 +27,7 @@
           <h2>Iniciando</h2>
           <ul class="list-unstyled guide">
             <li>
-              <a href="#">Qué es esta aplicación?</a>
+              <a routerLink="que-es-esta-aplicacion">Qué es esta aplicación?</a>
             </li>
             <li>
               <a href="#">Iniciar usando esta aplicación</a>
@@ -83,10 +84,10 @@
               <a href="#">Crea unidad de servicio</a>
             </li>
             <li>
-              <a href="#">Editar Crea unidad de servicio</a>
+              <a href="#">Editar unidad de servicio</a>
             </li>
             <li>
-              <a href="#">Eliminar Crea unidad de servicio</a>
+              <a href="#">Eliminar unidad de servicio</a>
             </li>
           </ul>
         </div>
@@ -162,3 +163,7 @@
     </div>
   </div>
 </div>
+<router-outlet
+  (activate)="rutaHijaActiva = true"
+  (deactivate)="rutaHijaActiva = false"
+></router-outlet>

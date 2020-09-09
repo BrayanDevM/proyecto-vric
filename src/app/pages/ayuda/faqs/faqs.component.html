@@ -3,7 +3,12 @@
 >
   <div class="main">
     <div class="header text-left">
-      <a routerLink="/ayuda" mat-button color="primary" class="btn-back mb-4">
+      <a
+        [routerLink]="['/ayuda']"
+        mat-button
+        color="primary"
+        class="btn-back mb-4"
+      >
         <mat-icon>arrow_back</mat-icon> Volver al centro de ayuda
       </a>
       <h1 class="m-0">Preguntas realizadas frecuentemente</h1>

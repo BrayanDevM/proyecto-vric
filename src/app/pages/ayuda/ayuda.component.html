@@ -1,23 +1,24 @@
 <div
+  *ngIf="!rutaHijaActiva"
   class="page-wrapper d-flex justify-content-center bg-blue-grey help-center"
 >
   <div class="main">
     <div class="header text-center">
       <h1>Bienvenido! cómo te podemos ayudar hoy?</h1>
       <div class="help-categories">
-        <a [routerLink]="['/ayuda/faqs']" class="category">
+        <a routerLink="faqs" class="category">
           <mat-icon>description</mat-icon>
           <span class="title">FAQs</span>
           <span class="subtitle">
             Preguntas y respuestas realizadas frecuentemente
           </span>
         </a>
-        <a [routerLink]="['/ayuda/guias']" class="category">
+        <a routerLink="guias" class="category">
           <mat-icon>local_library</mat-icon>
           <span class="title">Guías</span>
           <span class="subtitle">Artículos y recursos que te ayudarán</span>
         </a>
-        <a [routerLink]="['/ayuda/soporte']" class="category">
+        <a routerLink="soporte" class="category">
           <mat-icon>support</mat-icon>
           <span class="title">Soporte</span>
           <span class="subtitle">
@@ -108,3 +109,7 @@
     </div>
   </div>
 </div>
+<router-outlet
+  (activate)="rutaHijaActiva = true"
+  (deactivate)="rutaHijaActiva = false"
+></router-outlet>

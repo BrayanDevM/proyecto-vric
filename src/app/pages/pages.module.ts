@@ -39,6 +39,7 @@ import { AyudaComponent } from './ayuda/ayuda.component';
 import { FaqsComponent } from './ayuda/faqs/faqs.component';
 import { GuiasComponent } from './ayuda/guias/guias.component';
 import { SoporteComponent } from './ayuda/soporte/soporte.component';
+import { QueEsEstaAppComponent } from './ayuda/guias/iniciando/que-es-esta-app.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +66,8 @@ import { SoporteComponent } from './ayuda/soporte/soporte.component';
     AyudaComponent,
     FaqsComponent,
     GuiasComponent,
-    SoporteComponent
+    SoporteComponent,
+    QueEsEstaAppComponent
   ],
   imports: [
     CommonModule,

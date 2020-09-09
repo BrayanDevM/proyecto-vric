@@ -30,6 +30,7 @@ import { AyudaComponent } from './ayuda/ayuda.component';
 import { FaqsComponent } from './ayuda/faqs/faqs.component';
 import { GuiasComponent } from './ayuda/guias/guias.component';
 import { SoporteComponent } from './ayuda/soporte/soporte.component';
+import { QueEsEstaAppComponent } from './ayuda/guias/iniciando/que-es-esta-app.component';
 
 const routes: Routes = [
   {
@@ -144,28 +145,27 @@ const routes: Routes = [
     path: 'ayuda',
     canActivate: [VerificaTokenGuard],
     component: AyudaComponent,
-    // children: [
-    //   { path: 'faqs', component: FaqsComponent }
-    // ],
+    children: [
+      {
+        path: 'faqs',
+        component: FaqsComponent,
+        data: { nombrePagina: 'FAQs' }
+      },
+      {
+        path: 'guias',
+        component: GuiasComponent,
+        children: [
+          { path: 'que-es-esta-aplicacion', component: QueEsEstaAppComponent }
+        ],
+        data: { nombrePagina: 'Guías y Recursos' }
+      },
+      {
+        path: 'soporte',
+        component: SoporteComponent,
+        data: { nombrePagina: 'Soporte' }
+      }
+    ],
     data: { nombrePagina: 'Ayuda' }
-  },
-  {
-    path: 'ayuda/faqs',
-    canActivate: [VerificaTokenGuard],
-    component: FaqsComponent,
-    data: { nombrePagina: 'FAQs' }
-  },
-  {
-    path: 'ayuda/guias',
-    canActivate: [VerificaTokenGuard],
-    component: GuiasComponent,
-    data: { nombrePagina: 'Guías y recursos' }
-  },
-  {
-    path: 'ayuda/soporte',
-    canActivate: [VerificaTokenGuard],
-    component: SoporteComponent,
-    data: { nombrePagina: 'Soporte' }
   },
   {
     path: 'buscar/:criterio',

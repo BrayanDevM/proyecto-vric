@@ -792,6 +792,16 @@ p.card-title {
   color: #009788;
 }
 
+.guia-imagen {
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 1rem 0;
+}
+
+.guia-imagen img {
+  width: 100%;
+}
+
 // ApexCharts ***************************************************************
 .apexchart .chart-title {
   text-transform: uppercase;
