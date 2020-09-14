@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Reporte } from 'src/app/models/reportes.model';
-import { ReportesService } from 'src/app/services/reportes.service';
-import Swal from 'sweetalert2/src/sweetalert2.js';
 import { SidebarService } from 'src/app/services/sidebar.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
+import { NotificacionesService } from 'src/app/services/notificaciones.service';
 import { Usuario } from 'src/app/models/usuario.model';
 import { Router } from '@angular/router';
-declare var moment: any;
-declare var jQuery: any;
+import { Subscription } from 'rxjs';
+import { SocketService } from 'src/app/services/socketIo/socket.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -19,15 +17,29 @@ export class SidebarComponent implements OnInit {
   usuarioRol: string;
   menuUsuario: any = [];
 
+  abrirNotificaciones = false;
+  notificaciones: any[] = [];
+  iconoNotificacion = 'notifications_none';
+  cuentaNotificaciones = 0;
+  cuentaSinLeer = 0;
+
+  audio: any;
+
   constructor(
     private usuario$: UsuarioService,
     private sidebar$: SidebarService,
+    private notificaciones$: NotificacionesService,
+    private socket: SocketService,
     private router: Router
-  ) {}
+  ) {
+    this.audio = new Audio('assets/audio/notificaciones/cheerful.mp3');
+  }
 
   ngOnInit(): void {
-    this.menuUsuario = this.sidebar$.obtenerMenu();
     this.usuario = this.usuario$.usuario;
+    this.menuUsuario = this.sidebar$.obtenerMenu();
+    this.obtenerNotificaciones();
+    this.subsNotificaciones();
   }
 
   irAjustes(): void {
@@ -39,5 +51,64 @@ export class SidebarComponent implements OnInit {
 
   cerrarSesion(): void {
     this.usuario$.logout();
+  }
+
+  // Control de notificaciones ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+  obtenerNotificaciones() {
+    this.notificaciones$
+      .obtenerNotificaciones(this.usuario._id)
+      .subscribe((resp: any) => {
+        this.notificaciones = resp.notificaciones;
+        this.cuentaNotificaciones = this.notificaciones.length;
+        this.contarSinLeer();
+      });
+  }
+
+  subsNotificaciones() {
+    this.socket
+      .listen('enviarNotificacionGeneral')
+      .subscribe((notificacion: any) => {
+        this.notificaciones.unshift(notificacion.creada);
+        this.cuentaSinLeer++;
+        this.audio.play();
+      });
+  }
+
+  organizarNotificaciones(notificacionNueva: any) {
+    if (this.notificaciones.length > 20) {
+    }
+  }
+
+  contarSinLeer() {
+    let contador = 0;
+    this.cuentaSinLeer = 0;
+    this.notificaciones.forEach((notificacion: any) => {
+      if (!notificacion.leidaPor.includes(this.usuario._id)) {
+        this.cuentaSinLeer++;
+      }
+      contador++;
+      if (contador === this.notificaciones.length) {
+        if (this.cuentaSinLeer > 0) {
+          this.iconoNotificacion = 'notifications_active';
+          this.audio.play();
+        }
+      }
+    });
+  }
+
+  marcarComoLeida(notificacion: any) {
+    this.socket.emit('marcarComoLeida', {
+      _id: notificacion._id,
+      leidaPor: this.usuario._id
+    });
+    this.cuentaSinLeer--;
+  }
+
+  marcarComoNoLeida(notificacion: any) {
+    this.socket.emit('marcar_ComoSinLeer', {
+      _id: notificacion._id,
+      leidaPor: this.usuario._id
+    });
+    this.cuentaSinLeer++;
   }
 }

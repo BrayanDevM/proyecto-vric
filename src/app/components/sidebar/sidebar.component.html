@@ -5,10 +5,32 @@
         <img src="./assets/img/Icono-dark.svg" width="28px" alt="" />
       </div>
       <div class="spacer"></div>
-      <div class="notificactions">
-        <button mat-icon-button>
-          <mat-icon>alarm_outline</mat-icon>
+      <div class="notifications">
+        <button
+          (click)="abrirNotificaciones = !abrirNotificaciones"
+          mat-icon-button
+          cdkOverlayOrigin
+          #originOverlay="cdkOverlayOrigin"
+        >
+          <mat-icon
+            [ngClass]="{ animate__swing: cuentaSinLeer > 0 }"
+            class="animate__animated"
+          >
+            {{ iconoNotificacion }}
+          </mat-icon>
         </button>
+        <ng-template
+          cdkConnectedOverlay
+          [cdkConnectedOverlayOrigin]="originOverlay"
+          [cdkConnectedOverlayOpen]="abrirNotificaciones"
+        >
+          <app-notificaciones
+            [notificaciones]="notificaciones"
+            [sinLeer]="cuentaSinLeer"
+            (marcarComoLeida)="marcarComoLeida($event)"
+            (marcarComoNoLeida)="marcarComoNoLeida($event)"
+          ></app-notificaciones>
+        </ng-template>
       </div>
       <div class="user-btn">
         <button mat-icon-button [matMenuTriggerFor]="menu" class="user-btn">

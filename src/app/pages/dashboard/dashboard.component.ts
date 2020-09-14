@@ -3,6 +3,7 @@ import { Uds } from 'src/app/models/uds.model';
 import { UdsService } from 'src/app/services/uds.service';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { Beneficiario } from 'src/app/models/beneficiario.model';
+import { SocketService } from 'src/app/services/socketIo/socket.service';
 
 declare var moment: any;
 
@@ -90,7 +91,11 @@ export class DashboardComponent implements OnInit {
   cargandoDatos = false;
   loader = this.ngxLoader.useRef('http');
 
-  constructor(private uds$: UdsService, private ngxLoader: LoadingBarService) {}
+  constructor(
+    private uds$: UdsService,
+    private ngxLoader: LoadingBarService,
+    private socket: SocketService
+  ) {}
 
   ngOnInit() {
     const datosUdsLocal = localStorage.getItem('datosDashboard');
@@ -103,6 +108,17 @@ export class DashboardComponent implements OnInit {
       this.separarUds_municipios(this.datosUds);
     }
   }
+
+  // prueba SOCKET ****************************************************************************************
+  crearNotificacion(general: boolean) {
+    const notificacion: any = {
+      titulo: 'Beneficiarios',
+      descripcion: 'Se ha marcado al beneficiario x como dato sensible',
+      general
+    };
+    this.socket.emit('crearNotificacionGeneral', notificacion);
+  }
+  // prueba SOCKET ****************************************************************************************
 
   obtenerDatos() {
     this.cargandoDatos = true;

@@ -1,7 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { SidebarService } from '../services/sidebar.service';
 import { NgSelectConfig } from '@ng-select/ng-select';
-declare var jQuery: any;
 
 @Component({
   selector: 'app-pages',
@@ -12,10 +10,7 @@ export class PagesComponent implements OnInit, AfterViewInit {
   appPagina: any;
   mode = 'side';
 
-  constructor(
-    private sidebar$: SidebarService,
-    private ngSelectConfig: NgSelectConfig
-  ) {
+  constructor(private ngSelectConfig: NgSelectConfig) {
     this.ngSelectConfig.notFoundText = 'No se encontraron datos';
     this.ngSelectConfig.loadingText = 'Cargando...';
     this.appPagina = document.documentElement;

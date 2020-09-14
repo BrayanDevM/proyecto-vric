@@ -9,6 +9,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 // Módulos
 import { MaterialModule } from '../material/material.module';
 import { AppPipesModule } from '../pipes/app-pipes.module';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 // Componentes
 import { HeaderComponent } from './header/header.component';
@@ -22,6 +23,7 @@ import { ApexPieChartComponent } from './apexchart/apex-pie-chart/apex-pie-chart
 import { ApexLineChartTimeseriesComponent } from './apexchart/apex-line-chart-timeseries/apex-line-chart-timeseries.component';
 import { ApexLineChartMinComponent } from './apexchart/apex-line-chart-min/apex-line-chart-min.component';
 import { ApexBarChartStackedComponent } from './apexchart/apex-bar-chart-stacked/apex-bar-chart-stacked.component';
+import { NotificacionesComponent } from './notificaciones/notificaciones.component';
 
 const components = [
   HeaderComponent,
@@ -38,7 +40,7 @@ const components = [
 ];
 
 @NgModule({
-  declarations: [...components],
+  declarations: [...components, NotificacionesComponent],
   imports: [
     CommonModule,
     RouterModule,
@@ -48,7 +50,8 @@ const components = [
     AppPipesModule,
     ChartsModule,
     NgApexchartsModule,
-    MaterialModule
+    MaterialModule,
+    OverlayModule
   ],
   exports: [...components]
 })
