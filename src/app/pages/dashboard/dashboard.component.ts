@@ -110,13 +110,21 @@ export class DashboardComponent implements OnInit {
   }
 
   // prueba SOCKET ****************************************************************************************
-  crearNotificacion(general: boolean) {
+  crearNotificaciongGeneral() {
     const notificacion: any = {
       titulo: 'Beneficiarios',
       descripcion: 'Se ha marcado al beneficiario x como dato sensible',
-      general
+      general: true
     };
     this.socket.emit('crearNotificacionGeneral', notificacion);
+  }
+  crearNotificaciongUsuario() {
+    const notificacion: any = {
+      titulo: 'Novedades',
+      descripcion: 'Brayan Devia ha sido vinculado',
+      paraUsuarios: ['5efb8aa1a134b929e8b7cfc8']
+    };
+    this.socket.emit('notificarUsuario', notificacion);
   }
   // prueba SOCKET ****************************************************************************************
 

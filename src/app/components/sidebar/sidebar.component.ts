@@ -20,7 +20,6 @@ export class SidebarComponent implements OnInit {
   abrirNotificaciones = false;
   notificaciones: any[] = [];
   iconoNotificacion = 'notifications_none';
-  cuentaNotificaciones = 0;
   cuentaSinLeer = 0;
 
   audio: any;
@@ -58,13 +57,14 @@ export class SidebarComponent implements OnInit {
     this.notificaciones$
       .obtenerNotificaciones(this.usuario._id)
       .subscribe((resp: any) => {
+        resp.notificaciones.forEach((notificacion: any) => {});
         this.notificaciones = resp.notificaciones;
-        this.cuentaNotificaciones = this.notificaciones.length;
         this.contarSinLeer();
       });
   }
 
   subsNotificaciones() {
+    // Generales
     this.socket
       .listen('enviarNotificacionGeneral')
       .subscribe((notificacion: any) => {
@@ -72,11 +72,16 @@ export class SidebarComponent implements OnInit {
         this.cuentaSinLeer++;
         this.audio.play();
       });
-  }
 
-  organizarNotificaciones(notificacionNueva: any) {
-    if (this.notificaciones.length > 20) {
-    }
+    // Para usuario
+    this.socket.listen('notificarUsuario').subscribe((notificacion: any) => {
+      console.log(notificacion, 'notif para usuario');
+      if (notificacion.creada.paraUsuarios.includes(this.usuario._id)) {
+        this.notificaciones.unshift(notificacion.creada);
+        this.cuentaSinLeer++;
+        this.audio.play();
+      }
+    });
   }
 
   contarSinLeer() {

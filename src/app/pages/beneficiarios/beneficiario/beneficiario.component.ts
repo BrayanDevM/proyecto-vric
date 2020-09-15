@@ -9,6 +9,7 @@ import { alertDanger } from 'src/app/helpers/swal2.config';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { Router } from '@angular/router';
 import { Config } from 'src/app/config/config';
+import { SocketService } from 'src/app/services/socketIo/socket.service';
 
 @Component({
   selector: 'app-beneficiario',
@@ -37,11 +38,11 @@ export class BeneficiarioComponent implements OnInit {
     private usuario$: UsuarioService,
     private router: Router,
     private beneficiarios$: BeneficiariosService,
+    private socket: SocketService,
     private snackBar$: MatSnackBar,
     private ngZone: NgZone
   ) {
     this.comprobarPermisos();
-
     this.comentario = this.data.comentario;
     this.estadoInicial = this.data.estado;
     this.obtenerIconoEstado();
@@ -93,9 +94,56 @@ export class BeneficiarioComponent implements OnInit {
     });
   }
 
+  toUpper(str: string) {
+    str = str.split(/\s+/).join(' ');
+    return str
+      .toLowerCase()
+      .split(' ')
+      .map(word => {
+        return word[0].toUpperCase() + word.substr(1);
+      })
+      .join(' ');
+  }
+
   cancelarComentario() {
     this.data.comentario = this.comentario;
     this.editandoComentario = false;
+  }
+
+  crearNotificacion(beneficiario: Beneficiario) {
+    let beneficiarioNombre = `${beneficiario.nombre1} ${beneficiario.nombre2} ${beneficiario.apellido1} ${beneficiario.apellido2}`;
+    beneficiarioNombre = this.toUpper(beneficiarioNombre);
+    console.log(beneficiario.estado, 'estado');
+    if (
+      beneficiario.estado === 'Vinculado' ||
+      beneficiario.estado === 'Desvinculado' ||
+      beneficiario.estado === 'Concurrencia'
+    ) {
+      // Notifica si se ha cambiado de estado
+      const notificacion: any = {
+        creadaPor: this.usuario$.usuario._id,
+        titulo: 'Novedades',
+        descripcion: `Beneficiario ${beneficiarioNombre} `,
+        paraUsuarios: [this.data.uds.coordinador]
+      };
+      // agrego docentes a notificación
+      this.data.uds.docentes.forEach((docenteId: string) => {
+        notificacion.paraUsuarios.push(docenteId);
+      });
+      switch (beneficiario.estado) {
+        case 'Vinculado':
+          notificacion.descripcion += 'ha sido vinculado';
+          break;
+        case 'Desvinculado':
+          notificacion.descripcion += 'ha sido desvinculado';
+          break;
+        case 'Concurrencia':
+          notificacion.titulo = 'Concurrencia';
+          notificacion.descripcion += 'está en concurrencia';
+          break;
+      }
+      this.socket.emit('notificarUsuario', notificacion);
+    }
   }
 
   actualizarBeneficiario() {
@@ -148,6 +196,7 @@ export class BeneficiarioComponent implements OnInit {
       .actualizarBeneficiario(this.beneficiario)
       .subscribe((resp: any) => {
         if (resp.ok) {
+          this.crearNotificacion(this.beneficiario);
           this.editandoComentario = false;
           // console.log(this.data, 'en modal');
           this.edicionRapida = false;

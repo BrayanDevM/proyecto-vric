@@ -22,6 +22,7 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import listaDatosColombia from 'src/app/config/colombia.json';
 import { alertSuccess } from 'src/app/helpers/swal2.config';
 import { DateAdapter } from '@angular/material/core';
+import { SocketService } from 'src/app/services/socketIo/socket.service';
 declare const moment: any;
 
 @Component({
@@ -192,6 +193,7 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
     private responsable$: RespBeneficiariosService,
     private madre$: MadresService,
     private padre$: PadresService,
+    private socket: SocketService,
     private formBuilder: FormBuilder,
     private adaptadorFecha: DateAdapter<any>
   ) {
@@ -213,7 +215,7 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
     this.obtenerInfoRuta().subscribe(paramId => {
       if (paramId !== undefined) {
         this.obtenerBeneficiario(paramId).then(beneficiario => {
-          console.log(beneficiario);
+          console.log(beneficiario, 'beneficiario?');
           this.limpiarEspaciosObjeto(beneficiario);
           this.patchFormulario(beneficiario);
           this.beneficiario = beneficiario;
@@ -447,6 +449,18 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
     Object.keys(obj).map(
       k => (obj[k] = typeof obj[k] === 'string' ? obj[k].trim() : obj[k])
     );
+  }
+
+  toUpper(str: string) {
+    // Capitaliza string
+    str = str.split(/\s+/).join(' ');
+    return str
+      .toLowerCase()
+      .split(' ')
+      .map(word => {
+        return word[0].toUpperCase() + word.substr(1);
+      })
+      .join(' ');
   }
 
   patchFormulario(data: Beneficiario) {
@@ -836,17 +850,40 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
     }
   }
 
-  actualizarBeneficiario() {
-    // if (this.fb.invalid) {
-    //   this.fb.markAllAsTouched();
-    //   return;
-    // }
+  Actualizar_NotificarDatoSensible() {
+    let beneficiarioNombre = `${this.fbv.nombre1} ${this.fbv.nombre2} ${this.fbv.apellido1} ${this.fbv.apellido2}`;
+    beneficiarioNombre = this.toUpper(beneficiarioNombre);
+
+    // Notifica si se ha cambiado de estado
+    const notificacion: any = {
+      creadaPor: this.usuario$.usuario._id,
+      titulo: 'Dato sensible',
+      descripcion: `Se ha encontrado un dato sensible del beneficiario ${beneficiarioNombre}`,
+      paraUsuarios: [this.beneficiario.uds.coordinador]
+    };
+    // agrego docentes a notificación
+    this.beneficiario.uds.docentes.forEach((docenteId: string) => {
+      notificacion.paraUsuarios.push(docenteId);
+    });
+    // cambiamos estado
+    this.fbv.estado = 'Dato sensible';
+    this.actualizarBeneficiario(true, notificacion);
+  }
+
+  actualizarBeneficiario(datoSensible = false, notificacion = null) {
+    if (this.fb.invalid) {
+      this.fb.markAllAsTouched();
+      return;
+    }
     this.procesarFormulario('beneficiario');
     console.log(this.fb.value, 'form');
     this.beneficiario$
       .actualizarBeneficiario(this.fb.value)
       .subscribe((resp: any) => {
         if (resp.ok) {
+          if (datoSensible) {
+            this.socket.emit('notificarUsuario', notificacion);
+          }
           alertSuccess.fire('Beneficiario actualizado');
         }
       });

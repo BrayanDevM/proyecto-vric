@@ -10,9 +10,36 @@
       class="notificacion-wrapper"
     >
       <div class="notificacion">
-        <div [ngSwitch]="notificacion.titulo" class="icono">
-          <mat-icon *ngSwitchCase="'Beneficiarios'">group</mat-icon>
-          <mat-icon *ngSwitchDefault>campaign</mat-icon>
+        <div
+          [ngSwitch]="notificacion.titulo"
+          class="icono"
+          [ngStyle]="{ 'background-color': obtenerColor(notificacion.titulo) }"
+        >
+          <mat-icon *ngSwitchCase="'Beneficiarios'">
+            group
+          </mat-icon>
+          <mat-icon *ngSwitchCase="'Unidades De Servicio'">
+            home_work
+          </mat-icon>
+          <mat-icon *ngSwitchCase="'Novedades'">
+            swap_horizontal_circle
+          </mat-icon>
+          <mat-icon *ngSwitchCase="'Usuarios'">
+            assignment_ind
+          </mat-icon>
+          <mat-icon *ngSwitchCase="'Dato sensible'" color="accent">
+            feedback
+          </mat-icon>
+          <mat-icon *ngSwitchCase="'Corrección'">
+            spellcheck
+          </mat-icon>
+          <mat-icon *ngSwitchCase="'Concurrencia'" color="warn">
+            report
+          </mat-icon>
+          <!-- Para locuciones generales -->
+          <mat-icon *ngSwitchDefault>
+            campaign
+          </mat-icon>
         </div>
         <div class="descripcion">
           <span class="titulo">{{ notificacion.titulo }}</span>

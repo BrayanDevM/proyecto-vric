@@ -34,4 +34,15 @@ export class NotificacionesComponent implements OnInit {
     notificacion.leidaPor.splice(i, 1);
     this.marcarComoNoLeida.emit(notificacion);
   }
+
+  obtenerColor(titulo: string) {
+    switch (titulo) {
+      case 'Concurrencia':
+        return '#f4403426';
+      case 'Dato sensible':
+        return '#ffc1073d';
+      default:
+        return '#0095872b';
+    }
+  }
 }
