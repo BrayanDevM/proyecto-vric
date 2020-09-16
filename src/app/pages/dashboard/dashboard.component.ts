@@ -4,6 +4,7 @@ import { UdsService } from 'src/app/services/uds.service';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { Beneficiario } from 'src/app/models/beneficiario.model';
 import { SocketService } from 'src/app/services/socketIo/socket.service';
+import { PageLoadingService } from 'src/app/services/page-loading.service';
 
 declare var moment: any;
 
@@ -92,6 +93,7 @@ export class DashboardComponent implements OnInit {
   loader = this.ngxLoader.useRef('http');
 
   constructor(
+    private pageLoading$: PageLoadingService,
     private uds$: UdsService,
     private ngxLoader: LoadingBarService,
     private socket: SocketService
@@ -106,6 +108,7 @@ export class DashboardComponent implements OnInit {
       this.contarCupos(this.datosUds);
       this.obtenerDatosDeBeneficiarios(this.datosUds);
       this.separarUds_municipios(this.datosUds);
+      this.pageLoading$.loadingDashboard.emit(false);
     }
   }
 
@@ -147,6 +150,7 @@ export class DashboardComponent implements OnInit {
           // console.log(resp);
           this.datosUds = resp.uds;
           localStorage.setItem('datosDashboard', JSON.stringify(this.datosUds));
+          this.pageLoading$.loadingDashboard.emit(false);
           resolve(true);
         } else {
           reject(false);

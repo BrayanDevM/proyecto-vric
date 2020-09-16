@@ -242,7 +242,10 @@ export class FormCambiosComponent implements OnInit {
           const mujeresGestantesVinculadas = [];
           this.beneficiarios = resp.unidad.beneficiarios;
           this.beneficiarios.forEach((beneficiario: Beneficiario) => {
-            if (beneficiario.estado === 'Vinculado') {
+            if (
+              beneficiario.estado === 'Vinculado' ||
+              beneficiario.estado === 'Pendiente desvincular'
+            ) {
               if (
                 beneficiario.tipoDoc === 'CC' ||
                 beneficiario.tipoDoc === 'TI'
@@ -306,16 +309,6 @@ export class FormCambiosComponent implements OnInit {
     }
   }
 
-  /**
-   *
-   * @param $event
-   * No puedo usar ViewChild para asignar el valor del SD, puesto que este intenta
-   * tomar el elemento cuando aún no se ha creado porque el usuario primero debe
-   * seleccionar una MG, sin embargo, pude proceder a asignar el valor con el método
-   * patchValue del formulario reactivo, pero!, cuando relleno otro campo este se vuelve
-   * undefined, por qué?
-   * Pendiente solucionar para usar patchvalue en formulario de ingresos
-   */
   comprobarSD($event: any, campo: string) {
     if ($event.value === 'SD') {
       const documentoAleatorio = this.generarDocumento(13);
@@ -458,11 +451,11 @@ export class FormCambiosComponent implements OnInit {
     });
   }
 
-  async confirmarIngreso() {
-    // if (this.formCambio.invalid) {
-    //   this.formCambio.markAllAsTouched();
-    //   return;
-    // }
+  confirmarIngreso() {
+    if (this.formCambio.invalid) {
+      this.formCambio.markAllAsTouched();
+      return;
+    }
     this.reemplazarInfoForm(this.madreSeleccionada);
     this.dialogConfirmar(this.formCambio);
   }
@@ -470,9 +463,6 @@ export class FormCambiosComponent implements OnInit {
   reportarCambio(confirmaIngreso: boolean) {
     if (confirmaIngreso) {
       this.procesarFormulario();
-      console.log(this.formCambio.value);
-
-      return;
       this.beneficiarios$.crearBeneficiario(this.formCambio.value).subscribe(
         (resp: any) => {
           if (resp.ok) {

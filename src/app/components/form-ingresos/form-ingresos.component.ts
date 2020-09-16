@@ -556,7 +556,14 @@ export class FormIngresosComponent implements OnInit {
   }
 
   limpiarFormulario() {
-    this.formIngreso.reset();
+    this.formGroupDirective.resetForm();
+    this.formIngreso.enable();
+    this.tieneMadre = true;
+    this.tienePadre = true;
+    this.validarMadre();
+    this.validarPadre();
+    this.respExiste = false;
+    this.despejarCamposResponsable();
   }
 
   procesarFormulario() {

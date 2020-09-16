@@ -24,6 +24,7 @@ import { ApexLineChartTimeseriesComponent } from './apexchart/apex-line-chart-ti
 import { ApexLineChartMinComponent } from './apexchart/apex-line-chart-min/apex-line-chart-min.component';
 import { ApexBarChartStackedComponent } from './apexchart/apex-bar-chart-stacked/apex-bar-chart-stacked.component';
 import { NotificacionesComponent } from './notificaciones/notificaciones.component';
+import { PageLoaderComponent } from './page-loader/page-loader.component';
 
 const components = [
   HeaderComponent,
@@ -36,11 +37,13 @@ const components = [
   ApexPieChartComponent,
   ApexLineChartMinComponent,
   ApexLineChartTimeseriesComponent,
-  ApexBarChartStackedComponent
+  ApexBarChartStackedComponent,
+  NotificacionesComponent,
+  PageLoaderComponent
 ];
 
 @NgModule({
-  declarations: [...components, NotificacionesComponent],
+  declarations: [...components],
   imports: [
     CommonModule,
     RouterModule,

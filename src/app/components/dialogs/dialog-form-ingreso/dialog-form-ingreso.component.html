@@ -18,7 +18,7 @@
     </mat-list-item>
     <mat-list-item>
       <mat-icon mat-list-icon>account_box</mat-icon>
-      <div mat-line>{{ form.tipoDoc }}: {{ form.documento }}</div>
+      <div mat-line>{{ form.tipoDoc }}: {{ form.documento | documento }}</div>
       <div mat-line class="text-muted">Documento de identidad</div>
     </mat-list-item>
     <mat-list-item>
@@ -40,7 +40,9 @@
     </mat-list-item>
     <mat-list-item>
       <mat-icon mat-list-icon>account_box</mat-icon>
-      <div mat-line>{{ form.respTipoDoc }}: {{ form.respDocumento }}</div>
+      <div mat-line>
+        {{ form.respTipoDoc }}: {{ form.respDocumento | documento }}
+      </div>
       <div mat-line class="text-muted">Documento de identidad</div>
     </mat-list-item>
     <mat-list-item>

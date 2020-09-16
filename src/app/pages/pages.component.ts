@@ -1,5 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { NgSelectConfig } from '@ng-select/ng-select';
+import { PageLoadingService } from '../services/page-loading.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-pages',
@@ -10,7 +12,13 @@ export class PagesComponent implements OnInit, AfterViewInit {
   appPagina: any;
   mode = 'side';
 
-  constructor(private ngSelectConfig: NgSelectConfig) {
+  subPageLoading: Subscription;
+  showLoadingPage = true;
+
+  constructor(
+    private pageLoading$: PageLoadingService,
+    private ngSelectConfig: NgSelectConfig
+  ) {
     this.ngSelectConfig.notFoundText = 'No se encontraron datos';
     this.ngSelectConfig.loadingText = 'Cargando...';
     this.appPagina = document.documentElement;
@@ -18,6 +26,7 @@ export class PagesComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     localStorage.removeItem('cerrarUpdateModal');
+    this.subsPageLoading();
   }
 
   ngAfterViewInit() {}
@@ -43,5 +52,14 @@ export class PagesComponent implements OnInit, AfterViewInit {
   closeFullscreen() {
     this.pantallaCompleta = false;
     document.exitFullscreen();
+  }
+
+  subsPageLoading() {
+    this.subPageLoading = this.pageLoading$.loadingDashboard.subscribe(
+      (resp: boolean) => {
+        this.showLoadingPage = resp;
+        this.subPageLoading.unsubscribe();
+      }
+    );
   }
 }
