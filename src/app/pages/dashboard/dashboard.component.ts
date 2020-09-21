@@ -108,7 +108,7 @@ export class DashboardComponent implements OnInit {
       this.contarCupos(this.datosUds);
       this.obtenerDatosDeBeneficiarios(this.datosUds);
       this.separarUds_municipios(this.datosUds);
-      this.pageLoading$.loadingDashboard.emit(false);
+      this.pageLoading$.loadingPages.emit(false);
     }
   }
 
@@ -150,7 +150,7 @@ export class DashboardComponent implements OnInit {
           // console.log(resp);
           this.datosUds = resp.uds;
           localStorage.setItem('datosDashboard', JSON.stringify(this.datosUds));
-          this.pageLoading$.loadingDashboard.emit(false);
+          this.pageLoading$.loadingPages.emit(false);
           resolve(true);
         } else {
           reject(false);

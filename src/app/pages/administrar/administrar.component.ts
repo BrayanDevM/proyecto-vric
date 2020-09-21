@@ -4,6 +4,7 @@ import { Reporte } from 'src/app/models/reportes.model';
 import { CargarArchivosService } from 'src/app/services/cargar-archivos.service';
 import { FileItem } from 'src/app/models/fileItem.model';
 import Swal from 'sweetalert2';
+import { PageLoadingService } from 'src/app/services/page-loading.service';
 
 @Component({
   selector: 'app-administrar',
@@ -31,6 +32,7 @@ export class AdministrarComponent implements OnInit {
   file: File | null = null;
 
   constructor(
+    private pageLoading$: PageLoadingService,
     private reporte$: ReportesService,
     private cargarArchivo$: CargarArchivosService
   ) {}
@@ -46,8 +48,10 @@ export class AdministrarComponent implements OnInit {
         // console.log(resp);
         this.reportes = resp.reportes;
         this.cargando = false;
+        this.pageLoading$.loadingPages.emit(false);
       } else {
         this.cargando = false;
+        this.pageLoading$.loadingPages.emit(false);
         console.log('error al traer reportes', resp.error);
       }
     });

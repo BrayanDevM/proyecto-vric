@@ -7,6 +7,7 @@ import { ContratosService } from 'src/app/services/contratos.service';
 import { Subscription } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { Config } from 'src/app/config/config';
+import { PageLoadingService } from 'src/app/services/page-loading.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -31,6 +32,7 @@ export class UsuariosComponent implements OnInit {
   usuarioActualizado: Subscription;
 
   constructor(
+    private pageLoading$: PageLoadingService,
     private ususarios$: UsuarioService,
     private contratos$: ContratosService,
     private router: Router
@@ -42,6 +44,7 @@ export class UsuariosComponent implements OnInit {
     this.subsUsuarioNuevo();
     this.subsUsuarioEliminado();
     this.subsUsuarioActualizado();
+    this.pageLoading$.loadingPages.emit(false);
   }
 
   get cantRegistros(): number {

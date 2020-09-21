@@ -4,7 +4,7 @@ import { EventEmitter, Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class PageLoadingService {
-  loadingDashboard: EventEmitter<boolean> = new EventEmitter();
+  loadingPages: EventEmitter<boolean> = new EventEmitter();
 
   constructor() {}
 }

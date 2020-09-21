@@ -1,4 +1,4 @@
-<div class="contrato-detalle" *ngIf="!editMode; else formEdit">
+<div class="sidenav-detalle border-left" *ngIf="!editMode; else formEdit">
   <form class="form-detalle">
     <div class="actions">
       <button
@@ -11,7 +11,7 @@
       </button>
       <mat-menu #menu="matMenu" xPosition="before">
         <button type="button" (click)="editMode = true" mat-menu-item>
-          <mat-icon fontSet="material-icons-two-tone">edit</mat-icon>
+          <mat-icon>edit</mat-icon>
           <span>Editar</span>
         </button>
       </mat-menu>
@@ -41,21 +41,15 @@
       <span class="status-text" *ngIf="!contrato.activo">Inactivo</span>
     </div>
     <div class="form-field ubicacion">
-      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
-        >place</mat-icon
-      >
+      <mat-icon class="form-field-icon">place</mat-icon>
       <div class="label">{{ contrato.regional }}, {{ contrato.cz }}</div>
     </div>
     <div class="form-field eas">
-      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
-        >home_work</mat-icon
-      >
+      <mat-icon class="form-field-icon">home_work</mat-icon>
       <div class="label">{{ contrato.eas }}</div>
     </div>
     <div class="form-field nit">
-      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
-        >label</mat-icon
-      >
+      <mat-icon class="form-field-icon">label</mat-icon>
       <div class="label">
         NIT <span id="nit">{{ contrato.nit }}</span>
         <button
@@ -71,21 +65,15 @@
       </div>
     </div>
     <div class="form-field cupos">
-      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
-        >people</mat-icon
-      >
+      <mat-icon class="form-field-icon">people</mat-icon>
       <div class="label">{{ contrato.cupos }} Cupos</div>
     </div>
     <div class="form-field creadoEl">
-      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
-        >today</mat-icon
-      >
+      <mat-icon class="form-field-icon">today</mat-icon>
       <div class="label">Creado el {{ contrato.creadoEl }}</div>
     </div>
     <div class="form-field uds">
-      <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
-        >home</mat-icon
-      >
+      <mat-icon class="form-field-icon">home</mat-icon>
       <div class="label">Unidades De Servicio (UDS)</div>
     </div>
     <div class="list-uds">
@@ -116,10 +104,10 @@
           mat-icon-button
           matTooltip="Cancelar"
         >
-          <mat-icon fontSet="material-icons-two-tone">cancel</mat-icon>
+          <mat-icon>cancel</mat-icon>
         </button>
         <button type="submit" mat-icon-button matTooltip="Guardar">
-          <mat-icon fontSet="material-icons-two-tone">save</mat-icon>
+          <mat-icon>save</mat-icon>
         </button>
         <button
           type="button"
@@ -127,7 +115,7 @@
           mat-icon-button
           matTooltip="Eliminar"
         >
-          <mat-icon fontSet="material-icons-two-tone">delete</mat-icon>
+          <mat-icon>delete</mat-icon>
         </button>
       </div>
       <div class="logo-icbf">
@@ -157,9 +145,7 @@
         </mat-slide-toggle>
       </div>
       <div class="ubicacion form-field">
-        <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
-          >place</mat-icon
-        >
+        <mat-icon class="form-field-icon">place</mat-icon>
         <mat-form-field appearance="outline" class="ml-2">
           <mat-label>Regional IBCF</mat-label>
           <mat-select
@@ -192,9 +178,7 @@
         </mat-form-field>
       </div>
       <div class="form-field eas">
-        <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
-          >home_work</mat-icon
-        >
+        <mat-icon class="form-field-icon">home_work</mat-icon>
         <mat-form-field appearance="outline" class="ml-2">
           <mat-label>Entidad Administradora de Servicio (EAS)</mat-label>
           <input
@@ -209,9 +193,7 @@
         </mat-form-field>
       </div>
       <div class="form-field nit">
-        <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
-          >label</mat-icon
-        >
+        <mat-icon class="form-field-icon">label</mat-icon>
         <mat-form-field appearance="outline" class="ml-2">
           <mat-label>NIT</mat-label>
           <input
@@ -226,9 +208,7 @@
         </mat-form-field>
       </div>
       <div class="form-field cupos">
-        <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
-          >people</mat-icon
-        >
+        <mat-icon class="form-field-icon">people</mat-icon>
         <mat-form-field appearance="outline" class="ml-2">
           <mat-label>Cupos asignados</mat-label>
           <input
@@ -244,9 +224,7 @@
         </mat-form-field>
       </div>
       <div class="form-field uds">
-        <mat-icon fontSet="material-icons-two-tone" class="form-field-icon"
-          >home</mat-icon
-        >
+        <mat-icon class="form-field-icon">home</mat-icon>
         <div class="label">Unidades De Servicio (UDS)</div>
       </div>
       <div class="form-field agregar-uds mt-1">

@@ -23,6 +23,7 @@ import listaDatosColombia from 'src/app/config/colombia.json';
 import { alertSuccess } from 'src/app/helpers/swal2.config';
 import { DateAdapter } from '@angular/material/core';
 import { SocketService } from 'src/app/services/socketIo/socket.service';
+import { PageLoadingService } from 'src/app/services/page-loading.service';
 declare const moment: any;
 
 @Component({
@@ -185,6 +186,7 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
   formPadre: FormGroup;
 
   constructor(
+    private pageLoading$: PageLoadingService,
     private dialog: MatDialog,
     private router: Router,
     private usuario$: UsuarioService,
@@ -219,6 +221,7 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
           this.limpiarEspaciosObjeto(beneficiario);
           this.patchFormulario(beneficiario);
           this.beneficiario = beneficiario;
+          this.pageLoading$.loadingPages.emit(false);
         });
       }
     });

@@ -31,7 +31,7 @@
     </div>
   </mat-sidenav>
   <mat-sidenav-content>
-    <div class="page-content bg-blue-grey">
+    <div class="page-content">
       <div class="container-fluid BDM_fadeInUp">
         <div class="header-dashboard row">
           <div class="page-title col-xl-6 p-0">
@@ -97,48 +97,48 @@
               beneficiarios
             </div>
           </div>
-          <div class="col-sm-12 col-xl-3 mb-4">
+          <div class="col mb-4">
             <app-apex-pie-chart
               titulo="Cobertura Cali"
               [series]="[
                 totalCaliVinculados + totalCaliDS,
                 cuposCali - (totalCaliVinculados + totalCaliDS)
               ]"
-              [labels]="['Vinculados', 'Cupos disponibles']"
+              [labels]="['Vinculados', 'Cupos libres']"
               [colors]="['#309794', '#4fd1c5']"
             ></app-apex-pie-chart>
           </div>
-          <div class="col-sm-12 col-xl-3 mb-4">
+          <div class="col mb-4">
             <app-apex-pie-chart
               titulo="Cobertura Dagua"
               [series]="[
                 totalDaguaVinculados + totalDaguaDS,
                 cuposDagua - (totalDaguaVinculados + totalDaguaDS)
               ]"
-              [labels]="['Vinculados', 'Cupos disponibles']"
+              [labels]="['Vinculados', 'Cupos libres']"
               [colors]="['#805ad4', '#b793f3']"
             ></app-apex-pie-chart>
           </div>
-          <div class="col-sm-12 col-xl-3 mb-4">
+          <div class="col mb-4">
             <app-apex-pie-chart
               titulo="Cobertura Total"
               [series]="[
                 totalVinculados + totalDatosSensibles,
                 cuposTotal - totalVinculados
               ]"
-              [labels]="['Vinculados', 'Cupos disponibles']"
+              [labels]="['Vinculados', 'Cupos libres']"
               [colors]="['#c45194', '#f07bb2']"
             ></app-apex-pie-chart>
           </div>
-          <div class="col-sm-12 col-xl-3 mb-4">
+          <div class="col mb-4">
             <app-apex-pie-chart
               titulo="Datos sensibles"
               [series]="[totalDatosSensibles, totalVinculados]"
-              [labels]="['Datos sensibles', 'Registros con calidad']"
+              [labels]="['Datos sensibles', 'Con calidad']"
               [colors]="['#dd6c20', '#eee']"
             ></app-apex-pie-chart>
           </div>
-          <div class="col-sm-12 col-xl-4">
+          <div class="col">
             <div class="mb-4">
               <app-apex-bar-chart-stacked
                 titulo="Sexo"
@@ -149,7 +149,7 @@
               ></app-apex-bar-chart-stacked>
             </div>
           </div>
-          <div class="col-sm-12 col-xl-4">
+          <div class="col">
             <div class="mb-4">
               <app-apex-bar-chart-stacked
                 titulo="Tipo de beneficiario"
@@ -164,14 +164,14 @@
               ></app-apex-bar-chart-stacked>
             </div>
           </div>
-          <div class="col-sm-12 col-xl-4">
+          <div class="col">
             <div class="mb-4">
               <app-apex-bar-chart-stacked
                 titulo="Población vulnerable"
                 [series]="[totalDiscapacitados, totalEtnia, totalExtranjeros]"
                 [seriesNombre]="[
                   'Presentan discapacidad',
-                  'Autorreconocen una población',
+                  'Se autorreconocen',
                   'Extranjeros'
                 ]"
                 [categoria]="['Población vulnerable']"
@@ -182,50 +182,50 @@
         </div>
 
         <div class="row">
-          <div class="col-sm-12 mb-4 pt-2">
+          <div class="mb-4 pt-2">
             <h2 class="subtitle mb-0">Datos populares</h2>
             <div class="text-muted">
               Información específica de beneficiarios según porpularidad de
               datos requeridos
             </div>
           </div>
-          <div class="col-sm-12 col-xl-3">
-            <div class="bg-white shadow-sm pt-3 pb-3 mb-4">
+          <div class="col-sm-12 col-md-7 col-xl-4">
+            <div class="card card-body shadow-sm pt-3 pb-3 mb-4">
               <div class="p-3 pb-0">
                 <h3 class="card-title mb-0">Datos especiales</h3>
                 <mat-divider></mat-divider>
               </div>
               <mat-selection-list #shoes [multiple]="false">
                 <mat-list-option>
-                  <p class="d-flex justify-content-between">
+                  <p class="d-flex justify-content-between align-items-center">
                     <span>Mujeres gestantes adolescentes</span>
                     <span class="badge bg-info">{{ mgAdolescente }}</span>
                   </p>
                 </mat-list-option>
                 <mat-list-option>
-                  <p class="d-flex justify-content-between">
+                  <p class="d-flex justify-content-between align-items-center">
                     <span>
                       Mayores de 2 años
                       <small class="text-muted">(Cali)</small>
                     </span>
-                    <span class="badge bg-warning">{{
+                    <span class="badge bg-success">{{
                       caliMayoresDe2Anios
                     }}</span>
                   </p>
                 </mat-list-option>
                 <mat-list-option>
-                  <p class="d-flex justify-content-between">
+                  <p class="d-flex justify-content-between align-items-center">
                     <span>
                       Mayores de 2 años
                       <small class="text-muted">(Dagua)</small>
                     </span>
-                    <span class="badge bg-warning">{{
+                    <span class="badge bg-success">{{
                       daguaMayoresDe2Anios
                     }}</span>
                   </p>
                 </mat-list-option>
                 <mat-list-option>
-                  <p class="d-flex justify-content-between">
+                  <p class="d-flex justify-content-between align-items-center">
                     <span>
                       Colombianos sin documento
                     </span>
@@ -237,7 +237,7 @@
                   matTooltip="Ver en mis UDS"
                   matTooltipPosition="right"
                 >
-                  <p class="d-flex justify-content-between">
+                  <p class="d-flex justify-content-between align-items-center">
                     <span>Beneficiarios en concurrencia</span>
                     <span class="badge bg-danger">{{ enConcurrencia }}</span>
                   </p>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PageLoadingService } from 'src/app/services/page-loading.service';
 
 @Component({
   selector: 'app-ayuda',
@@ -8,7 +9,9 @@ import { Component, OnInit } from '@angular/core';
 export class AyudaComponent implements OnInit {
   rutaHijaActiva = false;
 
-  constructor() {}
+  constructor(private pageLoading$: PageLoadingService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.pageLoading$.loadingPages.emit(false);
+  }
 }

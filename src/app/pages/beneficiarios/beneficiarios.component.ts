@@ -8,13 +8,12 @@ import {
 import { UdsService } from 'src/app/services/uds.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { Usuario } from 'src/app/models/usuario.model';
-import { Beneficiario } from 'src/app/models/beneficiario.model';
 import { Uds } from 'src/app/models/uds.model';
 import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
-import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivationEnd } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { PageLoadingService } from 'src/app/services/page-loading.service';
 
 @Component({
   selector: 'app-beneficiarios',
@@ -59,6 +58,7 @@ export class BeneficiariosComponent implements OnInit, OnDestroy {
   @ViewChild('selectEstado') selectEstado: ElementRef;
 
   constructor(
+    private pageLoading$: PageLoadingService,
     private usuario$: UsuarioService,
     private uds$: UdsService,
     private beneficiarios$: BeneficiariosService,
@@ -117,6 +117,7 @@ export class BeneficiariosComponent implements OnInit, OnDestroy {
       this.udsAsignadas.forEach((unidad: Uds) => {
         this.udsAsignadasQuery.push(unidad._id);
       });
+      this.pageLoading$.loadingPages.emit(false);
     } else {
       this.uds$.obtenerUds_codigos(this.query).subscribe((resp: any) => {
         if (resp.ok) {
@@ -125,7 +126,7 @@ export class BeneficiariosComponent implements OnInit, OnDestroy {
           this.udsAsignadas.forEach((unidad: Uds) => {
             this.udsAsignadasQuery.push(unidad._id);
           });
-
+          this.pageLoading$.loadingPages.emit(false);
           localStorage.setItem(
             'udsAsignadas',
             JSON.stringify(this.udsAsignadas)

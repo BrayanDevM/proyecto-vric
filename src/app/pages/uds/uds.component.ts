@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
 import { UsuarioService } from 'src/app/services/usuario.service';
+import { PageLoadingService } from 'src/app/services/page-loading.service';
 
 @Component({
   selector: 'app-uds',
@@ -34,6 +35,7 @@ export class UdsComponent implements OnInit, OnDestroy {
   puedeCrear = false;
 
   constructor(
+    private pageLoading$: PageLoadingService,
     private usuario$: UsuarioService,
     public uds$: UdsService,
     private router: Router
@@ -46,6 +48,7 @@ export class UdsComponent implements OnInit, OnDestroy {
     this.subsUdsNueva();
     this.subsUdsEliminada();
     this.subsUdsActualizada();
+    this.pageLoading$.loadingPages.emit(false);
   }
 
   ngOnDestroy(): void {

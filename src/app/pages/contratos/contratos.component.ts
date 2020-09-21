@@ -5,6 +5,7 @@ import { Contrato } from 'src/app/models/contrato.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
 import { UsuarioService } from 'src/app/services/usuario.service';
+import { PageLoadingService } from 'src/app/services/page-loading.service';
 
 @Component({
   selector: 'app-contratos',
@@ -25,6 +26,7 @@ export class ContratosComponent implements OnInit, OnDestroy {
   contratoActualizado: Subscription;
 
   constructor(
+    private pageLoading$: PageLoadingService,
     private usuario$: UsuarioService,
     public contratos$: ContratosService,
     private router: Router
@@ -37,6 +39,7 @@ export class ContratosComponent implements OnInit, OnDestroy {
     this.subsContratoNuevo();
     this.subsContratoEliminado();
     this.subsContratoEActualizado();
+    this.pageLoading$.loadingPages.emit(false);
   }
 
   ngOnDestroy() {

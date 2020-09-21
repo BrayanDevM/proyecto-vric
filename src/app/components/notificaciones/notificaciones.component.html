@@ -1,6 +1,6 @@
 <!-- class "BDM_fadeInUp" ? -->
 <div class="notificaciones-wrapper shadow-lg">
-  <div class="header">
+  <div class="header border-bottom">
     <h2 class="titulo">
       Notificaciones <small>({{ sinLeer }})</small>
     </h2>
@@ -8,7 +8,7 @@
   <div class="notificaciones">
     <div
       *ngFor="let notificacion of notificaciones"
-      class="notificacion-wrapper"
+      class="notificacion-wrapper border-bottom"
     >
       <div class="notificacion">
         <div
@@ -59,7 +59,7 @@
         >
           <mat-icon
             [ngStyle]="{
-              color: 'red'
+              color: '#f26d6c'
             }"
             >lens</mat-icon
           >

@@ -7,12 +7,12 @@ import {
   Validators,
   FormGroupDirective
 } from '@angular/forms';
-import { UdsService } from 'src/app/services/uds.service';
-import { Uds } from 'src/app/models/uds.model';
 import { ValidarCoincidencia } from 'src/app/helpers/Validators/deben-coincidir.validator';
 import { ValidarTelefono } from 'src/app/helpers/Validators/telefono-validator';
 import { ValidarDocumento } from 'src/app/helpers/Validators/documento-validator';
 import { alertSuccess } from 'src/app/helpers/swal2.config';
+import { PageLoadingService } from 'src/app/services/page-loading.service';
+import { TemaService } from 'src/app/services/tema.service';
 
 @Component({
   selector: 'app-ajustes',
@@ -21,7 +21,6 @@ import { alertSuccess } from 'src/app/helpers/swal2.config';
 })
 export class AjustesComponent implements OnInit {
   usuario: Usuario;
-  udsAsignadas: Uds[] = [];
   formPerfil: FormGroup;
   formPassword: FormGroup;
   verPassword = false;
@@ -29,9 +28,10 @@ export class AjustesComponent implements OnInit {
   @ViewChild(FormGroupDirective) formGroupDirective: FormGroupDirective;
 
   constructor(
+    private pageLoading$: PageLoadingService,
     private usuario$: UsuarioService,
-    private uds$: UdsService,
-    public fb: FormBuilder
+    public fb: FormBuilder,
+    private tema$: TemaService
   ) {
     this.usuario = this.usuario$.usuario;
 
@@ -52,7 +52,8 @@ export class AjustesComponent implements OnInit {
 
   ngOnInit() {
     this.patchFormPerfil();
-    this.obtenerUds(this.usuario.uds);
+    this.pageLoading$.loadingPages.emit(false);
+    this.colocarCheckLink();
   }
 
   get fpc() {
@@ -67,17 +68,6 @@ export class AjustesComponent implements OnInit {
   }
   get fsv() {
     return this.formPassword.value;
-  }
-
-  obtenerUds(uds: string[]) {
-    const arreglo = [];
-    this.usuario.uds.forEach(unidad => {
-      this.uds$.obtenerUnidad(unidad).subscribe((resp: any) => {
-        arreglo.push(resp.unidad);
-      });
-    });
-    this.udsAsignadas = arreglo;
-    // console.log('uds', this.udsAsignadas);
   }
 
   patchFormPerfil() {
@@ -116,6 +106,35 @@ export class AjustesComponent implements OnInit {
         alertSuccess.fire('Usuario actualizado');
         this.formGroupDirective.resetForm();
         this.patchFormPerfil();
+      }
+    });
+  }
+
+  cambiarTema(tema: string, link: any) {
+    this.tema$.aplicarTema(tema);
+    this.aplicarCheckTema(link);
+  }
+
+  aplicarCheckTema(link: any) {
+    const temas: any = document.querySelectorAll('.tema');
+
+    temas.forEach((tema: any) => {
+      tema.classList.remove('activo');
+    });
+    link.classList.add('activo');
+  }
+
+  colocarCheckLink() {
+    const temas: any = document.querySelectorAll('.tema');
+    const temaActual = this.tema$.ajustes.tema;
+    console.log(temaActual, 'tema actual');
+
+    temas.forEach((tema: any) => {
+      // Falta poner el check
+      console.log(tema.getAttribute('data-theme'), 'atributo tema?');
+      if (tema.getAttribute('data-theme') === temaActual) {
+        tema.classList.add('activo');
+        return;
       }
     });
   }

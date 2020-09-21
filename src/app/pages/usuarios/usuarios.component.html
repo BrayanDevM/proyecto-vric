@@ -8,7 +8,7 @@
   </mat-sidenav>
   <mat-sidenav-content>
     <div class="page-wrapper">
-      <div class="header row border-bottom m-0 bg-white">
+      <div class="page-header row border-bottom m-0">
         <div class="page-title col-xl-6 p-0">
           <h2 class="title-bold m-0">Usuarios</h2>
           <div *ngIf="tablaData" class="text-muted ml-1">
@@ -93,7 +93,7 @@
         mat-table
         *ngIf="usuarios.length > 0; else noUsuarios"
         [dataSource]="tablaData"
-        class="mat-table contratos-lista mat-elevation-z8"
+        class="mat-table contratos-lista"
       >
         <!-- Position Column -->
         <ng-container matColumnDef="nombre">

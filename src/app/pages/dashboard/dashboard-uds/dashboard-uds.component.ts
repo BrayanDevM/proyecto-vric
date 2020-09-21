@@ -3,6 +3,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { Beneficiario } from 'src/app/models/beneficiario.model';
 import { UdsService } from 'src/app/services/uds.service';
 import { Uds } from 'src/app/models/uds.model';
+import { PageLoadingService } from 'src/app/services/page-loading.service';
 declare var moment: any;
 
 @Component({
@@ -73,7 +74,11 @@ export class DashboardUdsComponent implements OnInit {
   enConcurrencia = 0;
   colombianosSinDoc = 0;
 
-  constructor(private rutaActual: ActivatedRoute, private uds$: UdsService) {}
+  constructor(
+    private pageLoading$: PageLoadingService,
+    private rutaActual: ActivatedRoute,
+    private uds$: UdsService
+  ) {}
 
   ngOnInit(): void {
     this.obtenerUds_beneficiarios().then((unidad: Uds) => {
@@ -92,6 +97,7 @@ export class DashboardUdsComponent implements OnInit {
         }
       );
       this.limpiarIngresosEgresos();
+      this.pageLoading$.loadingPages.emit(false);
     });
   }
 

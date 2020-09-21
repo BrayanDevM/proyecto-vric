@@ -1,42 +1,56 @@
-// Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
 @import '~@angular/material/theming';
-// Plus imports for other components in your app.
+// Cambio de tipografía (fuente, tamaño en títulos, tamaño en body)
 $custom-typography: mat-typography-config(
   $font-family: 'Inter, Roboto, monospace',
   $headline: mat-typography-level(32px, 48px, 700),
   $body-1: mat-typography-level(14px, 24px, 400)
 );
-// Include the common styles for Angular Material. We include this here so that you only
-// have to load a single css file for Angular Material in your app.
-// Be sure that you only ever include this mixin once!
+
 @include mat-core();
 
-// Define the palettes for your theme using the Material Design palettes available in palette.scss
-// (imported above). For each palette, you can optionally specify a default, lighter, and darker
-// hue. Available color palettes: https://material.io/design/color/
-$Proyecto-VRIC-primary: mat-palette($mat-teal);
-$Proyecto-VRIC-accent: mat-palette($mat-amber);
-
-// The warn palette is optional (defaults to red).
-$Proyecto-VRIC-warn: mat-palette($mat-red);
-
-// Create the theme object. A theme consists of configurations for individual
-// theming systems such as "color" or "typography".
-$Proyecto-VRIC-theme: mat-light-theme(
+// Definiendo variables con color primerio y secundario
+$VRIC-default-primary: mat-palette($mat-teal);
+$VRIC-default-accent: mat-palette($mat-amber);
+// El color de warn es opcional (por defecto es rojo)
+$VRIC-default-warn: mat-palette($mat-red);
+// Creamos el objeto con el tema
+$VRIC-default-theme: mat-light-theme(
   (
     color: (
-      primary: $Proyecto-VRIC-primary,
-      accent: $Proyecto-VRIC-accent,
-      warn: $Proyecto-VRIC-warn
+      primary: $VRIC-default-primary,
+      accent: $VRIC-default-accent,
+      warn: $VRIC-default-warn
     )
   )
 );
 
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-@include angular-material-theme($Proyecto-VRIC-theme);
-// Override typography CSS classes (e.g., mat-h1, mat-display-1, mat-typography, etc.).
-// @include mat-base-typography($custom-typography);
+// Tema oscuro
+$VRIC-dark-primary: mat-palette($mat-teal, 700);
+$VRIC-dark-accent: mat-palette($mat-amber, 700);
+$VRIC-dark-warn: mat-palette($mat-red, 300);
+$VRIC-dark-theme: mat-dark-theme(
+  (
+    color: (
+      primary: $VRIC-dark-primary,
+      accent: $VRIC-dark-accent,
+      warn: $VRIC-dark-warn
+    )
+  )
+);
+
+// Aplicamos el tema
+@include angular-material-theme($VRIC-default-theme);
+
+// Sobre-escribimos clases CSS de tipografía (e.g., mat-h1, mat-display-1, mat-typography, etc.)
 @include angular-material-typography($custom-typography);
+
+.vric-default-theme {
+  @include angular-material-theme($VRIC-default-theme);
+  // background-color: #f1f4f9;
+  color: #1b1c1e;
+}
+.vric-dark-theme {
+  @include angular-material-theme($VRIC-dark-theme);
+  // background-color: #1a202e;
+  color: #f2ffff;
+}

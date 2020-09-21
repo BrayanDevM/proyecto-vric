@@ -8,7 +8,7 @@
   </mat-sidenav>
   <mat-sidenav-content>
     <div class="page-wrapper">
-      <div class="header row border-bottom m-0 bg-white">
+      <div class="page-header row border-bottom m-0">
         <div class="page-title col-xl-6 p-0">
           <h2 class="title-bold m-0">Unidades De Servicio</h2>
           <div class="text-muted ml-1">
@@ -40,7 +40,7 @@
           </button>
           <mat-menu #filtro="matMenu" xPosition="before">
             <button [matMenuTriggerFor]="arriendo" mat-menu-item>
-              <mat-icon fontSet="material-icons-two-tone">home</mat-icon>
+              <mat-icon>home</mat-icon>
               <span>Arriendo</span>
             </button>
             <mat-menu #arriendo="matMenu">
@@ -102,7 +102,7 @@
         mat-table
         *ngIf="uds.length > 0; else noUds"
         [dataSource]="tablaData"
-        class="mat-table contratos-lista mat-elevation-z8"
+        class="mat-table contratos-lista"
       >
         <!-- Position Column -->
         <ng-container matColumnDef="codigo">

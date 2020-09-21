@@ -1,35 +1,44 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+
 import { NgSelectConfig } from '@ng-select/ng-select';
 import { PageLoadingService } from '../services/page-loading.service';
+import { TemaService } from '../services/tema.service';
 import { Subscription } from 'rxjs';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-pages',
   templateUrl: './pages.component.html'
 })
-export class PagesComponent implements OnInit, AfterViewInit {
+export class PagesComponent implements OnInit {
   pantallaCompleta = false;
   appPagina: any;
-  mode = 'side';
+
+  sidenavMode = 'side';
+  sidenavBackdrop = false;
 
   subPageLoading: Subscription;
   showLoadingPage = true;
+  sidenavOpen = true;
+
+  subColorTema: Subscription;
 
   constructor(
     private pageLoading$: PageLoadingService,
-    private ngSelectConfig: NgSelectConfig
+    private tema$: TemaService,
+    private ngSelectConfig: NgSelectConfig,
+    public overlayContainer: OverlayContainer
   ) {
     this.ngSelectConfig.notFoundText = 'No se encontraron datos';
     this.ngSelectConfig.loadingText = 'Cargando...';
     this.appPagina = document.documentElement;
+    this.detectarPantalla();
   }
 
   ngOnInit() {
     localStorage.removeItem('cerrarUpdateModal');
     this.subsPageLoading();
   }
-
-  ngAfterViewInit() {}
 
   /* View in fullscreen */
   openFullscreen() {
@@ -54,10 +63,21 @@ export class PagesComponent implements OnInit, AfterViewInit {
     document.exitFullscreen();
   }
 
+  // Detecta tamaño de pantalla y modifica sidebar
+  detectarPantalla(): void {
+    if (screen.width <= 768) {
+      this.sidenavMode = 'over';
+      this.sidenavBackdrop = true;
+      this.sidenavOpen = false;
+    }
+  }
+
   subsPageLoading() {
-    this.subPageLoading = this.pageLoading$.loadingDashboard.subscribe(
+    this.subPageLoading = this.pageLoading$.loadingPages.subscribe(
       (resp: boolean) => {
-        this.showLoadingPage = resp;
+        setTimeout(() => {
+          this.showLoadingPage = resp;
+        }, 2000);
         this.subPageLoading.unsubscribe();
       }
     );

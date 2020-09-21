@@ -1,4 +1,4 @@
-<div class="page-wrapper bg-blue-grey">
+<div class="page-wrapper">
   <div
     class="profile-cover"
     style="background-image: url('./assets/img/settings-cover.jpg');"
@@ -33,7 +33,12 @@
       </div>
       <div class="col-xl-9">
         <div class="card card-body border-0 shadow-sm">
-          <mat-tab-group animationDuration="0ms" mat-align-tabs="start">
+          <mat-tab-group
+            animationDuration="0ms"
+            mat-align-tabs="start"
+            [selectedIndex]="3"
+          >
+            <!-- Perfil -->
             <mat-tab>
               <ng-template mat-tab-label>
                 Tu perfil
@@ -172,7 +177,7 @@
                 </form>
               </div>
             </mat-tab>
-
+            <!-- Seguridad -->
             <mat-tab>
               <ng-template mat-tab-label>
                 Seguridad
@@ -276,7 +281,7 @@
                 </form>
               </div>
             </mat-tab>
-
+            <!-- Notificaciones -->
             <mat-tab>
               <ng-template mat-tab-label>
                 Notificaciones
@@ -300,6 +305,7 @@
                 </div>
               </div>
             </mat-tab>
+            <!-- Tema -->
             <mat-tab>
               <ng-template mat-tab-label>
                 Tema
@@ -319,9 +325,27 @@
                 <div class="mt-4 mb-4">
                   <mat-divider></mat-divider>
                 </div>
+                <div class="temas">
+                  <ul class="cambiarTema">
+                    <li
+                      #link1
+                      (click)="cambiarTema('vric-default-theme', link1)"
+                      matTooltip="Tema por defecto"
+                      class="tema border tema-default"
+                      data-theme="vric-default-theme"
+                    ></li>
+                    <li
+                      #link2
+                      (click)="cambiarTema('vric-dark-theme', link2)"
+                      matTooltip="Tema oscuro"
+                      class="tema border tema-dark"
+                      data-theme="vric-dark-theme"
+                    ></li>
+                  </ul>
+                </div>
               </div>
             </mat-tab>
-
+            <!-- Pagos -->
             <mat-tab disabled>
               <ng-template mat-tab-label>
                 Métodos de pago

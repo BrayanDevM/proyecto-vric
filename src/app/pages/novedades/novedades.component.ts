@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Uds } from 'src/app/models/uds.model';
 import { UdsService } from 'src/app/services/uds.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
-import { CookieService } from 'ngx-cookie-service';
 import { Usuario } from 'src/app/models/usuario.model';
+import { PageLoadingService } from 'src/app/services/page-loading.service';
 
 @Component({
   selector: 'app-novedades',
@@ -16,9 +16,9 @@ export class NovedadesComponent implements OnInit {
   query = '';
 
   constructor(
+    private pageLoading$: PageLoadingService,
     private usuario$: UsuarioService,
-    private uds$: UdsService,
-    private cookie$: CookieService
+    private uds$: UdsService
   ) {}
 
   ngOnInit() {
@@ -45,10 +45,12 @@ export class NovedadesComponent implements OnInit {
     const udsEnLocal = localStorage.getItem('udsAsignadas');
     if (udsEnLocal !== null) {
       this.udsAsignadas = JSON.parse(udsEnLocal);
+      this.pageLoading$.loadingPages.emit(false);
     } else {
       this.uds$.obtenerUds(this.query).subscribe((resp: any) => {
         if (resp.ok) {
           this.udsAsignadas = resp.uds;
+          this.pageLoading$.loadingPages.emit(false);
           localStorage.setItem(
             'udsAsignadas',
             JSON.stringify(this.udsAsignadas)

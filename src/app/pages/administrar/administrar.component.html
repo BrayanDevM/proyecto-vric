@@ -1,5 +1,5 @@
 <div class="page-wrapper BDM_fadeInUp">
-  <div class="header row m-0 bg-white">
+  <div class="page-header row m-0">
     <div class="page-title col-xl-6 p-0">
       <h2 class="title-bold m-0">Administrar</h2>
       <div class="text-muted ml-1">
@@ -11,7 +11,7 @@
     </div>
   </div>
   <!-- PAGE CONTENT -->
-  <mat-tab-group dynamicHeight>
+  <mat-tab-group dynamicHeight class="mat-tab-header">
     <mat-tab>
       <ng-template mat-tab-label>
         <mat-icon class="example-tab-icon">bug_report</mat-icon>
@@ -56,24 +56,24 @@
                 [ngClass]="{ 'texto-tachado': reporte.completado }"
               >
                 <h5 class="card-title d-flex flex-row align-items-center mb-1">
-                  Reporte de {{ reporte.reportadoPor.nombre }}
+                  {{ reporte.asunto }}
                   <span
                     class="badge m-0 ml-2 p-1 alert"
                     style="font-size: .7rem;"
                     [ngClass]="{
-                      'alert-danger': reporte.tipo === 'Fallo',
-                      'alert-primary': reporte.tipo === 'Sugerencia',
-                      'alert-info': reporte.tipo === 'Mensaje'
+                      'bg-danger': reporte.tipo === 'Fallo',
+                      'bg-primary': reporte.tipo === 'Sugerencia',
+                      'bg-info': reporte.tipo === 'Mensaje'
                     }"
                   >
                     {{ reporte.tipo }}
                   </span>
                 </h5>
-                <p class="card-subtitle text-muted">
+                <p class="card-text mt-2">{{ reporte.descripcion }}</p>
+                <p class="card-subtitle text-muted m-0">
+                  {{ reporte.reportadoPor.nombre }},
                   {{ reporte.reportadoPor.correo }}
                 </p>
-                <p class="card-text mt-2">{{ reporte.descripcion }}</p>
-
                 <small class="text-muted"
                   >creado el: {{ reporte.creadoEl }}</small
                 >
