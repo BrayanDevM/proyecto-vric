@@ -1,6 +1,6 @@
 :root {
   /* Colors */
-  --color-primary: #009688;
+  --color-primary: #0097a7;
   --color-blanco: #fff;
   /* text */
   --texto-color-1: #303030;
@@ -8,14 +8,14 @@
   --texto-color-3: #1f1f1f;
   --texto-color-4: #1b1c1e;
   --texto-gris: #969696;
-  --texto-sidebar: #cfd8e3;
+  --texto-sidebar: #e0f7fa;
 
   /* backgrounds */
   --bg-color-primary: #f1f4f9;
   --bg-color-warn: #f44236;
-  --bg-color-sidebar: hsl(222, 28%, 15%);
-  --bg-color-sidebar-hover: hsl(222, 28%, 20%);
-  --bg-color-sidebar-active: hsl(222, 28%, 10%);
+  --bg-color-sidebar: hsl(186, 100%, 33%);
+  --bg-color-sidebar-hover: hsl(186, 100%, 38%);
+  --bg-color-sidebar-active: hsl(186, 100%, 28%);
 }
 
 html,
@@ -54,6 +54,13 @@ h6 {
   background-color: var(--color-blanco);
 }
 
+.mat-toolbar.mat-primary {
+  background: #fff !important;
+  color: var(--texto-color-1) !important;
+  position: relative;
+  z-index: 8;
+}
+
 .table-page-header {
   background-color: var(--color-blanco);
 }
@@ -72,12 +79,12 @@ h6 {
 }
 
 .sidebar .navigation-group .navigation-title-wrapper .navigation-group-title {
-  color: var(--color-primary);
+  color: var(--color-blanco);
 }
 
-.user-profile .email,
+.sidebar .user-profile .email,
 .sidebar .navigation-group-subtitle {
-  color: #64748b;
+  color: #b2ebf2;
 }
 
 .sidebar .navigation-group .navigation-item .navigation-link:hover {
@@ -91,12 +98,12 @@ h6 {
 }
 
 .sidebar .navigation-group .mat-icon {
-  color: var(--texto-sidebar);
+  color: #e0f7fa;
   transition: color 375ms cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .sidebar .navigation-group .navigation-link-text {
-  color: var(--texto-sidebar);
+  color: #e0f7fa;
 }
 
 /* FIN SIDEBAR STYLES ***************************************************************/

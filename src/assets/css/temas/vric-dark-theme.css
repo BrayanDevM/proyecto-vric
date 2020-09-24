@@ -3,7 +3,7 @@
   --color-primary: #00796b;
   --color-blanco: #fff;
   /* text */
-  --texto-color-1: #fff;
+  --texto-color-1: #f2ffff;
   --texto-color-2: #fff;
   --texto-color-3: #fff;
   --texto-color-4: #fff;
@@ -76,12 +76,38 @@ h6 {
   background-color: var(--bg-color-primary) !important;
 }
 
+.mat-menu-item .mat-icon-no-color,
+.mat-menu-item-submenu-trigger::after {
+  color: rgba(255, 255, 255, 0.54) !important;
+}
+.vric-dark-theme .mat-menu-item {
+  color: inherit;
+}
+
+.mat-option {
+  color: inherit;
+}
+
 div.border-bottom,
 div.border-top,
 div.border-right,
 div.border-left,
 div.border {
   border-color: var(--border-color) !important;
+}
+
+.table-page-header {
+  background-color: var(--bg-color-primary);
+}
+
+.help-center .help-categories .category .title {
+  color: var(--texto-color-3);
+}
+
+/* Sidenav dashboard UDS */
+.drawer-uds-dashboard .mat-drawer-inner-container,
+.sidenav-uds-list {
+  background-color: var(--bg-color-primary);
 }
 
 /* SIDEBAR STYLES ******************************************************************/
@@ -95,6 +121,7 @@ div.border {
   color: var(--color-primary);
 }
 
+.user-profile .email,
 .sidebar .navigation-group-subtitle {
   color: #64748b;
 }
@@ -224,3 +251,7 @@ div.border {
   color: #3f4c63;
 }
 /* FIN NOTIFICACTIONS PANEL ----------------------------------------- */
+
+.loading-wrapper {
+  background-color: var(--bg-color-primary);
+}

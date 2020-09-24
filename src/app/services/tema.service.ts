@@ -35,8 +35,13 @@ export class TemaService {
     const rutaTema = `assets/css/temas/${tema}.css`;
     this.document$.querySelector('#cssTema').setAttribute('href', rutaTema);
 
-    this.document$.querySelector('#global-container').className = '';
-    this.document$.querySelector('#global-container').classList.add(tema);
+    // #global-container
+    document.body.className = '';
+    document.body.classList.add('mat-typography');
+    document.body.classList.add(tema);
+
+    // this.document$.querySelector('#global-container').className = '';
+    // this.document$.querySelector('#global-container').classList.add(tema);
 
     this.ajustes.tema = tema;
     this.ajustes.temaUrl = rutaTema;

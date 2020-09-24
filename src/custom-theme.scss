@@ -24,6 +24,17 @@ $VRIC-default-theme: mat-light-theme(
   )
 );
 
+$VRIC-light-purple-primary: mat-palette($mat-cyan, 700);
+$VRIC-light-purple-theme: mat-light-theme(
+  (
+    color: (
+      primary: $VRIC-light-purple-primary,
+      accent: $VRIC-default-accent,
+      warn: $VRIC-default-warn
+    )
+  )
+);
+
 // Tema oscuro
 $VRIC-dark-primary: mat-palette($mat-teal, 700);
 $VRIC-dark-accent: mat-palette($mat-amber, 700);
@@ -53,4 +64,9 @@ $VRIC-dark-theme: mat-dark-theme(
   @include angular-material-theme($VRIC-dark-theme);
   // background-color: #1a202e;
   color: #f2ffff;
+}
+.vric-light-purple-theme {
+  @include angular-material-theme($VRIC-light-purple-theme);
+  // background-color: #1a202e;
+  color: #1b1c1e;
 }
