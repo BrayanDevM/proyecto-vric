@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 import { NgSelectConfig } from '@ng-select/ng-select';
 import { PageLoadingService } from '../services/page-loading.service';
@@ -20,6 +20,9 @@ export class PagesComponent implements OnInit {
   subPageLoading: Subscription;
   showLoadingPage = true;
   sidenavOpen = true;
+
+  @ViewChild('searchToolbar') searchToolbar: ElementRef;
+  searchToolarOpen = false;
 
   subColorTema: Subscription;
 

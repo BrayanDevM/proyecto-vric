@@ -33,13 +33,22 @@
   </mat-sidenav>
   <mat-sidenav-content>
     <!-------------------------------------- HEADER -------------------------------------->
+    <div #searchToolbar class="header-search-toolbar">
+      <app-search-toolbar
+        (cerrar)="searchToolarOpen = $event"
+        class="animate__animated"
+        [class.animate__slideInDown]="searchToolarOpen"
+        [class.animate__slideOutUp]="!searchToolarOpen"
+      ></app-search-toolbar>
+    </div>
+    <!-- main toolbar -->
     <div class="header-toolbar">
       <mat-toolbar color="primary">
         <button (click)="sidenav.toggle()" mat-icon-button class="example-icon">
           <mat-icon>menu</mat-icon>
         </button>
         <span class="mat-spacer"></span>
-        <button mat-icon-button>
+        <button (click)="searchToolarOpen = true" mat-icon-button>
           <mat-icon>search</mat-icon>
         </button>
         <button

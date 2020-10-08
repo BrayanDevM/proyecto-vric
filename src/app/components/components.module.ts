@@ -25,6 +25,7 @@ import { ApexLineChartMinComponent } from './apexchart/apex-line-chart-min/apex-
 import { ApexBarChartStackedComponent } from './apexchart/apex-bar-chart-stacked/apex-bar-chart-stacked.component';
 import { NotificacionesComponent } from './notificaciones/notificaciones.component';
 import { PageLoaderComponent } from './page-loader/page-loader.component';
+import { SearchToolbarComponent } from './search-toolbar/search-toolbar.component';
 
 const components = [
   HeaderComponent,
@@ -39,7 +40,8 @@ const components = [
   ApexLineChartTimeseriesComponent,
   ApexBarChartStackedComponent,
   NotificacionesComponent,
-  PageLoaderComponent
+  PageLoaderComponent,
+  SearchToolbarComponent
 ];
 
 @NgModule({

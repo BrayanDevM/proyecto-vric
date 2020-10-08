@@ -4,9 +4,6 @@ import { Beneficiario } from '../models/beneficiario.model';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Config } from '../config/config';
-import Swal from 'sweetalert2/src/sweetalert2.js';
-import { map, catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
 import { Usuario } from '../models/usuario.model';
 
 @Injectable({

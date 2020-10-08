@@ -108,7 +108,7 @@ export class FormCambiosComponent implements OnInit {
     const anioActual = new Date().getFullYear();
     const mesActual = new Date().getMonth();
 
-    this.minNacimiento = new Date(anioActual - 100, 0, 1); // 100 años atrás enero 1
+    this.minNacimiento = new Date(anioActual, 0, 1); // 100 años atrás enero 1
     this.maxNacimiento = new Date(moment()); // Hoy
 
     this.minIngreso = new Date(anioActual, mesActual, 1); // mes vigente

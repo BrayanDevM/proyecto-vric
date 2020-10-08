@@ -24,6 +24,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 const MaterialComponents = [
   MatGridListModule,
@@ -31,6 +32,7 @@ const MaterialComponents = [
   MatToolbarModule,
   MatIconModule,
   MatInputModule,
+  MatAutocompleteModule,
   MatFormFieldModule,
   MatCheckboxModule,
   MatProgressSpinnerModule,
