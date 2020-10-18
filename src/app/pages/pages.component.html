@@ -35,10 +35,8 @@
     <!-------------------------------------- HEADER -------------------------------------->
     <div #searchToolbar class="header-search-toolbar">
       <app-search-toolbar
+        *ngIf="searchToolarOpen"
         (cerrar)="searchToolarOpen = $event"
-        class="animate__animated"
-        [class.animate__slideInDown]="searchToolarOpen"
-        [class.animate__slideOutUp]="!searchToolarOpen"
       ></app-search-toolbar>
     </div>
     <!-- main toolbar -->

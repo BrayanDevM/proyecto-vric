@@ -23,47 +23,56 @@ export class SearchToolbarComponent implements OnInit, AfterViewInit {
   @ViewChild('search') searchInput: ElementRef;
 
   myControl = new FormControl();
-  busqueda: Observable<any[]>;
+  busqueda: Resultados[] = [];
 
   resultados: Resultados[] = [];
 
   constructor(private buscador$: BuscadorService) {
-    this.busqueda = this.myControl.valueChanges.pipe(
-      debounceTime(500),
-      startWith(''),
-      map(criterio =>
-        criterio ? this._filterStates(criterio) : this.resultados.slice()
-      )
-    );
+    this.myControl.valueChanges
+      .pipe(debounceTime(500), startWith(''))
+      .subscribe(criterio => {
+        if (criterio !== '') {
+          this.filtrarBusqueda(criterio);
+        }
+      });
   }
 
   ngOnInit(): void {}
 
-  private _filterStates(criterio: string) {
-    this.buscarTodos(criterio);
-
-    const filterValue = criterio.toLowerCase();
-
-    return this.resultados.filter(
-      resultado => resultado.label.toLowerCase().indexOf(filterValue) === 0
-    );
-  }
   ngAfterViewInit() {
     this.searchInput.nativeElement.focus();
   }
 
-  buscarTodos(criterio: string) {
-    this.buscador$.buscarTodos(criterio).subscribe((resp: any) => {
-      console.log(resp);
-      resp.beneficiarios.forEach((beneficiario: Beneficiario) => {
-        this.resultados.push({
-          tipo: 'Beneficiario',
-          label: `${beneficiario.nombre1} ${beneficiario.nombre2} ${beneficiario.apellido1} ${beneficiario.apellido2}`,
-          descripcion: beneficiario.uds.nombre || '',
-          enlace: `/beneficiarios/uds/${beneficiario.uds._id}`
+  filtrarBusqueda(criterio: string) {
+    const filterValue = criterio.toLowerCase();
+    let contador = 0;
+    this.busqueda = [];
+    this.resultados = [];
+
+    this.buscador$
+      .buscarEnColeccion('beneficiarios', filterValue)
+      .subscribe((resp: any) => {
+        console.log(resp);
+        resp.beneficiarios.forEach((beneficiario: Beneficiario) => {
+          if (beneficiario.uds !== null) {
+            this.resultados.push({
+              estado: beneficiario.estado,
+              label: `${beneficiario.nombre1} ${beneficiario.nombre2} ${beneficiario.apellido1} ${beneficiario.apellido2}`,
+              descripcion: beneficiario.uds.nombre,
+              enlace: `/beneficiarios/uds/${beneficiario.uds._id}`
+            });
+          }
+          contador++;
         });
+        if (contador === resp.beneficiarios.length) {
+          this.resultados.filter(
+            resultado =>
+              resultado.label.toLowerCase().indexOf(filterValue) === 0
+          );
+          this.busqueda = this.resultados;
+          // console.log(this.resultados, 'Resultados');
+        }
       });
-    });
   }
 
   cerrarToolbar() {
@@ -72,7 +81,7 @@ export class SearchToolbarComponent implements OnInit, AfterViewInit {
 }
 
 export interface Resultados {
-  tipo: string;
+  estado: string;
   label: string;
   descripcion: string;
   enlace: string;

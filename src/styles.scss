@@ -615,6 +615,7 @@ p.card-title {
   border-radius: 2rem;
   border: none;
   margin: auto 0;
+  max-height: 20px;
 }
 .badge-status .status-indicator {
   width: 8px;
@@ -893,6 +894,22 @@ p.card-title {
 
 .guia-imagen img {
   width: 100%;
+}
+
+// Search drop-down panel
+.drop-down-search-panel {
+  width: 100%;
+  min-height: 5rem;
+  padding: 1rem 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+.header-search-toolbar .mat-toolbar.search-input-active {
+  z-index: 10000;
 }
 
 // ApexCharts ***************************************************************
