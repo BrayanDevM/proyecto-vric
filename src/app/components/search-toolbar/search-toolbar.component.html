@@ -6,27 +6,59 @@
         [matAutocomplete]="auto"
         [formControl]="myControl"
         matInput
-        placeholder="Busca un beneficiario, acudientes o UDS"
+        placeholder="Buscar un beneficiario"
         autocomplete="off"
       />
       <mat-icon matPrefix>search</mat-icon>
       <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+        <mat-option *ngIf="busqueda.length === 0">
+          <div>
+            No hay se han encontrado coincidencias
+          </div>
+        </mat-option>
         <mat-option
-          *ngFor="let resultado of busqueda | async"
+          *ngFor="let resultado of busqueda"
           [value]="resultado.label"
           [routerLink]="[resultado.enlace]"
         >
-          <div class="badge bg-primary mr-3">{{ resultado.tipo }}</div>
-          <span>{{ resultado.label | nombrePropio }}</span> |
-          <small>{{ resultado.descripcion }}</small>
+          <div class="d-flex flex-row align-content-center">
+            <div
+              class="badge-status alert mr-2"
+              [ngClass]="{
+                'alert-primary': resultado.estado === 'Pendiente vincular',
+                'alert-warning': resultado.estado === 'Pendiente desvincular',
+                'alert-info': resultado.estado === 'Dato sensible',
+                'alert-danger': resultado.estado === 'Concurrencia',
+                'alert-success': resultado.estado === 'Vinculado',
+                'alert-secondary': resultado.estado === 'Desvinculado'
+              }"
+            >
+              <div
+                class="status-indicator"
+                [ngClass]="{
+                  'bg-primary': resultado.estado === 'Pendiente vincular',
+                  'bg-warning': resultado.estado === 'Pendiente desvincular',
+                  'bg-info': resultado.estado === 'Dato sensible',
+                  'bg-danger': resultado.estado === 'Concurrencia',
+                  'bg-success': resultado.estado === 'Vinculado',
+                  'bg-secondary': resultado.estado === 'Desvinculado'
+                }"
+              ></div>
+              <span class="status-text">{{ resultado.estado }}</span>
+            </div>
+            <div>
+              <span>{{ resultado.label | nombrePropio }}</span>
+              <small class="text-muted"> | {{ resultado.descripcion }}</small>
+            </div>
+          </div>
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>
   </div>
   <span class="mat-spacer"></span>
-  <button mat-icon-button class="mr-2">
+  <!-- <button mat-icon-button class="mr-2">
     <mat-icon>filter_alt</mat-icon>
-  </button>
+  </button> -->
   <button (click)="cerrarToolbar()" mat-icon-button>
     <mat-icon>close</mat-icon>
   </button>
