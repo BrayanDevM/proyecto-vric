@@ -1,221 +1,252 @@
-<div class="content">
-  <div class="container-fluid">
-    <app-breadcrumb></app-breadcrumb>
-    <div class="BDM_fadeInUp">
-      <div *ngIf="true" class="row">
-        <div class="col-12 text-right mb-4">
-          <button
-            *ngIf="!cargandoDatos"
-            (click)="obtenerDatos()"
-            type="button"
-            class="btn btn-outline-secondary"
-          >
-            <i class="fas fa-sync"></i> Actualizar
-          </button>
-          <button
-            *ngIf="cargandoDatos"
-            type="button"
-            class="btn btn-outline-secondary disabled"
-          >
-            <i class="fas fa-sync fa-spin"></i> Actualizando...
-          </button>
+<mat-sidenav-container [hasBackdrop]="true">
+  <mat-sidenav #uds mode="over" position="end" class="drawer-uds-dashboard">
+    <div class="sidenav-uds-list">
+      <mat-nav-list>
+        <ng-container *ngFor="let unidad of udsCali">
+          <a mat-list-item [routerLink]="['/dashboard/uds', unidad._id]">
+            <div>{{ unidad.nombre }}</div>
+            <button mat-icon-button>
+              <mat-icon fontSet="material-icons-outlined" color="primary"
+                >info</mat-icon
+              >
+            </button>
+          </a>
+        </ng-container>
+      </mat-nav-list>
+      <mat-divider></mat-divider>
+      <mat-nav-list>
+        <ng-container *ngFor="let unidad of udsDagua">
+          <div class="d-flex justify-content-between">
+            <a mat-list-item [routerLink]="['/dashboard/uds', unidad._id]">
+              {{ unidad.nombre }}
+            </a>
+            <button mat-icon-button>
+              <mat-icon fontSet="material-icons-outlined" color="primary"
+                >info</mat-icon
+              >
+            </button>
+          </div>
+        </ng-container>
+      </mat-nav-list>
+    </div>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div class="page-content">
+      <div class="container-fluid BDM_fadeInUp">
+        <div class="header-dashboard row">
+          <div class="page-title col-xl-6 p-0">
+            <h2 class="m-0">Panel de análisis</h2>
+            <div class="text-muted">
+              Supervisión de métricas generales del contrato
+            </div>
+          </div>
+          <div class="page-actions col-xl-6 p-0">
+            <!-- <button
+              mat-stroked-button
+              (click)="obtenerDatos()"
+              [disabled]="cargandoDatos"
+              type="button"
+              class="btn mr-2"
+            >
+              <mat-icon>update</mat-icon>
+              <span *ngIf="cargandoDatos">Actualizando...</span>
+              <span *ngIf="!cargandoDatos">Actualizar</span>
+            </button> -->
+            <button
+              (click)="uds.toggle()"
+              mat-stroked-button
+              type="button"
+              class="btn"
+            >
+              <mat-icon>assignment</mat-icon> Supervisión UDS
+            </button>
+          </div>
         </div>
-      </div>
-      <div class="row mb-4">
-        <div class="col-sm-12 col-xl-3">
-          <div class="card card-body text-center" style="position: relative;">
-            <h5 class="card-subtitle">Cobertura Cali</h5>
-            <app-pie-chart
-              [pieChartData]="[
+
+        <div class="row">
+          <div class="col-md-6 col-xl-4">
+            <div class="mb-3">
+              <app-apex-line-chart-min
+                titulo="Ingresos"
+                subtitulo="Registrados en CUÉNTAME"
+                [seriesNombre]="'Ingresos'"
+                [series]="ingresosPorMes"
+                [colors]="['#69c18e']"
+                [categorias]="mesesFull"
+              ></app-apex-line-chart-min>
+            </div>
+          </div>
+          <div class="col-md-6 col-xl-4">
+            <div class="mb-4">
+              <app-apex-line-chart-min
+                titulo="Egresos"
+                subtitulo="Registrados en esta aplicación"
+                [seriesNombre]="'Egresos'"
+                [series]="egresosPorMes"
+                [colors]="['#f05251']"
+                [categorias]="mesesFull"
+              ></app-apex-line-chart-min>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 mb-4 pt-2">
+            <h2 class="subtitle mb-0">Beneficiarios</h2>
+            <div class="text-muted">
+              Información demográfica y comportamiento general de los
+              beneficiarios
+            </div>
+          </div>
+          <div class="col mb-4">
+            <app-apex-pie-chart
+              titulo="Cobertura Cali"
+              [series]="[
                 totalCaliVinculados + totalCaliDS,
                 cuposCali - (totalCaliVinculados + totalCaliDS)
               ]"
-            ></app-pie-chart>
-
-            <div class="card-graphic-info">
-              <i class="fas fa-user" style="color: #4de2b8;"></i>
-              <span class="graphic-number">{{
-                totalCaliVinculados + totalCaliDS
-              }}</span>
-              <span class="text-muted data-desc">Beneficiarios</span>
-            </div>
-            <span class="text-muted mt-3 .card-graphic-sub-info"
-              >Faltantes:
-              {{ cuposCali - (totalCaliVinculados + totalCaliDS) }}</span
-            >
+              [labels]="['Vinculados', 'Cupos libres']"
+              [colors]="['#309794', '#4fd1c5']"
+            ></app-apex-pie-chart>
           </div>
-        </div>
-        <div class="col-sm-12 col-xl-3">
-          <div class="card card-body text-center" style="position: relative;">
-            <h5 class="card-subtitle">Cobertura Dagua</h5>
-            <app-pie-chart
-              [pieChartData]="[
+          <div class="col mb-4">
+            <app-apex-pie-chart
+              titulo="Cobertura Dagua"
+              [series]="[
                 totalDaguaVinculados + totalDaguaDS,
                 cuposDagua - (totalDaguaVinculados + totalDaguaDS)
               ]"
-              [bgColors]="['#f6da6d', '#eee']"
-            ></app-pie-chart>
-            <div class="card-graphic-info">
-              <i class="fas fa-user" style="color: #f6da6d;"></i>
-              <span class="graphic-number">{{
-                totalDaguaVinculados + totalDaguaDS
-              }}</span>
-              <span class="text-muted data-desc">Beneficiarios</span>
-            </div>
-            <span class="text-muted mt-3 .card-graphic-sub-info"
-              >Faltantes:
-              {{ cuposDagua - (totalDaguaVinculados + totalDaguaDS) }}</span
-            >
+              [labels]="['Vinculados', 'Cupos libres']"
+              [colors]="['#805ad4', '#b793f3']"
+            ></app-apex-pie-chart>
           </div>
-        </div>
-        <div class="col-sm-12 col-xl-3">
-          <div class="card card-body text-center" style="position: relative;">
-            <h5 class="card-subtitle">Cobertura total</h5>
-            <app-pie-chart
-              [pieChartData]="[
+          <div class="col mb-4">
+            <app-apex-pie-chart
+              titulo="Cobertura Total"
+              [series]="[
                 totalVinculados + totalDatosSensibles,
                 cuposTotal - totalVinculados
               ]"
-              [bgColors]="['#70bbfe', '#eee']"
-            ></app-pie-chart>
-            <div class="card-graphic-info">
-              <i class="fas fa-users" style="color: #70bbfe;"></i>
-              <span class="graphic-number">{{
-                totalVinculados + totalDatosSensibles
-              }}</span>
-              <span class="text-muted data-desc">Beneficiarios</span>
+              [labels]="['Vinculados', 'Cupos libres']"
+              [colors]="['#c45194', '#f07bb2']"
+            ></app-apex-pie-chart>
+          </div>
+          <div class="col mb-4">
+            <app-apex-pie-chart
+              titulo="Datos sensibles"
+              [series]="[totalDatosSensibles, totalVinculados]"
+              [labels]="['Datos sensibles', 'Con calidad']"
+              [colors]="['#dd6c20', '#eee']"
+            ></app-apex-pie-chart>
+          </div>
+          <div class="col">
+            <div class="mb-4">
+              <app-apex-bar-chart-stacked
+                titulo="Sexo"
+                [series]="[totalSexoMujer, totalSexoHombre, totalSexoOtro]"
+                [seriesNombre]="['Mujeres', 'Hombres', 'Otro']"
+                [categoria]="['Sexo']"
+                [colores]="['#EC407A', '#F06292', '#F48FB1']"
+              ></app-apex-bar-chart-stacked>
             </div>
-            <span class="text-muted mt-3 .card-graphic-sub-info"
-              >Faltantes:
-              {{ cuposTotal - (totalVinculados + totalDatosSensibles) }}</span
-            >
+          </div>
+          <div class="col">
+            <div class="mb-4">
+              <app-apex-bar-chart-stacked
+                titulo="Tipo de beneficiario"
+                [series]="[totalMayoresSeisMeses, totalLactantes, totalMG]"
+                [seriesNombre]="[
+                  'Mayores de seis meses',
+                  'Menores de seis meses',
+                  'Mujeres gestantes'
+                ]"
+                [categoria]="['Tipo de beneficiario']"
+                [colores]="['#00ACC1', '#00BCD4', '#26C6DA']"
+              ></app-apex-bar-chart-stacked>
+            </div>
+          </div>
+          <div class="col">
+            <div class="mb-4">
+              <app-apex-bar-chart-stacked
+                titulo="Población vulnerable"
+                [series]="[totalDiscapacitados, totalEtnia, totalExtranjeros]"
+                [seriesNombre]="[
+                  'Presentan discapacidad',
+                  'Se autorreconocen',
+                  'Extranjeros'
+                ]"
+                [categoria]="['Población vulnerable']"
+                [colores]="['#689F38', '#7CB342', '#8BC34A']"
+              ></app-apex-bar-chart-stacked>
+            </div>
           </div>
         </div>
-        <div class="col-sm-12 col-xl-3">
-          <div class="card card-body text-center" style="position: relative;">
-            <h5 class="card-subtitle">Datos sensibles</h5>
-            <app-pie-chart
-              [pieChartData]="[
-                totalDatosSensibles,
-                cuposTotal - totalVinculados
-              ]"
-              [bgColors]="['#fd4962', '#eee']"
-            ></app-pie-chart>
-            <div class="card-graphic-info">
-              <i class="fas fa-user-edit" style="color: #fd4962;"></i>
-              <span class="graphic-number">{{ totalDatosSensibles }}</span>
-              <span class="text-muted data-desc">Beneficiarios</span>
+
+        <div class="row">
+          <div class="mb-4 pt-2">
+            <h2 class="subtitle mb-0">Datos populares</h2>
+            <div class="text-muted">
+              Información específica de beneficiarios según porpularidad de
+              datos requeridos
             </div>
-            <span class="text-muted mt-3 .card-graphic-sub-info"
-              >Con calidad: {{ cuposTotal - totalDatosSensibles }}</span
-            >
           </div>
-        </div>
-      </div>
-      <div class="row mb-4">
-        <div class="col-sm-12 col-xl-8">
-          <div class="card card-body novedades">
-            <h5 class="card-title">Novedades</h5>
-            <!-- <div class="text-right">
-              <div class="btn-group btn-group-toggle mb-2" data-toggle="buttons">
-                <label class="btn btn-light btn-sm active">
-                  <input type="radio" name="options" id="option1" checked /> Cali
-                </label>
-                <label class="btn btn-light btn-sm">
-                  <input type="radio" name="options" id="option2" /> Dagua
-                </label>
+          <div class="col-sm-12 col-md-7 col-xl-4">
+            <div class="card card-body shadow-sm pt-3 pb-3 mb-4">
+              <div class="p-3 pb-0">
+                <h3 class="card-title mb-0">Datos especiales</h3>
+                <mat-divider></mat-divider>
               </div>
-            </div> -->
-            <app-line-chart
-              *ngIf="mostrarGraficaLinea"
-              [ingresos]="ingresosPorMes"
-              [egresos]="egresosPorMes"
-              [meses]="meses"
-            ></app-line-chart>
-          </div>
-        </div>
-        <div class="col-sm-12 col-xl-4">
-          <div class="card card-body pb-5">
-            <h5 class="card-title">Población</h5>
-            <app-pie-chart
-              [pieChartData]="[totalMG, totalMujeres, totalHombres]"
-              [bgColors]="['#70bbfe', '#fd4962', '#f6da6d', '#4de2b8']"
-              [holeSize]="70"
-              [legendDisplay]="true"
-            ></app-pie-chart>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-12 col-xl-4 mb-4">
-          <div class="card card-body mb-1">
-            <h5 class="card-title mb-0">Datos especiales</h5>
-          </div>
-          <ul class="list-group">
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              Mujeres gestantes adolescentes
-              <span class="badge badge-primary badge-pill">{{
-                mgAdolescente
-              }}</span>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              Beneficiarios con discapacidad
-              <span class="badge badge-primary badge-pill">{{
-                conDiscapacidad
-              }}</span>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              Beneficiarios en concurrencia
-              <span class="badge badge-danger badge-pill">{{
-                enConcurrencia
-              }}</span>
-            </li>
-          </ul>
-        </div>
-        <!----------------- DATOS UNIDADES DAGUA ----------------->
-        <div class="col-sm-12 col-xl-4 mb-4">
-          <div class="card card-body mb-1">
-            <h5 class="card-title mb-0">Estado de atención en Dagua</h5>
-          </div>
-          <div class="list-group">
-            <a
-              *ngFor="let unidad of udsDagua"
-              [routerLink]="['/dashboard/uds', unidad._id]"
-              class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              {{ unidad.nombre }}
-              <span class="badge badge-info">
-                {{ unidad.beneficiarios.length }}/{{ unidad.cupos }}
-              </span>
-            </a>
-          </div>
-        </div>
-        <!----------------- DATOS UNIDADES CALI ----------------->
-        <div class="col-sm-12 col-xl-4 mb-4">
-          <div class="card card-body mb-1">
-            <h5 class="card-title mb-0">Estado de atención en Cali</h5>
-          </div>
-          <div class="list-group">
-            <a
-              *ngFor="let unidad of udsCali"
-              [routerLink]="['/dashboard/uds', unidad._id]"
-              class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-            >
-              {{ unidad.nombre }}
-              <span class="badge badge-info">
-                {{ unidad.beneficiarios.length }}/{{ unidad.cupos }}
-              </span>
-            </a>
+              <mat-selection-list #shoes [multiple]="false">
+                <mat-list-option>
+                  <p class="d-flex justify-content-between align-items-center">
+                    <span>Mujeres gestantes adolescentes</span>
+                    <span class="badge bg-info">{{ mgAdolescente }}</span>
+                  </p>
+                </mat-list-option>
+                <mat-list-option>
+                  <p class="d-flex justify-content-between align-items-center">
+                    <span>
+                      Mayores de 2 años
+                      <small class="text-muted">(Cali)</small>
+                    </span>
+                    <span class="badge bg-success">{{
+                      caliMayoresDe2Anios
+                    }}</span>
+                  </p>
+                </mat-list-option>
+                <mat-list-option>
+                  <p class="d-flex justify-content-between align-items-center">
+                    <span>
+                      Mayores de 2 años
+                      <small class="text-muted">(Dagua)</small>
+                    </span>
+                    <span class="badge bg-success">{{
+                      daguaMayoresDe2Anios
+                    }}</span>
+                  </p>
+                </mat-list-option>
+                <mat-list-option>
+                  <p class="d-flex justify-content-between align-items-center">
+                    <span>
+                      Colombianos sin documento
+                    </span>
+                    <span class="badge bg-info">{{ colombianosSinDoc }}</span>
+                  </p>
+                </mat-list-option>
+                <mat-list-option
+                  [routerLink]="['/beneficiarios/estado/Concurrencia']"
+                  matTooltip="Ver en mis UDS"
+                  matTooltipPosition="right"
+                >
+                  <p class="d-flex justify-content-between align-items-center">
+                    <span>Beneficiarios en concurrencia</span>
+                    <span class="badge bg-danger">{{ enConcurrencia }}</span>
+                  </p>
+                </mat-list-option>
+              </mat-selection-list>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

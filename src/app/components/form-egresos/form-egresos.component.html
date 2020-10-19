@@ -1,108 +1,128 @@
-<form ngNativeValidate [formGroup]="formEgreso" (ngSubmit)="reportarEgreso()">
-  <div class="card mb-3">
-    <div class="card-body">
-      <h5 class="card-title text-danger">
-        <i class="fas fa-calendar-times"></i>
-        Reportar egreso
-      </h5>
-      <div class="row">
-        <div class="col-lg-4 col-xl-3">
+<form [formGroup]="formEgreso" (ngSubmit)="reportarEgreso()">
+  <!--**********//********** Sección datos básicos **********//**********-->
+  <div class="card border-0 shadow-sm mb-5 p-4">
+    <div class="card-body form-egreso">
+      <p class="card-title">Información de egreso</p>
+      <p class="text-muted m-0">
+        Selecciona el beneficiario que deseas reportar como egreso
+      </p>
+      <div class="mt-4 mb-5">
+        <mat-divider></mat-divider>
+      </div>
+      <div class="row egreso">
+        <!--********************** CAMPO UDS **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-3">
           <div class="form-group">
-            <label for="udsId">Seleccionar UDS</label>
-            <ng-select
-              [items]="udsAsignadas"
-              bindValue="_id"
-              bindLabel="nombre"
-              placeholder="Seleccionar Unidad de Servicio"
-              [loading]="!udsAsignadas"
-              (change)="traerBeneficiarios($event)"
-              formControlName="udsId"
-              name="udsId"
-              required
-            >
-            </ng-select>
+            <label for="udsId">Unidad De Servicio</label>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                (selectionChange)="traerBeneficiarios($event)"
+                name="udsId"
+                formControlName="udsId"
+                placeholder="Seleccionar UDS"
+              >
+                <mat-option *ngFor="let uds of udsAsignadas" [value]="uds._id">
+                  {{ uds.nombre }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>home_work</mat-icon>
+              <mat-error *ngIf="fc.udsId.errors?.required">
+                Debes seleccionar la UDS
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-4 col-xl-3">
+        <!--********************** CAMPO BENEFICIARIO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-3">
           <div class="form-group">
             <label for="beneficiarioId">Beneficiario a desvincular</label>
-            <ng-select
-              [items]="beneficiarios"
-              bindValue="_id"
-              bindLabel="nombre1"
-              placeholder="Seleccionar beneficiario"
-              [loading]="cargandoBeneficiarios"
-              formControlName="beneficiarioId"
-              name="beneficiarioId"
-              required
-            >
-              <!-- item seleccionado (label) -->
-              <ng-template ng-label-tmp let-item="item">
-                {{ item.nombre1 }} {{ item.nombre2 }} {{ item.apellido1 }}
-                {{ item.apellido2 }}
-              </ng-template>
-              <!-- opciones -->
-              <ng-template ng-option-tmp let-item="item">
-                {{ item.nombre1 }} {{ item.nombre2 }} {{ item.apellido1 }}
-                {{ item.apellido2 }}
-              </ng-template>
-            </ng-select>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                name="beneficiarioId"
+                formControlName="beneficiarioId"
+                [disabled]="beneficiarios.length === 0"
+                placeholder="Seleccionar beneficiario"
+              >
+                <mat-option *ngFor="let ben of beneficiarios" [value]="ben._id">
+                  {{ ben.nombre1 | nombrePropio }}
+                  {{ ben.nombre2 | nombrePropio }}
+                  {{ ben.apellido1 | nombrePropio }}
+                  {{ ben.apellido2 | nombrePropio }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>person</mat-icon>
+              <mat-hint *ngIf="beneficiarios.length === 0 && !fc.udsId.pristine"
+                >No tienes beneficiarios vinculados</mat-hint
+              >
+              <mat-hint *ngIf="beneficiarios.length === 0 && fc.udsId.pristine"
+                >Debes seleccionar una UDS primero</mat-hint
+              >
+              <mat-error *ngIf="fc.beneficiarioId.errors?.required">
+                Debes seleccionar un beneficiario
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-4 col-xl-3">
+        <!--********************** CAMPO MOTIVO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-3">
           <div class="form-group">
             <label for="motivo">Motivo de egreso</label>
-            <ng-select
-              [items]="motivosDeEgreso"
-              bindValue="value"
-              bindLabel="label"
-              placeholder="Seleccionar el motivo"
-              formControlName="motivo"
-              name="motivo"
-              required
-            >
-            </ng-select>
+            <mat-form-field appearance="outline" class="bdm-select">
+              <mat-select
+                name="motivo"
+                formControlName="motivo"
+                placeholder="Seleccionar motivo"
+              >
+                <mat-option
+                  *ngFor="let motivo of motivosDeEgreso"
+                  [value]="motivo.value"
+                >
+                  {{ motivo.label }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>contact_support</mat-icon>
+              <mat-error *ngIf="fc.motivo.errors?.required">
+                Debes seleccionar un motivo de egreso
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-4 col-xl-2">
+        <!--********************** CAMPO FECHA DE EGRSO **********************-->
+        <div class="col-sm-12 col-md-4 col-xl-2">
           <div class="form-group">
-            <label for="egreso">Fecha de desvinculación</label>
-            <input
-              formControlName="egreso"
-              name="egreso"
-              type="date"
-              class="form-control"
-              autocomplete="off"
-              required
-            />
+            <label for="egreso">Fecha de egreso</label>
+            <mat-form-field appearance="outline" class="bdm-input">
+              <input
+                matInput
+                [matDatepicker]="egreso"
+                [matDatepickerFilter]="filtroFinDeSemana"
+                [min]="minEgreso"
+                [max]="maxEgreso"
+                name="egreso"
+                formControlName="egreso"
+                autocomplete="off"
+                placeholder="Elige una fecha"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="egreso"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #egreso></mat-datepicker>
+              <mat-error *ngIf="fc.egreso.errors?.required">
+                Debes seleccionar una fecha de egreso
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-12 text-right">
-          <button
-            *ngIf="!actualizando"
-            type="submit"
-            class="btn btn-danger btn-sm"
-          >
-            <i class="fas fa-user-times mr-1"></i>
-            Reportar egreso
-          </button>
-          <button
-            *ngIf="actualizando"
-            [disabled]="actualizando"
-            type="button"
-            class="btn btn-danger btn-sm"
-          >
-            <span
-              class="spinner-border spinner-border-sm"
-              role="status"
-              aria-hidden="true"
-            ></span>
-            Reportando...
-          </button>
-        </div>
-      </div>
+    </div>
+  </div>
+  <div class="row actions text-right">
+    <div class="col-12">
+      <button mat-flat-button color="warn" type="submit">
+        <mat-icon class="mr-1">person_remove</mat-icon>
+        Reportar egreso
+      </button>
     </div>
   </div>
 </form>

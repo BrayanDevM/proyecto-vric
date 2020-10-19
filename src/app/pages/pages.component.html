@@ -1,21 +1,59 @@
+<!-- Page Dashboard Loading -->
+<app-page-loader *ngIf="showLoadingPage"></app-page-loader>
+
 <ngx-loading-bar
   [includeSpinner]="false"
-  [color]="'#27a844'"
+  [color]="'#ffeb00'"
   ref="http"
 ></ngx-loading-bar>
-<ngx-loading-bar [includeSpinner]="false" ref="router"></ngx-loading-bar>
-<div class="app-wrapper">
-  <div id="app-sidebar" class="app-sidebar">
-    <app-sidebar></app-sidebar>
-  </div>
-  <div class="app-pages">
-    <div class="page-navbar">
-      <app-header></app-header>
-    </div>
-    <div class="page-content">
-      <router-outlet></router-outlet>
-    </div>
-  </div>
-</div>
 
-<app-modal-actualizaciones></app-modal-actualizaciones>
+<mat-sidenav-container [hasBackdrop]="sidenavBackdrop" class="vric-container">
+  <mat-sidenav #sidenav [mode]="sidenavMode" [opened]="sidenavOpen">
+    <app-sidebar></app-sidebar>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <!-------------------------------------- HEADER -------------------------------------->
+    <div #searchToolbar class="header-search-toolbar">
+      <app-search-toolbar
+        *ngIf="searchToolarOpen"
+        (cerrar)="searchToolarOpen = $event"
+      ></app-search-toolbar>
+    </div>
+    <!-- main toolbar -->
+    <div class="header-toolbar">
+      <mat-toolbar color="primary">
+        <button (click)="sidenav.toggle()" mat-icon-button class="example-icon">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span class="mat-spacer"></span>
+        <button
+          (click)="searchToolarOpen = true"
+          mat-icon-button
+          matTooltip="Buscar"
+        >
+          <mat-icon>search</mat-icon>
+        </button>
+        <button
+          *ngIf="!pantallaCompleta"
+          (click)="openFullscreen()"
+          mat-icon-button
+          matTooltip="Pantalla completa"
+        >
+          <mat-icon>fullscreen</mat-icon>
+        </button>
+        <button
+          *ngIf="pantallaCompleta"
+          (click)="closeFullscreen()"
+          mat-icon-button
+          matTooltip="Salir de pantalla completa"
+        >
+          <mat-icon>fullscreen_exit</mat-icon>
+        </button>
+      </mat-toolbar>
+    </div>
+    <!------------------------------------ FIN HEADER ------------------------------------>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+<!-- <app-modal-actualizaciones></app-modal-actualizaciones> -->

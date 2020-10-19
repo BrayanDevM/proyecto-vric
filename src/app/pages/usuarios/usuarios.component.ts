@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { Usuario } from 'src/app/models/usuario.model';
-import Swal from 'sweetalert2/src/sweetalert2.js';
 import { Router } from '@angular/router';
 import { Contrato } from 'src/app/models/contrato.model';
 import { ContratosService } from 'src/app/services/contratos.service';
-import { NgOption } from '@ng-select/ng-select';
-import { alertError } from 'src/app/helpers/swal2.config';
-declare var jQuery: any;
+import { Subscription } from 'rxjs';
+import { MatTableDataSource } from '@angular/material/table';
+import { Config } from 'src/app/config/config';
+import { PageLoadingService } from 'src/app/services/page-loading.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -15,50 +15,68 @@ declare var jQuery: any;
   styleUrls: ['./usuarios.component.css']
 })
 export class UsuariosComponent implements OnInit {
+  // Config
+  sidenavMode = 'side';
+  sidenavBackdrop = false;
+  sidenavOpen = false;
+
   // data ng-select
-  roles: NgOption = [
-    {
-      value: 'ADMIN',
-      label: 'Administrador',
-      icon: 'fas fa-user-shield text-danger'
-    },
-    { value: 'GESTOR', label: 'Gestor', icon: 'fas fa-user text-success' },
-    {
-      value: 'COORDINADOR',
-      label: 'Coordinador',
-      icon: 'fas fa-user text-primary'
-    },
-    { value: 'DOCENTE', label: 'Docente', icon: 'fas fa-user text-secondary' }
-  ];
+  roles: any[] = Config.SELECTS.usuariosRoles;
   // ---------------------
   usuarios: Usuario[] = [];
   contratosDisponibles: Contrato[] = [];
   usuarioInfo: Usuario = null;
-  cargando = false;
+  tablaColumnas: string[] = ['nombre', 'correo', 'telefono', 'rol', 'activo'];
+  tablaData: MatTableDataSource<any>;
+  usuariosFiltrados = false;
+
+  // variables para almacenar subscripción y poder desuscribirnos
+  usuarioNuevo: Subscription;
+  usuarioEliminado: Subscription;
+  usuarioActualizado: Subscription;
 
   constructor(
+    private pageLoading$: PageLoadingService,
     private ususarios$: UsuarioService,
     private contratos$: ContratosService,
     private router: Router
-  ) {}
+  ) {
+    this.detectarPantalla();
+  }
 
   ngOnInit() {
     this.obtenerUsuarios();
     this.obtenerContratos();
+    this.subsUsuarioNuevo();
+    this.subsUsuarioEliminado();
+    this.subsUsuarioActualizado();
+    this.pageLoading$.loadingPages.emit(false);
+  }
+
+  get cantRegistros(): number {
+    return this.tablaData.filteredData.length;
   }
 
   obtenerUsuarios() {
-    this.cargando = true;
-    this.ususarios$.obtenerUsuarios().subscribe((resp: any) => {
-      if (resp.ok) {
-        this.usuarios = resp.usuarios;
-        this.cargando = false;
-        // console.log(resp.usuarios);
-      } else {
-        this.cargando = false;
-        console.log('Error al traer usuarios', resp);
-      }
+    this.ususarios$.obtenerUsuarios().subscribe((usuarios: Usuario[]) => {
+      this.usuarios = usuarios;
+      this.tablaData = new MatTableDataSource(this.usuarios);
     });
+  }
+  obtenerUsuariosFiltro(query: string) {
+    this.ususarios$.obtenerUsuarios(query).subscribe((resp: any) => {
+      this.usuarios = resp.usuarios;
+      this.tablaData = new MatTableDataSource(this.usuarios);
+      this.usuariosFiltrados = true;
+    });
+  }
+
+  crear() {
+    this.router.navigate(['usuarios/crear']);
+  }
+
+  verUsuario(id?: string) {
+    this.router.navigate(['usuarios/usuario', id]);
   }
 
   obtenerContratos() {
@@ -73,42 +91,77 @@ export class UsuariosComponent implements OnInit {
     this.router.navigate(['/usuarios/crear']);
   }
 
-  actualizarUsuario(usuario: Usuario) {
-    this.ususarios$.actualizarUsuario(usuario).subscribe((resp: any) => {
-      jQuery('#infoUsuario').modal({
-        show: false
-      });
-      this.obtenerUsuarios();
-    });
-  }
-
   editarUsuario(usuario: Usuario) {
     this.router.navigate(['/usuarios', usuario._id]);
   }
 
-  eliminarUsuario(usuario: Usuario) {
-    if (usuario._id === this.ususarios$.usuario._id) {
-      alertError.fire({
-        title: 'No puedes eliminarte a ti mismo'
-      });
-      return;
-    }
-    Swal.fire({
-      title: 'Usuario',
-      html: `¿Estas seguro que deseas eliminar a ${usuario.nombre}?, esta acción no puede deshacerse.`,
-      icon: 'warning',
-      showCancelButton: true,
-      // confirmButtonColor: '#3085d6',
-      // cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, eliminar!'
-    }).then((result: any) => {
-      if (result.value) {
-        this.ususarios$.eliminarUsuario(usuario).subscribe((resp: any) => {
-          if (resp === true) {
-            this.obtenerUsuarios();
-          }
-        });
+  removerFiltro() {
+    this.usuariosFiltrados = false;
+    this.obtenerUsuarios();
+  }
+
+  filtrarTabla(event: Event) {
+    const criterioBusqueda = (event.target as HTMLInputElement).value;
+    this.tablaData.filter = criterioBusqueda.trim().toLowerCase();
+  }
+
+  // subscribes
+  /**
+   * Nos suscribimos al emisor de cambios en caso de que se emita un nuevo contrato.
+   * Agregamos al final el nuevo contrato, actualizamos tabla y sumamos 1 al contador
+   */
+  subsUsuarioNuevo(): void {
+    this.usuarioNuevo = this.ususarios$.usuarioNuevo$.subscribe(
+      (usuario: Usuario) => {
+        this.usuarios.push(usuario);
+        this.tablaData = new MatTableDataSource(this.usuarios);
       }
-    });
+    );
+  }
+
+  /**
+   * Nos suscribimos al emisor de cambios en caso de que se emita un nuevo contrato.
+   * Eliminamos el contrato del arreglo, actualizamos tabla y restamos 1 al contador
+   */
+  subsUsuarioEliminado(): void {
+    this.usuarioEliminado = this.ususarios$.usuarioEliminado$.subscribe(
+      (id: string) => {
+        const i = this.usuarios.findIndex(usuario => usuario._id === id);
+        this.usuarios.splice(i, 1);
+        this.tablaData = new MatTableDataSource(this.usuarios);
+      }
+    );
+  }
+
+  /**
+   * Nos suscribimos al emisor de cambios en caso de que se emita un nuevo contrato.
+   * Agregamos al final el nuevo contrato, actualizamos tabla y sumamos 1 al contador
+   */
+  subsUsuarioActualizado(): void {
+    this.usuarioActualizado = this.ususarios$.usuarioActualizado$.subscribe(
+      (usuarioAct: Usuario) => {
+        const i = this.usuarios.findIndex(
+          usuario => usuario._id === usuarioAct._id
+        );
+        this.usuarios.splice(i, 1, usuarioAct);
+        this.tablaData = new MatTableDataSource(this.usuarios);
+      }
+    );
+  }
+
+  // Nos desuscribimos para mejorar performance
+  desuscribir(): void {
+    this.usuarioNuevo.unsubscribe();
+    this.usuarioEliminado.unsubscribe();
+    this.usuarioActualizado.unsubscribe();
+  }
+
+  // Detecta tamaño de pantalla y modifica sidebar
+  detectarPantalla(): void {
+    if (screen.width <= 1024) {
+      this.sidenavMode = 'push';
+      this.sidenavBackdrop = false;
+      this.sidenavOpen = false;
+    }
   }
 }

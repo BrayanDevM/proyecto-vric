@@ -1,0 +1,98 @@
+<div
+  class="page-wrapper d-flex justify-content-center bg-blue-grey help-center"
+>
+  <div class="main">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="header text-left">
+            <a
+              [routerLink]="['/ayuda']"
+              mat-button
+              color="primary"
+              class="btn-back mb-4"
+            >
+              <mat-icon>arrow_back</mat-icon> Volver al centro de ayuda
+            </a>
+            <h1 class="m-0">Envía tu solicitud</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Guia -->
+    <div class="container-fluid">
+      <form
+        [formGroup]="formSoporte"
+        (ngSubmit)="crearReporte()"
+        class="card card-body border-0 shadow-sm p-4"
+      >
+        <!--********************** CAMPO TIPO **********************-->
+        <div class="form-group mb-4">
+          <label for="tipo">Tu solicitud es</label>
+          <mat-radio-group name="tipo" formControlName="tipo">
+            <mat-radio-button value="Fallo" class="mr-3"
+              >Un fallo</mat-radio-button
+            >
+            <mat-radio-button value="Sugerencia" class="mr-3"
+              >Una sugerencia</mat-radio-button
+            >
+            <mat-radio-button value="Mensaje" class="mr-3"
+              >Un mensaje</mat-radio-button
+            >
+          </mat-radio-group>
+        </div>
+        <!--********************** CAMPO ASUNTO **********************-->
+        <div class="form-group">
+          <label for="asunto"
+            >En pocas palabras, cuéntanos de qué se trata tu consulta</label
+          >
+          <mat-form-field appearance="outline" class="bdm-input">
+            <input matInput name="asunto" formControlName="asunto" />
+            <mat-error *ngIf="fc.asunto.errors?.required">
+              Este campo es obligatorio
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!--********************** CAMPO DESCRIPCION **********************-->
+        <div class="form-group">
+          <label for="descripcion">Proporcione una descripción detallada</label>
+          <mat-form-field appearance="outline">
+            <textarea
+              matInput
+              name="descripcion"
+              formControlName="descripcion"
+              rows="7"
+            ></textarea>
+            <mat-error *ngIf="fc.descripcion.errors?.required">
+              Este campo es obligatorio
+            </mat-error>
+            <mat-error *ngIf="fc.descripcion.errors?.minlength">
+              Debes escribir al menos 40 caracteres
+            </mat-error>
+            <mat-error *ngIf="fc.descripcion.errors?.maxlength">
+              No puedes escribir más de 255 caracteres
+            </mat-error>
+          </mat-form-field>
+          <div class="caracteres text-right text-muted">
+            <span [ngClass]="{ 'text-danger': fv.descripcion.length > 255 }">{{
+              fv.descripcion.length
+            }}</span
+            >/255
+          </div>
+        </div>
+        <div class="text-center">
+          <button
+            mat-flat-button
+            (click)="resetForm()"
+            class="mr-2"
+            type="button"
+          >
+            Limpiar
+          </button>
+          <button mat-flat-button color="primary" type="submit">Enviar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

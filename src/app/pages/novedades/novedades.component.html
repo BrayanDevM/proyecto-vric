@@ -1,0 +1,47 @@
+<div class="page-wrapper bg-blue-grey BDM_fadeInUp">
+  <div class="page-header row m-0">
+    <div class="page-title col-xl-6 p-0">
+      <h2 class="title-bold m-0">Novedades</h2>
+      <div class="text-muted ml-1">
+        <div>Movimiento de beneficiarios en el servicio</div>
+      </div>
+    </div>
+    <div class="page-actions col-xl-6 p-0">
+      <!-- nothing -->
+    </div>
+  </div>
+  <!-- PAGE CONTENT -->
+  <mat-tab-group dynamicHeight class="mat-tab-header">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon mr-2">person_add</mat-icon>
+        Reportar ingreso
+      </ng-template>
+      <!-- TAB CONTENT -->
+      <div class="page-content">
+        <app-form-ingresos [udsAsignadas]="udsAsignadas"></app-form-ingresos>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon mr-2">person_remove</mat-icon>
+        Reportar egreso
+      </ng-template>
+      <!-- TAB CONTENT -->
+      <div class="page-content">
+        <app-form-egresos [udsAsignadas]="udsAsignadas"></app-form-egresos>
+      </div>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon mr-2">child_friendly</mat-icon>
+        Reportar nacimiento
+      </ng-template>
+      <!-- TAB CONTENT -->
+      <div class="page-content">
+        <app-form-cambios [udsAsignadas]="udsAsignadas"></app-form-cambios>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

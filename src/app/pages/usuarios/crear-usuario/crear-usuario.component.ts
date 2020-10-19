@@ -1,13 +1,17 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormGroupDirective
+} from '@angular/forms';
 import { ContratosService } from 'src/app/services/contratos.service';
 import { Contrato } from 'src/app/models/contrato.model';
-import { UdsService } from 'src/app/services/uds.service';
-import Swal from 'sweetalert2/src/sweetalert2.js';
 import { UsuarioService } from 'src/app/services/usuario.service';
-import { NgOption } from '@ng-select/ng-select';
-import { alertConfirm } from 'src/app/helpers/swal2.config';
-declare var moment: any;
+import { Router } from '@angular/router';
+import { alertSuccess } from 'src/app/helpers/swal2.config';
+import { Config } from 'src/app/config/config';
+declare const moment: any;
 
 @Component({
   selector: 'app-crear-usuario',
@@ -15,21 +19,7 @@ declare var moment: any;
   styleUrls: ['./crear-usuario.component.css']
 })
 export class CrearUsuarioComponent implements OnInit {
-  // data ng-select
-  roles: NgOption = [
-    {
-      value: 'ADMIN',
-      label: 'Administrador',
-      icon: 'fas fa-user-shield text-danger'
-    },
-    { value: 'GESTOR', label: 'Gestor', icon: 'fas fa-user text-success' },
-    {
-      value: 'COORDINADOR',
-      label: 'Coordinador',
-      icon: 'fas fa-user text-primary'
-    },
-    { value: 'DOCENTE', label: 'Docente', icon: 'fas fa-user text-secondary' }
-  ];
+  roles: any[] = Config.SELECTS.usuariosRoles;
   // ---------------------
   formUsuario: FormGroup;
   creandoUsuario = false;
@@ -37,13 +27,16 @@ export class CrearUsuarioComponent implements OnInit {
   cargandoContratos = false;
   verPassword = 'password';
   correoExiste = false;
+  hide = true;
+
+  @ViewChild(FormGroupDirective) formGroupDirective: FormGroupDirective;
 
   @ViewChild('password', { static: true }) iPasword: ElementRef;
 
   constructor(
     private fb: FormBuilder,
     private contratos$: ContratosService,
-    private uds$: UdsService,
+    private router: Router,
     private usuarios$: UsuarioService
   ) {}
 
@@ -57,30 +50,26 @@ export class CrearUsuarioComponent implements OnInit {
       contratos: null,
       uds: [],
       password: ['', Validators.required],
+      activo: false,
       creadoEl: ''
     });
 
     this.obtenerContratos();
   }
 
-  obtenerContratos() {
-    this.cargandoContratos = true;
-    this.contratos$.obtenerContratos().subscribe((resp: any) => {
-      if (resp.ok === true) {
-        this.cargandoContratos = false;
-        this.contratosDisponibles = resp.contratos;
-      } else {
-        this.cargandoContratos = false;
-      }
-    });
+  get fv(): any {
+    return this.formUsuario.value;
   }
 
-  cambiarInputPassword() {
-    if (this.verPassword === 'password') {
-      this.verPassword = 'text';
-    } else {
-      this.verPassword = 'password';
-    }
+  cancelar() {
+    this.router.navigate(['usuarios']);
+  }
+
+  obtenerContratos() {
+    this.cargandoContratos = true;
+    this.contratos$.obtenerContratos().subscribe((contratos: Contrato[]) => {
+      this.contratosDisponibles = contratos;
+    });
   }
 
   crearUsuario() {
@@ -88,26 +77,14 @@ export class CrearUsuarioComponent implements OnInit {
       return;
     }
     this.formUsuario.value.creadoEl = moment().format('YYYY-MM-DD');
-    alertConfirm
-      .fire({
-        title: 'Usuarios',
-        html: `¿Estas seguro de crear al usuario ${this.formUsuario.value.nombre}?`,
-        confirmButtonText: 'Crear usuario'
-      })
-      .then((result: any) => {
-        if (result.value) {
-          this.creandoUsuario = true;
-          this.usuarios$
-            .crearUsuario(this.formUsuario.value)
-            .subscribe((resp: any) => {
-              if (resp.ok) {
-                this.creandoUsuario = false;
-                this.formUsuario.reset();
-                // console.log('respuesta backend: ', resp);
-              } else {
-                this.creandoUsuario = false;
-              }
-            });
+
+    this.usuarios$
+      .crearUsuario(this.formUsuario.value)
+      .subscribe((resp: any) => {
+        if (resp.ok) {
+          alertSuccess.fire('Usuario creado');
+          this.usuarios$.usuarioNuevo$.emit(resp.usuarioCreado);
+          this.formGroupDirective.resetForm();
         }
       });
   }

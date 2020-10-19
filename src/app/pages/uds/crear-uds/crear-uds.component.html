@@ -1,184 +1,168 @@
-<div class="content">
-  <div class="container-fluid">
-    <app-breadcrumb></app-breadcrumb>
-    <div class="row">
-      <div class="col-12">
-        <div class="card BDM_fadeInUp">
-          <div class="card-header">
-            Crear Unidad de Servicio
-          </div>
-          <div class="card-body ">
-            <form
-              ngNativeValidate
-              [formGroup]="formCrearUds"
-              (ngSubmit)="crear()"
-            >
-              <div class="row">
-                <div class="col-2">
-                  <div class="form-group">
-                    <label for="codigo">Código</label>
-                    <input
-                      formControlName="codigo"
-                      name="codigo"
-                      type="number"
-                      class="form-control"
-                      placeholder="Código..."
-                      required
-                    />
-                    <small class="form-text text-muted"
-                      >El código debe ser único.</small
-                    >
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="nombre">Nombre</label>
-                    <input
-                      formControlName="nombre"
-                      name="nombre"
-                      type="text"
-                      class="form-control"
-                      placeholder="Nombre..."
-                      autocomplete="off"
-                      required
-                    />
-                    <div
-                      *ngIf="f.nombre.errors?.minlength"
-                      class="invalid-feedback"
-                    >
-                      No es un nombre corto?, al menos 5 letras 😀
-                    </div>
-                  </div>
-                </div>
-                <div class="col-2">
-                  <div class="form-group">
-                    <label for="cupos">Cupos asignados</label>
-                    <input
-                      formControlName="cupos"
-                      name="cupos"
-                      type="number"
-                      class="form-control"
-                      placeholder="Cupos..."
-                    />
-                  </div>
-                </div>
-                <div class="col-2">
-                  <div class="form-group">
-                    <label for="ubicacion">Ubicación</label>
-                    <input
-                      formControlName="ubicacion"
-                      name="ubicacion"
-                      type="text"
-                      class="form-control"
-                      placeholder="Ubicación..."
-                    />
-                  </div>
-                </div>
-                <div class="col-2">
-                  <div class="form-group">
-                    <label for="arriendo">Arrendamiento</label>
-                    <ng-select
-                      [items]="estadoArriendo"
-                      bindValue="value"
-                      bindLabel="label"
-                      placeholder="Seleccionar"
-                      [searchable]="false"
-                      formControlName="arriendo"
-                      name="arriendo"
-                    ></ng-select>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="coordinador">Coordinador</label>
-                    <ng-select
-                      [items]="coordinadores"
-                      bindValue="_id"
-                      bindLabel="nombre"
-                      placeholder="Seleccionar coordinador"
-                      [loading]="cargandoCoords"
-                      formControlName="coordinador"
-                      name="coordinador"
-                    ></ng-select>
-                  </div>
-                </div>
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="gestor">Gestor</label>
-                    <ng-select
-                      [items]="gestores"
-                      bindValue="_id"
-                      bindLabel="nombre"
-                      placeholder="Seleccionar gestor"
-                      [loading]="cargandoGestores"
-                      formControlName="gestor"
-                      name="gestor"
-                    ></ng-select>
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="docentes">Docentes</label>
-                    <ng-select
-                      [items]="docentes"
-                      bindValue="_id"
-                      bindLabel="nombre"
-                      placeholder="Seleccionar docentes"
-                      [multiple]="true"
-                      [hideSelected]="true"
-                      [closeOnSelect]="false"
-                      [maxSelectedItems]="2"
-                      [loading]="cargandoDocentes"
-                      formControlName="docentes"
-                      name="docentes"
-                    ></ng-select>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-12 text-right">
-                  <button
-                    *ngIf="!creando"
-                    type="submit"
-                    class="btn btn-success btn-sm"
-                  >
-                    <i class="fad fa-save"></i>
-                    Crear
-                  </button>
-                  <button
-                    *ngIf="creando"
-                    [disabled]="creando"
-                    type="button"
-                    class="btn btn-success btn-sm disabled"
-                  >
-                    <span
-                      class="spinner-border spinner-border-sm"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
-                    Creando...
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
+<div class="sidenav-detalle border-left">
+  <form
+    class="form-detalle modo-edicion"
+    ngNativeValidate
+    [formGroup]="formCrearUds"
+    (ngSubmit)="crear()"
+  >
+    <div class="actions">
+      <button
+        type="button"
+        (click)="cancelar()"
+        mat-icon-button
+        matTooltip="Cancelar"
+      >
+        <mat-icon>cancel</mat-icon>
+      </button>
+      <button type="submit" mat-icon-button matTooltip="Guardar">
+        <mat-icon>save</mat-icon>
+      </button>
     </div>
-    <div class="row mt-4">
-      <div class="col-12">
-        <div class="alert alert-danger">
-          Desde el back-end sólo se creará la UDS con los responsables, sin
-          embargo, no asigna la UDS a los responsables (buscar
-          uds.controller.js) ya que se debe asegurar que se registren todos y
-          realizar una sola petición, es decir, se realizó así en caso de que
-          otra persona aún no pueda asignar responsables y se debe asignar al
-          momento de editar la UDS, ya que esta petición si cuenta con la
-          asignación de usuarios.
-        </div>
-      </div>
+    <div class="logo-icbf">
+      <img src="./assets/img/logos/icbf.png" width="128" alt="" />
     </div>
-  </div>
+    <div class="form-field nombre">
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre unidad de servicio</mat-label>
+        <input
+          matInput
+          [value]="fv.nombre | uppercase"
+          formControlName="nombre"
+          name="nombre"
+          autocomplete="off"
+          placeholder="Código de contrato"
+        />
+        <mat-error *ngIf="fc.nombre.errors?.required">
+          El nombre es obligatorio
+        </mat-error>
+        <mat-error *ngIf="fc.nombre.errors?.minlength">
+          No es un nombre corto?, al menos 5 letras 😀
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="form-field arriendo mt-4">
+      <mat-slide-toggle name="arriendo" formControlName="arriendo">
+        <span *ngIf="fv.arriendo">Con ariendo</span>
+        <span *ngIf="!fv.arriendo">Sin arriendo</span>
+      </mat-slide-toggle>
+    </div>
+    <div class="form-field codigo">
+      <mat-icon class="form-field-icon">label</mat-icon>
+      <mat-form-field appearance="outline">
+        <mat-label>Código</mat-label>
+        <input
+          matInput
+          formControlName="codigo"
+          name="codigo"
+          autocomplete="off"
+          placeholder="Código de contrato"
+        />
+        <mat-error *ngIf="fc.codigo.errors?.required">
+          El codigo es obligatorio
+        </mat-error>
+        <mat-error *ngIf="fc.codigo.errors?.pattern">
+          Sólo debes escribir números
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="form-field ubicacion">
+      <mat-icon class="form-field-icon">place</mat-icon>
+      <mat-form-field appearance="outline">
+        <mat-label>Ubicación</mat-label>
+        <mat-select
+          name="ubicacion"
+          formControlName="ubicacion"
+          placeholder="Municipio..."
+        >
+          <mat-option value="Cali">Cali</mat-option>
+          <mat-option value="Dagua">Dagua</mat-option>
+        </mat-select>
+        <mat-error *ngIf="fc.ubicacion.errors?.required">
+          La ubicación es obligatoria
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="form-field cupos">
+      <mat-icon class="form-field-icon">fact_check</mat-icon>
+      <mat-form-field appearance="outline">
+        <mat-label>Cupos asignados</mat-label>
+        <input
+          matInput
+          type="numeric"
+          formControlName="cupos"
+          name="cupos"
+          placeholder="Cupos asignados..."
+        />
+        <mat-error *ngIf="fc.cupos.errors?.required">
+          Debes asignar cupos a la UDS
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="form-field coordinador">
+      <mat-icon class="form-field-icon">supervisor_account</mat-icon>
+      <mat-form-field appearance="outline">
+        <mat-label>Coordinador</mat-label>
+        <mat-select
+          formControlName="coordinador"
+          name="coordinador"
+          placeholder="Seleccionar coordinador"
+        >
+          <mat-option *ngFor="let coord of coordinadores" [value]="coord._id">
+            {{ coord.nombre | nombrePropio }}
+          </mat-option>
+        </mat-select>
+        <mat-hint *ngIf="coordinadores.length === 0"
+          >No hay coordinadores disponibles</mat-hint
+        >
+        <mat-error *ngIf="fc.coordinador.errors?.required">
+          Debes asignar un coordinador
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="form-field docentes">
+      <mat-icon class="form-field-icon">group</mat-icon>
+      <mat-form-field appearance="outline">
+        <mat-label>Docentes</mat-label>
+        <mat-select
+          (selectionChange)="maxTwoSelected()"
+          formControlName="docentes"
+          name="docentes"
+          placeholder="Seleccionar docentes"
+          multiple
+        >
+          <mat-option *ngFor="let docente of docentes" [value]="docente._id">
+            {{ docente.nombre | nombrePropio }}
+          </mat-option>
+        </mat-select>
+        <mat-hint *ngIf="docentes.length > 0">Máx. 2 docentes</mat-hint>
+        <mat-hint *ngIf="docentes.length === 0"
+          >No hay docentes disponibles</mat-hint
+        >
+        <mat-error *ngIf="fc.docentes.errors?.required">
+          Debes asignar al menos una docente
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="form-field gestor">
+      <mat-icon class="form-field-icon">person</mat-icon>
+      <mat-form-field appearance="outline">
+        <mat-label>Gestor</mat-label>
+        <mat-select
+          formControlName="gestor"
+          name="gestor"
+          placeholder="Seleccionar gestor"
+        >
+          <mat-option *ngFor="let gertor of gestores" [value]="gertor._id">
+            {{ gertor.nombre | nombrePropio }}
+          </mat-option>
+        </mat-select>
+        <mat-hint *ngIf="gestores.length === 0"
+          >No hay gestores disponibles</mat-hint
+        >
+        <mat-error *ngIf="fc.gestor.errors?.required">
+          Debes asignar un gestor
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </form>
 </div>

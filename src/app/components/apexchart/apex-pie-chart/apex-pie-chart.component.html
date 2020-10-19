@@ -1,0 +1,49 @@
+<div class="apexchart shadow-sm rounded" #chart>
+  <div class="p-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="chart-header">
+        <div class="chart-title">
+          {{ titulo }}
+        </div>
+        <div class="chart-subtitle text-muted">
+          <!-- Lorem ipsum dolor sit amet. -->
+        </div>
+      </div>
+      <div class="chart-actions">
+        {{ totalSeries }}
+      </div>
+    </div>
+  </div>
+  <div class="p-4 pt-0 d-flex justify-content-center align-items-center">
+    <apx-chart
+      [series]="chartOptions.series"
+      [colors]="chartOptions.colors"
+      [chart]="chartOptions.chart"
+      [labels]="chartOptions.labels"
+      [legend]="chartOptions.legend"
+      [dataLabels]="chartOptions.dataLabels"
+      [tooltip]="chartOptions.tooltip"
+      [plotOptions]="chartOptions.plotOptions"
+      [states]="chartOptions.states"
+      [responsive]="chartOptions.responsive"
+    ></apx-chart>
+  </div>
+  <div class="p-4 pt-0 pb-3">
+    <ul class="list-group list-group-flush">
+      <li
+        class="list-group-item d-flex justify-content-between align-items-center"
+        *ngFor="let value of data"
+      >
+        <div class="label d-flex align-items-center">
+          <div
+            class="label-color"
+            [ngStyle]="{ 'background-color': value.color }"
+          ></div>
+          <div class="label-text">{{ value.label }}</div>
+        </div>
+        <div class="data">{{ value.serie }}</div>
+        <div class="percent">{{ value.porcentaje }}%</div>
+      </li>
+    </ul>
+  </div>
+</div>

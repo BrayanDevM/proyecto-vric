@@ -1,44 +1,88 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { SidebarService } from '../services/sidebar.service';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+
 import { NgSelectConfig } from '@ng-select/ng-select';
-declare var jQuery: any;
+import { PageLoadingService } from '../services/page-loading.service';
+import { TemaService } from '../services/tema.service';
+import { Subscription } from 'rxjs';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-pages',
   templateUrl: './pages.component.html'
 })
-export class PagesComponent implements OnInit, AfterViewInit {
+export class PagesComponent implements OnInit {
+  pantallaCompleta = false;
+  appPagina: any;
+
+  sidenavMode = 'side';
+  sidenavBackdrop = false;
+
+  subPageLoading: Subscription;
+  showLoadingPage = true;
+  sidenavOpen = true;
+
+  @ViewChild('searchToolbar') searchToolbar: ElementRef;
+  searchToolarOpen = false;
+
+  subColorTema: Subscription;
+
   constructor(
-    private sidebar$: SidebarService,
-    private ngSelectConfig: NgSelectConfig
+    private pageLoading$: PageLoadingService,
+    private tema$: TemaService,
+    private ngSelectConfig: NgSelectConfig,
+    public overlayContainer: OverlayContainer
   ) {
     this.ngSelectConfig.notFoundText = 'No se encontraron datos';
     this.ngSelectConfig.loadingText = 'Cargando...';
+    this.appPagina = document.documentElement;
+    this.detectarPantalla();
   }
 
   ngOnInit() {
     localStorage.removeItem('cerrarUpdateModal');
+    this.subsPageLoading();
   }
 
-  ngAfterViewInit() {
-    this.autoMinSidebar();
-    this.mostrarModalActualizaciones();
+  /* View in fullscreen */
+  openFullscreen() {
+    this.pantallaCompleta = true;
+    if (this.appPagina.requestFullscreen) {
+      this.appPagina.requestFullscreen();
+    } else if (this.appPagina.mozRequestFullScreen) {
+      /* Firefox */
+      this.appPagina.mozRequestFullScreen();
+    } else if (this.appPagina.webkitRequestFullscreen) {
+      /* Chrome, Safari and Opera */
+      this.appPagina.webkitRequestFullscreen();
+    } else if (this.appPagina.msRequestFullscreen) {
+      /* IE/Edge */
+      this.appPagina.msRequestFullscreen();
+    }
   }
 
-  autoMinSidebar(): void {
+  /* Close fullscreen */
+  closeFullscreen() {
+    this.pantallaCompleta = false;
+    document.exitFullscreen();
+  }
+
+  // Detecta tamaño de pantalla y modifica sidebar
+  detectarPantalla(): void {
     if (screen.width <= 1024) {
-      setTimeout(() => {
-        this.sidebar$.minimizarMenu(true);
-      }, 500);
+      this.sidenavMode = 'push';
+      this.sidenavBackdrop = true;
+      this.sidenavOpen = false;
     }
   }
 
-  mostrarModalActualizaciones() {
-    const modalVisto = localStorage.getItem('cerrarUpdateModal-v1.5.1');
-    if (modalVisto === 'true') {
-      return;
-    } else {
-      jQuery('#modalActualizaciones').modal('show');
-    }
+  subsPageLoading() {
+    this.subPageLoading = this.pageLoading$.loadingPages.subscribe(
+      (resp: boolean) => {
+        setTimeout(() => {
+          this.showLoadingPage = resp;
+        }, 2000);
+        this.subPageLoading.unsubscribe();
+      }
+    );
   }
 }

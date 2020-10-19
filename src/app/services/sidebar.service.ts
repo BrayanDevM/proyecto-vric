@@ -11,18 +11,18 @@ export class SidebarService {
     return this.usuarios$.menu;
   }
 
-  minimizarMenu(minimizar: boolean) {
-    const sidebar = document.querySelector('#app-sidebar');
-    // const btnMenu = document.querySelector('#btn-menu');
-    const menuicon = document.querySelector('#nav-icon');
-    if (!minimizar) {
-      // btnMenu.classList.add('menu-open');
-      sidebar.classList.remove('app-sidebar-min');
-      menuicon.classList.add('open');
-    } else {
-      menuicon.classList.remove('open');
-      sidebar.classList.add('app-sidebar-min');
-      // btnMenu.classList.remove('menu-open');
-    }
-  }
+  // minimizarMenu(minimizar: boolean) {
+  //   const sidebar = document.querySelector('#app-sidebar');
+  //   // const btnMenu = document.querySelector('#btn-menu');
+  //   const menuicon = document.querySelector('#nav-icon');
+  //   if (!minimizar) {
+  //     // btnMenu.classList.add('menu-open');
+  //     sidebar.classList.remove('app-sidebar-min');
+  //     menuicon.classList.add('open');
+  //   } else {
+  //     menuicon.classList.remove('open');
+  //     sidebar.classList.add('app-sidebar-min');
+  //     // btnMenu.classList.remove('menu-open');
+  //   }
+  // }
 }

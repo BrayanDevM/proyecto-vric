@@ -1,0 +1,62 @@
+<div
+  class="apexchart bar-chart-staked shadow-sm rounded d-flex flex-column justify-content-between"
+  #chart
+>
+  <div class="p-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="chart-header">
+        <div class="chart-title">
+          {{ titulo }}
+        </div>
+        <div class="chart-subtitle text-muted">
+          <!-- Lorem ipsum dolor sit amet. -->
+        </div>
+      </div>
+      <div class="chart-actions">
+        {{ totalSeries }}
+      </div>
+    </div>
+  </div>
+  <div class="popularity p-4 pt-0 pb-0">
+    <h3 class="mb-0">
+      <span [ngStyle]="{ color: colorValorPopular }">{{ valorPopular }}</span>
+      <span *ngIf="valorPopular !== ''"> es el valor más alto</span>
+      <span *ngIf="valorPopular === ''">No tienes datos en esta categoría</span>
+    </h3>
+  </div>
+  <div class="pb-4 pr-3 d-flex justify-content-center align-items-center">
+    <apx-chart
+      class="chart"
+      [series]="chartOptions.series"
+      [chart]="chartOptions.chart"
+      [dataLabels]="chartOptions.dataLabels"
+      [plotOptions]="chartOptions.plotOptions"
+      [xaxis]="chartOptions.xaxis"
+      [yaxis]="chartOptions.yaxis"
+      [stroke]="chartOptions.stroke"
+      [fill]="chartOptions.fill"
+      [grid]="chartOptions.grid"
+      [tooltip]="chartOptions.tooltip"
+      [legend]="chartOptions.legend"
+      [colors]="chartOptions.colors"
+    ></apx-chart>
+  </div>
+  <div class="p-4 pt-0 pb-3">
+    <ul class="list-group list-group-flush">
+      <li
+        class="list-group-item d-flex justify-content-between align-items-center"
+        *ngFor="let value of data"
+      >
+        <div class="label d-flex align-items-center">
+          <div
+            class="label-color"
+            [ngStyle]="{ 'background-color': value.color }"
+          ></div>
+          <div class="label-text">{{ value.label }}</div>
+        </div>
+        <div class="data">{{ value.serie }}</div>
+        <div class="percent">{{ value.porcentaje }}%</div>
+      </li>
+    </ul>
+  </div>
+</div>

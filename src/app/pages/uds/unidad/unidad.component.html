@@ -1,207 +1,289 @@
-<div class="content">
-  <div class="container-fluid">
-    <app-breadcrumb></app-breadcrumb>
-    <div class="row">
-      <div class="col-12">
-        <div class="card BDM_fadeInUp">
-          <div class="card-header">
-            Detalles de Unidad de Servicio
-          </div>
-          <div class="card-body ">
-            <form
-              ngNativeValidate
-              [formGroup]="formActualizarUds"
-              (ngSubmit)="actualizar()"
-            >
-              <div class="row">
-                <div class="col-2">
-                  <div class="form-group">
-                    <label for="codigo">Código</label>
-                    <input
-                      formControlName="codigo"
-                      name="codigo"
-                      type="number"
-                      class="form-control"
-                      placeholder="Código..."
-                      required
-                    />
-                    <small id="emailHelp" class="form-text text-muted"
-                      >El código debe ser único.</small
-                    >
-                  </div>
-                </div>
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="nombre">Nombre</label>
-                    <input
-                      formControlName="nombre"
-                      name="nombre"
-                      type="text"
-                      class="form-control"
-                      placeholder="Número..."
-                      autocomplete="off"
-                      required
-                    />
-                  </div>
-                </div>
-                <div class="col-1">
-                  <div class="form-group">
-                    <label for="cupos">Cupos</label>
-                    <input
-                      formControlName="cupos"
-                      name="cupos"
-                      type="number"
-                      class="form-control"
-                      placeholder="Cupos..."
-                    />
-                  </div>
-                </div>
-                <div class="col-2">
-                  <div class="form-group">
-                    <label for="ubicacion">Ubicación</label>
-                    <input
-                      formControlName="ubicacion"
-                      name="ubicacion"
-                      type="text"
-                      class="form-control"
-                      placeholder="Ubicación..."
-                    />
-                  </div>
-                </div>
-                <div class="col-2">
-                  <div class="form-group">
-                    <label for="creadoEl">Creada el</label>
-                    <input
-                      formControlName="creadoEl"
-                      name="creadoEl"
-                      type="date"
-                      class="form-control"
-                      placeholder="Fecha de creación..."
-                      readonly
-                    />
-                  </div>
-                </div>
-                <div class="col-2">
-                  <div class="form-group">
-                    <label for="arriendo">Arrendamiento</label>
-                    <ng-select
-                      [items]="estadoArriendo"
-                      bindValue="value"
-                      bindLabel="label"
-                      placeholder="Seleccionar"
-                      [searchable]="false"
-                      formControlName="arriendo"
-                      name="arriendo"
-                    ></ng-select>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="coordinador">Coordinador</label>
-                    <ng-select
-                      [items]="coordinadores"
-                      bindValue="_id"
-                      bindLabel="nombre"
-                      placeholder="Seleccionar coordinador"
-                      [loading]="cargandoCoords"
-                      formControlName="coordinador"
-                      name="coordinador"
-                    ></ng-select>
-                  </div>
-                </div>
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="gestor">Gestor</label>
-                    <ng-select
-                      [items]="gestores"
-                      bindValue="_id"
-                      bindLabel="nombre"
-                      placeholder="Seleccionar gestor"
-                      [loading]="cargandoGestores"
-                      formControlName="gestor"
-                      name="gestor"
-                    ></ng-select>
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="docentes">Docentes</label>
-                    <ng-select
-                      [items]="docentes"
-                      bindValue="_id"
-                      bindLabel="nombre"
-                      placeholder="Seleccionar docentes"
-                      [multiple]="true"
-                      [loading]="cargandoDocentes"
-                      [maxSelectedItems]="2"
-                      [hideSelected]="true"
-                      [closeOnSelect]="false"
-                      formControlName="docentes"
-                      name="docentes"
-                    ></ng-select>
-                  </div>
-                </div>
-                <div class="col-2">
-                  <div class="form-group">
-                    <label for="activa">Estado</label>
-                    <ng-select
-                      [items]="estadoUds"
-                      bindValue="value"
-                      bindLabel="label"
-                      placeholder="Seleccionar estado"
-                      [searchable]="false"
-                      formControlName="activa"
-                      name="activa"
-                    ></ng-select>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-12">
-                  <span *ngIf="uds" class="text-muted"
-                    >UDS creada por: {{ uds.creadoPor.nombre }}</span
-                  >
-                  <br />
-                  <span *ngIf="uds" class="text-muted">
-                    Contrato asignado:
-                    <span *ngIf="uds.enContrato === null">No asignado</span>
-                    <span *ngIf="uds.enContrato !== null">
-                      {{ uds.enContrato.codigo }}</span
-                    >
-                  </span>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-12 text-right">
-                  <button
-                    *ngIf="!actualizando"
-                    type="submit"
-                    class="btn btn-success btn-sm"
-                  >
-                    <i class="far fa-sync"></i>
-                    Actualizar
-                  </button>
-                  <button
-                    *ngIf="actualizando"
-                    [disabled]="actualizando"
-                    type="button"
-                    class="btn btn-success btn-sm"
-                  >
-                    <span
-                      class="spinner-border spinner-border-sm"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
-                    Actualizando...
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
+<div class="sidenav-detalle border-left" *ngIf="!editMode; else formEdit">
+  <form class="form-detalle">
+    <div class="actions">
+      <button
+        *ngIf="puedeEditar"
+        type="button"
+        mat-icon-button
+        [matMenuTriggerFor]="menu"
+      >
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu" xPosition="before">
+        <button type="button" (click)="editMode = true" mat-menu-item>
+          <mat-icon>edit</mat-icon>
+          <span>Editar</span>
+        </button>
+      </mat-menu>
+      <button (click)="volver()" matTooltip="Cerrar" mat-icon-button>
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="logo-icbf">
+      <img src="./assets/img/logos/icbf.png" width="128" alt="" />
+    </div>
+    <h2 class="form-title">{{ uds.nombre }}</h2>
+    <div class="badges d-flex flex-row">
+      <div
+        class="badge-status alert mr-1"
+        [ngClass]="{
+          'alert-success': uds.activa,
+          'alert-danger': !uds.activa
+        }"
+      >
+        <div
+          class="status-indicator"
+          [ngClass]="{
+            'bg-success': uds.activa,
+            'bg-danger': !uds.activa
+          }"
+        ></div>
+        <span class="status-text" *ngIf="uds.activa">Activa</span>
+        <span class="status-text" *ngIf="!uds.activa">Inactiva</span>
+      </div>
+      <div
+        class="badge-status alert"
+        [ngClass]="{
+          'alert-primary': uds.arriendo,
+          'alert-secondary': !uds.arriendo
+        }"
+      >
+        <div
+          class="status-indicator"
+          [ngClass]="{
+            'bg-primary': uds.arriendo,
+            'bg-secondary': !uds.arriendo
+          }"
+        ></div>
+        <span class="status-text" *ngIf="uds.arriendo">Con arriendo</span>
+        <span class="status-text" *ngIf="!uds.arriendo">Sin arriendo</span>
+      </div>
+    </div>
+    <div class="form-field codigo">
+      <mat-icon class="form-field-icon">label</mat-icon>
+      <div class="label">
+        Cód. <span id="codigo">{{ uds.codigo }}</span>
+        <button
+          type="button"
+          (click)="copiar('codigo')"
+          mat-icon-button
+          matTooltip="Copiar"
+          matTooltipPosition="right"
+          class="clipboard-btn ml-2 mat-btn-sm"
+        >
+          <mat-icon class="clipboard-icon">content_copy</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="form-field cupos">
+      <mat-icon class="form-field-icon">fact_check</mat-icon>
+      <div class="label">{{ uds.cupos }} Cupos</div>
+    </div>
+    <div class="form-field coordinador">
+      <mat-icon class="form-field-icon">supervisor_account</mat-icon>
+      <div class="label">{{ uds.coordinador.nombre }}</div>
+    </div>
+    <div class="form-field docentes">
+      <mat-icon class="form-field-icon">group</mat-icon>
+      <div class="d-flex flex-column">
+        <div class="label" *ngFor="let docente of uds.docentes">
+          {{ docente.nombre | nombrePropio }}
         </div>
       </div>
     </div>
-  </div>
+    <div class="form-field gestor">
+      <mat-icon class="form-field-icon">person</mat-icon>
+      <div class="label">{{ uds.gestor.nombre }}</div>
+    </div>
+    <div class="form-field ubicacion">
+      <mat-icon class="form-field-icon">place</mat-icon>
+      <div class="label">{{ uds.ubicacion }}</div>
+    </div>
+    <div class="form-field creadoEl">
+      <mat-icon class="form-field-icon">today</mat-icon>
+      <div class="label">Creado el {{ uds.creadoEl }}</div>
+    </div>
+  </form>
 </div>
+<!--------------------------------------------------------------------------------->
+<!-------------------------- TEMPLATE FOR EDIT MODE FORM -------------------------->
+<ng-template #formEdit>
+  <div class="sidenav-detalle border-left">
+    <form
+      class="form-detalle modo-edicion"
+      ngNativeValidate
+      [formGroup]="formActualizarUds"
+      (ngSubmit)="actualizar()"
+    >
+      <div class="actions">
+        <button
+          type="button"
+          (click)="editMode = false"
+          mat-icon-button
+          matTooltip="Cancelar"
+        >
+          <mat-icon>cancel</mat-icon>
+        </button>
+        <button type="submit" mat-icon-button matTooltip="Guardar">
+          <mat-icon>save</mat-icon>
+        </button>
+        <button
+          type="button"
+          (click)="eliminar(uds)"
+          mat-icon-button
+          matTooltip="Eliminar"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+      <div class="logo-icbf">
+        <img src="./assets/img/logos/icbf.png" width="128" alt="" />
+      </div>
+      <div class="nombre form-field">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre unidad de servicio</mat-label>
+          <input
+            matInput
+            [value]="fv.nombre | uppercase"
+            formControlName="nombre"
+            autocomplete="off"
+            name="nombre"
+            placeholder="Código de contrato"
+          />
+          <mat-error *ngIf="fc.nombre.errors?.required">
+            El nombre es obligatorio
+          </mat-error>
+          <mat-error *ngIf="fc.nombre.errors?.minlength">
+            No es un nombre corto?, al menos 5 letras 😀
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="activa form-field mt-4">
+        <mat-slide-toggle name="activa" formControlName="activa">
+          <span *ngIf="fv.activa">Activa</span>
+          <span *ngIf="!fv.activa">Inactiva</span>
+        </mat-slide-toggle>
+      </div>
+      <div class="arriendo form-field mt-4">
+        <mat-slide-toggle name="arriendo" formControlName="arriendo">
+          <span *ngIf="fv.arriendo">Con ariendo</span>
+          <span *ngIf="!fv.arriendo">Sin arriendo</span>
+        </mat-slide-toggle>
+      </div>
+      <div class="codigo form-field">
+        <mat-icon class="form-field-icon">label</mat-icon>
+        <mat-form-field appearance="outline">
+          <mat-label>Código</mat-label>
+          <input
+            matInput
+            formControlName="codigo"
+            name="codigo"
+            autocomplete="off"
+            placeholder="Código de contrato"
+          />
+          <mat-error *ngIf="fc.codigo.errors?.required">
+            El codigo es obligatorio
+          </mat-error>
+          <mat-error *ngIf="fc.codigo.errors?.pattern">
+            Sólo debes escribir números
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="ubicacion form-field">
+        <mat-icon class="form-field-icon">place</mat-icon>
+        <mat-form-field appearance="outline">
+          <mat-label>Ubicación</mat-label>
+          <mat-select
+            name="ubicacion"
+            formControlName="ubicacion"
+            placeholder="Municipio..."
+          >
+            <mat-option value="Cali">Cali</mat-option>
+            <mat-option value="Dagua">Dagua</mat-option>
+          </mat-select>
+          <mat-error *ngIf="fc.ubicacion.errors?.required">
+            La ubicación es obligatoria
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="form-field cupos">
+        <mat-icon class="form-field-icon">fact_check</mat-icon>
+        <mat-form-field appearance="outline" class="ml-2">
+          <mat-label>Cupos asignados</mat-label>
+          <input
+            matInput
+            type="numeric"
+            formControlName="cupos"
+            name="cupos"
+            placeholder="Cupos asignados..."
+          />
+          <mat-error *ngIf="fc.cupos.errors?.required">
+            Debes asignar cupos a la UDS
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="form-field coordinador">
+        <mat-icon class="form-field-icon">supervisor_account</mat-icon>
+        <mat-form-field appearance="outline" class="bdm-select">
+          <mat-select
+            formControlName="coordinador"
+            name="coordinador"
+            placeholder="Seleccionar coordinador"
+          >
+            <mat-option *ngFor="let coord of coordinadores" [value]="coord._id">
+              {{ coord.nombre | nombrePropio }}
+            </mat-option>
+          </mat-select>
+          <mat-hint *ngIf="coordinadores.length === 0"
+            >No hay coordinadores disponibles</mat-hint
+          >
+          <mat-error *ngIf="fc.coordinador.errors?.required">
+            Debes asignar un coordinador
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="form-field docentes">
+        <mat-icon class="form-field-icon">group</mat-icon>
+        <mat-form-field appearance="outline" class="bdm-select">
+          <mat-select
+            (selectionChange)="maxTwoSelected()"
+            formControlName="docentes"
+            name="docentes"
+            placeholder="Seleccionar docentes"
+            multiple
+          >
+            <mat-option *ngFor="let docente of docentes" [value]="docente._id">
+              {{ docente.nombre | nombrePropio }}
+            </mat-option>
+          </mat-select>
+          <mat-hint *ngIf="docentes.length === 0"
+            >No hay docentes disponibles</mat-hint
+          >
+          <mat-error *ngIf="fc.docentes.errors?.required">
+            Debes asignar al menos una docente
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="form-field gestor">
+        <mat-icon class="form-field-icon">person</mat-icon>
+        <mat-form-field appearance="outline" class="bdm-select">
+          <mat-select
+            formControlName="gestor"
+            name="gestor"
+            placeholder="Seleccionar gestor"
+          >
+            <mat-option *ngFor="let gertor of gestores" [value]="gertor._id">
+              {{ gertor.nombre | nombrePropio }}
+            </mat-option>
+          </mat-select>
+          <mat-hint *ngIf="gestores.length === 0"
+            >No hay gestores disponibles</mat-hint
+          >
+          <mat-error *ngIf="fc.gestor.errors?.required">
+            Debes asignar un gestor
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+</ng-template>

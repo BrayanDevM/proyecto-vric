@@ -1,94 +1,106 @@
-<div class="content">
-  <div class="container-fluid">
-    <app-breadcrumb></app-breadcrumb>
-    <div class="row">
-      <div class="col-12">
-        <div class="card BDM_fadeInUp">
-          <div class="card-body">
-            <div class="content-placeholder" *ngIf="cargando">
-              <ngx-content-loading
-                [speed]="'600ms'"
-                [width]="220"
-                [preserveAspectRatio]="'none'"
-              >
-                <svg:g ngx-bullet-list-preset></svg:g>
-              </ngx-content-loading>
-            </div>
-            <div *ngIf="!cargando" class="row">
-              <div class="col-12 text-right">
-                <button (click)="crear()" class="btn btn-primary btn-sm mb-3">
-                  <i class="material-icons"> post_add</i>
-                  Crear contrato
-                </button>
-              </div>
-              <div class="col-12">
-                <div
-                  *ngIf="!cargando && contratos.length === 0"
-                  class="text-center"
-                >
-                  <img
-                    src="assets/img/empty_state.jpg"
-                    alt="No hay contratos"
-                  />
-                  <h4 class="text-muted mb-5">No hay contratos :D</h4>
-                </div>
-                <div *ngIf="contratos.length > 0" class="table-responsive">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th>Código</th>
-                        <th>EAS</th>
-                        <th>NIT</th>
-                        <th>Regional</th>
-                        <th>Centro Zonal</th>
-                        <th>Cupos</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let contrato of contratos">
-                        <td>{{ contrato.codigo }}</td>
-                        <td>{{ contrato.eas }}</td>
-                        <td>{{ contrato.nit }}</td>
-                        <td>{{ contrato.regional }}</td>
-                        <td>{{ contrato.cz }}</td>
-                        <td>{{ contrato.cupos }}</td>
-                        <td class="text-center">
-                          <span
-                            *ngIf="contrato.activo"
-                            class="badge badge-success"
-                            >Activo</span
-                          >
-                          <span
-                            *ngIf="!contrato.activo"
-                            class="badge badge-danger"
-                            >Inactivo</span
-                          >
-                        </td>
-                        <td class="text-right">
-                          <button
-                            [routerLink]="['/contratos/contrato', contrato._id]"
-                            class="btn btn-info btn-sm mr-1"
-                          >
-                            <i class="fas fa-pencil"></i>
-                          </button>
-                          <button
-                            (click)="eliminarContrato(contrato)"
-                            class="btn btn-danger btn-sm mr-1"
-                          >
-                            <i class="fas fa-trash"></i>
-                          </button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
+<mat-sidenav-container [hasBackdrop]="sidenavBackdrop">
+  <mat-sidenav
+    #contrato
+    [mode]="sidenavMode"
+    [opened]="sidenavOpen"
+    position="end"
+  >
+    <!-- CHILD ROUTES -->
+    <router-outlet
+      (activate)="sidenavOpen = true"
+      (deactivate)="sidenavOpen = false"
+    ></router-outlet>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div class="page-wrapper">
+      <div class="page-header row border-bottom m-0">
+        <div class="page-title col p-0">
+          <h2 class="title-bold m-0">Contratos</h2>
+          <div class="text-muted ml-1">
+            <span *ngIf="numRegistros !== 1">{{ numRegistros }} Contratos</span>
+            <span *ngIf="numRegistros === 1">{{ numRegistros }} Contrato</span>
           </div>
         </div>
+        <div class="page-actions col p-0">
+          <mat-form-field
+            appearance="outline"
+            class="bdm-input input-search-header mr-3"
+          >
+            <!-- <mat-label></mat-label> -->
+            <input
+              matInput
+              (keyup)="filtrarTabla($event)"
+              placeholder="Buscar contratos"
+              autocomplete="off"
+              #buscar
+            />
+            <mat-icon matPrefix>search</mat-icon>
+            <!-- <mat-hint>Hint</mat-hint> -->
+          </mat-form-field>
+          <button
+            *ngIf="puedeCrear"
+            (click)="crear()"
+            mat-flat-button
+            color="primary"
+            class="btn-md"
+          >
+            <mat-icon>add</mat-icon> Crear
+          </button>
+        </div>
       </div>
+      <table
+        mat-table
+        *ngIf="contratos.length > 0; else noContratos"
+        [dataSource]="tablaData"
+        class="mat-table contratos-lista"
+      >
+        <!-- Position Column -->
+        <ng-container matColumnDef="codigo">
+          <th mat-header-cell *matHeaderCellDef>No.</th>
+          <td mat-cell *matCellDef="let contrato">
+            {{ contrato.codigo }}
+          </td>
+        </ng-container>
+        <!-- Name Column -->
+        <ng-container matColumnDef="eas">
+          <th mat-header-cell *matHeaderCellDef>eas</th>
+          <td mat-cell *matCellDef="let contrato">{{ contrato.eas }}</td>
+        </ng-container>
+        <!-- Weight Column -->
+        <ng-container matColumnDef="nit">
+          <th mat-header-cell *matHeaderCellDef>nit</th>
+          <td mat-cell *matCellDef="let contrato">{{ contrato.nit }}</td>
+        </ng-container>
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="regional">
+          <th mat-header-cell *matHeaderCellDef>regional</th>
+          <td mat-cell *matCellDef="let contrato">{{ contrato.regional }}</td>
+        </ng-container>
+        <ng-container matColumnDef="cupos">
+          <th mat-header-cell *matHeaderCellDef>cupos</th>
+          <td mat-cell *matCellDef="let contrato">
+            {{ contrato.cupos }}
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="tablaColumnas"></tr>
+        <tr
+          mat-row
+          (click)="verContrato(contrato._id)"
+          *matRowDef="let row; columns: tablaColumnas; let contrato"
+        ></tr>
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="5">
+            No se encontraton contratos con "{{ buscar.value }}"
+          </td>
+        </tr>
+      </table>
+
+      <ng-template #noContratos>
+        <div class="no-data">
+          <span>No hay contratos!</span>
+        </div>
+      </ng-template>
     </div>
-  </div>
-</div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

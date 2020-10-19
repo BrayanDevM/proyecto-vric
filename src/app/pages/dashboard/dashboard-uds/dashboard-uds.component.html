@@ -1,127 +1,158 @@
-<div class="content">
-  <div class="container-fluid">
-    <app-breadcrumb></app-breadcrumb>
-    <div class="BDM_fadeInUp">
-      <h3 class="mt-3">{{ nombre }}</h3>
-      <p class="text-muted">{{ codigo }}</p>
-      <div class="row mb-4">
-        <div class="col-3">
-          <div class="card card-body text-center" style="position: relative;">
-            <h5 class="card-subtitle">Cobertura</h5>
-            <app-pie-chart
-              [pieChartData]="[
-                totalVinculados + totalDS,
-                cupos - (totalVinculados + totalDS)
-              ]"
-            ></app-pie-chart>
-
-            <div class="card-graphic-info">
-              <i class="fas fa-user" style="color: #4de2b8;"></i>
-              <span class="graphic-number">{{
-                totalVinculados + totalDS
-              }}</span>
-              <span class="text-muted data-desc">Beneficiarios</span>
-            </div>
-            <span class="text-muted mt-3 .card-graphic-sub-info"
-              >Faltantes: {{ cupos - (totalVinculados + totalDS) }}</span
-            >
-          </div>
-        </div>
-        <!-- <div class="col-3">
-          <div class="card card-body text-center" style="position: relative;">
-            <h5 class="card-subtitle">Datos sensibles</h5>
-            <app-pie-chart
-              [pieChartData]="[totalDS, cupos - totalVinculados]"
-              [bgColors]="['#fd4962']"
-            ></app-pie-chart>
-            <div class="card-graphic-info">
-              <i class="fas fa-user-edit" style="color: #fd4962;"></i>
-              <span class="graphic-number">{{ totalDS }}</span>
-              <span class="text-muted data-desc">Beneficiarios</span>
-            </div>
-            <span class="text-muted mt-3 .card-graphic-sub-info"
-              >Con calidad: {{ cupos - totalDS }}</span
-            >
-          </div>
-        </div> -->
-        <div class="col-3">
-          <div class="card card-body pb-5">
-            <h5 class="card-title">Población</h5>
-            <app-pie-chart
-              [pieChartData]="[totalMG, totalMujeres, totalHombres]"
-              [bgColors]="['#70bbfe', '#fd4962', '#f6da6d', '#4de2b8']"
-              [holeSize]="70"
-              [legendDisplay]="true"
-            ></app-pie-chart>
-          </div>
-        </div>
-        <div class="col-6">
-          <div class="card card-body">
-            <h5 class="card-title">Novedades</h5>
-            <!-- <div class="text-right">
-                <div class="btn-group btn-group-toggle mb-2" data-toggle="buttons">
-                  <label class="btn btn-light btn-sm active">
-                    <input type="radio" name="options" id="option1" checked /> Cali
-                  </label>
-                  <label class="btn btn-light btn-sm">
-                    <input type="radio" name="options" id="option2" /> Dagua
-                  </label>
-                </div>
-              </div> -->
-            <app-line-chart
-              *ngIf="mostrarGraficaLinea"
-              [ingresos]="ingresosPorMes"
-              [egresos]="egresosPorMes"
-              [meses]="meses"
-            ></app-line-chart>
-          </div>
+<!-- NUEVO DASHBOARD -->
+<div class="page-content bg-blue-grey">
+  <div class="container-fluid BDM_fadeInUp">
+    <div class="header-dashboard row">
+      <div class="page-title col-xl-6 p-0">
+        <h2 class="m-0">Dashboard</h2>
+        <div class="text-muted">
+          Métricas generales de la UDS
+          <b *ngIf="unidadDeServicio">{{ unidadDeServicio.nombre }}</b>
         </div>
       </div>
-      <div class="row">
-        <div class="col-4">
-          <div class="card card-body mb-1">
-            <h5 class="card-title mb-0">Información adicional</h5>
+      <div class="page-actions col-xl-6 p-0">
+        <button
+          [routerLink]="['/dashboard']"
+          mat-stroked-button
+          type="button"
+          class="btn"
+        >
+          <mat-icon class="mr-2">pie_chart</mat-icon> Ir al Panel principal
+        </button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xl-4">
+        <div class="mb-3">
+          <app-apex-line-chart-min
+            titulo="Ingresos"
+            subtitulo="Registrados en CUÉNTAME"
+            [seriesNombre]="'Ingresos'"
+            [series]="ingresosPorMes"
+            [colors]="['#69c18e']"
+            [categorias]="mesesFull"
+          ></app-apex-line-chart-min>
+        </div>
+      </div>
+      <div class="col-xl-4">
+        <div class="mb-4">
+          <app-apex-line-chart-min
+            titulo="Egresos"
+            subtitulo="Registrados en esta aplicación"
+            [seriesNombre]="'Egresos'"
+            [series]="egresosPorMes"
+            [colors]="['#f05251']"
+            [categorias]="mesesFull"
+          ></app-apex-line-chart-min>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 mb-4 pt-2">
+        <h2 class="title mb-0">Beneficiarios</h2>
+        <div class="text-muted">
+          Información demográfica y comportamiento general de los beneficiarios
+        </div>
+      </div>
+      <div class="col-sm-12 col-xl-3 mb-4">
+        <app-apex-pie-chart
+          titulo="Cobertura"
+          [series]="[
+            totalVinculados + totalDS,
+            unidadCupos - (totalVinculados + totalDS)
+          ]"
+          [labels]="['Vinculados', 'Cupos disponibles']"
+          [colors]="['#309794', '#4fd1c5']"
+        ></app-apex-pie-chart>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-xl-4">
+        <div class="mb-4">
+          <app-apex-bar-chart-stacked
+            titulo="Sexo"
+            [series]="[totalSexoMujer, totalSexoHombre, totalSexoOtro]"
+            [seriesNombre]="['Mujeres', 'Hombres', 'Otro']"
+            [categoria]="['Sexo']"
+            [colores]="['#EC407A', '#F06292', '#F48FB1']"
+          ></app-apex-bar-chart-stacked>
+        </div>
+      </div>
+      <div class="col-sm-12 col-xl-4">
+        <div class="mb-4">
+          <app-apex-bar-chart-stacked
+            titulo="Tipo de beneficiario"
+            [series]="[totalMayoresSeisMeses, totalLactantes, totalMG]"
+            [seriesNombre]="[
+              'Mayores de seis meses',
+              'Menores de seis meses',
+              'Mujeres gestantes'
+            ]"
+            [categoria]="['Tipo de beneficiario']"
+            [colores]="['#00ACC1', '#00BCD4', '#26C6DA']"
+          ></app-apex-bar-chart-stacked>
+        </div>
+      </div>
+      <div class="col-sm-12 col-xl-4">
+        <div class="mb-4">
+          <app-apex-bar-chart-stacked
+            titulo="Población vulnerable"
+            [series]="[totalDiscapacitados, totalEtnia, totalExtranjeros]"
+            [seriesNombre]="[
+              'Presentan discapacidad',
+              'Autorreconocen una población',
+              'Extranjeros'
+            ]"
+            [categoria]="['Población vulnerable']"
+            [colores]="['#689F38', '#7CB342', '#8BC34A']"
+          ></app-apex-bar-chart-stacked>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 mb-4 pt-2">
+        <h2 class="subtitle mb-0">Datos populares</h2>
+        <div class="text-muted">
+          Información específica de beneficiarios según porpularidad de datos
+          requeridos
+        </div>
+      </div>
+      <div class="col-sm-12 col-xl-3">
+        <div class="bg-white shadow-sm pt-3 pb-3 mb-4">
+          <div class="p-3 pb-0">
+            <h3 class="card-title mb-0">Datos especiales</h3>
+            <mat-divider></mat-divider>
           </div>
-          <ul class="list-group">
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              Cambios pendientes
-              <span class="badge badge-primary badge-pill">{{
-                totalPendientes
-              }}</span>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              Mujeres gestantes adolescentes
-              <span class="badge badge-primary badge-pill">{{
-                mgAdolescente
-              }}</span>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              Beneficiarios con discapacidad
-              <span class="badge badge-primary badge-pill">{{
-                conDiscapacidad
-              }}</span>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              Beneficiarios con dato sensible
-              <span class="badge badge-primary badge-pill">{{ totalDS }}</span>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              Beneficiarios en concurrencia
-              <span class="badge badge-primary badge-pill">{{
-                totalConcurrencia
-              }}</span>
-            </li>
-          </ul>
+          <mat-selection-list #shoes [multiple]="false">
+            <mat-list-option>
+              <p class="d-flex justify-content-between">
+                <span>Mujeres gestantes adolescentes</span>
+                <span class="badge bg-info">{{ mgAdolescente }}</span>
+              </p>
+            </mat-list-option>
+            <mat-list-option>
+              <p class="d-flex justify-content-between">
+                <span>
+                  Mayores de 2 años
+                </span>
+                <span class="badge bg-warning">{{ mayoresDe2Anios }}</span>
+              </p>
+            </mat-list-option>
+            <mat-list-option>
+              <p class="d-flex justify-content-between">
+                <span>
+                  Colombianos sin documento
+                </span>
+                <span class="badge bg-info">{{ colombianosSinDoc }}</span>
+              </p>
+            </mat-list-option>
+            <mat-list-option>
+              <p class="d-flex justify-content-between">
+                <span>Beneficiarios en concurrencia</span>
+                <span class="badge bg-danger">{{ enConcurrencia }}</span>
+              </p>
+            </mat-list-option>
+          </mat-selection-list>
         </div>
       </div>
     </div>

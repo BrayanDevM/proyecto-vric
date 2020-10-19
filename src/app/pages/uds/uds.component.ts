@@ -1,71 +1,166 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UdsService } from 'src/app/services/uds.service';
 import { Uds } from 'src/app/models/uds.model';
 import { Router } from '@angular/router';
-import {
-  alertDanger,
-  alertSuccess,
-  alertError
-} from 'src/app/helpers/swal2.config';
+import { MatTableDataSource } from '@angular/material/table';
+import { Subscription } from 'rxjs';
+import { UsuarioService } from 'src/app/services/usuario.service';
+import { PageLoadingService } from 'src/app/services/page-loading.service';
 
 @Component({
   selector: 'app-uds',
   templateUrl: './uds.component.html',
   styleUrls: ['./uds.component.css']
 })
-export class UdsComponent implements OnInit {
+export class UdsComponent implements OnInit, OnDestroy {
+  // Config
+  sidenavMode = 'side';
+  sidenavBackdrop = false;
+  sidenavOpen = false;
+
   uds: Uds[] = [];
-  registros: number;
-  cargando = false;
+  tablaColumnas: string[] = [
+    'codigo',
+    'nombre',
+    'ubicacion',
+    'cupos',
+    'estado',
+    'arriendo'
+  ];
+  tablaData: MatTableDataSource<any>;
+  numRegistros = 0;
+  udsFiltradas = false;
 
-  constructor(public uds$: UdsService, private router: Router) {}
+  // variables para almacenar subscripción y poder desuscribirnos
+  udsNueva: Subscription;
+  udsEliminada: Subscription;
+  udsActualizada: Subscription;
 
-  ngOnInit() {
-    this.obtenerUds();
+  puedeCrear = false;
+
+  constructor(
+    private pageLoading$: PageLoadingService,
+    private usuario$: UsuarioService,
+    public uds$: UdsService,
+    private router: Router
+  ) {
+    this.comprobarPermisos();
+    this.detectarPantalla();
   }
 
-  obtenerUds() {
-    this.cargando = true;
-    this.uds$.obtenerUds().subscribe((resp: any) => {
-      if (resp.ok) {
-        this.cargando = false;
-        this.uds = resp.uds;
-        this.registros = resp.registros;
-      } else {
-        this.cargando = false;
-        console.log(resp);
-      }
+  ngOnInit(): void {
+    this.obtenerUds();
+    this.subsUdsNueva();
+    this.subsUdsEliminada();
+    this.subsUdsActualizada();
+    this.pageLoading$.loadingPages.emit(false);
+  }
+
+  ngOnDestroy(): void {
+    this.desuscribir();
+  }
+
+  obtenerUds(): void {
+    this.uds$.obtenerUds().subscribe((uds: Uds[]) => {
+      this.uds = uds;
+      this.numRegistros = uds.length;
+      this.tablaData = new MatTableDataSource(this.uds);
     });
   }
 
-  crearUds() {
-    this.router.navigate(['/uds/crear']);
+  obtenerUdsFiltro(query: string) {
+    this.udsFiltradas = true;
+    this.uds$.obtenerUds(query).subscribe((resp: any) => {
+      this.uds = resp.uds;
+      this.numRegistros = this.uds.length;
+      this.tablaData = new MatTableDataSource(this.uds);
+    });
   }
 
-  eliminarUds(uds: Uds) {
-    alertDanger
-      .fire({
-        title: 'Eliminar Unidad De Servicio',
-        html: `¿Estás seguro que deseas eliminar la Unidad De Servicio <b>${uds.nombre}</b>?, esta acción no puede deshacerse.`,
-        confirmButtonText: 'Estoy seguro, eliminar'
-      })
-      .then(result => {
-        if (result.value) {
-          this.uds$.eliminarUds(uds).subscribe((resp: any) => {
-            if (resp.ok === true) {
-              alertSuccess.fire({
-                title: 'Unidad De Sercicio eliminada'
-              });
-              this.obtenerUds();
-            } else {
-              alertError.fire({
-                title: 'Eliminar Unidad De Servicio',
-                text:
-                  'No se ha podido eliminar la Unidad De Servicio, intentalo nuevamente'
-              });
-            }
-          });
-        }
-      });
+  removerFiltro() {
+    this.udsFiltradas = false;
+    this.obtenerUds();
+  }
+
+  crear() {
+    this.router.navigate(['unidades-de-servicio/crear']);
+  }
+
+  verUnidad(id?: string) {
+    this.router.navigate(['unidades-de-servicio/unidad', id]);
+  }
+
+  filtrarTabla(event: Event) {
+    const criterioBusqueda = (event.target as HTMLInputElement).value;
+    this.tablaData.filter = criterioBusqueda.trim().toLowerCase();
+  }
+
+  // subscribes
+  /**
+   * Nos suscribimos al emisor de cambios en caso de que se emita un nuevo contrato.
+   * Agregamos al final el nuevo contrato, actualizamos tabla y sumamos 1 al contador
+   */
+  subsUdsNueva(): void {
+    this.udsNueva = this.uds$.udsNueva$.subscribe((uds: Uds) => {
+      this.uds.push(uds);
+      this.tablaData = new MatTableDataSource(this.uds);
+      this.numRegistros++;
+    });
+  }
+
+  /**
+   * Nos suscribimos al emisor de cambios en caso de que se emita un nuevo contrato.
+   * Eliminamos el contrato del arreglo, actualizamos tabla y restamos 1 al contador
+   */
+  subsUdsEliminada(): void {
+    this.udsEliminada = this.uds$.udsEliminada$.subscribe((id: string) => {
+      const i = this.uds.findIndex(unidad => unidad._id === id);
+      this.uds.splice(i, 1);
+      this.tablaData = new MatTableDataSource(this.uds);
+      this.numRegistros--;
+    });
+  }
+
+  /**
+   * Nos suscribimos al emisor de cambios en caso de que se emita un nuevo contrato.
+   * Agregamos al final el nuevo contrato, actualizamos tabla y sumamos 1 al contador
+   */
+  subsUdsActualizada(): void {
+    this.udsActualizada = this.uds$.udsActualizada$.subscribe((uds: Uds) => {
+      const i = this.uds.findIndex(unidad => unidad._id === uds._id);
+      this.uds.splice(i, 1, uds);
+      this.tablaData = new MatTableDataSource(this.uds);
+    });
+  }
+
+  // Nos desuscribimos para mejorar performance
+  desuscribir(): void {
+    this.udsNueva.unsubscribe();
+    this.udsEliminada.unsubscribe();
+    this.udsActualizada.unsubscribe();
+  }
+
+  // permisos para crear
+  comprobarPermisos() {
+    switch (this.usuario$.usuario.rol) {
+      case 'ADMIN':
+        this.puedeCrear = true;
+        break;
+      case 'GESTOR':
+        this.puedeCrear = true;
+        break;
+      default:
+        this.puedeCrear = false;
+        break;
+    }
+  }
+
+  // Detecta tamaño de pantalla y modifica sidebar
+  detectarPantalla(): void {
+    if (screen.width <= 1024) {
+      this.sidenavMode = 'push';
+      this.sidenavBackdrop = false;
+      this.sidenavOpen = false;
+    }
   }
 }

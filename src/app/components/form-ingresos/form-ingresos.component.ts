@@ -1,21 +1,35 @@
-import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormGroupDirective
+} from '@angular/forms';
+import { Usuario } from 'src/app/models/usuario.model';
+import { Uds } from 'src/app/models/uds.model';
+import { RespBeneficiario } from 'src/app/models/respBeneficiario.model';
+import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
+import { UsuarioService } from 'src/app/services/usuario.service';
+import { RespBeneficiariosService } from 'src/app/services/resp-beneficiarios.service';
+import { DateAdapter } from '@angular/material/core';
+import { alertSuccess } from 'src/app/helpers/swal2.config';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogFormIngresoComponent } from '../dialogs/dialog-form-ingreso/dialog-form-ingreso.component';
+// Validators
+import {
+  ValidarDocumento,
+  ValidarDocumentoAntiguo
+} from '../../helpers/Validators/documento-validator';
+import { ValidarTelefono } from '../../helpers/Validators/telefono-validator';
+import {
+  ValidarRC,
+  ValidarTI,
+  ValidarCC
+} from '../../helpers/Validators/tipo-documento.validator';
 // Importo municipios y ciudades de Colombia
 import listaDatosColombia from 'src/app/config/colombia.json';
-import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
-import { Uds } from 'src/app/models/uds.model';
-import { UsuarioService } from 'src/app/services/usuario.service';
-import Swal from 'sweetalert2/src/sweetalert2.js';
-import { Usuario } from 'src/app/models/usuario.model';
-import { RespBeneficiario } from 'src/app/models/respBeneficiario.model';
-import { NgOption, NgSelectComponent } from '@ng-select/ng-select';
-import { RespBeneficiariosService } from 'src/app/services/resp-beneficiarios.service';
-import {
-  alertDanger,
-  alertSuccess,
-  alertConfirm
-} from 'src/app/helpers/swal2.config';
-declare var moment: any;
+import { Config } from 'src/app/config/config';
+declare const moment: any;
 
 @Component({
   selector: 'app-form-ingresos',
@@ -23,135 +37,28 @@ declare var moment: any;
   styleUrls: ['./form-ingresos.component.css']
 })
 export class FormIngresosComponent implements OnInit {
-  // ng-select -------------------
-  tiposDeDocumento: NgOption = [
-    {
-      value: 'RC',
-      label: 'Registro Civil',
-      group: 'Colombianas/os',
-      icon: 'fad fa-id-card'
-    },
-    {
-      value: 'TI',
-      label: 'Tarjeta de Identidad',
-      group: 'Colombianas/os',
-      icon: 'fad fa-id-card'
-    },
-    {
-      value: 'CC',
-      label: 'Cédula de Ciudadanía',
-      group: 'Colombianas/os',
-      icon: 'fad fa-id-card'
-    },
-    {
-      value: 'PEP',
-      label: 'Permiso Especial de Permanencia',
-      group: 'Extranjeras/os',
-      icon: 'fas fa-user-clock'
-    },
-    {
-      value: 'SD',
-      label: 'Sin Documento',
-      group: 'Extranjeras/os',
-      icon: 'fas fa-question-square'
-    }
-  ];
-  sexos: NgOption = [
-    {
-      value: 'Mujer',
-      label: 'Mujer',
-      icon: 'fad fa-venus'
-    },
-    {
-      value: 'Hombre',
-      label: 'Hombre',
-      icon: 'fad fa-mars'
-    },
-    {
-      value: 'Otro',
-      label: 'Otro',
-      icon: 'fad fa-venus-mars'
-    }
-  ];
-  paises: NgOption = [
-    { value: 'Colombia', label: 'Colombia' },
-    { value: 'Argentina', label: 'Argentina' },
-    { value: 'Chile', label: 'Chile' },
-    { value: 'Ecuador', label: 'Ecuador' },
-    { value: 'México', label: 'México' },
-    { value: 'Panamá', label: 'Panamá' },
-    { value: 'Perú', label: 'Chile' },
-    { value: 'Venezuela', label: 'Venezuela' }
-  ];
-  reconocimientos: NgOption = [
-    { value: 'Afrocolombiano', label: 'Afrocolombiano' },
-    { value: 'Comunidad negra', label: 'Comunidad negra' },
-    { value: 'Indigena', label: 'Indigena' },
-    { value: 'Palenquero', label: 'Palenquero' },
-    { value: 'RROM/Gitano', label: 'RROM/Gitano' },
-    {
-      value: 'Raizal archipielago San Andrés',
-      label: 'Raizal archipielago San Andrés'
-    },
-    { value: 'Ninguno', label: 'Ninguno' }
-  ];
-  discapacidades: NgOption = [
-    { value: true, label: 'Si' },
-    { value: false, label: 'No' }
-  ];
-  criterios: NgOption = [
-    { value: 'Sisbén', label: 'Puntaje de sisbén' },
-    { value: 'Carta de vulnerabilidad', label: 'Carta de vulnerabilidad' },
-    { value: 'Otro', label: 'Otro' }
-  ];
-  tipoResponsables: NgOption = [
-    { value: 'Madre', label: 'Madre' },
-    { value: 'Padre', label: 'Padre' },
-    { value: 'Tio/a', label: 'Madre' },
-    { value: 'Abuelo/a', label: 'Abuelo/a' },
-    { value: 'Conyugue', label: 'Conyugue' },
-    { value: 'Si misma', label: 'Si misma' },
-    { value: 'Otro', label: 'Otro' }
-  ];
-  // -----------------------------
+  // variables de configuración
+  tiposDeDocumento: any[] = Config.SELECTS.tiposDeDocumento;
+  sexos: any[] = Config.SELECTS.sexos;
+  paises: any[] = Config.SELECTS.paises;
+  reconocimientos: any[] = Config.SELECTS.autorreconocimientos;
+  discapacidades: any[] = Config.SELECTS.discapacidades;
+  criterios: any[] = Config.SELECTS.criteriosDeAtencion;
+  tipoResponsables: any[] = Config.SELECTS.tiposDeAcudientes;
   // Variables de uso
-  listaDepartamentos: any = listaDatosColombia;
-  listaMunicipios: any = [{ ciudades: 'Extranjero' }];
-
-  // Variables de formulario
+  usuario: Usuario;
   formIngreso: FormGroup;
-  creando = false;
-  // Referencias a elementos de formulario beneficiario
-  @ViewChild('documento') iDocumento: ElementRef;
-  @ViewChild('nombre1') iNombre1: ElementRef;
-  @ViewChild('nombre2') iNombre2: ElementRef;
-  @ViewChild('apellido1') iApellido1: ElementRef;
-  @ViewChild('apellido2') iApellido2: ElementRef;
-  @ViewChild('sexo') iSexo: ElementRef;
-  @ViewChild('nacimiento') iNacimiento: ElementRef;
-  @ViewChild('paisNacimiento') iPaisNacimiento: ElementRef;
-  @ViewChild('dptoNacimiento') iDptoNacimiento: ElementRef;
-  @ViewChild('municipioNacimiento') iMunicipioNacimiento: ElementRef;
-  @ViewChild('autorreconocimiento') iAutorreconocimiento: ElementRef;
-  @ViewChild('discapacidad') iDiscapacidad: ElementRef;
-  @ViewChild('direccion') iDireccion: ElementRef;
-  @ViewChild('barrio') iBarrio: ElementRef;
-  @ViewChild('telefono') iTelefono: ElementRef;
-  @ViewChild('criterio') iCriterio: ElementRef;
-  @ViewChild('infoCriterio') iInfoCriterio: ElementRef;
-  // Referencias a elementos de formulario responsable
-  @ViewChild('respTipoDoc') irespTipoDoc: NgSelectComponent;
-  @ViewChild('respDocumento') iRespDocumento: ElementRef;
-  @ViewChild('respNombre1') iRespNombre1: ElementRef;
-  @ViewChild('respNombre2') iRespNombre2: ElementRef;
-  @ViewChild('respApellido1') iRespApellido1: ElementRef;
-  @ViewChild('respApellido2') iRespApellido2: ElementRef;
-  @ViewChild('respSexo') iRespSexo: NgSelectComponent;
-  @ViewChild('respNacimiento') iRespNacimiento: ElementRef;
-  @ViewChild('respPaisNac') iRespPaisNac: NgSelectComponent;
-  @ViewChild('respDptoNac') iRespDptoNac: NgSelectComponent;
-  @ViewChild('respMunicipioNac') iRespMunicipioNac: NgSelectComponent;
-  @ViewChild('respTipoResp') iRespTipoResp: NgSelectComponent;
+  @Input() udsAsignadas: Uds[];
+  codigoUdsSeleccionada: any = 'Seleccionar UDS';
+  listaDepartamentos: any = listaDatosColombia;
+  listaMunicipios: any = ['Extranjero'];
+  respExiste = false;
+  ultResponsableBuscado = '';
+
+  tieneMadre = true;
+  madreEsMismoAcudiente = false;
+  tienePadre = true;
+  padreEsMismoAcudiente = false;
 
   // Configuración dinámica para criterio carta/puntaje
   tipoInputInfoCriterio = 'text';
@@ -160,48 +67,67 @@ export class FormIngresosComponent implements OnInit {
   // Para responsable (acudiente)
   listaDepartamentosResp: any = [{ departamento: 'Extranjero' }];
   listaMunicipiosResp = ['Extranjero'];
-  respExiste = false;
-  // Info de usuario
-  usuario: Usuario;
-  @Input() udsAsignadas: Uds[];
-  codigoUdsSeleccionada: any = 'Seleccionar UDS';
+
+  // Máximo fechas mat-DatePicker
+  maxNacimiento: Date;
+  minNacimiento: Date;
+  maxIngreso: Date;
+  minIngreso: Date;
+
+  @ViewChild(FormGroupDirective) formGroupDirective: FormGroupDirective;
 
   constructor(
     private fb: FormBuilder,
     private usuario$: UsuarioService,
     private beneficiarios$: BeneficiariosService,
-    private respBen$: RespBeneficiariosService
+    private respBen$: RespBeneficiariosService,
+    private adaptadorFecha: DateAdapter<any>,
+    private dialog: MatDialog
   ) {
+    // para Material Datetime-Picker
+    this.adaptadorFecha.setLocale('es');
+    const anioActual = new Date().getFullYear();
+    const mesActual = new Date().getMonth();
+
+    this.minNacimiento = new Date(anioActual - 100, 0, 1); // 100 años atrás enero 1
+    this.maxNacimiento = new Date(moment()); // Hoy
+
+    this.minIngreso = new Date(anioActual, mesActual, 1); // mes vigente
+    this.maxIngreso = new Date(moment()); // Hoy
+
+    // anterior
     this.usuario = this.usuario$.usuario;
     this.formIngreso = this.fb.group({
       // Información de beneficiario
       tipoDoc: [null, Validators.required],
-      documento: ['', Validators.required],
-      nombre1: [null, Validators.required],
-      nombre2: null,
-      apellido1: [null, Validators.required],
-      apellido2: null,
+      documento: ['', [Validators.required, ValidarDocumento]],
+      nombre1: ['', Validators.required],
+      nombre2: '',
+      apellido1: ['', Validators.required],
+      apellido2: '',
       sexo: [null, Validators.required],
-      discapacidad: [false, Validators.required],
-      infoDiscapacidad: null,
-      nacimiento: [null, Validators.required],
+      nacimiento: [
+        null,
+        [Validators.required, ValidarRC, ValidarTI, ValidarCC]
+      ],
       paisNacimiento: [null, Validators.required],
       dptoNacimiento: [null, Validators.required],
       municipioNacimiento: [null, Validators.required],
-      direccion: [null, Validators.required],
-      telefono: [null, Validators.required],
-      barrio: [null, Validators.required],
       autorreconocimiento: [null, Validators.required],
+      discapacidad: [null, Validators.required],
+      infoDiscapacidad: null,
+      direccion: ['', Validators.required],
+      barrio: ['', Validators.required],
+      telefono: ['', [Validators.required, ValidarTelefono]],
       criterio: [null, Validators.required],
       infoCriterio: [null, Validators.required],
       tipoResponsable: [null, Validators.required],
-      comentario: null,
-      udsId: null,
-      codigo: 'Seleccionar UDS',
+      udsId: [null, Validators.required],
       ingreso: [null, Validators.required],
+      comentario: null,
       // Información de responsable
       respTipoDoc: [null, Validators.required],
-      respDocumento: ['', Validators.required],
+      respDocumento: ['', [Validators.required, ValidarDocumentoAntiguo]],
       respNombre1: [null, Validators.required],
       respNombre2: null,
       respApellido1: [null, Validators.required],
@@ -211,12 +137,50 @@ export class FormIngresosComponent implements OnInit {
       respPaisNacimiento: [null, Validators.required],
       respDptoNacimiento: [null, Validators.required],
       respMunicipioNacimiento: [null, Validators.required],
+      // Información de madre
+      madreTipoDoc: [null, Validators.required],
+      madreDocumento: ['', [Validators.required, ValidarDocumentoAntiguo]],
+      madreNombre1: [null, Validators.required],
+      madreNombre2: null,
+      madreApellido1: [null, Validators.required],
+      madreApellido2: null,
+      madreSexo: [null, Validators.required],
+      madreNacimiento: [null, Validators.required],
+      // Información de padre
+      padreTipoDoc: [null, Validators.required],
+      padreDocumento: ['', [Validators.required, ValidarDocumentoAntiguo]],
+      padreNombre1: [null, Validators.required],
+      padreNombre2: null,
+      padreApellido1: [null, Validators.required],
+      padreApellido2: null,
+      padreSexo: [null, Validators.required],
+      padreNacimiento: [null, Validators.required],
+      // otro
       fecha: null,
       estado: 'Pendiente vincular'
     });
   }
 
   ngOnInit() {}
+
+  get f() {
+    return this.formIngreso;
+  }
+  get fc() {
+    return this.formIngreso.controls;
+  }
+  get fv() {
+    return this.formIngreso.value;
+  }
+  get frv() {
+    return this.formIngreso.getRawValue();
+  }
+
+  filtroFinDeSemana = (d: Date | null): boolean => {
+    const dia = (d || new Date()).getDay();
+    // Previene la selección de sábado y domingo.
+    return dia !== 0 && dia !== 6;
+  };
 
   cambiarDepartamentos(pais: any) {
     if (pais === undefined) {
@@ -261,13 +225,14 @@ export class FormIngresosComponent implements OnInit {
      * asigna las ciudades del municipio
      */
     if (typeof departamento !== 'string') {
-      if (departamento.departamento === 'Extranjero') {
+      if (departamento.value === 'Extranjero') {
         this.listaMunicipios = ['Extranjero'];
       } else {
         const i = this.listaDepartamentos.findIndex(
-          (data: any) => data.departamento === departamento.departamento
+          (data: any) => data.departamento === departamento.value
         );
         this.listaMunicipios = this.listaDepartamentos[i].ciudades;
+        // console.log(this.listaMunicipios, 'lista mun');
       }
     } else {
       if (departamento === 'Extranjero') {
@@ -278,19 +243,8 @@ export class FormIngresosComponent implements OnInit {
           (data: any) => data.departamento === departamento.trim()
         );
         this.listaMunicipios = this.listaDepartamentos[i].ciudades;
+        // console.log(this.listaMunicipios, 'lista mun');
       }
-    }
-  }
-
-  comprobarSD($event: any) {
-    if ($event.value === 'SD') {
-      const documentoAleatorio = this.generarDocumento(15);
-      this.iDocumento.nativeElement.value = documentoAleatorio;
-      this.formIngreso.value.documento = documentoAleatorio;
-      this.iDocumento.nativeElement.disabled = true;
-    } else {
-      this.iDocumento.nativeElement.value = null;
-      this.iDocumento.nativeElement.disabled = false;
     }
   }
 
@@ -319,11 +273,11 @@ export class FormIngresosComponent implements OnInit {
       return;
     }
     if (typeof departamento !== 'string') {
-      if (departamento.departamento === 'Extranjero') {
+      if (departamento.value === 'Extranjero') {
         this.listaMunicipiosResp = ['Extranjero'];
       } else {
         const i = this.listaDepartamentosResp.findIndex(
-          (data: any) => data.departamento === departamento.departamento
+          (data: any) => data.departamento === departamento.value
         );
         this.listaMunicipiosResp = this.listaDepartamentosResp[i].ciudades;
       }
@@ -340,32 +294,14 @@ export class FormIngresosComponent implements OnInit {
     }
   }
 
-  comprobarRespSD($event: any) {
+  comprobarSD($event: any, campo: string) {
     if ($event.value === 'SD') {
       const documentoAleatorio = this.generarDocumento(15);
-      this.iRespDocumento.nativeElement.value = documentoAleatorio;
-      this.formIngreso.value.respDocumento = documentoAleatorio;
-      this.iRespDocumento.nativeElement.disabled = true;
+      this.f.get(campo).patchValue('SD-' + documentoAleatorio);
     } else {
-      this.iRespDocumento.nativeElement.value = null;
-      this.iRespDocumento.nativeElement.disabled = false;
+      this.f.get(campo).patchValue('');
     }
   }
-
-  validarCriterio($event: any) {
-    if ($event.value === 'Sisbén') {
-      this.tipoInputInfoCriterio = 'number';
-      this.labelInputInfoCriterio = 'Escriba el puntaje';
-      this.iInfoCriterio.nativeElement.step = '00.01';
-    } else if ($event.value === 'Carta de vulnerabilidad') {
-      this.tipoInputInfoCriterio = 'date';
-      this.labelInputInfoCriterio = 'Fecha de visita';
-    } else {
-      this.tipoInputInfoCriterio = 'text';
-      this.labelInputInfoCriterio = 'Detalle otro';
-    }
-  }
-
   generarDocumento(longitud: number) {
     let resultado = '';
     const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -378,15 +314,129 @@ export class FormIngresosComponent implements OnInit {
     return resultado;
   }
 
-  cambiarCodigoUds($event: any) {
-    if ($event === undefined) {
-      return;
+  validarCriterio($event: any) {
+    if ($event.value === 'Sisbén') {
+      this.tipoInputInfoCriterio = 'numeric';
+      this.labelInputInfoCriterio = 'Escriba el puntaje';
+    } else if ($event.value === 'Carta de vulnerabilidad') {
+      this.tipoInputInfoCriterio = 'date';
+      this.labelInputInfoCriterio = 'Fecha de visita';
+    } else {
+      this.tipoInputInfoCriterio = 'text';
+      this.labelInputInfoCriterio = 'Detalle otro';
     }
-    this.formIngreso.value.codigo = $event._id;
-    const index = this.udsAsignadas.findIndex(
-      (unidad: Uds) => unidad._id === $event._id
-    );
-    this.codigoUdsSeleccionada = this.udsAsignadas[index].codigo;
+  }
+
+  validarMadre() {
+    if (this.tieneMadre) {
+      this.f.get('madreTipoDoc').enable();
+      this.f.get('madreDocumento').enable();
+      this.f.get('madreNombre1').enable();
+      this.f.get('madreNombre2').enable();
+      this.f.get('madreApellido1').enable();
+      this.f.get('madreApellido2').enable();
+      this.f.get('madreNacimiento').enable();
+      this.f.get('madreSexo').enable();
+    } else {
+      this.madreEsMismoAcudiente = false;
+      this.f.get('madreTipoDoc').patchValue(null);
+      this.f.get('madreDocumento').patchValue(null);
+      this.f.get('madreNombre1').patchValue(null);
+      this.f.get('madreNombre2').patchValue('');
+      this.f.get('madreApellido1').patchValue(null);
+      this.f.get('madreApellido2').patchValue('');
+      this.f.get('madreNacimiento').patchValue(null);
+      this.f.get('madreSexo').patchValue(null);
+      this.f.get('madreTipoDoc').disable();
+      this.f.get('madreDocumento').disable();
+      this.f.get('madreNombre1').disable();
+      this.f.get('madreNombre2').disable();
+      this.f.get('madreApellido1').disable();
+      this.f.get('madreApellido2').disable();
+      this.f.get('madreNacimiento').disable();
+      this.f.get('madreSexo').disable();
+    }
+  }
+
+  madreEsAcudiente() {
+    if (this.madreEsMismoAcudiente) {
+      this.padreEsMismoAcudiente = false;
+      this.padreEsAcudiente();
+
+      this.f.get('madreTipoDoc').patchValue(this.frv.respTipoDoc);
+      this.f.get('madreDocumento').patchValue(this.frv.respDocumento);
+      this.f.get('madreNombre1').patchValue(this.frv.respNombre1);
+      this.f.get('madreNombre2').patchValue(this.frv.respNombre2);
+      this.f.get('madreApellido1').patchValue(this.frv.respApellido1);
+      this.f.get('madreApellido2').patchValue(this.frv.respApellido2);
+      this.f.get('madreNacimiento').patchValue(this.frv.respNacimiento);
+      this.f.get('madreSexo').patchValue(this.frv.respSexo);
+    } else {
+      this.f.get('madreTipoDoc').patchValue(null);
+      this.f.get('madreDocumento').patchValue(null);
+      this.f.get('madreNombre1').patchValue('');
+      this.f.get('madreNombre2').patchValue('');
+      this.f.get('madreApellido1').patchValue('');
+      this.f.get('madreApellido2').patchValue('');
+      this.f.get('madreNacimiento').patchValue(null);
+      this.f.get('madreSexo').patchValue(null);
+    }
+  }
+
+  validarPadre() {
+    if (this.tienePadre) {
+      this.f.get('padreTipoDoc').enable();
+      this.f.get('padreDocumento').enable();
+      this.f.get('padreNombre1').enable();
+      this.f.get('padreNombre2').enable();
+      this.f.get('padreApellido1').enable();
+      this.f.get('padreApellido2').enable();
+      this.f.get('padreNacimiento').enable();
+      this.f.get('padreSexo').enable();
+    } else {
+      this.padreEsMismoAcudiente = false;
+      this.f.get('padreTipoDoc').patchValue(null);
+      this.f.get('padreDocumento').patchValue(null);
+      this.f.get('padreNombre1').patchValue(null);
+      this.f.get('padreNombre2').patchValue('');
+      this.f.get('padreApellido1').patchValue(null);
+      this.f.get('padreApellido2').patchValue('');
+      this.f.get('padreNacimiento').patchValue(null);
+      this.f.get('padreSexo').patchValue(null);
+      this.f.get('padreTipoDoc').disable();
+      this.f.get('padreDocumento').disable();
+      this.f.get('padreNombre1').disable();
+      this.f.get('padreNombre2').disable();
+      this.f.get('padreApellido1').disable();
+      this.f.get('padreApellido2').disable();
+      this.f.get('padreNacimiento').disable();
+      this.f.get('padreSexo').disable();
+    }
+  }
+
+  padreEsAcudiente() {
+    if (this.padreEsMismoAcudiente) {
+      this.madreEsMismoAcudiente = false;
+      this.madreEsAcudiente();
+
+      this.f.get('padreTipoDoc').patchValue(this.frv.respTipoDoc);
+      this.f.get('padreDocumento').patchValue(this.frv.respDocumento);
+      this.f.get('padreNombre1').patchValue(this.frv.respNombre1);
+      this.f.get('padreNombre2').patchValue(this.frv.respNombre2);
+      this.f.get('padreApellido1').patchValue(this.frv.respApellido1);
+      this.f.get('padreApellido2').patchValue(this.frv.respApellido2);
+      this.f.get('padreNacimiento').patchValue(this.frv.respNacimiento);
+      this.f.get('padreSexo').patchValue(this.frv.respSexo);
+    } else {
+      this.f.get('padreTipoDoc').patchValue(null);
+      this.f.get('padreDocumento').patchValue(null);
+      this.f.get('padreNombre1').patchValue('');
+      this.f.get('padreNombre2').patchValue('');
+      this.f.get('padreApellido1').patchValue('');
+      this.f.get('padreApellido2').patchValue('');
+      this.f.get('padreNacimiento').patchValue(null);
+      this.f.get('padreSexo').patchValue(null);
+    }
   }
 
   buscarRespBeneficiario(documento: string) {
@@ -395,157 +445,190 @@ export class FormIngresosComponent implements OnInit {
       this.respExiste = false;
       return;
     }
-    this.respBen$
-      .obtenerResponsables(`documento=${documento}`)
-      .subscribe((resp: any) => {
-        if (resp.ok) {
-          // console.log(resp);
-          if (resp.respBeneficiarios.length > 0) {
-            const responsable: RespBeneficiario = resp.respBeneficiarios[0];
-            this.respExiste = true;
+    if (this.ultResponsableBuscado === documento) {
+      return;
+    } else {
+      this.ultResponsableBuscado = documento;
+      this.respBen$
+        .obtenerResponsables(`documento=${documento}`)
+        .subscribe((resp: any) => {
+          if (resp.ok) {
+            // console.log(resp);
+            if (resp.respBeneficiarios.length > 0) {
+              const responsable: RespBeneficiario = resp.respBeneficiarios[0];
+              this.respExiste = true;
 
-            this.formIngreso.get('respTipoDoc').patchValue(responsable.tipoDoc);
-            this.irespTipoDoc.setDisabledState(true);
+              this.f.get('respTipoDoc').patchValue(responsable.tipoDoc);
+              this.f.get('respTipoDoc').disable();
 
-            this.iRespNombre1.nativeElement.value = responsable.nombre1;
-            this.iRespNombre1.nativeElement.disabled = true;
+              this.f.get('respNombre1').patchValue(responsable.nombre1);
+              this.f.get('respNombre1').disable();
 
-            this.iRespNombre2.nativeElement.value = responsable.nombre2;
-            this.iRespNombre2.nativeElement.disabled = true;
+              this.f.get('respNombre2').patchValue(responsable.nombre2);
+              this.f.get('respNombre2').disable();
 
-            this.iRespApellido1.nativeElement.value = responsable.apellido1;
-            this.iRespApellido1.nativeElement.disabled = true;
+              this.f.get('respApellido1').patchValue(responsable.apellido1);
+              this.f.get('respApellido1').disable();
 
-            this.iRespApellido2.nativeElement.value = responsable.apellido2;
-            this.iRespApellido2.nativeElement.disabled = true;
+              this.f.get('respApellido2').patchValue(responsable.apellido2);
+              this.f.get('respApellido2').disable();
 
-            this.iRespNacimiento.nativeElement.value = moment(
-              responsable.nacimiento,
-              'DD/MM/YYYY'
-            ).format('YYYY-MM-DD');
-            this.iRespNacimiento.nativeElement.disabled = true;
+              this.f
+                .get('respNacimiento')
+                .patchValue(
+                  new Date(moment(responsable.nacimiento, 'DD/MM/YYYY'))
+                );
 
-            this.formIngreso.get('respSexo').patchValue(responsable.sexo);
-            this.iRespSexo.setDisabledState(true);
+              this.f.get('respNacimiento').disable();
 
-            this.iRespNacimiento.nativeElement.disabled = true;
+              this.f.get('respSexo').patchValue(responsable.sexo);
+              this.f.get('respSexo').disable();
 
-            this.formIngreso
-              .get('respPaisNacimiento')
-              .patchValue(responsable.paisNacimiento);
-            this.iRespPaisNac.setDisabledState(true);
-            this.cambiarDepartamentosResp(responsable.paisNacimiento);
+              this.f
+                .get('respPaisNacimiento')
+                .patchValue(responsable.paisNacimiento);
+              this.f.get('respPaisNacimiento').disable();
+              this.cambiarDepartamentosResp(responsable.paisNacimiento);
 
-            this.formIngreso
-              .get('respDptoNacimiento')
-              .patchValue(responsable.dptoNacimiento);
-            this.iRespDptoNac.setDisabledState(true);
-            this.cambiarCiudadesResp(responsable.dptoNacimiento);
+              this.f
+                .get('respDptoNacimiento')
+                .patchValue(responsable.dptoNacimiento);
+              this.f.get('respDptoNacimiento').disable();
+              this.cambiarCiudadesResp(responsable.dptoNacimiento);
 
-            this.formIngreso
-              .get('respMunicipioNacimiento')
-              .patchValue(responsable.municipioNacimiento);
-            this.iRespMunicipioNac.setDisabledState(true);
-
-            this.iRespTipoResp.focus();
-            this.iRespTipoResp.open();
+              this.f
+                .get('respMunicipioNacimiento')
+                .patchValue(responsable.municipioNacimiento);
+              this.f.get('respMunicipioNacimiento').disable();
+            } else {
+              this.respExiste = false;
+              this.despejarCamposResponsable();
+            }
           } else {
             this.respExiste = false;
             // this.despejarCamposResponsable();
           }
-        } else {
-          this.respExiste = false;
-          // this.despejarCamposResponsable();
-        }
-      });
+        });
+    }
   }
-
   despejarCamposResponsable() {
-    this.iRespNombre1.nativeElement.value = null;
-    this.iRespNombre1.nativeElement.disabled = false;
+    // this.f.get('respTipoDoc').patchValue(null);
+    this.f.get('respTipoDoc').enable();
 
-    this.iRespNombre2.nativeElement.value = null;
-    this.iRespNombre2.nativeElement.disabled = false;
+    this.f.get('respNombre1').patchValue(null);
+    this.f.get('respNombre1').enable();
 
-    this.iRespApellido1.nativeElement.value = null;
-    this.iRespApellido1.nativeElement.disabled = false;
+    this.f.get('respNombre2').patchValue(null);
+    this.f.get('respNombre2').enable();
 
-    this.iRespApellido2.nativeElement.value = null;
-    this.iRespApellido2.nativeElement.disabled = false;
+    this.f.get('respApellido1').patchValue(null);
+    this.f.get('respApellido1').enable();
 
-    this.iRespNacimiento.nativeElement.value = null;
-    this.iRespNacimiento.nativeElement.disabled = false;
+    this.f.get('respApellido2').patchValue(null);
+    this.f.get('respApellido2').enable();
 
-    this.formIngreso.get('respTipoDoc').patchValue([]);
-    this.irespTipoDoc.setDisabledState(false);
+    this.f.get('respNacimiento').patchValue(null);
+    this.f.get('respNacimiento').enable();
 
-    this.formIngreso.get('respSexo').patchValue([]);
-    this.iRespSexo.setDisabledState(false);
+    this.f.get('respSexo').patchValue(null);
+    this.f.get('respSexo').enable();
 
-    this.formIngreso.get('respPaisNacimiento').patchValue([]);
-    this.iRespPaisNac.setDisabledState(false);
+    this.f.get('respPaisNacimiento').patchValue([]);
+    this.f.get('respPaisNacimiento').enable();
     this.cambiarDepartamentosResp([]);
 
-    this.formIngreso.get('respDptoNacimiento').patchValue([]);
-    this.iRespDptoNac.setDisabledState(false);
+    this.f.get('respDptoNacimiento').patchValue([]);
+    this.f.get('respDptoNacimiento').enable();
     this.cambiarCiudadesResp('Extranjero');
 
-    this.formIngreso.get('respMunicipioNacimiento').patchValue([]);
-    this.iRespMunicipioNac.setDisabledState(false);
+    this.f.get('respMunicipioNacimiento').patchValue([]);
+    this.f.get('respMunicipioNacimiento').enable();
   }
 
-  formatearFechas() {
-    this.formIngreso.value.fecha = moment().format('DD/MM/YYYY');
-    this.formIngreso.value.nacimiento = moment(
-      this.formIngreso.value.nacimiento,
-      'YYYY-MM-DD'
-    ).format('DD/MM/YYYY');
-    this.formIngreso.value.respNacimiento = moment(
-      this.formIngreso.value.nacimiento,
-      'YYYY-MM-DD'
-    ).format('DD/MM/YYYY');
-    this.formIngreso.value.ingreso = moment(
-      this.formIngreso.value.ingreso,
-      'YYYY-MM-DD'
-    ).format('DD/MM/YYYY');
+  cambiarCodigoUds($event: any) {
+    if ($event === undefined) {
+      return;
+    }
+    const index = this.udsAsignadas.findIndex(
+      (unidad: Uds) => unidad._id === $event.value
+    );
+    this.codigoUdsSeleccionada = this.udsAsignadas[index].codigo;
   }
 
-  ingresarBeneficiario() {
-    this.formatearFechas();
-    alertConfirm
-      .fire({
-        title: 'Novedades',
-        html: `<span>Deseas reportar al beneficiario:</span>
-        <ul class="mt-2">
-          <li>
-            ${this.formIngreso.value.nombre1}
-            ${this.formIngreso.value.nombre2}
-            ${this.formIngreso.value.apellido1}
-            ${this.formIngreso.value.apellido2}
-          </li>
-          <li>${this.formIngreso.value.tipoDoc}: ${this.formIngreso.value.documento}</li>
-          <li>Nacimiento: ${this.formIngreso.value.nacimiento}</li>
-        </ul>
-      `,
-        confirmButtonText: 'Sí, reportar ingreso'
-      })
-      .then((result: any) => {
-        if (result.value) {
-          this.creando = true;
-          this.beneficiarios$
-            .crearBeneficiario(this.formIngreso.value)
-            .subscribe((resp: any) => {
-              if (resp.ok) {
-                this.creando = false;
-                this.formIngreso.reset();
-                alertSuccess.fire({
-                  title: 'Beneficiario reportado'
-                });
-              } else {
-                this.creando = false;
-              }
-            });
-        }
+  limpiarFormulario() {
+    this.formGroupDirective.resetForm();
+    this.formIngreso.enable();
+    this.tieneMadre = true;
+    this.tienePadre = true;
+    this.validarMadre();
+    this.validarPadre();
+    this.respExiste = false;
+    this.despejarCamposResponsable();
+  }
+
+  procesarFormulario() {
+    this.formIngreso.patchValue({
+      documento: this.fv.documento,
+      // formateo fechas
+      ingreso: moment(this.fv.ingreso).format('DD/MM/YYYY'),
+      nacimiento: moment(this.fv.nacimiento).format('DD/MM/YYYY'),
+      fecha: moment().format('DD/MM/YYYY'),
+      // obtengo valores de acudiente si estan deshabilitadas
+      respDocumento: this.frv.respDocumento,
+      respNacimiento: moment(this.frv.respNacimiento).format('DD/MM/YYYY')
+    });
+
+    // obtengo valores de padres si existen
+    if (this.tienePadre) {
+      this.formIngreso.patchValue({
+        padreDocumento: this.fv.padreDocumento,
+        padreNacimiento: moment(this.fv.padreNacimiento).format('DD/MM/YYYY')
       });
+    }
+    if (this.tieneMadre) {
+      this.formIngreso.patchValue({
+        madreDocumento: this.fv.madreDocumento,
+        madreNacimiento: moment(this.fv.madreNacimiento).format('DD/MM/YYYY')
+      });
+    }
+  }
+
+  dialogConfirmar(form: FormGroup): void {
+    const confirmar = this.dialog.open(DialogFormIngresoComponent, {
+      width: '516px',
+      data: form
+    });
+    confirmar.afterClosed().subscribe(confirmacion => {
+      this.ingresarBeneficiario(confirmacion);
+    });
+  }
+
+  confirmarIngreso() {
+    if (this.formIngreso.invalid) {
+      this.formIngreso.markAllAsTouched();
+      return;
+    }
+    this.dialogConfirmar(this.formIngreso);
+  }
+
+  ingresarBeneficiario(confirmaIngreso: boolean) {
+    if (confirmaIngreso) {
+      this.procesarFormulario();
+      this.beneficiarios$
+        .crearBeneficiario(this.formIngreso.getRawValue())
+        .subscribe((resp: any) => {
+          if (resp.ok) {
+            alertSuccess.fire('Beneficiario reportado');
+            // reseteamos el formulario
+            this.padreEsMismoAcudiente = false;
+            this.madreEsMismoAcudiente = false;
+            this.tieneMadre = true;
+            this.tienePadre = true;
+            this.respExiste = false;
+            this.formIngreso.enable();
+            this.formGroupDirective.resetForm();
+          }
+        });
+    }
   }
 }

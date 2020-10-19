@@ -1,11 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { UsuarioService } from './usuario.service';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
 import { Usuario } from '../models/usuario.model';
 import { Uds } from '../models/uds.model';
 import { Config } from '../config/config';
-import Swal from 'sweetalert2/src/sweetalert2.js';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -17,11 +15,11 @@ export class UdsService {
   token: string;
   API_URL = Config.REST.PRINCIPAL.URL + '/uds';
 
-  constructor(
-    private usuario$: UsuarioService,
-    private http: HttpClient,
-    private router: Router
-  ) {
+  udsNueva$ = new EventEmitter<Uds>();
+  udsEliminada$ = new EventEmitter<string>();
+  udsActualizada$ = new EventEmitter<Uds>();
+
+  constructor(private usuario$: UsuarioService, private http: HttpClient) {
     this.usuario = this.usuario$.usuario;
     this.token = this.usuario$.token;
   }
@@ -33,7 +31,13 @@ export class UdsService {
    */
   obtenerUds(query?: string) {
     if (!query) {
-      return this.http.get(this.API_URL + `?token=${this.token}`);
+      return this.http.get(this.API_URL + `?token=${this.token}`).pipe(
+        map((resp: any) => {
+          if (resp.ok) {
+            return resp.uds;
+          }
+        })
+      );
     } else {
       return this.http.get(this.API_URL + `?${query}&token=${this.token}`);
     }
@@ -62,6 +66,16 @@ export class UdsService {
     }
   }
 
+  obtenerUds_codigos(query?: string) {
+    if (!query) {
+      return this.http.get(this.API_URL + `/codigos?token=${this.token}`);
+    } else {
+      return this.http.get(
+        this.API_URL + `/codigos?${query}&token=${this.token}`
+      );
+    }
+  }
+
   obtenerUnidad(id: string) {
     return this.http.get(this.API_URL + `/${id}?token=${this.token}`);
   }
@@ -79,35 +93,11 @@ export class UdsService {
   }
 
   crearUds(uds: Uds) {
-    return this.http.post(this.API_URL + `?token=${this.token}`, uds).pipe(
-      map((resp: any) => {
-        if (resp.ok === true) {
-          Swal.fire({
-            title: 'Unidad de Servicio',
-            html: `Unidad de servicio <b>${uds.nombre}</b> creada correctamente`,
-            icon: 'success'
-          });
-        }
-        return resp;
-      })
-    );
+    return this.http.post(this.API_URL + `?token=${this.token}`, uds);
   }
 
   actualizarUds(uds: Uds) {
-    return this.http
-      .put(this.API_URL + `/${uds._id}?token=${this.token}`, uds)
-      .pipe(
-        map((resp: any) => {
-          if (resp.ok === true) {
-            Swal.fire({
-              title: 'Unidad de Servicio',
-              html: `Unidad de servicio <b>${uds.nombre}</b> actualizada`,
-              icon: 'success'
-            });
-          }
-          return resp;
-        })
-      );
+    return this.http.put(this.API_URL + `/${uds._id}?token=${this.token}`, uds);
   }
 
   eliminarUds(uds: Uds) {

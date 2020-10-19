@@ -1,0 +1,172 @@
+<div
+  *ngIf="!rutaHijaActiva"
+  class="page-wrapper d-flex justify-content-center bg-blue-grey help-center"
+>
+  <div class="main">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="header text-left">
+            <a
+              [routerLink]="['/ayuda']"
+              mat-button
+              color="primary"
+              class="btn-back mb-4"
+            >
+              <mat-icon>arrow_back</mat-icon> Volver al centro de ayuda
+            </a>
+            <h1 class="m-0">Guías y Recursos</h1>
+            <p class="text-muted m-0">
+              <i class="fas fa-cog fa-spin"></i> Guías en construcción
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Guia -->
+    <div class="container-fluid">
+      <div class="row mb-5">
+        <div class="col">
+          <h2>Iniciando</h2>
+          <ul class="list-unstyled guide">
+            <li>
+              <a routerLink="que-es-esta-aplicacion">Qué es esta aplicación?</a>
+            </li>
+            <li>
+              <a href="#">Iniciar usando esta aplicación</a>
+            </li>
+            <li>
+              <a href="#">Navegando dentro de la app</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col">
+          <h2>Beneficiarios</h2>
+          <ul class="list-unstyled guide">
+            <li>
+              <a href="#">Reportar ingreso</a>
+            </li>
+            <li>
+              <a href="#">Reportar egreso</a>
+            </li>
+            <li>
+              <a routerLink="reportar-nacimiento">Reportar nacimiento</a>
+            </li>
+            <li>
+              <a href="#">Ver beneficiarios</a>
+            </li>
+            <li>
+              <a href="#">Cancelar reporte de ingreso</a>
+            </li>
+            <li>
+              <a href="#">Estados</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- Guia -->
+      <div class="row mb-5">
+        <div class="col">
+          <h2>Contratos</h2>
+          <ul class="list-unstyled guide">
+            <li>
+              <a href="#">Crea contrato</a>
+            </li>
+            <li>
+              <a href="#">Editar contrato</a>
+            </li>
+            <li>
+              <a href="#">Eliminar contrato</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col">
+          <h2>Unidades De Servicio</h2>
+          <ul class="list-unstyled guide">
+            <li>
+              <a href="#">Crea unidad de servicio</a>
+            </li>
+            <li>
+              <a href="#">Editar unidad de servicio</a>
+            </li>
+            <li>
+              <a href="#">Eliminar unidad de servicio</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- Guia -->
+      <div class="row mb-5">
+        <div class="col">
+          <h2>Usuarios</h2>
+          <ul class="list-unstyled guide">
+            <li>
+              <a href="#">Crear usuarios</a>
+            </li>
+            <li>
+              <a href="#">Editar usuarios</a>
+            </li>
+            <li>
+              <a href="#">Eliminar usuarios</a>
+            </li>
+            <li>
+              <a href="#">Roles</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col">
+          <h2>Administrar</h2>
+          <ul class="list-unstyled guide">
+            <li>
+              <a href="#">Mensajes de soporte</a>
+            </li>
+            <li>
+              <a href="#">Importación de registros</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- Guia -->
+      <div class="row mb-5">
+        <div class="col">
+          <h2>Ajustes</h2>
+          <ul class="list-unstyled guide">
+            <li>
+              <a href="#">Perfil</a>
+            </li>
+            <li>
+              <a href="#">Seguridad</a>
+            </li>
+            <li>
+              <a href="#">Tema</a>
+            </li>
+            <li>
+              <a href="#">Notificaciones</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col">
+          <h2>Pagos</h2>
+          <ul class="list-unstyled guide">
+            <li>
+              <a href="#">Subscripciones</a>
+            </li>
+            <li>
+              <a href="#">Descuentos</a>
+            </li>
+            <li>
+              <a href="#">Métodos de pago</a>
+            </li>
+            <li>
+              <a href="#">Pagos atrasados</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<router-outlet
+  (activate)="rutaHijaActiva = true"
+  (deactivate)="rutaHijaActiva = false"
+></router-outlet>

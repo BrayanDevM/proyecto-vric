@@ -1,158 +1,103 @@
-<div
-  class="sidebar"
-  data-color="purple"
-  data-background-color="white"
-  data-image="src/assets/img/Logo.svg"
->
-  <!--
-    Tip 1: cambiamos el color usando: data-color="purple | azure | green | orange | danger"
-
-    Tip 2: podemos agregar imagen usando: data-image tag
--->
-  <div class="logo">
-    <img src="assets/img/Logo.svg" width="80%" alt="" />
-    <span class="badge badge-success">Beta</span>
-  </div>
-  <div class="sidebar-wrapper">
-    <ul class="nav">
-      <li
-        *ngFor="let menuItem of menu"
-        class="nav-item"
-        routerLinkActive="active"
-      >
-        <a class="nav-link" [routerLink]="menuItem.url">
-          <i class="material-icons">{{ menuItem.gIcon }}</i>
-          <p>{{ menuItem.titulo }}</p>
-        </a>
-      </li>
-      <li class="nav-item nav-collapse" routerLinkActive="active">
-        <a
-          class="nav-link collapsed"
-          data-toggle="collapse"
-          href="#beneficiarios"
-          aria-expanded="false"
-        >
-          <i class="material-icons">assignment_ind</i>
-          <p>Beneficiarios <b class="caret"></b></p>
-          <div class="collapse" id="beneficiarios">
-            <ul class="nav">
-              <li
-                *ngIf="usuarioRol === 'DOCENTE' || usuarioRol === 'ADMIN'"
-                class="nav-item"
-                routerLinkActive="active"
-              >
-                <a class="nav-link" routerLink="/beneficiarios/novedades">
-                  <span class="sidebar-mini"></span>
-                  <span class="sidebar-normal">Novedades</span>
-                </a>
-              </li>
-              <li class="nav-item" routerLinkActive="active">
-                <a
-                  class="nav-link"
-                  routerLink="/beneficiarios/mis-beneficiarios"
-                >
-                  <span class="sidebar-mini"></span>
-                  <span class="sidebar-normal">Mis beneficiarios</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </a>
-      </li>
-      <!-- Fijado al final -->
-      <li class="nav-item active-pro ">
-        <a class="nav-link" data-toggle="modal" data-target="#modal-reporte">
-          <i class="material-icons">sms_failed</i>
-          <p>Reportar fallo</p>
-        </a>
-      </li>
-    </ul>
-  </div>
-</div>
-
-<!-- Modal -->
-<div
-  class="modal fade"
-  id="modal-reporte"
-  tabindex="-1"
-  role="dialog"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">
-          <i class="fa fa-exclamation-triangle text-warning mr-2"></i> Reportar
-          fallo
-        </h5>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="actions">
+      <div class="logo">
+        <img src="./assets/img/Icono-dark.svg" width="28px" alt="" />
+      </div>
+      <div class="spacer"></div>
+      <div class="notifications">
         <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
+          (click)="abrirNotificaciones = !abrirNotificaciones"
+          mat-icon-button
+          cdkOverlayOrigin
+          #originOverlay="cdkOverlayOrigin"
         >
-          <span aria-hidden="true">&times;</span>
+          <mat-icon
+            [ngClass]="{ animate__swing: cuentaSinLeer > 0 }"
+            class="animate__animated"
+          >
+            {{ iconoNotificacion }}
+          </mat-icon>
         </button>
+        <ng-template
+          cdkConnectedOverlay
+          cdkConnectedOverlayHasBackdrop
+          cdkConnectedOverlayBackdropClass="backdrop-notificaciones"
+          [cdkConnectedOverlayOrigin]="originOverlay"
+          [cdkConnectedOverlayOpen]="abrirNotificaciones"
+        >
+          <app-notificaciones
+            [notificaciones]="notificaciones"
+            [sinLeer]="cuentaSinLeer"
+            (marcarComoLeida)="marcarComoLeida($event)"
+            (marcarComoNoLeida)="marcarComoNoLeida($event)"
+          ></app-notificaciones>
+        </ng-template>
       </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <div class="row">
-            <div class="col-12">
-              <p>Qué tipo de reporte quieres hacer?</p>
-              <div class="form-check form-check-inline">
-                <input
-                  [(ngModel)]="reporte.tipo"
-                  class="form-check-input"
-                  type="radio"
-                  name="tipoReporte"
-                  id="fallo"
-                  value="Fallo"
-                />
-                <label class="form-check-label" for="fallo">Fallo</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input
-                  [(ngModel)]="reporte.tipo"
-                  class="form-check-input"
-                  type="radio"
-                  name="tipoReporte"
-                  id="sugerencia"
-                  value="Sugerencia"
-                />
-                <label class="form-check-label" for="sugerencia"
-                  >Sugerencia</label
-                >
-              </div>
-              <div class="form-check form-check-inline">
-                <input
-                  [(ngModel)]="reporte.tipo"
-                  class="form-check-input"
-                  type="radio"
-                  name="tipoReporte"
-                  id="mensaje"
-                  value="Mensaje"
-                />
-                <label class="form-check-label" for="mensaje">Mensaje</label>
-              </div>
-              <textarea
-                [(ngModel)]="reporte.descripcion"
-                name="descripción"
-                class="form-control"
-                rows="5"
-              ></textarea>
-              <small class="text-muted"
-                ><i class="fa fa-info-circle"></i> Por favor, sé lo más claro
-                posible en la redacción de tu observación</small
-              >
-            </div>
+      <div class="user-btn">
+        <button mat-icon-button [matMenuTriggerFor]="menu" class="user-btn">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu" xPosition="before">
+          <div class="user-info-menu">
+            <span>Iniciaste como</span>
+            <span class="email">{{ usuario.correo }}</span>
           </div>
-        </div>
+          <mat-divider></mat-divider>
+          <button (click)="irAyuda()" mat-menu-item>
+            <mat-icon>help</mat-icon>
+            <span>Ayuda</span>
+          </button>
+          <button (click)="irAjustes()" mat-menu-item>
+            <mat-icon>settings</mat-icon>
+            <span>Ajustes</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button (click)="cerrarSesion()" mat-menu-item>
+            <mat-icon>power_settings_new</mat-icon>
+            <span>Cerrar sesión</span>
+          </button>
+        </mat-menu>
       </div>
-      <div class="modal-footer">
-        <button (click)="crearReporte()" type="button" class="btn btn-primary">
-          Reportar a administrador
-        </button>
+    </div>
+    <div class="user-profile">
+      <!-- No muestra imagen (mientras se sube) -->
+      <div *ngIf="false" class="avatar">
+        <img src="./assets/img/developer.png" width="100%" alt="" />
       </div>
+      <!-- Muestra primera letra de nombre (mientras se puedan subir imagenes) -->
+      <div class="user-no-image m-0" style="width: 96px; height: 96px;">
+        {{ usuario.nombre | primeraLetra }}
+      </div>
+
+      <div class="info">
+        <div class="name">{{ usuario.nombre | nombrePropio }}</div>
+        <div class="email">{{ usuario.correo }}</div>
+      </div>
+    </div>
+  </div>
+  <div *ngFor="let menu of menuUsuario" class="navigation-group">
+    <div class="navigation-title-wrapper">
+      <div class="navigation-group-title">{{ menu.titulo }}</div>
+      <div class="navigation-group-subtitle">{{ menu.subtitulo }}</div>
+    </div>
+    <div
+      class="navigation-item"
+      *ngFor="let menuItem of menu.items"
+      routerLinkActive="active"
+    >
+      <a [routerLink]="menuItem.url" class="navigation-link">
+        <mat-icon>{{ menuItem.gIcon }}</mat-icon>
+        <div class="navigation-link-text">{{ menuItem.nombre }}</div>
+      </a>
+    </div>
+  </div>
+  <div *ngIf="false" class="navigation-group group-bottom">
+    <div class="navigation-item" routerLinkActive="active">
+      <a href="#" class="navigation-link">
+        <mat-icon>sms_failed</mat-icon>
+        <div class="navigation-link-text">Fallo</div>
+      </a>
     </div>
   </div>
 </div>

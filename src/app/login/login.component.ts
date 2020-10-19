@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Usuario } from '../models/usuario.model';
 import { UsuarioService } from '../services/usuario.service';
-import { Router } from '@angular/router';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogAcercaDeComponent } from '../components/dialogs/dialog-acerca-de/dialog-acerca-de.component';
 
 @Component({
   selector: 'app-login',
@@ -12,18 +15,33 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
   usuario: Usuario;
   formLogin: FormGroup;
+  hide = true;
   cargando = false;
   recordarCorreo = false;
 
   constructor(
     private fb: FormBuilder,
-    private usuarioService: UsuarioService
-  ) {}
+    private usuarioService: UsuarioService,
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer,
+    public dialog: MatDialog
+  ) {
+    this.matIconRegistry.addSvgIcon(
+      'google',
+      this.domSanitizer.bypassSecurityTrustResourceUrl(
+        '../assets/img/iconos/google.svg'
+      )
+    );
+  }
 
   ngOnInit() {
+    this.comprobarCorreo();
+  }
+
+  comprobarCorreo() {
     this.formLogin = this.fb.group({
       correo: [null, Validators.required],
-      password: [null, Validators.required],
+      password: ['9315267070aA', Validators.required],
       recuerdame: false
     });
     if (localStorage.getItem('correo')) {
@@ -62,5 +80,11 @@ export class LoginComponent implements OnInit {
 
   googleLogin() {
     this.usuarioService.googleLogin();
+  }
+
+  acercaDe() {
+    this.dialog.open(DialogAcercaDeComponent, {
+      width: '620px'
+    });
   }
 }

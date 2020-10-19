@@ -1,0 +1,191 @@
+:root {
+  /* Colors */
+  --color-primary: #0097a7;
+  --color-blanco: #fff;
+  /* text */
+  --texto-color-1: #303030;
+  --texto-color-2: #2b2b2b;
+  --texto-color-3: #1f1f1f;
+  --texto-color-4: #1b1c1e;
+  --texto-gris: #969696;
+  --texto-sidebar: #e0f7fa;
+
+  /* backgrounds */
+  --bg-color-primary: #f1f4f9;
+  --bg-color-warn: #f44236;
+  --bg-color-sidebar: hsl(186, 100%, 33%);
+  --bg-color-sidebar-hover: hsl(186, 100%, 38%);
+  --bg-color-sidebar-active: hsl(186, 100%, 28%);
+}
+
+html,
+body {
+  background-color: var(--bg-color-primary);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--texto-color-2);
+}
+
+.no-data {
+  color: var(--texto-gris);
+}
+
+.page-wrapper,
+.page-content {
+  background-color: var(--bg-color-primary);
+}
+
+.mat-drawer-container,
+.mat-drawer-container {
+  background-color: inherit !important;
+}
+
+.mat-tab-header .mat-tab-header {
+  background-color: var(--color-blanco);
+}
+
+.mat-expansion-panel {
+  background-color: var(--color-blanco);
+}
+
+.mat-toolbar.mat-primary {
+  background: #fff !important;
+  color: var(--texto-color-1) !important;
+}
+
+.table-page-header {
+  background-color: var(--color-blanco);
+}
+
+.help-center .help-categories .category .title {
+  color: var(--texto-color-3);
+}
+
+.sidenav-uds-list {
+  background-color: var(--color-blanco);
+}
+/* SIDEBAR STYLES ******************************************************************/
+.sidebar {
+  background-color: var(--bg-color-sidebar);
+  color: var(--texto-sidebar);
+}
+
+.sidebar .navigation-group .navigation-title-wrapper .navigation-group-title {
+  color: var(--color-blanco);
+}
+
+.sidebar .user-profile .email,
+.sidebar .navigation-group-subtitle {
+  color: #b2ebf2;
+}
+
+.sidebar .navigation-group .navigation-item .navigation-link:hover {
+  background-color: var(--bg-color-sidebar-hover);
+}
+.sidebar .navigation-group .navigation-item.active .navigation-link {
+  background-color: var(--bg-color-sidebar-active);
+}
+.sidebar .navigation-group .navigation-item.active .navigation-link-text {
+  color: var(--color-blanco);
+}
+
+.sidebar .navigation-group .mat-icon {
+  color: #e0f7fa;
+  transition: color 375ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.sidebar .navigation-group .navigation-link-text {
+  color: #e0f7fa;
+}
+
+/* FIN SIDEBAR STYLES ***************************************************************/
+
+/* ApexCharts ***********************************************************************/
+
+.apexchart {
+  background-color: var(--color-blanco);
+}
+.apexchart .chart-title {
+  color: #64748b;
+}
+.apexchart .chart-data {
+  color: var(--texto-color-3);
+}
+.apexchart .percent,
+.apexchart .chart-actions {
+  color: #64748b;
+}
+/* Fin ApexCharts ********************************************************************/
+
+.page-wrapper .page-header {
+  background-color: var(--color-blanco);
+}
+
+.mat-table tr.mat-header-row {
+  background-color: #fcfdff;
+}
+.mat-table tr.mat-header-row th {
+  border-bottom: 1px solid #eee;
+}
+.mat-table tr.mat-row:hover,
+.mat-table tr.mat-row:active {
+  background-color: #f1f5ff;
+}
+
+.drag-n-drop-zone {
+  border: 2.5px dashed #d4d4d4;
+  background-color: #f9fafb;
+  color: #afafaf;
+}
+
+.clipboard-btn:hover {
+  background-color: #eee;
+}
+
+.help-center .help-categories .category {
+  background-color: var(--color-blanco);
+}
+
+/* disabled input y select */
+.bdm-input.mat-form-field-disabled .mat-form-field-outline-start,
+.bdm-input.mat-form-field-disabled .mat-form-field-outline-end,
+.bdm-select.mat-form-field-disabled .mat-form-field-outline-start,
+.bdm-select.mat-form-field-disabled .mat-form-field-outline-end {
+  background-color: aliceblue;
+}
+
+/* NOTIFICACTIONS PANEL -------------------------------------------- */
+.notificaciones-wrapper {
+  background-color: #fff;
+}
+.notificaciones-wrapper .header {
+  background: var(--bg-color-primary);
+  border-top: 4px solid #e2e8f0;
+}
+.notificaciones-wrapper .notificacion-wrapper {
+  border-color: #e2e8f0;
+}
+.notificaciones-wrapper .notificacion-wrapper {
+  border-color: #e2e8f0;
+}
+
+.notificaciones .notificacion .titulo,
+.notificaciones .notificacion .descripcion .titulo + span {
+  color: var(--texto-color-1);
+}
+/* notificacion leída */
+.notificaciones-wrapper .acciones .mat-icon {
+  color: #d9e2f1;
+}
+
+/* FIN NOTIFICACTIONS PANEL ----------------------------------------- */
+
+.loading-wrapper {
+  background-color: var(--color-primary);
+}

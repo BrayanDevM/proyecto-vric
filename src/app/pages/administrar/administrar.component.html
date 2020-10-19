@@ -1,159 +1,254 @@
-<div class="content">
-  <div class="container-fluid">
-    <app-breadcrumb></app-breadcrumb>
-    <div class="row BDM_fadeInUp">
-      <div class="col-7">
-        <div class="card">
-          <div class="card-header">
-            Debuggin
-          </div>
-          <div class="card-body">
-            <div class="content-placeholder ml-0" *ngIf="cargando">
-              <ngx-content-loading
-                [speed]="'600ms'"
-                [width]="280"
-                [preserveAspectRatio]="'none'"
-              >
-                <svg:g ngx-code-preset></svg:g>
-              </ngx-content-loading>
-            </div>
-            <div
-              *ngIf="!cargando && reportes.length === 0; else listaReportes"
-              class="text-muted"
+<div class="page-wrapper BDM_fadeInUp">
+  <div class="page-header row m-0">
+    <div class="page-title col-xl-6 p-0">
+      <h2 class="title-bold m-0">Administrar</h2>
+      <div class="text-muted ml-1">
+        <div>Panel de administración a reportes y registros</div>
+      </div>
+    </div>
+    <div class="page-actions col-xl-6 p-0">
+      <!-- nothing -->
+    </div>
+  </div>
+  <!-- PAGE CONTENT -->
+  <mat-tab-group dynamicHeight class="mat-tab-header">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon">bug_report</mat-icon>
+        Debugging app
+      </ng-template>
+      <!-- TAB CONTENT -->
+      <div class="page-content">
+        <div class="card-body">
+          <div class="content-placeholder ml-0" *ngIf="cargando">
+            <ngx-content-loading
+              [speed]="'600ms'"
+              [width]="280"
+              [preserveAspectRatio]="'none'"
             >
-              <h4>No tienes reportes</h4>
-            </div>
-            <ng-template #listaReportes>
-              <div
-                *ngFor="let reporte of reportes"
-                class="card shadow-sm mb-4 position-relative"
-              >
-                <div
-                  class="form-check position-absolute"
-                  style="top: 15px; right: 10px; z-index: 1;"
-                >
-                  <input
-                    (change)="actualizarReporte(reporte)"
-                    class="form-check-input"
-                    type="checkbox"
-                    [(ngModel)]="reporte.completado"
-                    [id]="'completado' + reporte._id"
-                  />
-                  <label
-                    class="form-check-label"
-                    [for]="'completado' + reporte._id"
-                  >
-                    Completado
-                  </label>
-                </div>
-                <div
-                  class="card-body"
-                  [ngClass]="{ 'texto-tachado': reporte.completado }"
-                >
-                  <h6 class="card-title mb-1">
-                    Reporte de {{ reporte.reportadoPor.nombre }}
-                    <span
-                      class="badge"
-                      style="font-size: .7rem;"
-                      [ngClass]="{
-                        'badge-danger': reporte.tipo === 'Fallo',
-                        'badge-primary': reporte.tipo === 'Sugerencia',
-                        'badge-info': reporte.tipo === 'Mensaje'
-                      }"
-                    >
-                      {{ reporte.tipo }}
-                    </span>
-                  </h6>
-                  <p class="card-subtitle text-muted">
-                    {{ reporte.reportadoPor.correo }}
-                  </p>
-                  <p class="card-text mt-2">{{ reporte.descripcion }}</p>
-
-                  <small class="text-muted"
-                    >creado el: {{ reporte.creadoEl }}</small
-                  >
-                </div>
-              </div>
-            </ng-template>
+              <svg:g ngx-code-preset></svg:g>
+            </ngx-content-loading>
           </div>
+          <div
+            *ngIf="!cargando && reportes.length === 0; else listaReportes"
+            class="text-muted"
+          >
+            <h4>No tienes reportes</h4>
+          </div>
+          <ng-template #listaReportes>
+            <div
+              *ngFor="let reporte of reportes"
+              class="card shadow border-0 mb-4 position-relative"
+            >
+              <div
+                class="form-check position-absolute"
+                style="top: 15px; right: 10px; z-index: 1;"
+              >
+                <mat-checkbox
+                  class="example-margin"
+                  [(ngModel)]="reporte.completado"
+                  (change)="actualizarReporte(reporte)"
+                  >Completado</mat-checkbox
+                >
+              </div>
+              <div
+                class="card-body"
+                [ngClass]="{ 'texto-tachado': reporte.completado }"
+              >
+                <h5 class="card-title d-flex flex-row align-items-center mb-1">
+                  {{ reporte.asunto }}
+                  <span
+                    class="badge m-0 ml-2 p-1 alert"
+                    style="font-size: .7rem;"
+                    [ngClass]="{
+                      'bg-danger': reporte.tipo === 'Fallo',
+                      'bg-primary': reporte.tipo === 'Sugerencia',
+                      'bg-info': reporte.tipo === 'Mensaje'
+                    }"
+                  >
+                    {{ reporte.tipo }}
+                  </span>
+                </h5>
+                <p class="card-text mt-2">{{ reporte.descripcion }}</p>
+                <p class="card-subtitle text-muted m-0">
+                  {{ reporte.reportadoPor.nombre }},
+                  {{ reporte.reportadoPor.correo }}
+                </p>
+                <small class="text-muted"
+                  >creado el: {{ reporte.creadoEl }}</small
+                >
+              </div>
+            </div>
+          </ng-template>
         </div>
       </div>
-      <div class="col-5">
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon mr-2">cloud_upload</mat-icon>
+        Importar registros
+      </ng-template>
+      <!-- TAB CONTENT -->
+      <div class="page-content">
         <div class="card">
-          <div class="card-header">
-            Agregar registros
-          </div>
-          <div class="card-body">
-            <h5 class="card-title">Importar beneficiarios desde Excel</h5>
+          <div class="card-body p-5 pt-4 pb-4">
+            <h5 class="card-title">Importar datos desde archivo Excel</h5>
             <div class="row">
-              <div class="col-12 mb-3">
-                <div class="custom-file">
-                  <input
-                    (change)="validarArchivo($event.target.files)"
-                    type="file"
-                    class="custom-file-input"
-                    id="customFileLang"
-                    lang="es"
-                  />
-                  <label class="custom-file-label" for="customFileLang">{{
-                    archivoPlaceholder
-                  }}</label>
-                </div>
-              </div>
-            </div>
-            <div *ngIf="formData" class="row">
-              <div class="col-6">
-                <ul class="list-group">
-                  <li class="list-group-item">
-                    <b>Nombre archivo:</b> {{ archivoPlaceholder }}
-                  </li>
-                  <li class="list-group-item">
-                    <b>Tamaño:</b> {{ tamanioArchivo | number: '.2-2' }} Kb
-                  </li>
-                  <li class="list-group-item">
-                    <b>Estado: </b>
-                    <span *ngIf="!haSubido">Pendiente</span>
-                    <span *ngIf="haSubido">Completado</span>
-                  </li>
-                </ul>
-              </div>
-              <div class="col-6">
-                <div *ngIf="estaSubiendo" class="alert alert-info">
-                  <div class="d-flex justify-content-center">
-                    <div class="spinner-border" role="status"></div>
+              <div class="col-6 mb-3">
+                <div class="drag-n-drop-zone">
+                  <span>Arrastra el archivo .xlsx</span>
+                  <span>o</span>
+                  <div class="action">
+                    <input
+                      type="file"
+                      style="display: none"
+                      lang="es"
+                      #fileInput
+                      (change)="onChangeFileInput($event.target.files)"
+                    />
+                    <button
+                      mat-raised-button
+                      color="primary"
+                      class="file-select-button"
+                      (click)="onClickFileInputButton()"
+                    >
+                      <mat-icon>attach_file</mat-icon>
+                      Seleccionar un archivo
+                    </button>
                   </div>
                 </div>
-                <ul *ngIf="haSubido" class="list-group">
-                  <li class="list-group-item">
-                    <b>Registros en archivo: </b>{{ registrosAImportar }}
-                  </li>
-                  <li class="list-group-item">
-                    <b>Registros importados:</b> {{ registrosImportados }}
-                  </li>
-                  <li class="list-group-item">
-                    <b>Beneficiarios existentes:</b>
-                    {{ beneficiariosExistentes }}
-                  </li>
-                  <li class="list-group-item">
-                    <b>Responsables existentes:</b>
-                    {{ responsablesExistentes }}
-                  </li>
-                </ul>
               </div>
-              <div class="col-12 mt-2 text-right">
+              <div class="col-6 mb-3">
+                <!-- FILE DESC -->
+                <mat-list *ngIf="formData">
+                  <div mat-subheader>Descripción del archivo</div>
+                  <mat-list-item>
+                    <mat-icon mat-list-icon>description</mat-icon>
+                    <div mat-line>{{ archivoPlaceholder }}</div>
+                    <div mat-line>
+                      Tamaño: {{ tamanioArchivo | number: '.2-2' }} kb
+                    </div>
+                  </mat-list-item>
+                  <div *ngIf="haSubido" class="finalizado">
+                    <mat-divider></mat-divider>
+                    <div mat-subheader>Resultados</div>
+                    <mat-list-item>
+                      <mat-icon mat-list-icon>list</mat-icon>
+                      <div mat-line>
+                        Registros en archivo: {{ registrosAImportar }}
+                      </div>
+                    </mat-list-item>
+                    <mat-list-item>
+                      <mat-icon mat-list-icon>cloud_done</mat-icon>
+                      <div mat-line>
+                        Registros importados: {{ registrosAImportar }}
+                      </div>
+                    </mat-list-item>
+                    <mat-list-item>
+                      <mat-icon mat-list-icon>fact_check</mat-icon>
+                      <div mat-line>
+                        Beneficiarios existentes: {{ beneficiariosExistentes }}
+                      </div>
+                    </mat-list-item>
+                    <mat-list-item>
+                      <mat-icon mat-list-icon>fact_check</mat-icon>
+                      <div mat-line>
+                        Responsables existentes: {{ responsablesExistentes }}
+                      </div>
+                    </mat-list-item>
+                  </div>
+                </mat-list>
+              </div>
+              <div class="col-12 text-right">
                 <button
                   (click)="importarExcel()"
-                  type="button"
-                  class="btn btn-success"
+                  [disabled]="!archivo"
+                  mat-raised-button
+                  color="accent"
                 >
-                  <i class="fas fa-file-upload mr-1"></i>
-                  Importar
+                  <mat-icon class="mr-1">publish</mat-icon>
+                  importar
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
+      <!-- <div class="card">
+        <div class="card-header">
+          Agregar registros
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Importar beneficiarios desde Excel</h5>
+          <div class="row">
+            <div class="col-12 mb-3">
+              <div class="custom-file">
+                <input
+                  (change)="validarArchivo($event.target.files)"
+                  type="file"
+                  class="custom-file-input"
+                  id="customFileLang"
+                  lang="es"
+                />
+                <label class="custom-file-label" for="customFileLang">{{
+                  archivoPlaceholder
+                }}</label>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="formData" class="row">
+            <div class="col-6">
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <b>Nombre archivo:</b> {{ archivoPlaceholder }}
+                </li>
+                <li class="list-group-item">
+                  <b>Tamaño:</b> {{ tamanioArchivo | number: '.2-2' }} Kb
+                </li>
+                <li class="list-group-item">
+                  <b>Estado: </b>
+                  <span *ngIf="!haSubido">Pendiente</span>
+                  <span *ngIf="haSubido">Completado</span>
+                </li>
+              </ul>
+            </div>
+            <div class="col-6">
+              <div *ngIf="estaSubiendo" class="alert alert-info">
+                <div class="d-flex justify-content-center">
+                  <div class="spinner-border" role="status"></div>
+                </div>
+              </div>
+              <ul *ngIf="haSubido" class="list-group">
+                <li class="list-group-item">
+                  <b>Registros en archivo: </b>{{ registrosAImportar }}
+                </li>
+                <li class="list-group-item">
+                  <b>Registros importados:</b> {{ registrosImportados }}
+                </li>
+                <li class="list-group-item">
+                  <b>Beneficiarios existentes:</b>
+                  {{ beneficiariosExistentes }}
+                </li>
+                <li class="list-group-item">
+                  <b>Responsables existentes:</b>
+                  {{ responsablesExistentes }}
+                </li>
+              </ul>
+            </div>
+            <div class="col-12 mt-2 text-right">
+              <button
+                (click)="importarExcel()"
+                type="button"
+                class="btn btn-success"
+              >
+                <i class="fas fa-file-upload mr-1"></i>
+                Importar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div> -->
+    </mat-tab>
+  </mat-tab-group>
 </div>

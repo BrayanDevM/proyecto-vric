@@ -1,5 +1,6 @@
 export class Reporte {
   constructor(
+    public asunto: string,
     public tipo: string,
     public descripcion: string,
     public creadoEl: string,

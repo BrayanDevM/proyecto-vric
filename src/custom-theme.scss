@@ -1,0 +1,72 @@
+@import '~@angular/material/theming';
+// Cambio de tipografía (fuente, tamaño en títulos, tamaño en body)
+$custom-typography: mat-typography-config(
+  $font-family: 'Inter, Roboto, monospace',
+  $headline: mat-typography-level(32px, 48px, 700),
+  $body-1: mat-typography-level(14px, 24px, 400)
+);
+
+@include mat-core();
+
+// Definiendo variables con color primerio y secundario
+$VRIC-default-primary: mat-palette($mat-teal);
+$VRIC-default-accent: mat-palette($mat-amber);
+// El color de warn es opcional (por defecto es rojo)
+$VRIC-default-warn: mat-palette($mat-red);
+// Creamos el objeto con el tema
+$VRIC-default-theme: mat-light-theme(
+  (
+    color: (
+      primary: $VRIC-default-primary,
+      accent: $VRIC-default-accent,
+      warn: $VRIC-default-warn
+    )
+  )
+);
+
+$VRIC-light-purple-primary: mat-palette($mat-cyan, 700);
+$VRIC-light-purple-theme: mat-light-theme(
+  (
+    color: (
+      primary: $VRIC-light-purple-primary,
+      accent: $VRIC-default-accent,
+      warn: $VRIC-default-warn
+    )
+  )
+);
+
+// Tema oscuro
+$VRIC-dark-primary: mat-palette($mat-teal, 700);
+$VRIC-dark-accent: mat-palette($mat-amber, 700);
+$VRIC-dark-warn: mat-palette($mat-red, 300);
+$VRIC-dark-theme: mat-dark-theme(
+  (
+    color: (
+      primary: $VRIC-dark-primary,
+      accent: $VRIC-dark-accent,
+      warn: $VRIC-dark-warn
+    )
+  )
+);
+
+// Aplicamos el tema
+@include angular-material-theme($VRIC-default-theme);
+
+// Sobre-escribimos clases CSS de tipografía (e.g., mat-h1, mat-display-1, mat-typography, etc.)
+@include angular-material-typography($custom-typography);
+
+.vric-default-theme {
+  @include angular-material-theme($VRIC-default-theme);
+  // background-color: #f1f4f9;
+  color: #1b1c1e;
+}
+.vric-dark-theme {
+  @include angular-material-theme($VRIC-dark-theme);
+  // background-color: #1a202e;
+  color: #f2ffff;
+}
+.vric-light-purple-theme {
+  @include angular-material-theme($VRIC-light-purple-theme);
+  // background-color: #1a202e;
+  color: #1b1c1e;
+}

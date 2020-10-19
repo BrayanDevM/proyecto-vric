@@ -12,16 +12,7 @@ const routes: Routes = [
     path: 'login',
     component: LoginComponent,
     canActivate: [AlreadyLoginGuard],
-    data: {
-      paginaActiva: 'Login',
-      partes: [
-        {
-          titulo: 'Login',
-          url: ''
-        }
-      ],
-      gIcono: 'book'
-    }
+    data: { nombrePagina: 'Login' }
   },
   {
     path: '',

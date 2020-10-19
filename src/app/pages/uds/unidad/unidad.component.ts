@@ -1,13 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { UdsService } from 'src/app/services/uds.service';
 import { Uds } from 'src/app/models/uds.model';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Router, ActivationEnd } from '@angular/router';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { Usuario } from 'src/app/models/usuario.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { NgOption } from '@ng-select/ng-select';
-import { alertSuccess, alertError } from 'src/app/helpers/swal2.config';
-declare var moment: any;
+import {
+  alertSuccess,
+  alertError,
+  alertDanger
+} from 'src/app/helpers/swal2.config';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
+declare const moment: any;
 
 @Component({
   selector: 'app-unidad',
@@ -15,71 +21,94 @@ declare var moment: any;
   styleUrls: ['./unidad.component.css']
 })
 export class UnidadComponent implements OnInit {
-  // valores ng-select
-  estadoArriendo: NgOption = [
-    { value: true, label: 'Con arriendo' },
-    { value: false, label: 'Sin arriendo' }
-  ];
-  estadoUds: NgOption = [
-    { value: true, label: 'Activa' },
-    { value: false, label: 'Inactiva' }
-  ];
-  // ------------------------
   uds: Uds;
-  coordinadores: Usuario[];
+  coordinadores: Usuario[] = [];
   cargandoCoords = false;
-  gestores: Usuario[];
+  gestores: Usuario[] = [];
   cargandoGestores = false;
-  docentes: Usuario[];
+  docentes: Usuario[] = [];
+  docentesSeleccionadas: any[] = [];
   cargandoDocentes = false;
   docentesEnUds = [];
-  actualizando = false;
   formActualizarUds: FormGroup;
+
+  puedeEditar = false;
+  editMode = false;
 
   constructor(
     private usuarios$: UsuarioService,
     private uds$: UdsService,
-    private rutaActual: ActivatedRoute,
     private router: Router,
+    private snackBar$: MatSnackBar,
     private fb: FormBuilder
   ) {
+    this.comprobarPermisos();
     // Intancio nuevo formulario
     this.formActualizarUds = this.fb.group({
-      codigo: [null, Validators.required],
-      nombre: [null, Validators.required],
+      nombre: [null, [Validators.required, Validators.minLength(5)]],
+      codigo: [null, [Validators.required, Validators.pattern('^[0-9]*$')]],
       cupos: [null, Validators.required],
       ubicacion: [null, Validators.required],
       coordinador: [null, Validators.required],
       gestor: [null, Validators.required],
       docentes: [null, Validators.required],
-      arriendo: null,
+      arriendo: false,
       activa: false,
       creadoEl: null
     });
-  }
+    this.obtenerInfoRuta().subscribe(udsId => {
+      if (udsId !== undefined) {
+        console.log('ejecuta busqueda unidad');
 
-  ngOnInit() {
-    // Obtener datos
-    this.obtenerUnidad().then((unidad: Uds) => {
-      this.uds = this.formatearFechas(unidad);
-      this.tomarDocentes(unidad);
-      this.obtenerCoordinadores();
-      this.obtenerGestores();
-      this.obtenerDocentes();
-      this.actualizarForm(this.uds);
+        this.obtenerUnidad(udsId).then((unidad: Uds) => {
+          this.uds = this.formatearFechas(unidad);
+          this.docentesEnUnidad(unidad);
+          this.obtenerCoordinadores();
+          this.obtenerGestores();
+          this.obtenerDocentes();
+          this.actualizarForm(this.uds);
+          this.editMode = false;
+        });
+      }
     });
   }
 
-  obtenerUnidad() {
+  get f(): FormGroup {
+    return this.formActualizarUds;
+  }
+  get fv() {
+    return this.formActualizarUds.value;
+  }
+  get fc() {
+    return this.formActualizarUds.controls;
+  }
+
+  ngOnInit() {}
+
+  maxTwoSelected() {
+    if (this.fv.docentes.length < 3) {
+      this.docentesSeleccionadas = this.fv.docentes;
+    } else {
+      this.f.get('docentes').patchValue(this.docentesSeleccionadas);
+    }
+  }
+
+  obtenerInfoRuta(): Observable<any> {
+    return this.router.events.pipe(
+      filter(event => event instanceof ActivationEnd),
+      filter((event: ActivationEnd) => event.snapshot.firstChild === null),
+      map((event: ActivationEnd) => event.snapshot.params.udsId)
+    );
+  }
+
+  obtenerUnidad(id: string) {
     return new Promise((resolve, reject) => {
-      this.rutaActual.params.subscribe((params: Params) => {
-        this.uds$.obtenerUnidad(params.id).subscribe((resp: any) => {
-          if (resp.ok) {
-            resolve(resp.unidad);
-          } else {
-            reject(resp);
-          }
-        });
+      this.uds$.obtenerUnidad(id).subscribe((resp: any) => {
+        if (resp.ok) {
+          resolve(resp.unidad);
+        } else {
+          reject(resp);
+        }
       });
     });
   }
@@ -91,7 +120,7 @@ export class UnidadComponent implements OnInit {
     return unidad;
   }
 
-  tomarDocentes(unidad: Uds) {
+  docentesEnUnidad(unidad: Uds) {
     if (unidad.docentes !== null || unidad.docentes) {
       unidad.docentes.forEach((docente: Usuario) => {
         this.docentesEnUds.push(docente._id);
@@ -114,64 +143,54 @@ export class UnidadComponent implements OnInit {
     });
   }
 
+  volver() {
+    this.router.navigate(['unidades-de-servicio']);
+  }
+
   obtenerDocentes() {
     this.cargandoDocentes = true;
-    this.usuarios$.obtenerUsuarios().subscribe((resp: any) => {
-      if (resp.ok) {
-        const arreglo = [];
-        resp.usuarios.forEach((usuario: Usuario) => {
-          if (usuario.rol === 'DOCENTE') {
-            arreglo.push(usuario);
-          }
-        });
-        this.docentes = arreglo;
-        this.cargandoDocentes = false;
-      } else {
-        this.cargandoDocentes = false;
-      }
+    this.usuarios$.obtenerUsuarios().subscribe((docentes: any) => {
+      const arreglo = [];
+      docentes.forEach((usuario: Usuario) => {
+        if (usuario.rol === 'DOCENTE') {
+          arreglo.push(usuario);
+        }
+      });
+      this.docentes = arreglo;
+      this.cargandoDocentes = false;
     });
   }
 
   obtenerCoordinadores() {
     this.cargandoCoords = true;
-    this.usuarios$.obtenerUsuarios().subscribe((resp: any) => {
-      if (resp.ok) {
-        const arreglo = [];
-        resp.usuarios.forEach((usuario: Usuario) => {
-          if (usuario.rol === 'COORDINADOR') {
-            arreglo.push(usuario);
-          }
-        });
-        this.coordinadores = arreglo;
-        this.cargandoCoords = false;
-      } else {
-        this.cargandoCoords = false;
-      }
+    this.usuarios$.obtenerUsuarios().subscribe((coords: Usuario[]) => {
+      const arreglo = [];
+      coords.forEach((usuario: Usuario) => {
+        if (usuario.rol === 'COORDINADOR') {
+          arreglo.push(usuario);
+        }
+      });
+      this.coordinadores = arreglo;
+      this.cargandoCoords = false;
     });
   }
 
   obtenerGestores() {
     this.cargandoGestores = true;
-    this.usuarios$.obtenerUsuarios().subscribe((resp: any) => {
-      if (resp.ok) {
-        const arreglo = [];
-        resp.usuarios.forEach((usuario: Usuario) => {
-          if (usuario.rol === 'ADMIN') {
-            arreglo.push(usuario);
-          }
-        });
-        this.gestores = arreglo;
-        this.cargandoGestores = false;
-      } else {
-        this.cargandoGestores = false;
-      }
+    this.usuarios$.obtenerUsuarios().subscribe((gestores: Usuario[]) => {
+      const arreglo = [];
+      gestores.forEach((usuario: Usuario) => {
+        if (usuario.rol === 'ADMIN') {
+          arreglo.push(usuario);
+        }
+      });
+      this.gestores = arreglo;
+      this.cargandoGestores = false;
     });
   }
 
   actualizar() {
-    this.actualizando = true;
     if (this.formActualizarUds.invalid) {
-      this.actualizando = false;
       return;
     }
     this.uds.codigo = this.formActualizarUds.value.codigo;
@@ -182,23 +201,28 @@ export class UnidadComponent implements OnInit {
     this.uds.activa = this.formActualizarUds.value.activa;
     this.uds.coordinador = this.formActualizarUds.value.coordinador;
     this.uds.gestor = this.formActualizarUds.value.gestor;
-    this.uds.docentes = this.docentesEnUds;
+    this.uds.docentes = this.formActualizarUds.value.docentes;
     // Valores devueltos a _id ya que populate devuelve un objeto
     this.uds.creadoPor = this.uds.creadoPor._id;
-
     if (this.uds.enContrato !== null) {
       this.uds.enContrato = this.uds.enContrato._id;
     }
-    this.uds$.actualizarUds(this.uds).subscribe(resp => {
+    this.uds$.actualizarUds(this.uds).subscribe((resp: any) => {
       if (resp.ok) {
-        alertSuccess.fire({
-          title: 'Unidad De Servicio actualizada'
-        });
-        this.actualizando = false;
+        alertSuccess.fire('Unidad De Servicio actualizada');
+        this.uds$.udsActualizada$.emit(resp.udsActualizada);
+
         this.docentesEnUds = [];
-        this.router.navigate(['/uds']);
+        this.obtenerUnidad(this.uds._id).then((unidad: Uds) => {
+          this.uds = this.formatearFechas(unidad);
+          this.docentesEnUnidad(unidad);
+          this.obtenerCoordinadores();
+          this.obtenerGestores();
+          this.obtenerDocentes();
+          this.actualizarForm(this.uds);
+          this.editMode = false;
+        });
       } else {
-        this.actualizando = false;
         alertError.fire({
           title: 'Error',
           text:
@@ -207,5 +231,70 @@ export class UnidadComponent implements OnInit {
         });
       }
     });
+  }
+
+  eliminar(uds: Uds) {
+    alertDanger
+      .fire({
+        title: 'Eliminar Unidad De Servicio',
+        html: `¿Estás seguro que deseas eliminar la Unidad De Servicio <b>${uds.nombre}</b>?, esta acción no puede deshacerse.`,
+        confirmButtonText: 'Estoy seguro, eliminar'
+      })
+      .then(result => {
+        if (result.value) {
+          this.uds$.eliminarUds(uds).subscribe((resp: any) => {
+            if (resp.ok === true) {
+              alertSuccess.fire('Unidad De Servicio eliminada');
+              this.uds$.udsEliminada$.emit(uds._id);
+              this.volver();
+            } else {
+              alertError.fire({
+                title: 'Eliminar Unidad De Servicio',
+                text: 'No se ha podido eliminar la UDS, intentalo nuevamente'
+              });
+            }
+          });
+        }
+      });
+  }
+
+  copiar(elementId: any) {
+    // Create an auxiliary hidden input
+    const element = document.createElement('input');
+
+    // Get the text from the element passed into the input
+    element.setAttribute('value', document.getElementById(elementId).innerHTML);
+
+    // Append the aux input to the body
+    document.body.appendChild(element);
+
+    // Highlight the content
+    element.select();
+
+    // Execute the copy command
+    document.execCommand('copy');
+
+    // Remove the input from the body
+    document.body.removeChild(element);
+    this.snackBar$.open('Copiado al portapapeles', 'Cerrar', {
+      duration: 4500,
+      horizontalPosition: 'end',
+      verticalPosition: 'bottom'
+    });
+  }
+
+  // permisos para crear
+  comprobarPermisos() {
+    switch (this.usuarios$.usuario.rol) {
+      case 'ADMIN':
+        this.puedeEditar = true;
+        break;
+      case 'GESTOR':
+        this.puedeEditar = true;
+        break;
+      default:
+        this.puedeEditar = false;
+        break;
+    }
   }
 }

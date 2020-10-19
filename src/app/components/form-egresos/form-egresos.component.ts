@@ -1,14 +1,18 @@
-import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormGroupDirective
+} from '@angular/forms';
 import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
 import { Uds } from 'src/app/models/uds.model';
 import { UdsService } from 'src/app/services/uds.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { Beneficiario } from 'src/app/models/beneficiario.model';
 import { alertSuccess, alertDanger } from 'src/app/helpers/swal2.config';
-import { NgOption } from '@ng-select/ng-select';
 import { Usuario } from 'src/app/models/usuario.model';
-declare var moment: any;
+declare const moment: any;
 
 @Component({
   selector: 'app-form-egresos',
@@ -17,7 +21,7 @@ declare var moment: any;
 })
 export class FormEgresosComponent implements OnInit {
   // ng-select -------------------
-  motivosDeEgreso: NgOption = [
+  motivosDeEgreso: any[] = [
     {
       value: 'Retiro voluntario del programa',
       label: 'Retiro voluntario del programa'
@@ -51,10 +55,14 @@ export class FormEgresosComponent implements OnInit {
   formEgreso: FormGroup;
   usuario: Usuario;
   @Input() udsAsignadas: Uds[];
-  beneficiarios: Beneficiario[];
+  beneficiarios: Beneficiario[] = [];
   cargandoBeneficiarios = false;
-  actualizando = false;
   beneficiarioEgreso: Beneficiario;
+
+  maxEgreso: Date;
+  minEgreso: Date;
+
+  @ViewChild(FormGroupDirective) formGroupDirective: FormGroupDirective;
 
   constructor(
     private fb: FormBuilder,
@@ -63,6 +71,13 @@ export class FormEgresosComponent implements OnInit {
     private uds$: UdsService
   ) {
     this.usuario = this.usuario$.usuario;
+
+    const anioActual = new Date().getFullYear();
+    const mesActual = new Date().getMonth();
+
+    this.minEgreso = new Date(anioActual, mesActual - 1, 1); // mes vigente
+    this.maxEgreso = new Date(moment()); // Hoy
+
     this.formEgreso = this.fb.group({
       udsId: [null, Validators.required],
       beneficiarioId: [null, Validators.required],
@@ -73,31 +88,48 @@ export class FormEgresosComponent implements OnInit {
 
   ngOnInit() {}
 
+  get fc() {
+    return this.formEgreso.controls;
+  }
+
+  filtroFinDeSemana = (d: Date | null): boolean => {
+    const dia = (d || new Date()).getDay();
+    // Previene la selección de sábado y domingo.
+    return dia !== 0 && dia !== 6;
+  };
+
   traerBeneficiarios($event: any) {
     this.cargandoBeneficiarios = true;
     this.beneficiarios = [];
     let contador = 0;
-    this.uds$.obtenerUnidad_beneficiarios($event._id).subscribe((resp: any) => {
-      if (resp.ok) {
-        const beneficiariosVinculados = [];
-        this.beneficiarios = resp.unidad.beneficiarios;
-        this.beneficiarios.forEach((beneficiario: Beneficiario) => {
-          if (beneficiario.estado === 'Vinculado') {
-            beneficiariosVinculados.push(beneficiario);
-          }
-          contador++;
-          if (contador === this.beneficiarios.length) {
-            this.beneficiarios = beneficiariosVinculados;
-            this.cargandoBeneficiarios = false;
-          }
-        });
-      } else {
-        this.cargandoBeneficiarios = false;
-      }
-    });
+    this.uds$
+      .obtenerUnidad_beneficiarios($event.value)
+      .subscribe((resp: any) => {
+        if (resp.ok) {
+          const beneficiariosVinculados = [];
+          this.beneficiarios = resp.unidad.beneficiarios;
+          this.beneficiarios.forEach((beneficiario: Beneficiario) => {
+            if (beneficiario.estado === 'Vinculado') {
+              beneficiariosVinculados.push(beneficiario);
+            }
+            contador++;
+            if (contador === this.beneficiarios.length) {
+              this.beneficiarios = beneficiariosVinculados;
+              this.cargandoBeneficiarios = false;
+            }
+          });
+        } else {
+          this.cargandoBeneficiarios = false;
+        }
+      });
   }
 
   reportarEgreso() {
+    if (this.formEgreso.invalid) {
+      this.formEgreso.markAllAsTouched();
+      return;
+    }
+
     const index = this.beneficiarios.findIndex(
       beneficiario => beneficiario._id === this.formEgreso.value.beneficiarioId
     );
@@ -128,23 +160,16 @@ export class FormEgresosComponent implements OnInit {
       })
       .then((result: any) => {
         if (result.value) {
-          this.actualizando = true;
           this.beneficiarios$
             .actualizarBeneficiario(this.beneficiarioEgreso)
             .subscribe(
               (resp: any) => {
                 if (resp.ok === true) {
-                  alertSuccess.fire({
-                    title: 'Beneficiario reportado'
-                  });
-                  this.actualizando = false;
-                  this.formEgreso.reset();
-                } else {
-                  this.actualizando = false;
+                  alertSuccess.fire('Beneficiario reportado');
+                  this.formGroupDirective.resetForm();
                 }
               },
               error => {
-                this.actualizando = false;
                 console.log(error);
               }
             );

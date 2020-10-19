@@ -23,6 +23,8 @@ export class Beneficiario {
     public responsableId: any,
     public estado: string,
     public uds: any,
+    public madreId?: any,
+    public padreId?: any,
     public infoDiscapacidad?: string,
     public comentario?: string,
     public egreso?: string,

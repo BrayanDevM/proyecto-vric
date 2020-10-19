@@ -1,198 +1,153 @@
-<div class="content">
-  <div class="container-fluid">
-    <app-breadcrumb></app-breadcrumb>
-    <div class="BDM_fadeInUp">
-      <form
-        ngNativeValidate
-        [formGroup]="formContrato"
-        (ngSubmit)="crearContrato()"
+<div class="sidenav-detalle border-left">
+  <form
+    class="form-detalle modo-edicion"
+    ngNativeValidate
+    [formGroup]="formContrato"
+    (ngSubmit)="crearContrato()"
+  >
+    <div class="actions">
+      <button
+        (click)="cancelar()"
+        type="button"
+        mat-icon-button
+        matTooltip="Cancelar"
       >
-        <div class="row">
-          <div class="col-7">
-            <div class="card">
-              <div class="card-header">
-                Crear contrato
-              </div>
-              <div class="card-body ">
-                <div class="row">
-                  <div class="col-3">
-                    <div class="form-group">
-                      <label for="codigo">Cód. de Contrato</label>
-                      <input
-                        formControlName="codigo"
-                        name="codigo"
-                        type="number"
-                        class="form-control"
-                        placeholder="Número..."
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div class="col-2">
-                    <div class="form-group">
-                      <label for="cupos">Cupos</label>
-                      <input
-                        formControlName="cupos"
-                        name="cupos"
-                        type="number"
-                        class="form-control"
-                        placeholder="Cupos..."
-                      />
-                    </div>
-                  </div>
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label for="regional">Regional</label>
-                      <input
-                        formControlName="regional"
-                        name="regional"
-                        type="text"
-                        class="form-control"
-                        placeholder="Regional..."
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div class="col-3">
-                    <div class="form-group">
-                      <label for="cz">Centro Zonal</label>
-                      <input
-                        formControlName="cz"
-                        name="cz"
-                        type="text"
-                        class="form-control"
-                        placeholder="CZ..."
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-5">
-                    <div class="form-group">
-                      <label for="eas">Nombre de EAS</label>
-                      <input
-                        formControlName="eas"
-                        name="eas"
-                        type="text"
-                        class="form-control"
-                        placeholder="Nombre de EAS..."
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label for="nit">NIT</label>
-                      <input
-                        formControlName="nit"
-                        name="nit"
-                        type="text"
-                        class="form-control"
-                        placeholder="NIT..."
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div class="col-3">
-                    <div class="form-group">
-                      <label for="coordinador">Estado de contrato</label>
-                      <ng-select
-                        [items]="estadoContrato"
-                        bindLabel="label"
-                        bindValue="value"
-                        placeholder="Seleccionar estado"
-                        [searchable]="false"
-                        formControlName="activo"
-                        name="activo"
-                        required
-                      ></ng-select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-5">
-            <div class="card">
-              <div class="card-header">
-                UDS asignadas a contrato
-              </div>
-              <div class="card-body">
-                <table
-                  *ngIf="IdUdsSeleccionadas.length > 0"
-                  class="table table-hover"
-                >
-                  <thead>
-                    <tr>
-                      <th>Codigo</th>
-                      <th>Nombre</th>
-                      <th>cupos</th>
-                      <th class="text-right">Remover</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let unidad of UdsEnContrato; index as i">
-                      <td>{{ unidad.codigo }}</td>
-                      <td>{{ unidad.nombre }}</td>
-                      <td>{{ unidad.cupos }}</td>
-                      <td class="text-right">
-                        <button
-                          (click)="sacarUdsContrato(i, unidad._id)"
-                          type="button"
-                          class="btn btn-sm btn-danger"
-                        >
-                          <i class="far fa-minus"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div class="form-group">
-                  <label for="uds">Agregar UDS</label>
-                  <ng-select
-                    [items]="udsDisponibles"
-                    bindLabel="nombre"
-                    bindValue="_id"
-                    placeholder="Seleccionar Unidad de Servicio"
-                    [loading]="cargandoUdsDisponibles"
-                    (change)="agregarUdsContrato($event)"
-                  ></ng-select>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12 text-right">
-            <div class="card mt-4">
-              <div class="card-body">
-                <button
-                  *ngIf="!creando"
-                  type="submit"
-                  class="btn btn-success btn-sm mr-2"
-                >
-                  <i class="far fa-plus"></i>
-                  Crear
-                </button>
-                <button
-                  *ngIf="creando"
-                  [disabled]="creando"
-                  type="submit"
-                  class="btn btn-success btn-sm mr-2"
-                >
-                  <span
-                    class="spinner-border spinner-border-sm"
-                    role="status"
-                    aria-hidden="true"
-                  ></span>
-                  Creando...
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
+        <mat-icon>cancel</mat-icon>
+      </button>
+      <button type="submit" mat-icon-button matTooltip="Guardar">
+        <mat-icon>save</mat-icon>
+      </button>
     </div>
-  </div>
+    <div class="logo-icbf">
+      <img src="./assets/img/logos/icbf.png" width="128" alt="" />
+    </div>
+    <h2 class="form-title">Nuevo contrato</h2>
+    <div class="codigo form-field">
+      <mat-form-field appearance="outline">
+        <mat-label>Código de contrato</mat-label>
+        <input
+          matInput
+          formControlName="codigo"
+          name="codigo"
+          autocomplete="off"
+          placeholder="Código de contrato"
+        />
+        <mat-error *ngIf="fc.codigo.errors?.required">
+          Código es obligatorio
+        </mat-error>
+        <mat-error *ngIf="fc.codigo.errors?.pattern">
+          Sólo puedes introducir números
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="activo form-field mt-4">
+      <mat-slide-toggle name="activo" formControlName="activo">
+        <span *ngIf="fv.activo">Activo</span>
+        <span *ngIf="!fv.activo">Inactivo</span>
+      </mat-slide-toggle>
+    </div>
+    <div class="ubicacion form-field">
+      <mat-icon class="form-field-icon">place</mat-icon>
+      <mat-form-field appearance="outline" class="ml-2">
+        <mat-label>Regional IBCF</mat-label>
+        <mat-select
+          formControlName="regional"
+          name="regional"
+          placeholder="Regional"
+        >
+          <mat-option
+            *ngFor="let regional of regionales"
+            [value]="regional.value"
+          >
+            {{ regional.label }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="fc.regional.errors?.required">
+          Regional es obligatorio
+        </mat-error>
+      </mat-form-field>
+      <!--  -->
+      <mat-form-field appearance="outline" class="ml-2">
+        <mat-label>Centro zonal</mat-label>
+        <mat-select formControlName="cz" name="cz" placeholder="Centro zonal">
+          <mat-option *ngFor="let cz of centrosZonales" [value]="cz.value">
+            {{ cz.label }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="fc.cz.errors?.required">
+          Centro zonal es obligatorio
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="form-field eas">
+      <mat-icon class="form-field-icon">home_work</mat-icon>
+      <mat-form-field appearance="outline" class="ml-2">
+        <mat-label>Entidad Administradora de Servicio (EAS)</mat-label>
+        <input
+          matInput
+          formControlName="eas"
+          name="eas"
+          placeholder="Entidad Administradora de Servicios..."
+        />
+        <mat-error *ngIf="fc.eas.errors?.required">
+          Entidad Administradora es obligatoria
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="form-field nit">
+      <mat-icon class="form-field-icon">label</mat-icon>
+      <mat-form-field appearance="outline" class="ml-2">
+        <mat-label>NIT</mat-label>
+        <input matInput formControlName="nit" name="nit" placeholder="NIT..." />
+        <mat-error *ngIf="fc.nit.errors?.required">
+          El NIT es obligatorio
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="form-field cupos">
+      <mat-icon class="form-field-icon">people</mat-icon>
+      <mat-form-field appearance="outline" class="ml-2">
+        <mat-label>Cupos asignados</mat-label>
+        <input
+          matInput
+          type="numeric"
+          formControlName="cupos"
+          name="cupos"
+          placeholder="Cupos asignados..."
+        />
+        <mat-error *ngIf="fc.cupos.errors?.required">
+          Debes asignar cupos al contrato
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="form-field uds">
+      <mat-icon class="form-field-icon">home</mat-icon>
+      <div class="label">Unidades De Servicio (UDS)</div>
+    </div>
+    <div class="form-field agregar-uds mt-1">
+      <mat-form-field appearance="outline" class="bdm-select">
+        <mat-select
+          (selectionChange)="agregarUdsContrato($event)"
+          placeholder="Asignar UDS disponible"
+        >
+          <mat-option *ngFor="let uds of udsDisponibles" [value]="uds._id">
+            {{ uds.nombre }}
+          </mat-option>
+        </mat-select>
+        <mat-hint *ngIf="udsDisponibles.length === 0"
+          >No hay UDS disponibles</mat-hint
+        >
+      </mat-form-field>
+    </div>
+    <div class="list-uds">
+      <mat-divider></mat-divider>
+      <mat-nav-list *ngIf="IdUdsSeleccionadas.length > 0">
+        <ng-container *ngFor="let unidad of udsEnContrato">
+          <a mat-list-item>
+            <div>{{ unidad.nombre }}</div>
+          </a>
+        </ng-container>
+      </mat-nav-list>
+    </div>
+  </form>
 </div>

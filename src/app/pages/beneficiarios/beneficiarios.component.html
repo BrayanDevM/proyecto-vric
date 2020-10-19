@@ -1,23 +1,57 @@
-<div class="content">
-  <div class="container-fluid">
-    <app-breadcrumb></app-breadcrumb>
-    <div class="row">
-      <div class="col-6">
-        <div class="card">
-          <div class="card-header card-header-icon card-header-rose">
-            <div class="card-icon">
-              <i class="fas fa-cog fa-spin fa-2x"></i>
-            </div>
-          </div>
-          <div class="card-body">
-            <h4 class="card-title">Here is the Icon</h4>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repellat
-            porro, id iusto veniam ad neque perspiciatis cum adipisci cumque.
-            Sequi, vel similique consequuntur asperiores consectetur nulla illum
-            ex dolores sed.
-          </div>
-        </div>
+<div class="page-wrapper">
+  <div class="page-header row m-0">
+    <div class="page-title col p-0">
+      <h2 class="title-bold m-0">Beneficiarios</h2>
+      <div class="text-muted ml-1">
+        <div>{{ subtituloPagina }}</div>
       </div>
     </div>
+    <div class="page-actions col p-0">
+      <mat-form-field appearance="outline" class="bdm-select mr-3">
+        <mat-select
+          #selectEstado
+          [(value)]="estadoSeleccionado"
+          (selectionChange)="obtenerBeneficiarios_porEstado($event.value)"
+          placeholder="Seleccionar estado"
+        >
+          <mat-option *ngFor="let estado of estados" [value]="estado.value">
+            {{ estado.label }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>trip_origin</mat-icon>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="bdm-select">
+        <mat-select
+          #selectUds
+          [(value)]="udsSeleccionada"
+          (selectionChange)="
+            obtenerUds_beneficiarios_responsables($event.value)
+          "
+          placeholder="Seleccionar UDS"
+        >
+          <mat-option *ngFor="let unidad of udsAsignadas" [value]="unidad._id">
+            {{ unidad.nombre }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>home_work</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
+  <!-- PAGE CONTENT -->
+  <div class="page-content p-0">
+    <!--*/////////////////////////////// TABLA BENEFICIARIOS *///////////////////////////////-->
+    <!-- <div class="table-section">
+      Título Sección
+    </div> -->
+
+    <div *ngIf="!rutaHijaActiva" class="no-data border-top BDM_fadeInUp">
+      <img src="assets/img/svg/Business concep - VRIC.svg" />
+      <span>Selecciona un elemento de las listas</span>
+    </div>
+    <router-outlet
+      (activate)="rutaHijaActiva = true"
+      (deactivate)="rutaHijaActiva = false"
+    >
+    </router-outlet>
   </div>
 </div>

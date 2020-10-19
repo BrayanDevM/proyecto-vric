@@ -1,13 +1,20 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivationEnd } from '@angular/router';
 import { Contrato } from 'src/app/models/contrato.model';
 import { ContratosService } from 'src/app/services/contratos.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UdsService } from 'src/app/services/uds.service';
 import { Uds } from 'src/app/models/uds.model';
-import { NgOption, NgSelectComponent } from '@ng-select/ng-select';
-import { alertSuccess } from 'src/app/helpers/swal2.config';
-declare var moment: any;
+import {
+  alertSuccess,
+  alertDanger,
+  alertError
+} from 'src/app/helpers/swal2.config';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { Config } from 'src/app/config/config';
+import { UsuarioService } from 'src/app/services/usuario.service';
 
 @Component({
   selector: 'app-contrato',
@@ -15,12 +22,11 @@ declare var moment: any;
   styleUrls: ['./contrato.component.css']
 })
 export class ContratoComponent implements OnInit {
-  // datos ng-select -----------------------------
-  estadoContrato: NgOption[] = [
-    { value: true, label: 'Activo' },
-    { value: false, label: 'Inactivo' }
-  ];
-  // ----------------------------------------------
+  // selects
+  estadoContrato: any[] = Config.SELECTS.centrosZonales;
+  centrosZonales: any[] = Config.SELECTS.centrosZonales;
+  regionales: any[] = Config.SELECTS.regionalesICBF;
+
   contrato: Contrato;
   // Arreglo de uds enContrato = contrato._id || null
   udsDisponibles: Uds[] = [];
@@ -31,18 +37,22 @@ export class ContratoComponent implements OnInit {
   // --------------------------------
   cargandoUdsDisponibles = false;
   formActualizarContrato: FormGroup;
-  actualizando = false;
 
-  @ViewChild('udsDisp') udsDispSelect: NgSelectComponent;
+  // permisos
+  puedeEditar = false;
+  editMode = false;
 
   constructor(
-    private rutaActual: ActivatedRoute,
-    public contrato$: ContratosService,
+    private usuario$: UsuarioService,
+    public contratos$: ContratosService,
     public uds$: UdsService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private snackBar$: MatSnackBar,
+    private router: Router
   ) {
+    this.comprobarPermisos();
     this.formActualizarContrato = this.fb.group({
-      codigo: [null, Validators.required],
+      codigo: [null, [Validators.required, Validators.pattern('^[0-9]*$')]],
       cupos: [null, Validators.required],
       regional: [null, Validators.required],
       cz: [null, Validators.required],
@@ -50,18 +60,53 @@ export class ContratoComponent implements OnInit {
       nit: [null, Validators.required],
       activo: null
     });
+    this.obtenerInfoRuta().subscribe(contratoId => {
+      if (contratoId !== undefined) {
+        this.obtenerContrato(contratoId)
+          .then((contrato: Contrato) => {
+            this.contrato = contrato;
+            this.udsEnContrato = contrato.uds;
+            this.obtenerIdUdsSeleccionadas(contrato.uds);
+            this.actualizarForm(contrato);
+            this.obtenerUdsDisponibles(contrato._id);
+            this.editMode = false;
+          })
+          .catch(error => console.log(error));
+      }
+    });
   }
 
-  ngOnInit() {
-    this.obtenerContrato()
-      .then((contrato: Contrato) => {
-        this.contrato = contrato;
-        this.udsEnContrato = contrato.uds;
-        this.obtenerIdUdsSeleccionadas(contrato.uds);
-        this.actualizarForm(contrato);
-        this.obtenerUdsDisponibles(contrato._id);
-      })
-      .catch(error => console.log(error));
+  get fv() {
+    return this.formActualizarContrato.value;
+  }
+  get fc() {
+    return this.formActualizarContrato.controls;
+  }
+
+  ngOnInit() {}
+
+  obtenerInfoRuta(): Observable<any> {
+    return this.router.events.pipe(
+      filter(event => event instanceof ActivationEnd),
+      filter((event: ActivationEnd) => event.snapshot.firstChild === null),
+      map((event: ActivationEnd) => event.snapshot.params.contratoId)
+    );
+  }
+
+  volver() {
+    this.router.navigate(['/contratos']);
+  }
+
+  obtenerContrato(id: string) {
+    return new Promise((resolve, reject) => {
+      this.contratos$.obtenerContrato(id).subscribe((resp: any) => {
+        if (resp.ok) {
+          resolve(resp.contrato);
+        } else {
+          reject(resp);
+        }
+      });
+    });
   }
 
   actualizarForm(contrato: Contrato) {
@@ -73,20 +118,6 @@ export class ContratoComponent implements OnInit {
       eas: contrato.eas,
       nit: contrato.nit,
       activo: contrato.activo
-    });
-  }
-
-  obtenerContrato() {
-    return new Promise((resolve, reject) => {
-      this.rutaActual.params.subscribe((params: Params) => {
-        this.contrato$.obtenerContrato(params.id).subscribe((resp: any) => {
-          if (resp.ok) {
-            resolve(resp.contrato);
-          } else {
-            reject(resp);
-          }
-        });
-      });
     });
   }
 
@@ -125,21 +156,19 @@ export class ContratoComponent implements OnInit {
   agregarUdsContrato(event: any) {
     // obtengo datos de la Unidad en arreglo
     const UdsSeleccionada: any = this.udsDisponibles.find(
-      (unidad: Uds) => unidad._id === event._id
+      (unidad: Uds) => unidad._id === event.value
     );
     const i = this.udsDisponibles.findIndex(
-      (unidad: Uds) => unidad._id === event._id
+      (unidad: Uds) => unidad._id === event.value
     );
     // Agrego id a selección
-    this.IdUdsSeleccionadas.push(event._id);
+    this.IdUdsSeleccionadas.push(event.value);
     // Agrego datos de UDS para mostrar
-    this.udsEnContrato.push(UdsSeleccionada);
+    this.udsEnContrato.unshift(UdsSeleccionada);
     // Elimino de las disponibles
     this.udsDisponibles.splice(i, 1);
     // Refreso arreglo para el select
     this.udsDisponibles = [...this.udsDisponibles];
-
-    this.udsDispSelect.handleClearClick();
   }
 
   sacarUdsContrato(index: number, unidadId: string) {
@@ -157,10 +186,33 @@ export class ContratoComponent implements OnInit {
     this.IdUdsSeleccionadas.splice(i, 1);
   }
 
+  copiar(elementId: any) {
+    // Create an auxiliary hidden input
+    const element = document.createElement('input');
+
+    // Get the text from the element passed into the input
+    element.setAttribute('value', document.getElementById(elementId).innerHTML);
+
+    // Append the aux input to the body
+    document.body.appendChild(element);
+
+    // Highlight the content
+    element.select();
+
+    // Execute the copy command
+    document.execCommand('copy');
+
+    // Remove the input from the body
+    document.body.removeChild(element);
+    this.snackBar$.open('Copiado al portapapeles', 'Cerrar', {
+      duration: 4500,
+      horizontalPosition: 'end',
+      verticalPosition: 'bottom'
+    });
+  }
+
   actualizar() {
-    this.actualizando = true;
     if (this.formActualizarContrato.invalid) {
-      this.actualizando = false;
       return;
     }
     // Guardo datos en nueva variable, así no reemplaza las UDS en this.contrato para visualizar
@@ -177,15 +229,59 @@ export class ContratoComponent implements OnInit {
       this.udsEnContrato,
       this.contrato._id
     );
-    this.contrato$.actualizarContrato(contrato).subscribe((resp: any) => {
+    this.contratos$.actualizarContrato(contrato).subscribe((resp: any) => {
       if (resp.ok) {
-        this.actualizando = false;
-        alertSuccess.fire({
-          title: 'Contrato actualizado'
-        });
+        this.contrato = resp.contratoActualizado;
+        this.contratos$.contratoActualizado$.emit(this.contrato);
+        this.obtenerIdUdsSeleccionadas(resp.contratoActualizado.uds);
+        this.actualizarForm(resp.contratoActualizado);
+        this.obtenerUdsDisponibles(resp.contratoActualizado._id);
+        this.editMode = false;
+        alertSuccess.fire('Contrato actualizado');
       } else {
-        this.actualizando = false;
+        this.editMode = false;
       }
     });
+  }
+
+  eliminarContrato(contrato: Contrato) {
+    alertDanger
+      .fire({
+        title: 'Eliminar contrato',
+        html: `¿Estás seguro que deseas eliminar el contrato <b>${contrato.codigo}</b>?, esta acción no puede deshacerse`,
+        confirmButtonText: 'Estoy seguro, eliminar'
+      })
+      .then(result => {
+        if (result.value) {
+          this.contratos$.eliminarContrato(contrato).subscribe((resp: any) => {
+            if (resp.ok) {
+              alertSuccess.fire('Contrato eliminado');
+              this.contratos$.contratoEliminado$.emit(contrato._id);
+              this.router.navigate(['/contratos']);
+            } else {
+              alertError.fire({
+                title: 'Eliminar contrato',
+                text:
+                  'No se ha podido eliminar el contrato, intentalo nuevamente'
+              });
+            }
+          });
+        }
+      });
+  }
+
+  // permisos para crear
+  comprobarPermisos() {
+    switch (this.usuario$.usuario.rol) {
+      case 'ADMIN':
+        this.puedeEditar = true;
+        break;
+      case 'GESTOR':
+        this.puedeEditar = true;
+        break;
+      default:
+        this.puedeEditar = false;
+        break;
+    }
   }
 }

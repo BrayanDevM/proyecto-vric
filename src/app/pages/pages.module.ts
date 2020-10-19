@@ -8,6 +8,7 @@ import { NgxContentLoadingModule } from 'ngx-content-loading';
 
 // Módulos externos
 import { ComponentsModule } from '../components/components.module';
+import { AppPipesModule } from '../pipes/app-pipes.module';
 
 // Rutas
 import { PagesRoutingModule } from './pages-routing.module';
@@ -19,18 +20,27 @@ import { ContratosComponent } from './contratos/contratos.component';
 import { UdsComponent } from './uds/uds.component';
 import { BeneficiariosComponent } from './beneficiarios/beneficiarios.component';
 import { BeneficiarioComponent } from './beneficiarios/beneficiario/beneficiario.component';
-import { NovedadesComponent } from './beneficiarios/novedades/novedades.component';
-import { PerfilComponent } from './perfil/perfil.component';
+import { NovedadesComponent } from './novedades/novedades.component';
+import { AjustesComponent } from './ajustes/ajustes.component';
 import { ContratoComponent } from './contratos/contrato/contrato.component';
 import { UnidadComponent } from './uds/unidad/unidad.component';
 import { CrearUdsComponent } from './uds/crear-uds/crear-uds.component';
 import { CrearContratoComponent } from './contratos/crear-contrato/crear-contrato.component';
-import { MisBeneficiariosComponent } from './beneficiarios/mis-beneficiarios/mis-beneficiarios.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { CrearUsuarioComponent } from './usuarios/crear-usuario/crear-usuario.component';
 import { BusquedaComponent } from './busqueda/busqueda.component';
 import { UsuarioComponent } from './usuarios/usuario/usuario.component';
 import { DashboardUdsComponent } from './dashboard/dashboard-uds/dashboard-uds.component';
+import { MaterialModule } from '../material/material.module';
+import { BeneficiariosUdsComponent } from './beneficiarios/tabla-beneficiarios/beneficiarios-uds.component';
+import { BeneficiariosEstadoComponent } from './beneficiarios/tabla-beneficiarios/beneficiarios-estado.component';
+import { BeneficiarioEditarComponent } from './beneficiarios/beneficiario-editar/beneficiario-editar.component';
+import { AyudaComponent } from './ayuda/ayuda.component';
+import { FaqsComponent } from './ayuda/faqs/faqs.component';
+import { GuiasComponent } from './ayuda/guias/guias.component';
+import { SoporteComponent } from './ayuda/soporte/soporte.component';
+import { QueEsEstaAppComponent } from './ayuda/guias/iniciando/que-es-esta-app.component';
+import { ReportarNacimientoComponent } from './ayuda/guias/beneficiarios/reportar-nacimiento.component';
 
 @NgModule({
   declarations: [
@@ -41,22 +51,32 @@ import { DashboardUdsComponent } from './dashboard/dashboard-uds/dashboard-uds.c
     BeneficiarioComponent,
     NovedadesComponent,
     AdministrarComponent,
-    PerfilComponent,
+    AjustesComponent,
     ContratoComponent,
     UnidadComponent,
     CrearUdsComponent,
     CrearContratoComponent,
-    MisBeneficiariosComponent,
     UsuariosComponent,
     CrearUsuarioComponent,
     BusquedaComponent,
     UsuarioComponent,
-    DashboardUdsComponent
+    DashboardUdsComponent,
+    BeneficiariosUdsComponent,
+    BeneficiariosEstadoComponent,
+    BeneficiarioEditarComponent,
+    AyudaComponent,
+    FaqsComponent,
+    GuiasComponent,
+    SoporteComponent,
+    QueEsEstaAppComponent,
+    ReportarNacimientoComponent
   ],
   imports: [
     CommonModule,
     PagesRoutingModule,
     ComponentsModule,
+    MaterialModule,
+    AppPipesModule,
     NgSelectModule,
     FormsModule,
     ReactiveFormsModule,

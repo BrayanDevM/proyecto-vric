@@ -1,0 +1,176 @@
+<div
+  class="page-wrapper d-flex justify-content-center bg-blue-grey help-center"
+>
+  <div class="main">
+    <div class="container-fluid pb-5">
+      <div class="header text-left">
+        <a routerLink="../" mat-button color="primary" class="btn-back mb-4">
+          <mat-icon>arrow_back</mat-icon> Volver a Guías y Recursos
+        </a>
+        <h1 class="m-0">Reportar nacimiento</h1>
+        <p class="text-muted m-0">
+          Cómo reportar el nacimiento de un beneficiario
+        </p>
+      </div>
+      <!-- Guia -->
+      <div class="card card-body border-0 shadow-sm p-5">
+        <section class="mb-4">
+          <h2>Es un nuevo beneficiario</h2>
+          <p>
+            Lo primero a entender es que el nacimiento de un niño/a por parte de
+            una mujer gestante que se encuentra registrada en un servicio de
+            ICBF, en este caso FAMI, es exactamente lo mismo que el ingreso de
+            un beneficiario nuevo, sin embargo, este al ser hijo de una
+            beneficiaria (mujer gestante), no necesita realizar un proceso de
+            registro desde cero como un ingreso nuevo, ya que previamente
+            conocemos la condición familiar y si este cumple los requisitos para
+            su ingreso, por otra parte también contamos con los datos de
+            ubicación, datos de la madre, acudiente (la misma madre), telefóno,
+            etc.
+          </p>
+          <p>
+            El registro o reporte de nacimiento se debe realizar en el
+            formulario llamado "Reportar nacimiento" dentro de la página
+            <a routerLink="/novedades">Novedades</a>
+          </p>
+        </section>
+
+        <section class="mb-4">
+          <h3>Formulario reportar nacimiento</h3>
+          <div class="guia-imagen">
+            <img
+              src="assets/img/guias/beneficiarios/formulario-nacimiento.png"
+              alt=""
+            />
+          </div>
+          <p class="text-muted"><em>Página: Novedades</em></p>
+        </section>
+
+        <section class="mb-4">
+          <h4>Seleccionar mujer gestante/madre del niño/a</h4>
+          <p>
+            En primera instancia nos podremos encontrar con dos listas
+            desplegables que deben seleccionarse en el siguiente orden.
+          </p>
+          <ol>
+            <li>
+              <b>Unidad de servicio:</b> contiene la lista de las UDS que tienes
+              asignadas en tu perfil.
+            </li>
+            <li>
+              <b>Madre del bebé:</b> contiene la lista de las mujeres gestantes
+              que se encuentran actualmente vinculadas en la UDS seleccionada,
+              es decir, no aparecerán las mujeres gestantes que tengan un estado
+              distinto. Por otra parte, si la UDS no cuenta con mujeres
+              gestantes disponibles, no se activará la lista desplegable.
+            </li>
+          </ol>
+          <div class="guia-imagen">
+            <img
+              src="assets/img/guias/beneficiarios/formulario-nacimiento-seleccion.png"
+              alt=""
+            />
+          </div>
+        </section>
+
+        <section class="mb-4">
+          <h4>Datos del formulario</h4>
+          <p>
+            Al seleccionar la mujer gestante que ha tenido el/la bebé, se
+            mostrará el formulario que contiene las siguientes secciones.
+          </p>
+          <ol>
+            <li>
+              <b>Información básica del beneficiario:</b> requiere la
+              información básica del nuevo beneficiario.
+              <ul>
+                <li>Tipo de documento</li>
+                <li>NUIP/Número de documento</li>
+                <li>Primer nombre</li>
+                <li>Segundo nombre (opcional)</li>
+                <li>Primer apellido</li>
+                <li>Segundo apellido (opcional)</li>
+                <li>Sexo</li>
+                <li>Fecha de nacimiento</li>
+                <li>País de nacimiento</li>
+                <li>Departamente de nacimiento</li>
+                <li>Municipio de nacimiento</li>
+                <li>Discapacidad</li>
+              </ul>
+            </li>
+            <li>
+              <b>Información del acudiente y madre:</b> Panel desplegable con la
+              información de la mujer gestante, estos datos se registrarán para
+              la madre y reponsable del beneficiario.
+              <div class="alert alert-info p-1 pl-2 pr-2">
+                Los datos de la mujer gestante no son editables, si alguna
+                información ha cambiado, se puede informar al gestor para que
+                esta sea actualizada, o bien, no usar este formulario, en su
+                lugar usar el formulario
+                <a href="#">Reportar ingreso</a> y registrar todos los datos
+                desde cero.
+              </div>
+            </li>
+            <li>
+              <b>Información básica del padre del beneficiario:</b> requiere la
+              información básica del padre del beneficiario.
+              <ul>
+                <li>Tipo de documento</li>
+                <li>NUIP/Número de documento</li>
+                <li>Primer nombre</li>
+                <li>Segundo nombre (opcional)</li>
+                <li>Primer apellido</li>
+                <li>Segundo apellido (opcional)</li>
+                <li>Sexo</li>
+                <li>Fecha de nacimiento</li>
+              </ul>
+            </li>
+            <li>
+              <b>Ingreso:</b> requiere la información de ingreso del
+              beneficiario.
+              <ul>
+                <li>Unidad de servicio</li>
+                <li>Fecha de ingreso</li>
+                <li>Comentario adicional (opcional)</li>
+              </ul>
+            </li>
+          </ol>
+          <div class="guia-imagen">
+            <img
+              src="assets/img/guias/beneficiarios/formulario-nacimiento-seleccion.png"
+              alt=""
+            />
+          </div>
+        </section>
+
+        <section class="mb-4">
+          <h5>Formulario bloqueado</h5>
+          <p>
+            El formulario se puede bloquear completamente cuando el usuario se
+            encuentra fuera de las primera dos semanas del mes actual. Lo mejor
+            para llevar el registro de un beneficiario Lactante (menor de seis
+            meses) es hacerlo al inicio de un mes, puesto que, permite que el
+            acompañamiento y cargue de formación se dé de manera armónica,
+            hacerlo de otra manera es posible, sin embargo, presenta una
+            dificultad al realizar su seguimiento en las plataformas.
+          </p>
+          <div class="guia-imagen">
+            <img
+              src="assets/img/guias/beneficiarios/formulario-nacimiento-bloqueado.png"
+              alt=""
+            />
+          </div>
+        </section>
+
+        <div class="guia-footer mt-3">
+          <mat-divider></mat-divider>
+          <div class="ultima-actualizacion pt-4">
+            <small class="text-muted">
+              <b>Última actualización {{ fechaDeGuia }}</b>
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

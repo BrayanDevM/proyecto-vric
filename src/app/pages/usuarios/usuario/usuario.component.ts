@@ -1,12 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router, ActivationEnd } from '@angular/router';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { ContratosService } from 'src/app/services/contratos.service';
 import { Contrato } from 'src/app/models/contrato.model';
 import { Usuario } from 'src/app/models/usuario.model';
-import { NgOption } from '@ng-select/ng-select';
-import Swal from 'sweetalert2';
-import { alertError, alertSuccess } from 'src/app/helpers/swal2.config';
+import {
+  alertError,
+  alertSuccess,
+  alertDanger
+} from 'src/app/helpers/swal2.config';
+import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
+import { Config } from 'src/app/config/config';
 
 @Component({
   selector: 'app-usuario',
@@ -14,85 +22,160 @@ import { alertError, alertSuccess } from 'src/app/helpers/swal2.config';
   styleUrls: ['./usuario.component.css']
 })
 export class UsuarioComponent implements OnInit {
+  roles: any[] = Config.SELECTS.usuariosRoles;
   usuario: Usuario;
   contratosDisponibles: Contrato[] = [];
-  // data ng-select
-  roles: NgOption = [
-    {
-      value: 'ADMIN',
-      label: 'Administrador',
-      icon: 'fas fa-user-shield text-danger'
-    },
-    { value: 'GESTOR', label: 'Gestor', icon: 'fas fa-user text-success' },
-    {
-      value: 'COORDINADOR',
-      label: 'Coordinador',
-      icon: 'fas fa-user text-primary'
-    },
-    { value: 'DOCENTE', label: 'Docente', icon: 'fas fa-user text-secondary' }
-  ];
-  // ---------------------
-  actualizando = false;
+  contratosAsignados: Contrato[] = [];
+  formActualizarUsuario: FormGroup;
+  editMode = false;
+  hide = true;
 
   constructor(
-    private rutaActual: ActivatedRoute,
     private contrato$: ContratosService,
     private usuarios$: UsuarioService,
-    private router: Router
-  ) {}
-
-  ngOnInit(): void {
-    this.obtenerUsuario();
-    this.obtenerContratos();
-  }
-
-  obtenerUsuario() {
-    this.rutaActual.params.subscribe((params: Params) => {
-      this.usuarios$.obtenerUsuario(params.id).subscribe((resp: any) => {
-        if (resp.ok) {
-          this.usuario = resp.usuario;
-          this.usuario.password = null;
-        } else {
-          alertError.fire({
-            title: 'Usuario',
-            text:
-              'No se ha podido obtener la información, intentalo nuevamente.'
-          });
-        }
-      });
+    private router: Router,
+    private fb: FormBuilder,
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer
+  ) {
+    this.formActualizarUsuario = this.fb.group({
+      nombre: [null, Validators.required],
+      documento: null,
+      correo: [null, Validators.required],
+      telefono: [null, Validators.required],
+      rol: null,
+      contratos: [],
+      activo: false,
+      password: null
     });
-  }
-
-  obtenerContratos() {
-    this.contrato$.obtenerContratos().subscribe((resp: any) => {
-      if (resp.ok) {
-        this.contratosDisponibles = resp.contratos;
-      } else {
-        alertError.fire({
-          title: 'Usuario',
-          text: 'No se han podido obtener los contratos para asignar a usuario.'
-        });
+    this.registrarIconos();
+    this.obtenerContratos();
+    this.obtenerInfoRuta().subscribe(usuarioId => {
+      if (usuarioId !== undefined) {
+        this.obtenerUsuario(usuarioId);
+        this.editMode = false;
       }
     });
   }
 
-  actualizarUsuario() {
-    this.actualizando = true;
+  ngOnInit(): void {}
+
+  get fv() {
+    return this.formActualizarUsuario.value;
+  }
+
+  volver() {
+    this.router.navigate(['usuarios']);
+  }
+
+  obtenerInfoRuta(): Observable<any> {
+    return this.router.events.pipe(
+      filter(event => event instanceof ActivationEnd),
+      filter((event: ActivationEnd) => event.snapshot.firstChild === null),
+      map((event: ActivationEnd) => event.snapshot.params.usuarioId)
+    );
+  }
+
+  obtenerUsuario(id: string) {
+    this.usuarios$.obtenerUsuario(id).subscribe((resp: any) => {
+      if (!resp.ok) {
+        this.volver();
+        return;
+      }
+      this.usuario = resp.usuario;
+      this.usuario.password = null;
+      this.usuario.contratos.forEach(contrato => {
+        this.contratosAsignados.push(contrato._id);
+      });
+      this.setUsuarioEnFormulario();
+    });
+  }
+
+  obtenerContratos() {
+    this.contrato$.obtenerContratos().subscribe((contratos: Contrato[]) => {
+      this.contratosDisponibles = contratos;
+    });
+  }
+
+  actualizar() {
+    this.usuario.nombre = this.fv.nombre;
+    this.usuario.documento = this.fv.documento + '';
+    this.usuario.correo = this.fv.correo;
+    this.usuario.telefono = this.fv.telefono;
+    this.usuario.rol = this.fv.rol;
+    this.usuario.contratos = this.fv.contratos;
+    this.usuario.activo = this.fv.activo;
+    this.usuario.password = this.fv.password;
+
     this.usuarios$.actualizarUsuario(this.usuario).subscribe((resp: any) => {
       if (resp.ok) {
-        this.actualizando = false;
-        alertSuccess.fire({
-          title: 'Usuario',
-          html: `Usuario ${this.usuario.nombre} actualizado correctamente`
-        });
-        this.router.navigate(['/usuarios']);
+        alertSuccess.fire('Usuario actualizado');
+        this.usuarios$.usuarioActualizado$.emit(resp.usuarioActualizado);
+        this.editMode = false;
       } else {
-        this.actualizando = false;
         alertError.fire({
           title: 'Usuario',
           text: 'No se ha podido actualizar al usuario, intentalo nuevamente'
         });
       }
     });
+  }
+
+  eliminar() {
+    if (this.usuario._id === this.usuarios$.usuario._id) {
+      alertError.fire({
+        title: 'No puedes eliminarte a ti mismo'
+      });
+      return;
+    }
+    alertDanger
+      .fire({
+        title: 'Usuario',
+        html: `¿Estas seguro que deseas eliminar a ${this.usuario.nombre}?, esta acción no puede deshacerse.`,
+        confirmButtonText: 'Sí, eliminar!'
+      })
+      .then((result: any) => {
+        if (result.value) {
+          this.usuarios$
+            .eliminarUsuario(this.usuario)
+            .subscribe((resp: any) => {
+              if (resp.ok) {
+                alertSuccess.fire('Usuario eliminado');
+                this.usuarios$.usuarioEliminado$.emit(this.usuario._id);
+                this.volver();
+              }
+            });
+        }
+      });
+  }
+
+  setUsuarioEnFormulario() {
+    this.formActualizarUsuario.get('nombre').patchValue(this.usuario.nombre);
+    this.formActualizarUsuario
+      .get('documento')
+      .patchValue(this.usuario.documento);
+    this.formActualizarUsuario.get('activo').patchValue(this.usuario.activo);
+    this.formActualizarUsuario.get('correo').patchValue(this.usuario.correo);
+    this.formActualizarUsuario
+      .get('telefono')
+      .patchValue(this.usuario.telefono);
+    this.formActualizarUsuario.get('rol').patchValue(this.usuario.rol);
+    this.formActualizarUsuario
+      .get('contratos')
+      .patchValue(this.contratosAsignados);
+  }
+
+  registrarIconos() {
+    // iconos personalizados
+    this.matIconRegistry.addSvgIcon(
+      'whatsapp',
+      this.domSanitizer.bypassSecurityTrustResourceUrl(
+        '../assets/img/iconos/whatsapp.svg'
+      )
+    );
+  }
+
+  whatsApp(tel: string) {
+    window.open(`https://api.whatsapp.com/send?phone=+57${tel}`, '_blank');
   }
 }

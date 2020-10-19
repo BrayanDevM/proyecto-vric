@@ -1,0 +1,85 @@
+<!-- class "BDM_fadeInUp" ? -->
+<div class="notificaciones-wrapper shadow-lg">
+  <div class="header border-bottom">
+    <h2 class="titulo">
+      Notificaciones <small>({{ sinLeer }})</small>
+    </h2>
+  </div>
+  <div class="notificaciones">
+    <div
+      *ngFor="let notificacion of notificaciones"
+      class="notificacion-wrapper border-bottom"
+    >
+      <div class="notificacion">
+        <div
+          [ngSwitch]="notificacion.titulo"
+          class="icono"
+          [ngStyle]="{ 'background-color': obtenerColor(notificacion.titulo) }"
+        >
+          <mat-icon *ngSwitchCase="'Beneficiarios'">
+            group
+          </mat-icon>
+          <mat-icon *ngSwitchCase="'Unidades De Servicio'">
+            home_work
+          </mat-icon>
+          <mat-icon *ngSwitchCase="'Novedades'">
+            swap_horizontal_circle
+          </mat-icon>
+          <mat-icon *ngSwitchCase="'Usuarios'">
+            assignment_ind
+          </mat-icon>
+          <mat-icon *ngSwitchCase="'Dato sensible'" color="accent">
+            feedback
+          </mat-icon>
+          <mat-icon *ngSwitchCase="'Corrección'">
+            spellcheck
+          </mat-icon>
+          <mat-icon *ngSwitchCase="'Concurrencia'" color="warn">
+            report
+          </mat-icon>
+          <!-- Para locuciones generales -->
+          <mat-icon *ngSwitchDefault>
+            campaign
+          </mat-icon>
+        </div>
+        <div class="descripcion">
+          <span class="titulo">{{ notificacion.titulo }}</span>
+          <span>{{ notificacion.descripcion }}</span>
+          <span class="tiempo">
+            {{ notificacion.fechaCreada | tiempoTranscurrido }}
+          </span>
+        </div>
+      </div>
+      <div class="acciones">
+        <button
+          *ngIf="!notificacion.leidaPor.includes(usuarioId); else btnLeida"
+          (click)="notificacionLeida(notificacion)"
+          mat-icon-button
+          matTooltip="Marcar como leída"
+        >
+          <mat-icon
+            [ngStyle]="{
+              color: '#f26d6c'
+            }"
+            >lens</mat-icon
+          >
+        </button>
+        <ng-template #btnLeida>
+          <button
+            (click)="notificacionNoLeida(notificacion)"
+            mat-icon-button
+            matTooltip="Marcar como no leída"
+          >
+            <mat-icon>lens</mat-icon>
+          </button>
+        </ng-template>
+        <!-- <button mat-icon-button matTooltip="Marcar como leída">
+          <mat-icon>close</mat-icon>
+        </button> -->
+      </div>
+    </div>
+    <div *ngIf="notificaciones.length === 0" class="text-center text-muted p-3">
+      <span>No tienes notificaciones</span>
+    </div>
+  </div>
+</div>

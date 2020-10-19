@@ -1,0 +1,115 @@
+<div
+  *ngIf="!rutaHijaActiva"
+  class="page-wrapper d-flex justify-content-center bg-blue-grey help-center"
+>
+  <div class="main">
+    <div class="header text-center">
+      <h1>Bienvenido! cómo te podemos ayudar hoy?</h1>
+      <div class="help-categories">
+        <a routerLink="faqs" class="category">
+          <mat-icon>description</mat-icon>
+          <span class="title">FAQs</span>
+          <span class="subtitle">
+            Preguntas y respuestas realizadas frecuentemente
+          </span>
+        </a>
+        <a routerLink="guias" class="category">
+          <mat-icon>local_library</mat-icon>
+          <span class="title">Guías</span>
+          <span class="subtitle">Artículos y recursos que te ayudarán</span>
+        </a>
+        <a routerLink="soporte" class="category">
+          <mat-icon>support</mat-icon>
+          <span class="title">Soporte</span>
+          <span class="subtitle">
+            Contactanos para un soporte más detallado
+          </span>
+        </a>
+      </div>
+    </div>
+    <div class="faqs">
+      <div class="header text-center">
+        <h2 class="m-0">Preguntas realizadas frecuentemente</h2>
+        <h4 class="text-muted">
+          Aquí están las preguntas más frecuentes, puedes revisarlas antes de
+          empezar
+        </h4>
+      </div>
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Los datos de mi beneficiario cambiaron después de vinculado, qué
+              pasó?
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <p class="text-muted">
+            Esta aplicación es una capa de abstracción del CUENTAME, es decir,
+            cuando se verifica que existe el registro de un beneficiario en
+            CUENTAME, pero con datos distintos, el gestor actualiza los datos
+            dentro de esta aplicación para que el usuario evidencie que es un
+            dato sensible, para así poder realizar el reporte a ICBF.
+          </p>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Puedo eliminar un beneficiario que ingresé por error?
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <p class="text-muted">
+            Puedes eliminar sólo los beneficiarios reportados como nuevo ingreso
+            "Pendiente vincular", sin embargo, esto sólo antes de que el Gestor
+            realice la vinculación, ya que una vez vinculado, no es posible.
+          </p>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Por qué no puedo reportar un nacimiento después de la primera
+              semana?
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <p class="text-muted">
+            Lo mejor para llevar el registro de un beneficiario Lactante (menor
+            de seis meses) es hacerlo al inicio de un mes, puesto que, permite
+            que el acompañamiento y cargue de formación se dé de manera
+            armónica, hacerlo de otra manera es posible, sin embargo, presenta
+            una dificultad al realizar su seguimiento en las plataformas.
+          </p>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Cuánto se tarda realizar un proceso de vinculación/desvinculación?
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <p class="text-muted">
+            Los gestores de datos tienen 5 días hábiles para realizar algun
+            movimiento en el aplicativo, sin embargo, esto no quiere decir que
+            todos los cambios duren 5 días, eso depende de la cantidad de
+            beneficiarios reportados en el mismo periodo desde las distintas
+            Unidades De Servicio.
+          </p>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Al realizar un reporte de nacimiento no puedo cambiar los datos de
+              la mamá?
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <p class="text-muted">
+            Las actualizaciones de datos debes notificarlas al gestor para que
+            este realice el cambio en este aplicactivo y en CUENTAME. También
+            puedes <a href="#">realizar un ingreso nuevo</a>.
+          </p>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+</div>
+<router-outlet
+  (activate)="rutaHijaActiva = true"
+  (deactivate)="rutaHijaActiva = false"
+></router-outlet>

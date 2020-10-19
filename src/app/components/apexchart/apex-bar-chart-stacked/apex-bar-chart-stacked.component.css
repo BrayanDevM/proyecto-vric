@@ -1,0 +1,20 @@
+.apexchart .popularity h3 {
+  font-size: 1.258rem;
+  font-weight: 600;
+}
+
+.apexchart.bar-chart-staked {
+  min-width: 450px;
+}
+
+.apexchart .chart {
+  width: 100% !important;
+  margin-top: -1.5rem;
+  margin-left: -10px;
+}
+
+@media (max-width: 425px) {
+  .apexchart.bar-chart-staked {
+    min-width: 50px;
+  }
+}
