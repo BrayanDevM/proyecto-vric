@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { Usuario } from 'src/app/models/usuario.model';
 import {
@@ -19,7 +19,7 @@ import { TemaService } from 'src/app/services/tema.service';
   templateUrl: './ajustes.component.html',
   styleUrls: ['./ajustes.component.css']
 })
-export class AjustesComponent implements OnInit {
+export class AjustesComponent implements OnInit, AfterViewInit {
   usuario: Usuario;
   formPerfil: FormGroup;
   formPassword: FormGroup;
@@ -53,6 +53,9 @@ export class AjustesComponent implements OnInit {
   ngOnInit() {
     this.patchFormPerfil();
     this.pageLoading$.loadingPages.emit(false);
+  }
+
+  ngAfterViewInit() {
     this.colocarCheckLink();
   }
 
@@ -127,11 +130,11 @@ export class AjustesComponent implements OnInit {
   colocarCheckLink() {
     const temas: any = document.querySelectorAll('.tema');
     const temaActual = this.tema$.ajustes.tema;
-    console.log(temaActual, 'tema actual');
+    // console.log(temaActual, 'tema actual');
 
     temas.forEach((tema: any) => {
       // Falta poner el check
-      console.log(tema.getAttribute('data-theme'), 'atributo tema?');
+      // console.log(tema.getAttribute('data-theme'), 'atributo tema?');
       if (tema.getAttribute('data-theme') === temaActual) {
         tema.classList.add('activo');
         return;

@@ -12,7 +12,6 @@ import { AppPipesModule } from '../pipes/app-pipes.module';
 import { OverlayModule } from '@angular/cdk/overlay';
 
 // Componentes
-import { HeaderComponent } from './header/header.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { DialogAcercaDeComponent } from './dialogs/dialog-acerca-de/dialog-acerca-de.component';
 import { FormIngresosComponent } from './form-ingresos/form-ingresos.component';
@@ -28,7 +27,6 @@ import { PageLoaderComponent } from './page-loader/page-loader.component';
 import { SearchToolbarComponent } from './search-toolbar/search-toolbar.component';
 
 const components = [
-  HeaderComponent,
   SidebarComponent,
   DialogAcercaDeComponent,
   FormIngresosComponent,

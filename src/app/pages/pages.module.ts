@@ -40,6 +40,7 @@ import { FaqsComponent } from './ayuda/faqs/faqs.component';
 import { GuiasComponent } from './ayuda/guias/guias.component';
 import { SoporteComponent } from './ayuda/soporte/soporte.component';
 import { QueEsEstaAppComponent } from './ayuda/guias/iniciando/que-es-esta-app.component';
+import { ReportarNacimientoComponent } from './ayuda/guias/beneficiarios/reportar-nacimiento.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { QueEsEstaAppComponent } from './ayuda/guias/iniciando/que-es-esta-app.c
     FaqsComponent,
     GuiasComponent,
     SoporteComponent,
-    QueEsEstaAppComponent
+    QueEsEstaAppComponent,
+    ReportarNacimientoComponent
   ],
   imports: [
     CommonModule,

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { SidebarService } from 'src/app/services/sidebar.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { NotificacionesService } from 'src/app/services/notificaciones.service';
@@ -6,13 +6,14 @@ import { Usuario } from 'src/app/models/usuario.model';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SocketService } from 'src/app/services/socketIo/socket.service';
+import { CdkConnectedOverlay } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, AfterViewInit {
   usuario: Usuario;
   usuarioRol: string;
   menuUsuario: any = [];
@@ -23,6 +24,8 @@ export class SidebarComponent implements OnInit {
   cuentaSinLeer = 0;
 
   audio: any;
+
+  @ViewChild(CdkConnectedOverlay) private connectedOverlay: CdkConnectedOverlay;
 
   constructor(
     private usuario$: UsuarioService,
@@ -39,6 +42,12 @@ export class SidebarComponent implements OnInit {
     this.menuUsuario = this.sidebar$.obtenerMenu();
     this.obtenerNotificaciones();
     this.subsNotificaciones();
+  }
+
+  ngAfterViewInit() {
+    this.connectedOverlay.backdropClick.subscribe(
+      () => (this.abrirNotificaciones = false)
+    );
   }
 
   irAjustes(): void {

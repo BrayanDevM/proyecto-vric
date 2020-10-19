@@ -21,6 +21,8 @@
         </button>
         <ng-template
           cdkConnectedOverlay
+          cdkConnectedOverlayHasBackdrop
+          cdkConnectedOverlayBackdropClass="backdrop-notificaciones"
           [cdkConnectedOverlayOrigin]="originOverlay"
           [cdkConnectedOverlayOpen]="abrirNotificaciones"
         >
@@ -59,9 +61,15 @@
       </div>
     </div>
     <div class="user-profile">
-      <div class="avatar">
+      <!-- No muestra imagen (mientras se sube) -->
+      <div *ngIf="false" class="avatar">
         <img src="./assets/img/developer.png" width="100%" alt="" />
       </div>
+      <!-- Muestra primera letra de nombre (mientras se puedan subir imagenes) -->
+      <div class="user-no-image m-0" style="width: 96px; height: 96px;">
+        {{ usuario.nombre | primeraLetra }}
+      </div>
+
       <div class="info">
         <div class="name">{{ usuario.nombre | nombrePropio }}</div>
         <div class="email">{{ usuario.correo }}</div>

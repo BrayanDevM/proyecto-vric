@@ -31,6 +31,7 @@ import { FaqsComponent } from './ayuda/faqs/faqs.component';
 import { GuiasComponent } from './ayuda/guias/guias.component';
 import { SoporteComponent } from './ayuda/soporte/soporte.component';
 import { QueEsEstaAppComponent } from './ayuda/guias/iniciando/que-es-esta-app.component';
+import { ReportarNacimientoComponent } from './ayuda/guias/beneficiarios/reportar-nacimiento.component';
 
 const routes: Routes = [
   {
@@ -155,7 +156,18 @@ const routes: Routes = [
         path: 'guias',
         component: GuiasComponent,
         children: [
-          { path: 'que-es-esta-aplicacion', component: QueEsEstaAppComponent }
+          // Iniciando
+          {
+            path: 'que-es-esta-aplicacion',
+            component: QueEsEstaAppComponent,
+            data: { nombrePagina: 'Guías y Recursos' }
+          },
+          // Beneficiarios
+          {
+            path: 'reportar-nacimiento',
+            component: ReportarNacimientoComponent,
+            data: { nombrePagina: 'Guías y Recursos' }
+          }
         ],
         data: { nombrePagina: 'Guías y Recursos' }
       },

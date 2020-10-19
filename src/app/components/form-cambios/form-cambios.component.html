@@ -39,7 +39,7 @@
         <!--********************** CAMPO MUJERES GESTANTES **********************-->
         <div class="col-sm-12 col-md-4 col-xl-3">
           <div class="form-group">
-            <label for="beneficiarioId">Madre del bebé</label>
+            <label for="beneficiarioId">Madre de el/la bebé</label>
             <mat-form-field appearance="outline" class="bdm-select">
               <mat-select
                 (selectionChange)="mostrarInfoMadre($event)"
@@ -818,7 +818,9 @@
           </p>
           <p class="mt-2">
             Para más información puedes ver la guía de
-            <a href="">reporte de nacimiento</a>.
+            <a routerLink="/ayuda/guias/reportar-nacimiento"
+              >reporte de nacimiento</a
+            >.
           </p>
         </div>
       </div>

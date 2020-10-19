@@ -6,7 +6,7 @@
         [matAutocomplete]="auto"
         [formControl]="myControl"
         matInput
-        placeholder="Buscar un beneficiario"
+        placeholder="Buscar un beneficiario (escribe un nombre o un apellido)"
         autocomplete="off"
       />
       <mat-icon matPrefix>search</mat-icon>
@@ -19,7 +19,7 @@
         <mat-option
           *ngFor="let resultado of busqueda"
           [value]="resultado.label"
-          [routerLink]="[resultado.enlace]"
+          (click)="verResultado(resultado.udsId)"
         >
           <div class="d-flex flex-row align-content-center">
             <div
@@ -48,7 +48,7 @@
             </div>
             <div>
               <span>{{ resultado.label | nombrePropio }}</span>
-              <small class="text-muted"> | {{ resultado.descripcion }}</small>
+              <small class="text-muted"> | {{ resultado.udsNombre }}</small>
             </div>
           </div>
         </mat-option>
@@ -59,7 +59,7 @@
   <!-- <button mat-icon-button class="mr-2">
     <mat-icon>filter_alt</mat-icon>
   </button> -->
-  <button (click)="cerrarToolbar()" mat-icon-button>
+  <button (click)="cerrarToolbar()" mat-icon-button matTooltip="Cerrar">
     <mat-icon>close</mat-icon>
   </button>
 </mat-toolbar>

@@ -8,10 +8,12 @@ import {
   ViewChild
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { debounceTime, map, startWith } from 'rxjs/operators';
 import { Beneficiario } from 'src/app/models/beneficiario.model';
 import { BuscadorService } from 'src/app/services/buscador.service';
+import { UsuarioService } from 'src/app/services/usuario.service';
 
 @Component({
   selector: 'app-search-toolbar',
@@ -27,7 +29,11 @@ export class SearchToolbarComponent implements OnInit, AfterViewInit {
 
   resultados: Resultados[] = [];
 
-  constructor(private buscador$: BuscadorService) {
+  constructor(
+    private buscador$: BuscadorService,
+    private usuario$: UsuarioService,
+    private router: Router
+  ) {
     this.myControl.valueChanges
       .pipe(debounceTime(500), startWith(''))
       .subscribe(criterio => {
@@ -58,8 +64,8 @@ export class SearchToolbarComponent implements OnInit, AfterViewInit {
             this.resultados.push({
               estado: beneficiario.estado,
               label: `${beneficiario.nombre1} ${beneficiario.nombre2} ${beneficiario.apellido1} ${beneficiario.apellido2}`,
-              descripcion: beneficiario.uds.nombre,
-              enlace: `/beneficiarios/uds/${beneficiario.uds._id}`
+              udsNombre: beneficiario.uds.nombre,
+              udsId: beneficiario.uds._id
             });
           }
           contador++;
@@ -75,6 +81,14 @@ export class SearchToolbarComponent implements OnInit, AfterViewInit {
       });
   }
 
+  verResultado(udsId: string) {
+    if (this.usuario$.usuario.uds.includes(udsId)) {
+      this.router.navigate(['/beneficiarios/uds', udsId]);
+    } else {
+      this.myControl.patchValue('');
+    }
+  }
+
   cerrarToolbar() {
     this.cerrar.emit(false);
   }
@@ -83,6 +97,6 @@ export class SearchToolbarComponent implements OnInit, AfterViewInit {
 export interface Resultados {
   estado: string;
   label: string;
-  descripcion: string;
-  enlace: string;
+  udsNombre: string;
+  udsId: string;
 }

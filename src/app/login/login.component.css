@@ -39,10 +39,15 @@ span.beta {
   /* justify-content: center; */
   align-items: center;
   padding-bottom: 1rem;
+  color: #2a2c31;
 }
 
 .login-form .welcome-text {
   margin-bottom: 2.5rem;
+}
+
+.login-form .welcome-text h1 {
+  color: #2a2c31;
 }
 
 .login-form form .form-options {

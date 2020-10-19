@@ -597,10 +597,13 @@ p.card-title {
   right: 24px;
   display: flex;
   flex-direction: row;
+  color: #8f8f8f;
 }
+
 .form-detalle {
   padding: 56px 64px 64px 80px;
 }
+
 .form-detalle .form-title {
   font-size: 2rem;
   font-weight: 700;
@@ -801,6 +804,7 @@ p.card-title {
   padding: 0;
   margin: 64px 0;
 }
+
 .help-center .main h1 {
   font-weight: 800;
 }
@@ -808,6 +812,19 @@ p.card-title {
   font-weight: 700;
   font-size: 1.35rem;
 }
+.help-center .main h3 {
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+.help-center .main h4 {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+.help-center .main h5 {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
 .help-center .help-categories {
   display: flex;
   flex-wrap: wrap;
@@ -910,6 +927,11 @@ p.card-title {
 
 .header-search-toolbar .mat-toolbar.search-input-active {
   z-index: 10000;
+}
+
+// Elimina el color del fondo para Overlay notificaciones
+.backdrop-notificaciones {
+  background-color: transparent;
 }
 
 // ApexCharts ***************************************************************
