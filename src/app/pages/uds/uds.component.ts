@@ -13,6 +13,11 @@ import { PageLoadingService } from 'src/app/services/page-loading.service';
   styleUrls: ['./uds.component.css']
 })
 export class UdsComponent implements OnInit, OnDestroy {
+  // Config
+  sidenavMode = 'side';
+  sidenavBackdrop = false;
+  sidenavOpen = false;
+
   uds: Uds[] = [];
   tablaColumnas: string[] = [
     'codigo',
@@ -24,7 +29,6 @@ export class UdsComponent implements OnInit, OnDestroy {
   ];
   tablaData: MatTableDataSource<any>;
   numRegistros = 0;
-  abrirSidenav = false;
   udsFiltradas = false;
 
   // variables para almacenar subscripción y poder desuscribirnos
@@ -41,6 +45,7 @@ export class UdsComponent implements OnInit, OnDestroy {
     private router: Router
   ) {
     this.comprobarPermisos();
+    this.detectarPantalla();
   }
 
   ngOnInit(): void {
@@ -147,6 +152,15 @@ export class UdsComponent implements OnInit, OnDestroy {
       default:
         this.puedeCrear = false;
         break;
+    }
+  }
+
+  // Detecta tamaño de pantalla y modifica sidebar
+  detectarPantalla(): void {
+    if (screen.width <= 1024) {
+      this.sidenavMode = 'push';
+      this.sidenavBackdrop = false;
+      this.sidenavOpen = false;
     }
   }
 }

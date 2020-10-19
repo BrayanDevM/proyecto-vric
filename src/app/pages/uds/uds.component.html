@@ -1,9 +1,14 @@
-<mat-sidenav-container [hasBackdrop]="false">
-  <mat-sidenav #udsSidenav mode="side" [opened]="abrirSidenav" position="end">
+<mat-sidenav-container [hasBackdrop]="sidenavBackdrop">
+  <mat-sidenav
+    #udsSidenav
+    [mode]="sidenavMode"
+    [opened]="sidenavOpen"
+    position="end"
+  >
     <!-- CHILD ROUTES -->
     <router-outlet
-      (activate)="abrirSidenav = true"
-      (deactivate)="abrirSidenav = false"
+      (activate)="sidenavOpen = true"
+      (deactivate)="sidenavOpen = false"
     ></router-outlet>
   </mat-sidenav>
   <mat-sidenav-content>

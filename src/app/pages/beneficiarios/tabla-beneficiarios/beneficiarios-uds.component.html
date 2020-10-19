@@ -22,7 +22,10 @@
       </mat-form-field>
     </div>
   </div>
-  <div *ngIf="beneficiarios.length > 0" class="table-section-info">
+  <div
+    *ngIf="beneficiarios.length > 0"
+    class="table-section-info d-none d-xl-flex"
+  >
     <!-- Pendiente vincular badge -->
     <div
       (click)="filtrarTabla(null, 'Pendiente vincular')"
@@ -128,8 +131,10 @@
   </ng-container>
   <!-- Name Column -->
   <ng-container matColumnDef="nacimiento">
-    <th mat-header-cell *matHeaderCellDef>F. Nacimiento</th>
-    <td mat-cell *matCellDef="let beneficiario">
+    <th mat-header-cell *matHeaderCellDef class="d-none d-xl-cell">
+      F. Nacimiento
+    </th>
+    <td mat-cell *matCellDef="let beneficiario" class="d-none d-xl-cell">
       {{ beneficiario.nacimiento }}
     </td>
   </ng-container>
@@ -158,7 +163,7 @@
             'bg-secondary': beneficiario.estado === 'Desvinculado'
           }"
         ></div>
-        <span class="status-text">{{ beneficiario.estado }}</span>
+        <span class="status-text text-nowrap">{{ beneficiario.estado }}</span>
       </div>
     </td>
   </ng-container>

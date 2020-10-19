@@ -13,11 +13,15 @@ import { PageLoadingService } from 'src/app/services/page-loading.service';
   styleUrls: ['./contratos.component.css']
 })
 export class ContratosComponent implements OnInit, OnDestroy {
+  // Config
+  sidenavMode = 'side';
+  sidenavBackdrop = false;
+  sidenavOpen = false;
+
   contratos: Contrato[] = [];
   tablaColumnas: string[] = ['codigo', 'eas', 'nit', 'regional', 'cupos'];
   tablaData: MatTableDataSource<any>;
   numRegistros = 0;
-  abrirSidenav = false;
   puedeCrear = false;
 
   // variables para almacenar subscripción y poder desuscribirnos
@@ -32,6 +36,7 @@ export class ContratosComponent implements OnInit, OnDestroy {
     private router: Router
   ) {
     this.comprobarPermisos();
+    this.detectarPantalla();
   }
 
   ngOnInit() {
@@ -131,6 +136,15 @@ export class ContratosComponent implements OnInit, OnDestroy {
       default:
         this.puedeCrear = false;
         break;
+    }
+  }
+
+  // Detecta tamaño de pantalla y modifica sidebar
+  detectarPantalla(): void {
+    if (screen.width <= 1024) {
+      this.sidenavMode = 'push';
+      this.sidenavBackdrop = false;
+      this.sidenavOpen = false;
     }
   }
 }

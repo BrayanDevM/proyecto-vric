@@ -1,32 +1,12 @@
 <!-- Page Dashboard Loading -->
 <app-page-loader *ngIf="showLoadingPage"></app-page-loader>
-<!-- <div
-  class="card card-body shadow d-flex flex-column p-3"
-  style="position: fixed; bottom: 20px; right: 20px; z-index: 150;"
->
-  <small>Theme testing</small>
-
-  <button
-    (click)="cambiarTemaColor('vric-default-theme', '')"
-    mat-button
-    color="primary"
-  >
-    Default
-  </button>
-  <button
-    (click)="cambiarTemaColor('vric-dark-theme', '')"
-    mat-button
-    color="primary"
-  >
-    Dark
-  </button>
-</div> -->
 
 <ngx-loading-bar
   [includeSpinner]="false"
   [color]="'#ffeb00'"
   ref="http"
 ></ngx-loading-bar>
+
 <mat-sidenav-container [hasBackdrop]="sidenavBackdrop" class="vric-container">
   <mat-sidenav #sidenav [mode]="sidenavMode" [opened]="sidenavOpen">
     <app-sidebar></app-sidebar>

@@ -15,6 +15,11 @@ import { PageLoadingService } from 'src/app/services/page-loading.service';
   styleUrls: ['./usuarios.component.css']
 })
 export class UsuariosComponent implements OnInit {
+  // Config
+  sidenavMode = 'side';
+  sidenavBackdrop = false;
+  sidenavOpen = false;
+
   // data ng-select
   roles: any[] = Config.SELECTS.usuariosRoles;
   // ---------------------
@@ -23,7 +28,6 @@ export class UsuariosComponent implements OnInit {
   usuarioInfo: Usuario = null;
   tablaColumnas: string[] = ['nombre', 'correo', 'telefono', 'rol', 'activo'];
   tablaData: MatTableDataSource<any>;
-  abrirSidenav = false;
   usuariosFiltrados = false;
 
   // variables para almacenar subscripción y poder desuscribirnos
@@ -36,7 +40,9 @@ export class UsuariosComponent implements OnInit {
     private ususarios$: UsuarioService,
     private contratos$: ContratosService,
     private router: Router
-  ) {}
+  ) {
+    this.detectarPantalla();
+  }
 
   ngOnInit() {
     this.obtenerUsuarios();
@@ -148,5 +154,14 @@ export class UsuariosComponent implements OnInit {
     this.usuarioNuevo.unsubscribe();
     this.usuarioEliminado.unsubscribe();
     this.usuarioActualizado.unsubscribe();
+  }
+
+  // Detecta tamaño de pantalla y modifica sidebar
+  detectarPantalla(): void {
+    if (screen.width <= 1024) {
+      this.sidenavMode = 'push';
+      this.sidenavBackdrop = false;
+      this.sidenavOpen = false;
+    }
   }
 }
