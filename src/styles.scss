@@ -1385,3 +1385,10 @@ p.card-title {
     display: table-cell !important;
   }
 }
+
+@media (max-width: 1024px) {
+  html,
+  body {
+    font-size: 14px;
+  }
+}

@@ -1,5 +1,21 @@
 <h2 mat-dialog-title>Información de beneficiario</h2>
+<div *ngIf="!puedeEditar" class="dialog-actions">
+  <button
+    mat-icon-button
+    matTooltip="Reporta: {{ data.creadoPor.nombre }}, {{ data.creadoEl }}"
+    matTooltipPosition="before"
+  >
+    <mat-icon>info_outline</mat-icon>
+  </button>
+</div>
 <div *ngIf="puedeEditar" class="dialog-actions">
+  <button
+    mat-icon-button
+    matTooltip="Reporta: {{ data.creadoPor.nombre }}, {{ data.creadoEl }}"
+    matTooltipPosition="before"
+  >
+    <mat-icon>info_outline</mat-icon>
+  </button>
   <button
     *ngIf="!edicionRapida"
     mat-icon-button

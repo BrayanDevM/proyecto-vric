@@ -245,10 +245,20 @@
       <div class="list-uds">
         <mat-divider></mat-divider>
         <mat-nav-list>
-          <ng-container *ngFor="let unidad of udsEnContrato">
-            <a mat-list-item [routerLink]="['/dashboard/uds', unidad._id]">
-              <div>{{ unidad.nombre }}</div>
-            </a>
+          <ng-container *ngFor="let unidad of udsEnContrato; index as i">
+            <div class="d-flex flex-row">
+              <a mat-list-item [routerLink]="['/dashboard/uds', unidad._id]">
+                <div>{{ unidad.nombre }}</div>
+              </a>
+              <button
+                (click)="sacarUdsContrato(i, unidad._id)"
+                mat-icon-button
+                color="warn"
+                matTooltip="Remover UDS"
+              >
+                <mat-icon>remove_circle</mat-icon>
+              </button>
+            </div>
           </ng-container>
         </mat-nav-list>
       </div>

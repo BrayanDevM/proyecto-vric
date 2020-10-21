@@ -9,6 +9,7 @@ import { NgxContentLoadingModule } from 'ngx-content-loading';
 // Módulos externos
 import { ComponentsModule } from '../components/components.module';
 import { AppPipesModule } from '../pipes/app-pipes.module';
+import { MaterialModule } from '../material/material.module';
 
 // Rutas
 import { PagesRoutingModule } from './pages-routing.module';
@@ -31,7 +32,6 @@ import { CrearUsuarioComponent } from './usuarios/crear-usuario/crear-usuario.co
 import { BusquedaComponent } from './busqueda/busqueda.component';
 import { UsuarioComponent } from './usuarios/usuario/usuario.component';
 import { DashboardUdsComponent } from './dashboard/dashboard-uds/dashboard-uds.component';
-import { MaterialModule } from '../material/material.module';
 import { BeneficiariosUdsComponent } from './beneficiarios/tabla-beneficiarios/beneficiarios-uds.component';
 import { BeneficiariosEstadoComponent } from './beneficiarios/tabla-beneficiarios/beneficiarios-estado.component';
 import { BeneficiarioEditarComponent } from './beneficiarios/beneficiario-editar/beneficiario-editar.component';

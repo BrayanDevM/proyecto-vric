@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
   comprobarCorreo() {
     this.formLogin = this.fb.group({
       correo: [null, Validators.required],
-      password: ['9315267070aA', Validators.required],
+      password: [null, Validators.required],
       recuerdame: false
     });
     if (localStorage.getItem('correo')) {
