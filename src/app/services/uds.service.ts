@@ -67,7 +67,7 @@ export class UdsService {
   }
 
   obtenerUds_codigos(query?: string) {
-    if (!query) {
+    if (!query || query === '') {
       return this.http.get(this.API_URL + `/codigos?token=${this.token}`);
     } else {
       return this.http.get(

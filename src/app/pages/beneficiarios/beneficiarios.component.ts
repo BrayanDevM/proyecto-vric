@@ -106,6 +106,7 @@ export class BeneficiariosComponent implements OnInit, OnDestroy {
         this.query = `docente=${this.usuario._id}`;
         break;
       default:
+        // Visitantes
         this.query = '';
         break;
     }

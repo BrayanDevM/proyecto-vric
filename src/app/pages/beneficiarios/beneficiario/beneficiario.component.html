@@ -2,7 +2,9 @@
 <div *ngIf="!puedeEditar" class="dialog-actions">
   <button
     mat-icon-button
-    matTooltip="Reporta: {{ data.creadoPor.nombre }}, {{ data.creadoEl }}"
+    matTooltip="Reporta: {{ data.creadoPor.nombre | nombrePropio }}, el {{
+      data.creadoEl
+    }}"
     matTooltipPosition="before"
   >
     <mat-icon>info_outline</mat-icon>
@@ -10,8 +12,11 @@
 </div>
 <div *ngIf="puedeEditar" class="dialog-actions">
   <button
+    *ngIf="!edicionRapida"
     mat-icon-button
-    matTooltip="Reporta: {{ data.creadoPor.nombre }}, {{ data.creadoEl }}"
+    matTooltip="Reporta: {{ data.creadoPor.nombre | nombrePropio }}, el {{
+      data.creadoEl
+    }}"
     matTooltipPosition="before"
   >
     <mat-icon>info_outline</mat-icon>

@@ -124,7 +124,7 @@
               titulo="Cobertura Total"
               [series]="[
                 totalVinculados + totalDatosSensibles,
-                cuposTotal - totalVinculados
+                cuposTotal - (totalVinculados + totalDatosSensibles)
               ]"
               [labels]="['Vinculados', 'Cupos libres']"
               [colors]="['#c45194', '#f07bb2']"
