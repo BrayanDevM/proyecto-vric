@@ -68,7 +68,7 @@ export class PagesComponent implements OnInit {
 
   // Detecta tamaño de pantalla y modifica sidebar
   detectarPantalla(): void {
-    if (screen.width <= 1024) {
+    if (screen.width <= 1366) {
       this.sidenavMode = 'push';
       this.sidenavBackdrop = true;
       this.sidenavOpen = false;
