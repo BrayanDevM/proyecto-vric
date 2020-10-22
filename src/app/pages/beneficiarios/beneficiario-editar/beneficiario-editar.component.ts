@@ -24,6 +24,7 @@ import { alertSuccess } from 'src/app/helpers/swal2.config';
 import { DateAdapter } from '@angular/material/core';
 import { SocketService } from 'src/app/services/socketIo/socket.service';
 import { PageLoadingService } from 'src/app/services/page-loading.service';
+import { ValidarDocumento } from 'src/app/helpers/Validators/documento-validator';
 declare const moment: any;
 
 @Component({
@@ -230,14 +231,7 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
     this.formBeneficiario = this.formBuilder.group({
       _id: '',
       tipoDoc: [null, Validators.required],
-      documento: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(10),
-          Validators.maxLength(13)
-        ]
-      ],
+      documento: ['', [Validators.required, ValidarDocumento]],
       nombre1: ['', Validators.required],
       nombre2: '',
       apellido1: ['', Validators.required],
@@ -879,7 +873,7 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
       return;
     }
     this.procesarFormulario('beneficiario');
-    console.log(this.fb.value, 'form');
+    // console.log(this.fb.value, 'form');
     this.beneficiario$
       .actualizarBeneficiario(this.fb.value)
       .subscribe((resp: any) => {

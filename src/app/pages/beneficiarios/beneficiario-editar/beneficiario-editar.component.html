@@ -75,21 +75,27 @@
                   <!-- <mat-label>Outline form field</mat-label> -->
                   <input
                     matInput
-                    [value]="fbv.documento | documento"
+                    [value]="fbv.documento"
+                    [readOnly]="fbv.tipoDoc === 'SD'"
                     formControlName="documento"
                     name="documento"
                     autocomplete="off"
                     placeholder="Número de documento"
                   />
                   <mat-icon matPrefix>account_box</mat-icon>
+                  <mat-hint *ngIf="fbc.documento.dirty">
+                    Valor con separadores: {{ fbv.documento | documento }}
+                  </mat-hint>
                   <mat-error *ngIf="fbc.documento.errors?.required">
                     El documento es obligatorio
                   </mat-error>
-                  <mat-error *ngIf="fbc.documento.errors?.minlength">
-                    El documento debe tener mínimo 8 dígitos
-                  </mat-error>
-                  <mat-error *ngIf="fbc.documento.errors?.maxlength">
-                    El documento debe tener máximo 10 dígitos
+                  <mat-error
+                    *ngIf="
+                      fbc.documento.errors?.documentoInvalido &&
+                      fbc.documento.dirty
+                    "
+                  >
+                    Un NUIP tiene 8 o 10 dígitos
                   </mat-error>
                 </mat-form-field>
               </div>

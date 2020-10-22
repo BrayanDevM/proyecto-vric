@@ -2,30 +2,44 @@
   <mat-sidenav #uds mode="over" position="end" class="drawer-uds-dashboard">
     <div class="sidenav-uds-list">
       <mat-nav-list>
+        <div mat-subheader>UDS en Cali</div>
         <ng-container *ngFor="let unidad of udsCali">
-          <a mat-list-item [routerLink]="['/dashboard/uds', unidad._id]">
-            <div>{{ unidad.nombre }}</div>
-            <button mat-icon-button>
-              <mat-icon fontSet="material-icons-outlined" color="primary"
-                >info</mat-icon
+          <a
+            mat-list-item
+            [routerLink]="['/dashboard/uds', unidad._id]"
+            matTooltip="Clic en UDS para ver panel individual"
+            matTooltipPosition="left"
+          >
+            <div mat-line>
+              {{ unidad.nombre }}
+            </div>
+            <div mat-line>
+              Activos: {{ unidad.beneficiarios.length }}/<small
+                class="text-black-50"
+                >{{ unidad.cupos }}</small
               >
-            </button>
+            </div>
           </a>
         </ng-container>
-      </mat-nav-list>
-      <mat-divider></mat-divider>
-      <mat-nav-list>
+        <mat-divider></mat-divider>
+        <div mat-subheader>UDS en Dagua</div>
         <ng-container *ngFor="let unidad of udsDagua">
-          <div class="d-flex justify-content-between">
-            <a mat-list-item [routerLink]="['/dashboard/uds', unidad._id]">
+          <a
+            mat-list-item
+            [routerLink]="['/dashboard/uds', unidad._id]"
+            matTooltip="Clic en UDS para ver panel individual"
+            matTooltipPosition="left"
+          >
+            <div mat-line>
               {{ unidad.nombre }}
-            </a>
-            <button mat-icon-button>
-              <mat-icon fontSet="material-icons-outlined" color="primary"
-                >info</mat-icon
+            </div>
+            <div mat-line>
+              Activos: {{ unidad.beneficiarios.length }}/<small
+                class="text-black-50"
+                >{{ unidad.cupos }}</small
               >
-            </button>
-          </div>
+            </div>
+          </a>
         </ng-container>
       </mat-nav-list>
     </div>
