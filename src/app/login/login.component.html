@@ -73,9 +73,9 @@
                   >Recuerdame</mat-checkbox
                 >
               </div>
-              <div class="col text-right">
+              <!-- <div class="col text-right">
                 <a href="#" class="forgot-password">Olvidaste tu contraseña?</a>
-              </div>
+              </div> -->
             </div>
           </div>
           <div class="form-submit">
@@ -95,7 +95,8 @@
               </div>
             </button>
           </div>
-          <div class="col-12">
+          <div *ngIf="false" class="col-12">
+            <!-- Para crear cuenta usando Google -->
             <small class="text-muted">También puedes ingresar con</small>
             <div class="mt-2">
               <button
