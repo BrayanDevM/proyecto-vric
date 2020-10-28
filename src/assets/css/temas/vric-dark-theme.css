@@ -96,7 +96,8 @@ div.border {
   border-color: var(--border-color) !important;
 }
 
-.table-page-header {
+.table-page-header,
+.content-view-options {
   background-color: var(--bg-color-primary);
 }
 

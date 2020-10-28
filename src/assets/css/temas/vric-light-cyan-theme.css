@@ -59,7 +59,8 @@ h6 {
   color: var(--texto-color-1) !important;
 }
 
-.table-page-header {
+.table-page-header,
+.content-view-options {
   background-color: var(--color-blanco);
 }
 
