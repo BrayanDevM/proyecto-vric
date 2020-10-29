@@ -139,9 +139,7 @@
           ></tr>
           <!-- Row shown when there is no matching data. -->
           <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="8">
-              No se encontraton beneficiarios con "{{ input.value }}"
-            </td>
+            <td class="mat-cell" colspan="8"></td>
           </tr>
         </table>
       </div>
@@ -273,9 +271,7 @@
           ></tr>
           <!-- Row shown when there is no matching data. -->
           <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="8">
-              No se encontraton beneficiarios con "{{ input.value }}"
-            </td>
+            <td class="mat-cell" colspan="8"></td>
           </tr>
         </table>
       </div>
@@ -403,9 +399,7 @@
           ></tr>
           <!-- Row shown when there is no matching data. -->
           <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="8">
-              No se encontraton beneficiarios con "{{ input.value }}"
-            </td>
+            <td class="mat-cell" colspan="8"></td>
           </tr>
         </table>
       </div>
@@ -531,9 +525,7 @@
           ></tr>
           <!-- Row shown when there is no matching data. -->
           <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="8">
-              No se encontraton beneficiarios con "{{ input.value }}"
-            </td>
+            <td class="mat-cell" colspan="8"></td>
           </tr>
         </table>
       </div>
@@ -543,6 +535,7 @@
         </div>
       </ng-template>
     </mat-expansion-panel>
+
     <!--Vinculado panel-->
     <mat-expansion-panel class="shadow-sm">
       <mat-expansion-panel-header>
@@ -566,7 +559,7 @@
               (keyup)="filtrarVinculados($event)"
               placeholder="Ej. Nombre o apellido"
               autocomplete="off"
-              #input
+              #filtrarVinculados
             />
             <mat-icon matPrefix>search</mat-icon>
           </mat-form-field>
@@ -673,7 +666,9 @@
           <!-- Row shown when there is no matching data. -->
           <tr class="mat-row" *matNoDataRow>
             <td class="mat-cell" colspan="8">
-              No se encontraton beneficiarios con "{{ input.value }}"
+              No se encontraton beneficiarios con "{{
+                filtrarVinculados.value
+              }}"
             </td>
           </tr>
         </table>
@@ -800,9 +795,7 @@
           ></tr>
           <!-- Row shown when there is no matching data. -->
           <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="8">
-              No se encontraton beneficiarios con "{{ input.value }}"
-            </td>
+            <td class="mat-cell" colspan="8"></td>
           </tr>
         </table>
       </div>

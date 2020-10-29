@@ -1,34 +1,36 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, ErrorHandler } from '@angular/core';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from "@angular/platform-browser";
+import { NgModule, ErrorHandler } from "@angular/core";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 // ngx-loading-bar (core, router, http)
-import { LoadingBarModule } from '@ngx-loading-bar/core';
-import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
-import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { LoadingBarModule } from "@ngx-loading-bar/core";
+import { LoadingBarRouterModule } from "@ngx-loading-bar/router";
+import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 
 // Módulos personalizados
-import { ComponentsModule } from './components/components.module';
-import { MaterialModule } from './material/material.module';
-import { GlobalErrorHandler } from './helpers/global-error-handler';
-import { ServerErrorInterceptor } from './helpers/server-error-interceptor';
+import { ComponentsModule } from "./components/components.module";
+import { MaterialModule } from "./material/material.module";
+import { GlobalErrorHandler } from "./helpers/global-error-handler";
+import { ServerErrorInterceptor } from "./helpers/server-error-interceptor";
 
 // Rutas
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule } from "./app-routing.module";
 
 // Páginas
-import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login.component';
-import { PagesComponent } from './pages/pages.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DialogAcercaDeComponent } from './components/dialogs/dialog-acerca-de/dialog-acerca-de.component';
-import { DefaultUrlSerializer, UrlSerializer, UrlTree } from '@angular/router';
+import { AppComponent } from "./app.component";
+import { LoginComponent } from "./login/login.component";
+import { PagesComponent } from "./pages/pages.component";
+import { DialogAcercaDeComponent } from "./components/dialogs/dialog-acerca-de/dialog-acerca-de.component";
 
-export class MyUrlSerializer extends DefaultUrlSerializer
+import { DefaultUrlSerializer, UrlSerializer, UrlTree } from "@angular/router";
+
+export class MyUrlSerializer
+  extends DefaultUrlSerializer
   implements UrlSerializer {
   serialize(tree: UrlTree): string {
-    return super.serialize(tree).replace(/\(|\)|\w+-\w+:/g, '');
+    return super.serialize(tree).replace(/\(|\)|\w+-\w+:/g, "");
   }
 }
 
@@ -45,7 +47,7 @@ export class MyUrlSerializer extends DefaultUrlSerializer
     LoadingBarRouterModule,
     LoadingBarModule,
     BrowserAnimationsModule,
-    MaterialModule
+    MaterialModule,
   ],
   entryComponents: [DialogAcercaDeComponent],
   providers: [
@@ -54,9 +56,9 @@ export class MyUrlSerializer extends DefaultUrlSerializer
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ServerErrorInterceptor,
-      multi: true
-    }
+      multi: true,
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

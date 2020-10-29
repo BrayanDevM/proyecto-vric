@@ -1,12 +1,13 @@
-<!-- Page Dashboard Loading -->
+<!-- Page Dashboard Loading components-->
 <app-page-loader *ngIf="showLoadingPage"></app-page-loader>
-
+<!-- Page Dashboard Loading http-->
 <ngx-loading-bar
   [includeSpinner]="false"
   [color]="'#ffeb00'"
   ref="http"
 ></ngx-loading-bar>
 
+<!-- APP content -->
 <mat-sidenav-container [hasBackdrop]="sidenavBackdrop" class="vric-container">
   <mat-sidenav #sidenav [mode]="sidenavMode" [opened]="sidenavOpen">
     <app-sidebar></app-sidebar>
@@ -56,4 +57,5 @@
   </mat-sidenav-content>
 </mat-sidenav-container>
 
-<!-- <app-modal-actualizaciones></app-modal-actualizaciones> -->
+<!-- Dialog updates Overlay -->
+<app-update-notes *ngIf="!showLoadingPage"></app-update-notes>

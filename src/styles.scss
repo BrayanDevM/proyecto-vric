@@ -624,7 +624,7 @@ p.card-title {
   border-radius: 2rem;
   border: none;
   margin: auto 0;
-  max-height: 20px;
+  max-height: 24px;
 }
 .badge-status .status-indicator {
   width: 8px;
@@ -941,6 +941,42 @@ p.card-title {
   background-color: transparent;
 }
 
+// Dialogo de actualizaciones
+.update-notes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 500;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.update-notes .card.updates-dialog {
+  max-width: 1200px;
+  min-width: 600px;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.update-notes .card.updates-dialog .card-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.update-notes .card.updates-dialog .card-header {
+  color: #fff;
+  font-size: 1.2rem;
+  background-color: #019688;
+  padding: 0.8rem 1rem;
+  font-weight: 400;
+}
+
 // ApexCharts ***************************************************************
 .apexchart .chart-title {
   text-transform: uppercase;
@@ -1183,9 +1219,6 @@ p.card-title {
 
 // FIN NOTIFICACTIONS PANEL --------------------------------------------------
 
-.temas {
-}
-
 .temas .cambiarTema {
   list-style: none;
   padding: 0;
@@ -1249,7 +1282,7 @@ p.card-title {
   box-shadow: inset 16px 0px #0097a7;
 }
 
-// Page loading component
+// Page loading component ********************************************
 .loading-wrapper {
   position: absolute;
   width: 100vw;
