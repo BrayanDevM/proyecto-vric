@@ -167,14 +167,7 @@ export class FormCambiosComponent implements OnInit {
       madreNacimiento: [null],
       // Información de padre
       padreTipoDoc: [null, Validators.required],
-      padreDocumento: [
-        "",
-        [
-          Validators.required,
-          Validators.minLength(10),
-          Validators.maxLength(13),
-        ],
-      ],
+      padreDocumento: ["", [Validators.required, ValidarDocumento]],
       padreNombre1: ["", Validators.required],
       padreNombre2: [""],
       padreApellido1: ["", Validators.required],
@@ -301,7 +294,7 @@ export class FormCambiosComponent implements OnInit {
 
   comprobarSD($event: any, campo: string) {
     if ($event.value === "SD") {
-      const documentoAleatorio = this.generarDocumento(13);
+      const documentoAleatorio = this.generarDocumento(10);
       this.f.get(campo).patchValue(documentoAleatorio);
     } else {
       this.f.get(campo).patchValue("");

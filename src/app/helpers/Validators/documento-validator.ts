@@ -1,4 +1,4 @@
-import { AbstractControl } from '@angular/forms';
+import { AbstractControl } from "@angular/forms";
 
 /**
  * Función que valida que el documento de un beneficiario tenga
