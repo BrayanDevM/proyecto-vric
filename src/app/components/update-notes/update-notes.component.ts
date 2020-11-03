@@ -21,7 +21,7 @@ export class UpdateNotesComponent implements AfterViewInit {
    */
   entendido(): void {
     this.updateNotesDialog.nativeElement.classList.add("d-none");
-    localStorage.setItem("ReleaseNotes-v1.0.1", "true");
+    localStorage.setItem("ReleaseNotes-v1.0.2", "true");
   }
 
   masTarde(): void {
@@ -35,10 +35,11 @@ export class UpdateNotesComponent implements AfterViewInit {
     localStorage.removeItem("cerrarUpdateModal-v1.6.0");
     localStorage.removeItem("cerrarUpdateModal-v1.6.1");
     // -------------------------------------------------------
+    localStorage.removeItem("ReleaseNotes-v1.0.1");
   }
 
   mostrarReleaseNotes() {
-    const notasVistas = localStorage.getItem("ReleaseNotes-v1.0.1");
+    const notasVistas = localStorage.getItem("ReleaseNotes-v1.0.2");
     if (notasVistas === "true") {
       this.updateNotesDialog.nativeElement.classList.add("d-none");
       return;
