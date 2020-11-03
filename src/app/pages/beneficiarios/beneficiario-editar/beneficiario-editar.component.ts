@@ -1,36 +1,39 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Router, ActivationEnd } from '@angular/router';
-import { filter, map } from 'rxjs/operators';
-import { Beneficiario } from 'src/app/models/beneficiario.model';
-import { RespBeneficiario } from 'src/app/models/respBeneficiario.model';
-import { Madre } from 'src/app/models/madre.model';
-import { Padre } from 'src/app/models/padre.model';
-import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
-import { RespBeneficiariosService } from 'src/app/services/resp-beneficiarios.service';
-import { MadresService } from 'src/app/services/madres.service';
-import { PadresService } from 'src/app/services/padres.service';
-import { Observable } from 'rxjs';
-import { UsuarioService } from 'src/app/services/usuario.service';
-import { Usuario } from 'src/app/models/usuario.model';
-import { Uds } from 'src/app/models/uds.model';
-import { UdsService } from 'src/app/services/uds.service';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { Router, ActivationEnd } from "@angular/router";
+import { filter, map } from "rxjs/operators";
+import { Beneficiario } from "src/app/models/beneficiario.model";
+import { RespBeneficiario } from "src/app/models/respBeneficiario.model";
+import { Madre } from "src/app/models/madre.model";
+import { Padre } from "src/app/models/padre.model";
+import { BeneficiariosService } from "src/app/services/beneficiarios.service";
+import { RespBeneficiariosService } from "src/app/services/resp-beneficiarios.service";
+import { MadresService } from "src/app/services/madres.service";
+import { PadresService } from "src/app/services/padres.service";
+import { Observable } from "rxjs";
+import { UsuarioService } from "src/app/services/usuario.service";
+import { Usuario } from "src/app/models/usuario.model";
+import { Uds } from "src/app/models/uds.model";
+import { UdsService } from "src/app/services/uds.service";
+import { Validators, FormBuilder, FormGroup } from "@angular/forms";
 // Validators
 // import { documentoExtranjero } from '../../../helpers/Validators/documento-extranjero.validator';
 // Importo municipios y ciudades de Colombia
-import listaDatosColombia from 'src/app/config/colombia.json';
-import { alertSuccess } from 'src/app/helpers/swal2.config';
-import { DateAdapter } from '@angular/material/core';
-import { SocketService } from 'src/app/services/socketIo/socket.service';
-import { PageLoadingService } from 'src/app/services/page-loading.service';
-import { ValidarDocumento } from 'src/app/helpers/Validators/documento-validator';
+import listaDatosColombia from "src/app/config/colombia.json";
+import { alertSuccess } from "src/app/helpers/swal2.config";
+import { DateAdapter } from "@angular/material/core";
+import { SocketService } from "src/app/services/socketIo/socket.service";
+import { PageLoadingService } from "src/app/services/page-loading.service";
+import {
+  ValidarDocumento,
+  ValidarDocumentoAntiguo,
+} from "src/app/helpers/Validators/documento-validator";
 declare const moment: any;
 
 @Component({
-  selector: 'app-beneficiario-editar',
-  templateUrl: './beneficiario-editar.component.html',
-  styleUrls: ['./beneficiario-editar.component.css']
+  selector: "app-beneficiario-editar",
+  templateUrl: "./beneficiario-editar.component.html",
+  styleUrls: ["./beneficiario-editar.component.css"],
 })
 export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
   query: string;
@@ -46,118 +49,118 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
   // variables de configuración
   tiposDeDocumento: any[] = [
     {
-      pais: 'Colombianas/os',
+      pais: "Colombianas/os",
       documentos: [
-        { value: 'RC', label: 'Registro civil', icon: 'fa-id-card' },
-        { value: 'TI', label: 'Tarjeta de Identidad', icon: 'fa-id-card' },
-        { value: 'CC', label: 'Cédula de Ciudadanía', icon: 'fa-id-card' }
-      ]
+        { value: "RC", label: "Registro civil", icon: "fa-id-card" },
+        { value: "TI", label: "Tarjeta de Identidad", icon: "fa-id-card" },
+        { value: "CC", label: "Cédula de Ciudadanía", icon: "fa-id-card" },
+      ],
     },
     {
-      pais: 'Extranjeras/os',
+      pais: "Extranjeras/os",
       documentos: [
         {
-          value: 'PEP',
-          label: 'Permiso Especial de Permanencia',
-          icon: 'fa-user-clock'
+          value: "PEP",
+          label: "Permiso Especial de Permanencia",
+          icon: "fa-user-clock",
         },
-        { value: 'SD', label: 'Sin Documento', icon: 'fa-question-square' }
-      ]
-    }
+        { value: "SD", label: "Sin Documento", icon: "fa-question-square" },
+      ],
+    },
   ];
   sexos: any[] = [
     {
-      value: 'Mujer',
-      label: 'Mujer',
-      icon: 'fa-venus'
+      value: "Mujer",
+      label: "Mujer",
+      icon: "fa-venus",
     },
     {
-      value: 'Hombre',
-      label: 'Hombre',
-      icon: 'fa-mars'
+      value: "Hombre",
+      label: "Hombre",
+      icon: "fa-mars",
     },
     {
-      value: 'Otro',
-      label: 'Otro',
-      icon: 'fa-venus-mars'
-    }
+      value: "Otro",
+      label: "Otro",
+      icon: "fa-venus-mars",
+    },
   ];
   paises: any[] = [
-    { value: 'Colombia', label: 'Colombia' },
-    { value: 'Argentina', label: 'Argentina' },
-    { value: 'Chile', label: 'Chile' },
-    { value: 'Ecuador', label: 'Ecuador' },
-    { value: 'México', label: 'México' },
-    { value: 'Panamá', label: 'Panamá' },
-    { value: 'Perú', label: 'Chile' },
-    { value: 'Venezuela', label: 'Venezuela' }
+    { value: "Colombia", label: "Colombia" },
+    { value: "Argentina", label: "Argentina" },
+    { value: "Chile", label: "Chile" },
+    { value: "Ecuador", label: "Ecuador" },
+    { value: "México", label: "México" },
+    { value: "Panamá", label: "Panamá" },
+    { value: "Perú", label: "Chile" },
+    { value: "Venezuela", label: "Venezuela" },
   ];
   reconocimientos: any[] = [
-    { value: 'Afrocolombiano', label: 'Afrocolombiano' },
-    { value: 'Comunidad negra', label: 'Comunidad negra' },
-    { value: 'Indigena', label: 'Indigena' },
-    { value: 'Palenquero', label: 'Palenquero' },
-    { value: 'RROM/Gitano', label: 'RROM/Gitano' },
+    { value: "Afrocolombiano", label: "Afrocolombiano" },
+    { value: "Comunidad negra", label: "Comunidad negra" },
+    { value: "Indigena", label: "Indigena" },
+    { value: "Palenquero", label: "Palenquero" },
+    { value: "RROM/Gitano", label: "RROM/Gitano" },
     {
-      value: 'Raizal archipielago San Andrés',
-      label: 'Raizal archipielago San Andrés'
+      value: "Raizal archipielago San Andrés",
+      label: "Raizal archipielago San Andrés",
     },
-    { value: 'Ninguno', label: 'Ninguno' }
+    { value: "Ninguno", label: "Ninguno" },
   ];
   discapacidades: any[] = [
-    { value: true, label: 'Si' },
-    { value: false, label: 'No' }
+    { value: true, label: "Si" },
+    { value: false, label: "No" },
   ];
   criterios: any[] = [
-    { value: 'Sisbén', label: 'Puntaje de sisbén' },
-    { value: 'Carta de vulnerabilidad', label: 'Carta de vulnerabilidad' },
-    { value: 'Otro', label: 'Otro' }
+    { value: "Sisbén", label: "Puntaje de sisbén" },
+    { value: "Carta de vulnerabilidad", label: "Carta de vulnerabilidad" },
+    { value: "Otro", label: "Otro" },
   ];
   tipoResponsables: any[] = [
-    { value: 'Madre', label: 'Madre' },
-    { value: 'Padre', label: 'Padre' },
-    { value: 'Tia/o', label: 'Tia/o' },
-    { value: 'Abuelo/a', label: 'Abuelo/a' },
-    { value: 'Conyugue', label: 'Conyugue' },
-    { value: 'Si misma', label: 'Si misma' },
-    { value: 'Otro', label: 'Otro' }
+    { value: "Madre", label: "Madre" },
+    { value: "Padre", label: "Padre" },
+    { value: "Tia/o", label: "Tia/o" },
+    { value: "Abuelo/a", label: "Abuelo/a" },
+    { value: "Conyugue", label: "Conyugue" },
+    { value: "Si misma", label: "Si misma" },
+    { value: "Otro", label: "Otro" },
   ];
   motivosDeEgreso: any[] = [
     {
-      value: 'Retiro voluntario del programa',
-      label: 'Retiro voluntario del programa'
+      value: "Retiro voluntario del programa",
+      label: "Retiro voluntario del programa",
     },
-    { value: 'Tránsito a otro programa', label: 'Tránsito a otro programa' },
-    { value: 'Traslado de municipio', label: 'Traslado de municipio' },
-    { value: 'Cambio a bebé lactante', label: 'Cambio a bebé lactante' },
+    { value: "Tránsito a otro programa", label: "Tránsito a otro programa" },
+    { value: "Traslado de municipio", label: "Traslado de municipio" },
+    { value: "Cambio a bebé lactante", label: "Cambio a bebé lactante" },
     {
-      value: 'Distancia del centro de atención',
-      label: 'Distancia del centro de atención'
+      value: "Distancia del centro de atención",
+      label: "Distancia del centro de atención",
     },
-    { value: 'Edad cumplida', label: 'Edad cumplida' },
-    { value: 'Enfermedad', label: 'Enfermedad' },
-    { value: 'Fallecimiento', label: 'Fallecimiento' },
-    { value: 'No le gusta la comida', label: 'No le gusta la comida' },
+    { value: "Edad cumplida", label: "Edad cumplida" },
+    { value: "Enfermedad", label: "Enfermedad" },
+    { value: "Fallecimiento", label: "Fallecimiento" },
+    { value: "No le gusta la comida", label: "No le gusta la comida" },
     {
-      value: 'En casa hay quien lo cuide',
-      label: 'En casa hay quien lo cuide'
+      value: "En casa hay quien lo cuide",
+      label: "En casa hay quien lo cuide",
     },
     {
-      value: 'Alto costo para la familia (transporte)',
-      label: 'Alto costo para la familia (transporte)'
+      value: "Alto costo para la familia (transporte)",
+      label: "Alto costo para la familia (transporte)",
     },
-    { value: 'Cambio vigencia', label: 'Cambio vigencia' },
-    { value: 'Conflicto armado', label: 'Conflicto armado' },
-    { value: 'Desplazamiento forzado', label: 'Desplazamiento forzado' },
-    { value: 'Pasó al SIMAT', label: 'Pasó al SIMAT' },
-    { value: 'Otro', label: 'Otro' }
+    { value: "Cambio vigencia", label: "Cambio vigencia" },
+    { value: "Conflicto armado", label: "Conflicto armado" },
+    { value: "Desplazamiento forzado", label: "Desplazamiento forzado" },
+    { value: "Pasó al SIMAT", label: "Pasó al SIMAT" },
+    { value: "Otro", label: "Otro" },
   ];
   // Variables de uso
-  codigoUdsSeleccionada: any = 'Seleccionar UDS';
+  codigoUdsSeleccionada: any = "Seleccionar UDS";
   listaDepartamentos: any = listaDatosColombia;
-  listaMunicipios: any = ['Extranjero'];
+  listaMunicipios: any = ["Extranjero"];
   respExiste = false;
-  ultResponsableBuscado = '';
+  ultResponsableBuscado = "";
 
   tieneMadre = true;
   madreEsMismoAcudiente = false;
@@ -167,12 +170,12 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
   haEgresado = false;
 
   // Configuración dinámica para criterio carta/puntaje
-  tipoInputInfoCriterio = 'text';
-  labelInputInfoCriterio = 'Detalle criterio';
+  tipoInputInfoCriterio = "text";
+  labelInputInfoCriterio = "Detalle criterio";
 
   // Para responsable (acudiente)
-  listaDepartamentosResp: any = ['Extranjero'];
-  listaMunicipiosResp = ['Extranjero'];
+  listaDepartamentosResp: any = ["Extranjero"];
+  listaMunicipiosResp = ["Extranjero"];
 
   // Máximo fechas mat-DatePicker
   maxNacimiento: Date;
@@ -203,7 +206,7 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
     this.usuario = this.usuario$.usuario;
 
     // para Material Datetime-Picker
-    this.adaptadorFecha.setLocale('es');
+    this.adaptadorFecha.setLocale("es");
     const anioActual = new Date().getFullYear();
     const mesActual = new Date().getMonth();
 
@@ -215,10 +218,10 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
 
     this.obtenerUds();
 
-    this.obtenerInfoRuta().subscribe(paramId => {
+    this.obtenerInfoRuta().subscribe((paramId) => {
       if (paramId !== undefined) {
-        this.obtenerBeneficiario(paramId).then(beneficiario => {
-          console.log(beneficiario, 'beneficiario?');
+        this.obtenerBeneficiario(paramId).then((beneficiario) => {
+          console.log(beneficiario, "beneficiario?");
           this.limpiarEspaciosObjeto(beneficiario);
           this.patchFormulario(beneficiario);
           this.beneficiario = beneficiario;
@@ -229,13 +232,13 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
 
     // formularios
     this.formBeneficiario = this.formBuilder.group({
-      _id: '',
+      _id: "",
       tipoDoc: [null, Validators.required],
-      documento: ['', [Validators.required, ValidarDocumento]],
-      nombre1: ['', Validators.required],
-      nombre2: '',
-      apellido1: ['', Validators.required],
-      apellido2: '',
+      documento: ["", [Validators.required, ValidarDocumento]],
+      nombre1: ["", Validators.required],
+      nombre2: "",
+      apellido1: ["", Validators.required],
+      apellido2: "",
       sexo: [null, Validators.required],
       nacimiento: [null, Validators.required],
       paisNacimiento: [null, Validators.required],
@@ -244,11 +247,15 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
       autorreconocimiento: [null, Validators.required],
       discapacidad: [null, Validators.required],
       infoDiscapacidad: null,
-      direccion: ['', Validators.required],
-      barrio: ['', Validators.required],
+      direccion: ["", Validators.required],
+      barrio: ["", Validators.required],
       telefono: [
-        '',
-        [Validators.required, Validators.minLength(7), Validators.maxLength(10)]
+        "",
+        [
+          Validators.required,
+          Validators.minLength(7),
+          Validators.maxLength(10),
+        ],
       ],
       criterio: [null, Validators.required],
       infoCriterio: [null, Validators.required],
@@ -257,22 +264,15 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
       ingreso: [null, Validators.required],
       comentario: null,
       fecha: null,
-      estado: '',
+      estado: "",
       egreso: null, // lo toma como obligatorio
-      motivoEgreso: '',
-      creadoPor: ''
+      motivoEgreso: "",
+      creadoPor: "",
     });
     this.formAcudiente = this.formBuilder.group({
-      _id: '',
+      _id: "",
       tipoDoc: [null, Validators.required],
-      documento: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(10),
-          Validators.maxLength(13)
-        ]
-      ],
+      documento: ["", [Validators.required, ValidarDocumentoAntiguo]],
       nombre1: [null, Validators.required],
       nombre2: null,
       apellido1: [null, Validators.required],
@@ -281,43 +281,29 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
       nacimiento: [null, Validators.required],
       paisNacimiento: [null, Validators.required],
       dptoNacimiento: [null, Validators.required],
-      municipioNacimiento: [null, Validators.required]
+      municipioNacimiento: [null, Validators.required],
     });
     this.formMadre = this.formBuilder.group({
-      _id: '',
+      _id: "",
       tipoDoc: [null, Validators.required],
-      documento: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(10),
-          Validators.maxLength(13)
-        ]
-      ],
+      documento: ["", [Validators.required, ValidarDocumentoAntiguo]],
       nombre1: [null, Validators.required],
       nombre2: null,
       apellido1: [null, Validators.required],
       apellido2: null,
       sexo: [null, Validators.required],
-      nacimiento: [null, Validators.required]
+      nacimiento: [null, Validators.required],
     });
     this.formPadre = this.formBuilder.group({
-      _id: '',
+      _id: "",
       tipoDoc: [null, Validators.required],
-      documento: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(10),
-          Validators.maxLength(13)
-        ]
-      ],
+      documento: ["", [Validators.required, ValidarDocumentoAntiguo]],
       nombre1: [null, Validators.required],
       nombre2: null,
       apellido1: [null, Validators.required],
       apellido2: null,
       sexo: [null, Validators.required],
-      nacimiento: [null, Validators.required]
+      nacimiento: [null, Validators.required],
     });
   }
 
@@ -331,7 +317,7 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
 
   obtenerInfoRuta(): Observable<any> {
     return this.router.events.pipe(
-      filter(event => event instanceof ActivationEnd),
+      filter((event) => event instanceof ActivationEnd),
       filter((event: ActivationEnd) => event.snapshot.firstChild === null),
       map((event: ActivationEnd) => event.snapshot.params.id)
     );
@@ -353,13 +339,13 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
 
   obtenerUds() {
     switch (this.usuario.rol) {
-      case 'ADMIN':
+      case "ADMIN":
         this.query = `gestor=${this.usuario._id}`;
         break;
-      case 'GESTOR':
+      case "GESTOR":
         this.query = `gestor=${this.usuario._id}`;
         break;
-      case 'COORDINADOR':
+      case "COORDINADOR":
         this.query = `coordinador=${this.usuario._id}`;
         break;
       default:
@@ -367,7 +353,7 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
         break;
     }
     // Si ya ha consultado una vez sólo toma los datos del LS
-    const udsEnLocal = localStorage.getItem('udsAsignadas');
+    const udsEnLocal = localStorage.getItem("udsAsignadas");
     if (udsEnLocal !== null) {
       this.udsAsignadas = JSON.parse(udsEnLocal);
     } else {
@@ -375,7 +361,7 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
         if (resp.ok) {
           this.udsAsignadas = resp.uds;
           localStorage.setItem(
-            'udsAsignadas',
+            "udsAsignadas",
             JSON.stringify(this.udsAsignadas)
           );
         }
@@ -437,27 +423,27 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
   }
 
   limpiarEspaciosForm(form: FormGroup) {
-    Object.keys(form.controls).forEach(key =>
+    Object.keys(form.controls).forEach((key) =>
       form.get(key).setValue(form.get(key).value.trim())
     );
   }
 
   limpiarEspaciosObjeto(obj: any) {
     Object.keys(obj).map(
-      k => (obj[k] = typeof obj[k] === 'string' ? obj[k].trim() : obj[k])
+      (k) => (obj[k] = typeof obj[k] === "string" ? obj[k].trim() : obj[k])
     );
   }
 
   toUpper(str: string) {
     // Capitaliza string
-    str = str.split(/\s+/).join(' ');
+    str = str.split(/\s+/).join(" ");
     return str
       .toLowerCase()
-      .split(' ')
-      .map(word => {
+      .split(" ")
+      .map((word) => {
         return word[0].toUpperCase() + word.substr(1);
       })
-      .join(' ');
+      .join(" ");
   }
 
   patchFormulario(data: Beneficiario) {
@@ -472,7 +458,7 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
       apellido1: data.apellido1,
       apellido2: data.apellido2,
       sexo: data.sexo,
-      nacimiento: new Date(moment(data.nacimiento, 'DD/MM/YYYY')),
+      nacimiento: new Date(moment(data.nacimiento, "DD/MM/YYYY")),
       paisNacimiento: data.paisNacimiento,
       dptoNacimiento: data.dptoNacimiento,
       municipioNacimiento: data.municipioNacimiento,
@@ -485,20 +471,20 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
       infoCriterio: data.infoCriterio,
       tipoResponsable: data.tipoResponsable,
       uds: data.uds._id,
-      ingreso: new Date(moment(data.ingreso, 'DD/MM/YYYY')),
+      ingreso: new Date(moment(data.ingreso, "DD/MM/YYYY")),
       comentario: data.comentario,
       estado: data.estado,
       motivoEgreso: data.motivoEgreso,
-      creadoPor: data.creadoPor._id || ''
+      creadoPor: data.creadoPor._id || "",
     });
-    if (data.egreso === '' || data.egreso === null) {
+    if (data.egreso === "" || data.egreso === null) {
       this.haEgresado = false;
       this.validarEgreso();
     } else {
       this.haEgresado = true;
       this.validarEgreso();
       this.fb.patchValue({
-        egreso: new Date(moment(data.egreso, 'DD/MM/YYYY'))
+        egreso: new Date(moment(data.egreso, "DD/MM/YYYY")),
       });
     }
     // Form acudiente
@@ -512,10 +498,10 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
       apellido1: data.responsableId.apellido1.toUpperCase(),
       apellido2: data.responsableId.apellido2.toUpperCase(),
       sexo: data.responsableId.sexo,
-      nacimiento: new Date(moment(data.responsableId.nacimiento, 'DD/MM/YYYY')),
+      nacimiento: new Date(moment(data.responsableId.nacimiento, "DD/MM/YYYY")),
       paisNacimiento: data.responsableId.paisNacimiento,
       dptoNacimiento: data.responsableId.dptoNacimiento,
-      municipioNacimiento: data.responsableId.municipioNacimiento
+      municipioNacimiento: data.responsableId.municipioNacimiento,
     });
     // Form madre
     if (data.madreId !== null) {
@@ -527,7 +513,7 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
         apellido1: data.madreId.apellido1.toUpperCase(),
         apellido2: data.madreId.apellido2.toUpperCase(),
         sexo: data.madreId.sexo,
-        nacimiento: new Date(moment(data.madreId.nacimiento, 'DD/MM/YYYY'))
+        nacimiento: new Date(moment(data.madreId.nacimiento, "DD/MM/YYYY")),
       });
     } else {
       this.tieneMadre = false;
@@ -542,7 +528,7 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
         apellido1: data.padreId.apellido1.toUpperCase(),
         apellido2: data.padreId.apellido2.toUpperCase(),
         sexo: data.padreId.sexo,
-        nacimiento: new Date(moment(data.padreId.nacimiento, 'DD/MM/YYYY'))
+        nacimiento: new Date(moment(data.padreId.nacimiento, "DD/MM/YYYY")),
       });
     } else {
       this.tienePadre = false;
@@ -567,22 +553,22 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
      * select realiza un *ngFor de la lista.departamentos
      */
     // Si recibo un string (directo desde la BD)
-    if (typeof pais !== 'string') {
-      if (pais.value !== 'Colombia') {
-        this.listaDepartamentos = [{ departamento: 'Extranjero' }];
-        this.formBeneficiario.get('autorreconocimiento').patchValue('Ninguno');
+    if (typeof pais !== "string") {
+      if (pais.value !== "Colombia") {
+        this.listaDepartamentos = [{ departamento: "Extranjero" }];
+        this.formBeneficiario.get("autorreconocimiento").patchValue("Ninguno");
       } else {
         this.listaDepartamentos = listaDatosColombia;
-        this.formBeneficiario.get('autorreconocimiento').patchValue([]);
+        this.formBeneficiario.get("autorreconocimiento").patchValue([]);
       }
     } else {
       // Sino, lo recibí de un select
-      if (pais !== 'Colombia') {
-        this.listaDepartamentos = [{ departamento: 'Extranjero' }];
-        this.formBeneficiario.get('autorreconocimiento').patchValue('Ninguno');
+      if (pais !== "Colombia") {
+        this.listaDepartamentos = [{ departamento: "Extranjero" }];
+        this.formBeneficiario.get("autorreconocimiento").patchValue("Ninguno");
       } else {
         this.listaDepartamentos = listaDatosColombia;
-        this.formBeneficiario.get('autorreconocimiento').patchValue([]);
+        this.formBeneficiario.get("autorreconocimiento").patchValue([]);
       }
     }
     // console.log(this.listaDepartamentos);
@@ -598,9 +584,9 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
      * (nombre), busca y toma el id dentro de la lista completa y
      * asigna las ciudades del municipio
      */
-    if (typeof departamento !== 'string') {
-      if (departamento.value === 'Extranjero') {
-        this.listaMunicipios = ['Extranjero'];
+    if (typeof departamento !== "string") {
+      if (departamento.value === "Extranjero") {
+        this.listaMunicipios = ["Extranjero"];
       } else {
         const i = this.listaDepartamentos.findIndex(
           (data: any) => data.departamento === departamento.value
@@ -609,8 +595,8 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
         // console.log(this.listaMunicipios, 'lista mun');
       }
     } else {
-      if (departamento === 'Extranjero') {
-        this.listaMunicipios = ['Extranjero'];
+      if (departamento === "Extranjero") {
+        this.listaMunicipios = ["Extranjero"];
       } else {
         // trim() elimina espacion en blando en los extremos de un string
         const i = this.listaDepartamentos.findIndex(
@@ -626,16 +612,16 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
     if (pais === undefined) {
       return;
     }
-    if (typeof pais !== 'string') {
-      if (pais.value !== 'Colombia') {
-        this.listaDepartamentosResp = [{ departamento: 'Extranjero' }];
+    if (typeof pais !== "string") {
+      if (pais.value !== "Colombia") {
+        this.listaDepartamentosResp = [{ departamento: "Extranjero" }];
       } else {
         this.listaDepartamentosResp = listaDatosColombia;
       }
     } else {
       // Sino, lo recibí de un select
-      if (pais !== 'Colombia') {
-        this.listaDepartamentosResp = [{ departamento: 'Extranjero' }];
+      if (pais !== "Colombia") {
+        this.listaDepartamentosResp = [{ departamento: "Extranjero" }];
       } else {
         this.listaDepartamentosResp = listaDatosColombia;
       }
@@ -646,9 +632,9 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
     if (departamento === undefined) {
       return;
     }
-    if (typeof departamento !== 'string') {
-      if (departamento.value === 'Extranjero') {
-        this.listaMunicipiosResp = ['Extranjero'];
+    if (typeof departamento !== "string") {
+      if (departamento.value === "Extranjero") {
+        this.listaMunicipiosResp = ["Extranjero"];
       } else {
         const i = this.listaDepartamentosResp.findIndex(
           (data: any) => data.departamento === departamento.value
@@ -656,8 +642,8 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
         this.listaMunicipiosResp = this.listaDepartamentosResp[i].ciudades;
       }
     } else {
-      if (departamento === 'Extranjero') {
-        this.listaMunicipiosResp = ['Extranjero'];
+      if (departamento === "Extranjero") {
+        this.listaMunicipiosResp = ["Extranjero"];
       } else {
         // trim() elimina espacion en blando en los extremos de un string
         const i = this.listaDepartamentosResp.findIndex(
@@ -670,44 +656,44 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
 
   comprobarSD($event: any, formulario: string) {
     switch (formulario) {
-      case 'acudiente':
-        if ($event.value === 'SD') {
-          const documentoAleatorio = this.generarDocumento(13);
-          this.fa.get('documento').patchValue(documentoAleatorio);
+      case "acudiente":
+        if ($event.value === "SD") {
+          const documentoAleatorio = this.generarDocumento(10);
+          this.fa.get("documento").patchValue(documentoAleatorio);
         } else {
-          this.fa.get('documento').patchValue('');
+          this.fa.get("documento").patchValue("");
         }
         break;
-      case 'madre':
-        if ($event.value === 'SD') {
-          const documentoAleatorio = this.generarDocumento(13);
-          this.fm.get('documento').patchValue(documentoAleatorio);
+      case "madre":
+        if ($event.value === "SD") {
+          const documentoAleatorio = this.generarDocumento(10);
+          this.fm.get("documento").patchValue(documentoAleatorio);
         } else {
-          this.fm.get('documento').patchValue('');
+          this.fm.get("documento").patchValue("");
         }
         break;
-      case 'padre':
-        if ($event.value === 'SD') {
-          const documentoAleatorio = this.generarDocumento(13);
-          this.fp.get('documento').patchValue(documentoAleatorio);
+      case "padre":
+        if ($event.value === "SD") {
+          const documentoAleatorio = this.generarDocumento(10);
+          this.fp.get("documento").patchValue(documentoAleatorio);
         } else {
-          this.fp.get('documento').patchValue('');
+          this.fp.get("documento").patchValue("");
         }
         break;
 
       default:
-        if ($event.value === 'SD') {
-          const documentoAleatorio = this.generarDocumento(13);
-          this.fb.get('documento').patchValue(documentoAleatorio);
+        if ($event.value === "SD") {
+          const documentoAleatorio = this.generarDocumento(10);
+          this.fb.get("documento").patchValue(documentoAleatorio);
         } else {
-          this.fb.get('documento').patchValue('');
+          this.fb.get("documento").patchValue("");
         }
         break;
     }
   }
   generarDocumento(longitud: number) {
-    let resultado = '';
-    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let resultado = "";
+    const caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     const caracteresLength = caracteres.length;
     for (let i = 0; i < longitud; i++) {
       resultado += caracteres.charAt(
@@ -718,15 +704,15 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
   }
 
   validarCriterio($event: any) {
-    if ($event.value === 'Sisbén') {
-      this.tipoInputInfoCriterio = 'numeric';
-      this.labelInputInfoCriterio = 'Escriba el puntaje';
-    } else if ($event.value === 'Carta de vulnerabilidad') {
-      this.tipoInputInfoCriterio = 'date';
-      this.labelInputInfoCriterio = 'Fecha de visita';
+    if ($event.value === "Sisbén") {
+      this.tipoInputInfoCriterio = "numeric";
+      this.labelInputInfoCriterio = "Escriba el puntaje";
+    } else if ($event.value === "Carta de vulnerabilidad") {
+      this.tipoInputInfoCriterio = "date";
+      this.labelInputInfoCriterio = "Fecha de visita";
     } else {
-      this.tipoInputInfoCriterio = 'text';
-      this.labelInputInfoCriterio = 'Detalle otro';
+      this.tipoInputInfoCriterio = "text";
+      this.labelInputInfoCriterio = "Detalle otro";
     }
   }
 
@@ -742,106 +728,106 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
 
   validarMadre() {
     if (this.tieneMadre) {
-      this.fm.get('tipoDoc').enable();
-      this.fm.get('documento').enable();
-      this.fm.get('nombre1').enable();
-      this.fm.get('nombre2').enable();
-      this.fm.get('apellido1').enable();
-      this.fm.get('apellido2').enable();
-      this.fm.get('nacimiento').enable();
-      this.fm.get('sexo').enable();
+      this.fm.get("tipoDoc").enable();
+      this.fm.get("documento").enable();
+      this.fm.get("nombre1").enable();
+      this.fm.get("nombre2").enable();
+      this.fm.get("apellido1").enable();
+      this.fm.get("apellido2").enable();
+      this.fm.get("nacimiento").enable();
+      this.fm.get("sexo").enable();
     } else {
-      this.fm.get('tipoDoc').patchValue(null);
-      this.fm.get('documento').patchValue(null);
-      this.fm.get('nombre1').patchValue(null);
-      this.fm.get('nombre2').patchValue('');
-      this.fm.get('apellido1').patchValue(null);
-      this.fm.get('apellido2').patchValue('');
-      this.fm.get('nacimiento').patchValue(null);
-      this.fm.get('sexo').patchValue(null);
-      this.fm.get('tipoDoc').disable();
-      this.fm.get('documento').disable();
-      this.fm.get('nombre1').disable();
-      this.fm.get('nombre2').disable();
-      this.fm.get('apellido1').disable();
-      this.fm.get('apellido2').disable();
-      this.fm.get('nacimiento').disable();
-      this.fm.get('sexo').disable();
+      this.fm.get("tipoDoc").patchValue(null);
+      this.fm.get("documento").patchValue(null);
+      this.fm.get("nombre1").patchValue(null);
+      this.fm.get("nombre2").patchValue("");
+      this.fm.get("apellido1").patchValue(null);
+      this.fm.get("apellido2").patchValue("");
+      this.fm.get("nacimiento").patchValue(null);
+      this.fm.get("sexo").patchValue(null);
+      this.fm.get("tipoDoc").disable();
+      this.fm.get("documento").disable();
+      this.fm.get("nombre1").disable();
+      this.fm.get("nombre2").disable();
+      this.fm.get("apellido1").disable();
+      this.fm.get("apellido2").disable();
+      this.fm.get("nacimiento").disable();
+      this.fm.get("sexo").disable();
     }
   }
   validarPadre() {
     if (this.tienePadre) {
-      this.fp.get('tipoDoc').enable();
-      this.fp.get('documento').enable();
-      this.fp.get('nombre1').enable();
-      this.fp.get('nombre2').enable();
-      this.fp.get('apellido1').enable();
-      this.fp.get('apellido2').enable();
-      this.fp.get('nacimiento').enable();
-      this.fp.get('sexo').enable();
+      this.fp.get("tipoDoc").enable();
+      this.fp.get("documento").enable();
+      this.fp.get("nombre1").enable();
+      this.fp.get("nombre2").enable();
+      this.fp.get("apellido1").enable();
+      this.fp.get("apellido2").enable();
+      this.fp.get("nacimiento").enable();
+      this.fp.get("sexo").enable();
     } else {
-      this.fp.get('tipoDoc').patchValue(null);
-      this.fp.get('documento').patchValue(null);
-      this.fp.get('nombre1').patchValue(null);
-      this.fp.get('nombre2').patchValue('');
-      this.fp.get('apellido1').patchValue(null);
-      this.fp.get('apellido2').patchValue('');
-      this.fp.get('nacimiento').patchValue(null);
-      this.fp.get('sexo').patchValue(null);
-      this.fp.get('tipoDoc').disable();
-      this.fp.get('documento').disable();
-      this.fp.get('nombre1').disable();
-      this.fp.get('nombre2').disable();
-      this.fp.get('apellido1').disable();
-      this.fp.get('apellido2').disable();
-      this.fp.get('nacimiento').disable();
-      this.fp.get('sexo').disable();
+      this.fp.get("tipoDoc").patchValue(null);
+      this.fp.get("documento").patchValue(null);
+      this.fp.get("nombre1").patchValue(null);
+      this.fp.get("nombre2").patchValue("");
+      this.fp.get("apellido1").patchValue(null);
+      this.fp.get("apellido2").patchValue("");
+      this.fp.get("nacimiento").patchValue(null);
+      this.fp.get("sexo").patchValue(null);
+      this.fp.get("tipoDoc").disable();
+      this.fp.get("documento").disable();
+      this.fp.get("nombre1").disable();
+      this.fp.get("nombre2").disable();
+      this.fp.get("apellido1").disable();
+      this.fp.get("apellido2").disable();
+      this.fp.get("nacimiento").disable();
+      this.fp.get("sexo").disable();
     }
   }
 
   validarEgreso() {
     if (!this.haEgresado) {
-      this.fb.get('egreso').disable();
-      this.fb.get('motivoEgreso').disable();
+      this.fb.get("egreso").disable();
+      this.fb.get("motivoEgreso").disable();
     } else {
-      this.fb.get('egreso').enable();
-      this.fb.get('motivoEgreso').enable();
+      this.fb.get("egreso").enable();
+      this.fb.get("motivoEgreso").enable();
     }
   }
 
   procesarFormulario(nombreForm: string) {
     switch (nombreForm) {
-      case 'beneficiario':
+      case "beneficiario":
         this.fbv._id = this.beneficiario._id;
-        this.fbv.documento = this.fbv.documento.split('.').join('');
-        this.fbv.nacimiento = moment(this.fbv.nacimiento).format('DD/MM/YYYY');
-        this.fbv.ingreso = moment(this.fbv.ingreso).format('DD/MM/YYYY');
+        this.fbv.documento = this.fbv.documento.split(".").join("");
+        this.fbv.nacimiento = moment(this.fbv.nacimiento).format("DD/MM/YYYY");
+        this.fbv.ingreso = moment(this.fbv.ingreso).format("DD/MM/YYYY");
         if (this.fbv.egreso) {
-          this.fbv.egreso = moment(this.fbv.egreso).format('DD/MM/YYYY');
+          this.fbv.egreso = moment(this.fbv.egreso).format("DD/MM/YYYY");
         }
         break;
-      case 'acudiente':
+      case "acudiente":
         this.fav._id = this.beneficiario.responsableId._id;
-        this.fav.documento = this.fav.documento.split('.').join('');
-        this.fav.nacimiento = moment(this.fav.nacimiento).format('DD/MM/YYYY');
+        this.fav.documento = this.fav.documento.split(".").join("");
+        this.fav.nacimiento = moment(this.fav.nacimiento).format("DD/MM/YYYY");
         break;
-      case 'madre':
+      case "madre":
         this.fmv._id = this.beneficiario.madreId._id;
-        this.fmv.documento = this.fmv.documento.split('.').join('');
-        this.fmv.nacimiento = moment(this.fmv.nacimiento).format('DD/MM/YYYY');
+        this.fmv.documento = this.fmv.documento.split(".").join("");
+        this.fmv.nacimiento = moment(this.fmv.nacimiento).format("DD/MM/YYYY");
         break;
-      case 'padre':
+      case "padre":
         this.fpv._id = this.beneficiario.padreId._id;
-        this.fpv.documento = this.fpv.documento.split('.').join('');
-        this.fpv.nacimiento = moment(this.fpv.nacimiento).format('DD/MM/YYYY');
+        this.fpv.documento = this.fpv.documento.split(".").join("");
+        this.fpv.nacimiento = moment(this.fpv.nacimiento).format("DD/MM/YYYY");
         break;
 
       default:
         this.fbv._id = this.beneficiario._id;
-        this.fbv.nacimiento = moment(this.fbv.nacimiento).format('DD/MM/YYYY');
-        this.fbv.ingreso = moment(this.fbv.ingreso).format('DD/MM/YYYY');
+        this.fbv.nacimiento = moment(this.fbv.nacimiento).format("DD/MM/YYYY");
+        this.fbv.ingreso = moment(this.fbv.ingreso).format("DD/MM/YYYY");
         if (this.fbv.egreso) {
-          this.fbv.egreso = moment(this.fbv.egreso).format('DD/MM/YYYY');
+          this.fbv.egreso = moment(this.fbv.egreso).format("DD/MM/YYYY");
         }
         break;
     }
@@ -854,16 +840,16 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
     // Notifica si se ha cambiado de estado
     const notificacion: any = {
       creadaPor: this.usuario$.usuario._id,
-      titulo: 'Dato sensible',
+      titulo: "Dato sensible",
       descripcion: `Se ha encontrado un dato sensible del beneficiario ${beneficiarioNombre}`,
-      paraUsuarios: [this.beneficiario.uds.coordinador]
+      paraUsuarios: [this.beneficiario.uds.coordinador],
     };
     // agrego docentes a notificación
     this.beneficiario.uds.docentes.forEach((docenteId: string) => {
       notificacion.paraUsuarios.push(docenteId);
     });
     // cambiamos estado
-    this.fbv.estado = 'Dato sensible';
+    this.fbv.estado = "Dato sensible";
     this.actualizarBeneficiario(true, notificacion);
   }
 
@@ -872,16 +858,16 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
       this.fb.markAllAsTouched();
       return;
     }
-    this.procesarFormulario('beneficiario');
+    this.procesarFormulario("beneficiario");
     // console.log(this.fb.value, 'form');
     this.beneficiario$
       .actualizarBeneficiario(this.fb.value)
       .subscribe((resp: any) => {
         if (resp.ok) {
           if (datoSensible) {
-            this.socket.emit('notificarUsuario', notificacion);
+            this.socket.emit("notificarUsuario", notificacion);
           }
-          alertSuccess.fire('Beneficiario actualizado');
+          alertSuccess.fire("Beneficiario actualizado");
         }
       });
     return;
@@ -892,12 +878,12 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
       this.fa.markAllAsTouched();
       return;
     }
-    this.procesarFormulario('acudiente');
+    this.procesarFormulario("acudiente");
     this.responsable$
       .actualizarResponsable(this.fa.value)
       .subscribe((resp: any) => {
         if (resp.ok) {
-          alertSuccess.fire('Acudiente actualizado');
+          alertSuccess.fire("Acudiente actualizado");
         }
       });
     return;
@@ -908,10 +894,10 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
       this.fm.markAllAsTouched();
       return;
     }
-    this.procesarFormulario('madre');
+    this.procesarFormulario("madre");
     this.madre$.actualizarMadre(this.fmv).subscribe((resp: any) => {
       if (resp.ok) {
-        alertSuccess.fire('Madre actualizada');
+        alertSuccess.fire("Madre actualizada");
       }
     });
     return;
@@ -922,11 +908,11 @@ export class BeneficiarioEditarComponent implements OnInit, OnDestroy {
       this.fp.markAllAsTouched();
       return;
     }
-    this.procesarFormulario('padre');
-    console.log(this.formPadre.value, 'form padre');
+    this.procesarFormulario("padre");
+    console.log(this.formPadre.value, "form padre");
     this.padre$.actualizarPadre(this.fpv).subscribe((resp: any) => {
       if (resp.ok) {
-        alertSuccess.fire('Padre actualizado');
+        alertSuccess.fire("Padre actualizado");
       }
     });
     return;
