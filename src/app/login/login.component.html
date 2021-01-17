@@ -20,7 +20,11 @@
       </div>
       <!-------------- Columna derecha con formulario -------------->
       <div class="col-sm-12 col-lg-4 login-form">
-        <form ngNativeValidate [formGroup]="formLogin" (ngSubmit)="login()">
+        <form
+          ngNativeValidate
+          [formGroup]="formLogin"
+          (ngSubmit)="iniciarSesion()"
+        >
           <div class="welcome-text">
             <h1>Bienvenido :)</h1>
             <p class="text-muted">
@@ -45,7 +49,7 @@
             <mat-label>Contraseña</mat-label>
             <input
               matInput
-              [type]="hide ? 'password' : 'text'"
+              [type]="verPassword ? 'text' : 'password'"
               formControlName="password"
               name="password"
               required
@@ -55,11 +59,13 @@
               mat-icon-button
               matSuffix
               type="button"
-              (click)="hide = !hide"
+              (click)="verPassword = !verPassword"
               [attr.aria-label]="'Ocultar contraseña'"
-              [attr.aria-pressed]="hide"
+              [attr.aria-pressed]="verPassword"
             >
-              <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+              <mat-icon>{{
+                verPassword ? "visibility" : "visibility_off"
+              }}</mat-icon>
             </button>
           </mat-form-field>
           <div class="form-options">

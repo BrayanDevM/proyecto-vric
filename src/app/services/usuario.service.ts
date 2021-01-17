@@ -13,11 +13,15 @@ import { alertError } from '../helpers/swal2.config';
   providedIn: 'root'
 })
 export class UsuarioService {
+  // variables de uso
   usuario: Usuario;
   token: string;
   menu: any = [];
+
+  // variables de API
   API_URL = Config.REST.PRINCIPAL.URL;
 
+  // observables
   usuarioNuevo$ = new EventEmitter<Usuario>();
   usuarioEliminado$ = new EventEmitter<string>();
   usuarioActualizado$ = new EventEmitter<Usuario>();
@@ -30,37 +34,44 @@ export class UsuarioService {
     this.cargarCookies();
   }
 
-  login(usuario: Usuario, recordar: boolean) {
-    if (recordar) {
-      localStorage.setItem('correo', usuario.correo);
-    } else {
-      localStorage.removeItem('correo');
-    }
+  /**
+   * Realiza petición POST para comprobar existencia de
+   * usuario en la base de datos
+   * @param usuario { correo, password }
+   * @param recordar booleano
+   */
+  iniciarSesion(usuario: any, recordar: boolean) {
+    // guarda en Local Storage o elimina correo
+    this.guardarCorreoLS(usuario.correo, recordar);
 
-    return this.http.post(this.API_URL + '/login', usuario).pipe(
+    return this.http.post(`${this.API_URL}/login`, usuario).pipe(
       map((resp: any) => {
         // console.log(resp, '<- repsonse!');
 
+        // Si usuario esta inactivado por admin lanza alerta y detiene ejecución
         if (!resp.usuario.activo) {
-          alertError.fire({
-            title: 'Inicio de sesión',
-            text:
-              'Tu cuenta se encuentra inactiva, por favor contactar con el administrador.'
-          });
-          return;
-        }
-        this.usuario = resp.usuario;
-        this.token = resp.token;
-        this.menu = resp.menu;
-        this.crearCookieSesion(this.token, this.usuario, this.menu);
-        if (this.usuario.rol === 'DOCENTE') {
-          this.router.navigate(['/dashboard/uds', this.usuario.uds[0]]);
+          alertError.fire(
+            'Inicio de sesión',
+            'Tu cuenta se encuentra inactiva, por favor contactar con el administrador.'
+          );
+          return false;
         } else {
-          this.router.navigate(['/dashboard']);
+          // asigna valores a variables
+          this.usuario = resp.usuario;
+          this.token = resp.token;
+          this.menu = resp.menu;
+
+          this.crearCookieSesion(this.token, this.usuario, this.menu);
+
+          // Si usuario es docente envía a Dashboard de su uds (primera, en caso de varias)
+          this.usuario.rol === 'DOCENTE'
+            ? this.router.navigate(['/dashboard/uds', this.usuario.uds[0]])
+            : this.router.navigate(['/dashboard']);
+
+          return true;
         }
-        return true;
       }),
-      catchError(err => {
+      catchError((err) => {
         console.log('Error en la petición', err);
         if (err.status === 400) {
           alertError.fire({
@@ -73,6 +84,9 @@ export class UsuarioService {
     );
   }
 
+  /**
+   * Inicio de sesión con Google en Auth0
+   */
   googleLogin() {
     // definimos la anchura y altura de la ventana
     const altura = 550;
@@ -82,25 +96,31 @@ export class UsuarioService {
     const x = window.screen.width / 2 - anchura / 2;
 
     window.open(
-      this.API_URL + '/login/google',
+      `${this.API_URL}/login/google`,
       'Google Sign in',
       `width=${anchura},height=${altura},top=${y},left=${x},toolbar=no,scrollbars=no,resizable=no`
     );
     window.addEventListener('message', (message: any) => {
       // console.log(message.data);
+
+      // asigna valores a variables
       this.usuario = message.data.usuario;
       this.token = message.data.token;
       this.menu = message.data.menu;
+
       this.crearCookieSesion(this.token, this.usuario, this.menu);
-      if (this.usuario.rol === 'DOCENTE') {
-        this.router.navigate(['/dashboard/uds', this.usuario.uds[0]]);
-      } else {
-        this.router.navigate(['/dashboard']);
-      }
+
+      // Si usuario es docente envía a Dashboard de su uds (primera, en caso de varias)
+      this.usuario.rol === 'DOCENTE'
+        ? this.router.navigate(['/dashboard/uds', this.usuario.uds[0]])
+        : this.router.navigate(['/dashboard']);
     });
     return true;
   }
 
+  /**
+   * Purga todos los datos y redirecciona a Login
+   */
   logout() {
     this.token = '';
     this.usuario = null;
@@ -118,30 +138,29 @@ export class UsuarioService {
   }
 
   cargarCookies() {
-    if (this.cookie$.check('usuario')) {
-      this.usuario = JSON.parse(this.cookie$.get('usuario'));
-    } else {
-      this.logout();
-    }
-    if (this.cookie$.check('token')) {
-      this.token = this.cookie$.get('token');
-    } else {
-      this.logout();
-    }
-    if (this.cookie$.check('menu')) {
-      this.menu = JSON.parse(this.cookie$.get('menu'));
-    } else {
-      this.logout();
-    }
+    this.cookie$.check('usuario')
+      ? (this.usuario = JSON.parse(this.cookie$.get('usuario')))
+      : this.logout();
+
+    this.cookie$.check('token')
+      ? (this.token = this.cookie$.get('token'))
+      : this.logout();
+
+    this.cookie$.check('menu')
+      ? (this.menu = JSON.parse(this.cookie$.get('menu')))
+      : this.logout();
   }
 
+  /**
+   * Comprueba token y retorna boolean para already-login.guard.ts y login.guard.ts
+   */
   haIniciadoSesion() {
     return this.cookie$.check('token') ? true : false;
   }
 
   obtenerUsuarios(query?: string) {
     if (!query) {
-      return this.http.get(this.API_URL + `/usuarios?token=${this.token}`).pipe(
+      return this.http.get(`${this.API_URL}/usuarios?token=${this.token}`).pipe(
         map((resp: any) => {
           if (resp.ok) {
             return resp.usuarios;
@@ -150,49 +169,52 @@ export class UsuarioService {
       );
     } else {
       return this.http.get(
-        this.API_URL + `/usuarios?${query}&token=${this.token}`
+        `${this.API_URL}/usuarios?${query}&token=${this.token}`
       );
     }
   }
+
   obtenerUsuarios_uds(query?: string) {
     if (!query) {
-      return this.http.get(this.API_URL + `/usuarios/uds?token=${this.token}`);
+      return this.http.get(`${this.API_URL}/usuarios/uds?token=${this.token}`);
     } else {
       return this.http.get(
-        this.API_URL + `/usuarios/uds?${query}&token=${this.token}`
+        `${this.API_URL}}/usuarios/uds?${query}&token=${this.token}`
       );
     }
   }
+
   obtenerUsuarios_contratos(query?: string) {
     if (!query) {
       return this.http.get(
-        this.API_URL + `/usuarios/contratos?token=${this.token}`
+        `${this.API_URL}/usuarios/contratos?token=${this.token}`
       );
     } else {
       return this.http.get(
-        this.API_URL + `/usuarios/contratos?${query}&token=${this.token}`
+        `${this.API_URL}/usuarios/contratos?${query}&token=${this.token}`
       );
     }
   }
+
   obtenerUsuarios_contratos_uds(query?: string) {
     if (!query) {
       return this.http.get(
-        this.API_URL + `/usuarios/contratos/uds?token=${this.token}`
+        `${this.API_URL}/usuarios/contratos/uds?token=${this.token}`
       );
     } else {
       return this.http.get(
-        this.API_URL + `/usuarios/contratos/uds?${query}&token=${this.token}`
+        `${this.API_URL}/usuarios/contratos/uds?${query}&token=${this.token}`
       );
     }
   }
 
   obtenerUsuario(id: string) {
-    return this.http.get(this.API_URL + `/usuarios/${id}?token=${this.token}`);
+    return this.http.get(`${this.API_URL}/usuarios/${id}?token=${this.token}`);
   }
 
   crearUsuario(form: any) {
     return this.http
-      .post(this.API_URL + `/usuarios?token=${this.token}`, form)
+      .post(`${this.API_URL}/usuarios?token=${this.token}`, form)
       .pipe(
         map((resp: any) => {
           if (resp.ok === true) {
@@ -204,7 +226,7 @@ export class UsuarioService {
             return resp;
           }
         }),
-        catchError(err => {
+        catchError((err) => {
           Swal.fire({
             title: 'Usuario',
             html: `${err.error.mensaje} <br> ${err.error.error.message}`,
@@ -216,7 +238,7 @@ export class UsuarioService {
   }
 
   actualizarUsuario(usuario: Usuario) {
-    const URL = this.API_URL + `/usuarios/${usuario._id}?token=${this.token}`;
+    const URL = `${this.API_URL}/usuarios/${usuario._id}?token=${this.token}`;
     return this.http.put(URL, usuario).pipe(
       map((resp: any) => {
         if (usuario._id === this.usuario._id) {
@@ -232,12 +254,12 @@ export class UsuarioService {
   }
 
   eliminarUsuario(usuario: Usuario) {
-    const URL = this.API_URL + `/usuarios/${usuario._id}?token=${this.token}`;
+    const URL = `${this.API_URL}/usuarios/${usuario._id}?token=${this.token}`;
     return this.http.delete(URL);
   }
 
   renovarToken() {
-    const URL = this.API_URL + `/renuevaToken?token=${this.token}`;
+    const URL = `${this.API_URL}/renuevaToken?token=${this.token}`;
     return this.http.get(URL).pipe(
       map((resp: any) => {
         if (resp.ok) {
@@ -246,7 +268,7 @@ export class UsuarioService {
           return true;
         }
       }),
-      catchError(err => {
+      catchError((err) => {
         Swal.fire({
           title: 'Su sesión ha expirado',
           html: `Ha expirado tu sesión o no ha sido posible renovar la misma, por favor intenta ingresar nuevamente`,
@@ -256,5 +278,11 @@ export class UsuarioService {
         return throwError(err);
       })
     );
+  }
+
+  guardarCorreoLS(correo: string, guardar: boolean) {
+    guardar
+      ? localStorage.setItem('correo', correo)
+      : localStorage.removeItem('correo');
   }
 }

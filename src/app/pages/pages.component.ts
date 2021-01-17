@@ -14,6 +14,8 @@ export class PagesComponent implements OnInit {
   pantallaCompleta = false;
   appPagina: any;
 
+  temaOscuro = false;
+
   sidenavMode = 'side';
   sidenavBackdrop = false;
 
@@ -36,6 +38,7 @@ export class PagesComponent implements OnInit {
     this.ngSelectConfig.loadingText = 'Cargando...';
     this.appPagina = document.documentElement;
     this.detectarPantalla();
+    this.detectarTemaActivo();
   }
 
   ngOnInit() {
@@ -84,5 +87,17 @@ export class PagesComponent implements OnInit {
         this.subPageLoading.unsubscribe();
       }
     );
+  }
+
+  detectarTemaActivo() {
+    console.log(this.tema$.ajustes.tema);
+
+    this.temaOscuro =
+      this.tema$.ajustes.tema === 'vric-default-theme' ? false : true;
+  }
+
+  cambiarTema(tema: string) {
+    this.temaOscuro = !this.temaOscuro;
+    this.tema$.aplicarTema(tema);
   }
 }

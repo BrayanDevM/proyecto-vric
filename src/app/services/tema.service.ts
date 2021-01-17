@@ -7,12 +7,12 @@ interface Ajustes {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TemaService {
   ajustes: Ajustes = {
     temaUrl: 'assets/css/temas/vric-default-theme.css',
-    tema: 'vric-default-theme'
+    tema: 'vric-default-theme',
   };
 
   constructor(@Inject(DOCUMENT) private document$) {
@@ -39,9 +39,6 @@ export class TemaService {
     document.body.className = '';
     document.body.classList.add('mat-typography');
     document.body.classList.add(tema);
-
-    // this.document$.querySelector('#global-container').className = '';
-    // this.document$.querySelector('#global-container').classList.add(tema);
 
     this.ajustes.tema = tema;
     this.ajustes.temaUrl = rutaTema;

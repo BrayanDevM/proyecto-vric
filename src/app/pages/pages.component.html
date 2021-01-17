@@ -23,10 +23,14 @@
     <!-- main toolbar -->
     <div class="header-toolbar">
       <mat-toolbar color="primary">
-        <button (click)="sidenav.toggle()" mat-icon-button class="example-icon">
+        <!-- botón de menú lateral -->
+        <button (click)="sidenav.toggle()" mat-icon-button>
           <mat-icon>menu</mat-icon>
         </button>
+
         <span class="mat-spacer"></span>
+
+        <!-- botón de búsqueda -->
         <button
           (click)="searchToolarOpen = true"
           mat-icon-button
@@ -34,6 +38,26 @@
         >
           <mat-icon>search</mat-icon>
         </button>
+
+        <!-- Botón de tema -->
+        <button
+          *ngIf="!temaOscuro"
+          (click)="cambiarTema('vric-dark-theme')"
+          mat-icon-button
+          matTooltip="Cambiar a modo oscuro"
+        >
+          <mat-icon>dark_mode</mat-icon>
+        </button>
+        <button
+          *ngIf="temaOscuro"
+          (click)="cambiarTema('vric-default-theme')"
+          mat-icon-button
+          matTooltip="Cambiar a modo claro"
+        >
+          <mat-icon>light_mode</mat-icon>
+        </button>
+
+        <!-- botón  pantalla completa -->
         <button
           *ngIf="!pantallaCompleta"
           (click)="openFullscreen()"

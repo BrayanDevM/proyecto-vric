@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Usuario } from '../models/usuario.model';
 import { UsuarioService } from '../services/usuario.service';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -13,75 +12,87 @@ import { DialogAcercaDeComponent } from '../components/dialogs/dialog-acerca-de/
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  usuario: Usuario;
+  // variables de uso
+  usuario: any;
   formLogin: FormGroup;
-  hide = true;
+
+  // variables de ux
   cargando = false;
+  verPassword = false;
   recordarCorreo = false;
+  iconoGoogle: string = '../assets/img/iconos/google.svg';
 
   constructor(
     private fb: FormBuilder,
-    private usuarioService: UsuarioService,
+    private usuario$: UsuarioService,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
     public dialog: MatDialog
   ) {
+    // Registro de icono Google
     this.matIconRegistry.addSvgIcon(
       'google',
-      this.domSanitizer.bypassSecurityTrustResourceUrl(
-        '../assets/img/iconos/google.svg'
-      )
+      this.domSanitizer.bypassSecurityTrustResourceUrl(this.iconoGoogle)
     );
+
+    // seteo de formulario reactivo
+    this.formLogin = this.fb.group({
+      correo: ['', Validators.required],
+      password: ['', Validators.required],
+      recuerdame: false
+    });
+  }
+
+  get flv() {
+    return this.formLogin.value;
   }
 
   ngOnInit() {
-    this.comprobarCorreo();
+    this.compruebaRecordarCorreo();
   }
 
-  comprobarCorreo() {
-    this.formLogin = this.fb.group({
-      correo: [null, Validators.required],
-      password: [null, Validators.required],
-      recuerdame: false
-    });
+  /**
+   * Comprueba en local storage si el usuario ha solicitado
+   * recordar el correo para iniciar sesión rápidamente
+   */
+  compruebaRecordarCorreo() {
     if (localStorage.getItem('correo')) {
-      const correo = localStorage.getItem('correo');
-      this.formLogin.get('correo').patchValue(correo);
-      this.formLogin.get('recuerdame').patchValue(!this.recordarCorreo);
+      const correoGuardado = localStorage.getItem('correo');
+      this.formLogin.get('correo').patchValue(correoGuardado);
+      this.formLogin.get('recuerdame').patchValue(true);
     }
   }
 
-  login() {
-    this.cargando = true;
+  /**
+   * Comprueba formulario válido e inicia sesión con servicio
+   */
+  iniciarSesion() {
     if (this.formLogin.invalid) {
-      this.cargando = false;
       return;
+    } else {
+      this.cargando = true;
+
+      this.usuario = {
+        correo: this.flv.correo,
+        password: this.flv.password
+      };
+
+      this.usuario$
+        .iniciarSesion(this.usuario, this.flv.recuerdame)
+        .subscribe((resp) => (this.cargando = false));
     }
-    this.cargando = true;
-    this.usuario = new Usuario(
-      null,
-      this.formLogin.value.correo,
-      null,
-      this.formLogin.value.password
-    );
-
-    this.usuarioService
-      .login(this.usuario, this.formLogin.value.recuerdame)
-      .subscribe(
-        (resp: any) => {
-          this.cargando = false;
-        },
-        (error: any) => {
-          this.cargando = false;
-          console.log(error);
-        }
-      );
   }
 
+  /**
+   * Inicio de sesión con Google en Auth0
+   */
   googleLogin() {
-    this.usuarioService.googleLogin();
+    this.usuario$.googleLogin();
   }
 
+  /**
+   * Abre modal con componente AcercaDe
+   */
   acercaDe() {
     this.dialog.open(DialogAcercaDeComponent, {
       width: '620px'
