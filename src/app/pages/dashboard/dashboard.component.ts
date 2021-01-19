@@ -5,7 +5,7 @@ import { LoadingBarService } from '@ngx-loading-bar/core';
 import { SocketService } from 'src/app/services/socketIo/socket.service';
 import { PageLoadingService } from 'src/app/services/page-loading.service';
 
-declare var moment: any;
+declare const moment: any;
 
 @Component({
   selector: 'app-dashboard',
@@ -134,7 +134,7 @@ export class DashboardComponent implements OnInit {
    */
   traerInfoBeneficiarios() {
     this.cargandoDatos = true;
-    this.dashboard$.obtenerUds_beneficiarios().subscribe((resp: any) => {
+    this.dashboard$.obtenerDatos().subscribe((resp: any) => {
       if (resp.ok) {
         this.pageLoading$.loadingPages.emit(false);
         localStorage.setItem('datosDashboard', JSON.stringify(resp.uds));
@@ -151,7 +151,7 @@ export class DashboardComponent implements OnInit {
    * Realiza el conteo de todas las variables
    * @param uds todas las uds con sus beneficiarios
    */
-  realizarConteo(uds: Array<any>) {
+  realizarConteo(uds: any[]) {
     uds.forEach((unidad: any) => {
       unidad.beneficiarios.forEach(
         ({
