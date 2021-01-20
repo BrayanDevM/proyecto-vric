@@ -29,9 +29,9 @@ export class UdsService {
    * una consulta con criterios especificos para las propiedades de una
    * UDS: (enContrato, arriendo='si/no', coordinador, gestor, docentes, cupos)
    */
-  obtenerUds(query?: string) {
+  obtenerUds(query = '') {
     if (!query) {
-      return this.http.get(this.API_URL + `?token=${this.token}`).pipe(
+      return this.http.get(`${this.API_URL}?token=${this.token}`).pipe(
         map((resp: any) => {
           if (resp.ok) {
             return resp.uds;
@@ -39,68 +39,53 @@ export class UdsService {
         })
       );
     } else {
-      return this.http.get(this.API_URL + `?${query}&token=${this.token}`);
+      return this.http.get(`${this.API_URL}?${query}&token=${this.token}`);
     }
   }
 
-  obtenerUds_beneficiarios(query?: string) {
-    if (!query) {
-      return this.http.get(this.API_URL + `/beneficiarios?token=${this.token}`);
-    } else {
-      return this.http.get(
-        this.API_URL + `/beneficiarios?${query}&token=${this.token}`
-      );
-    }
+  obtenerUds_beneficiarios(query = '') {
+    return this.http.get(
+      `${this.API_URL}/beneficiarios?${query}&token=${this.token}`
+    );
   }
 
-  obtenerUds_beneficiarios_responsables(query?: string) {
-    if (!query) {
-      return this.http.get(
-        this.API_URL + `/beneficiarios/responsables?token=${this.token}`
-      );
-    } else {
-      return this.http.get(
-        this.API_URL +
-          `/beneficiarios/responsables?${query}&token=${this.token}`
-      );
-    }
+  obtenerUds_beneficiarios_responsables(query = '') {
+    return this.http.get(
+      `${this.API_URL}/beneficiarios/responsables?${query}&token=${this.token}`
+    );
   }
 
-  obtenerUds_codigos(query?: string) {
-    if (!query || query === '') {
-      return this.http.get(this.API_URL + `/codigos?token=${this.token}`);
-    } else {
-      return this.http.get(
-        this.API_URL + `/codigos?${query}&token=${this.token}`
-      );
-    }
+  obtenerUds_codigos(query = '') {
+    return this.http.get(
+      `${this.API_URL}/codigos?${query}&token=${this.token}`
+    );
   }
 
   obtenerUnidad(id: string) {
-    return this.http.get(this.API_URL + `/${id}?token=${this.token}`);
+    return this.http.get(`${this.API_URL}/${id}?token=${this.token}`);
   }
 
   obtenerUnidad_beneficiarios(id: string) {
     return this.http.get(
-      this.API_URL + `/${id}/beneficiarios?token=${this.token}`
+      `${this.API_URL}/${id}/beneficiarios?token=${this.token}`
     );
   }
 
   obtenerUnidad_beneficiarios_responsables(id: string) {
     return this.http.get(
-      this.API_URL + `/${id}/beneficiarios/responsables?token=${this.token}`
+      `${this.API_URL}/${id}/beneficiarios/responsables?token=${this.token}`
     );
   }
 
   crearUds(uds: Uds) {
-    return this.http.post(this.API_URL + `?token=${this.token}`, uds);
+    return this.http.post(`${this.API_URL}?token=${this.token}`, uds);
   }
 
   actualizarUds(uds: Uds) {
-    return this.http.put(this.API_URL + `/${uds._id}?token=${this.token}`, uds);
+    return this.http.put(`${this.API_URL}/${uds._id}?token=${this.token}`, uds);
   }
 
   eliminarUds(uds: Uds) {
-    return this.http.delete(this.API_URL + `/${uds._id}?token=${this.token}`);
+    return this.http.delete(`${this.API_URL}/${uds._id}?token=${this.token}`);
   }
 }

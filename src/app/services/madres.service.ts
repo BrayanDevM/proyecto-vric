@@ -18,12 +18,8 @@ export class MadresService {
     this.token = this.usuario$.token;
   }
 
-  obtenerMadres(query?: string) {
-    if (!query) {
-      return this.http.get(this.API_URL);
-    } else {
-      return this.http.get(this.API_URL + `?${query}`);
-    }
+  obtenerMadres(query = '') {
+    return this.http.get(this.API_URL + `?${query}`);
   }
 
   // No implementado

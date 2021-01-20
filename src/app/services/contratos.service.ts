@@ -30,46 +30,36 @@ export class ContratosService {
     this.token = this.usuario$.token;
   }
 
-  obtenerContratos(query?: string) {
-    if (!query) {
-      return this.http.get(this.API_URL + `?token=${this.token}`).pipe(
-        map((resp: any) => {
-          if (resp.ok) {
-            return resp.contratos;
-          }
-        })
-      );
-    } else {
-      return this.http.get(this.API_URL + `?${query}&token=${this.token}`);
-    }
+  obtenerContratos(query = '') {
+    return this.http.get(`${this.API_URL}?${query}&token=${this.token}`).pipe(
+      map((response: any) => {
+        return response.contratos;
+      })
+    );
   }
 
-  obtenerContratos_uds(query?: string) {
-    if (!query) {
-      return this.http.get(this.API_URL + `/uds?token=${this.token}`);
-    } else {
-      return this.http.get(this.API_URL + `/uds?${query}&token=${this.token}`);
-    }
+  obtenerContratos_uds(query = '') {
+    return this.http.get(`${this.API_URL}/uds?${query}&token=${this.token}`);
   }
 
   obtenerContrato(id: string) {
-    return this.http.get(this.API_URL + `/${id}?token=${this.token}`);
+    return this.http.get(`${this.API_URL}/${id}?token=${this.token}`);
   }
 
   crearContrato(contrato: Contrato) {
-    return this.http.post(this.API_URL + `?token=${this.token}`, contrato);
+    return this.http.post(`${this.API_URL}?token=${this.token}`, contrato);
   }
 
   actualizarContrato(contrato: Contrato) {
     return this.http.put(
-      this.API_URL + `/${contrato._id}?token=${this.token}`,
+      `${this.API_URL}/${contrato._id}?token=${this.token}`,
       contrato
     );
   }
 
   eliminarContrato(contrato: Contrato) {
     return this.http.delete(
-      this.API_URL + `/${contrato._id}?token=${this.token}`
+      `${this.API_URL}/${contrato._id}?token=${this.token}`
     );
   }
 }

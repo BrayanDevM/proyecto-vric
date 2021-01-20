@@ -50,30 +50,9 @@ export class ContratoComponent implements OnInit {
     private snackBar$: MatSnackBar,
     private router: Router
   ) {
-    this.comprobarPermisos();
-    this.formActualizarContrato = this.fb.group({
-      codigo: [null, [Validators.required, Validators.pattern('^[0-9]*$')]],
-      cupos: [null, Validators.required],
-      regional: [null, Validators.required],
-      cz: [null, Validators.required],
-      eas: [null, Validators.required],
-      nit: [null, Validators.required],
-      activo: null
-    });
-    this.obtenerInfoRuta().subscribe(contratoId => {
-      if (contratoId !== undefined) {
-        this.obtenerContrato(contratoId)
-          .then((contrato: Contrato) => {
-            this.contrato = contrato;
-            this.udsEnContrato = contrato.uds;
-            this.obtenerIdUdsSeleccionadas(contrato.uds);
-            this.actualizarForm(contrato);
-            this.obtenerUdsDisponibles(contrato._id);
-            this.editMode = false;
-          })
-          .catch(error => console.log(error));
-      }
-    });
+    this.puedeEditar = this.comprobarPermisos();
+    this.crearFormulario();
+    this.obtenerContrato();
   }
 
   get fv() {
@@ -85,9 +64,25 @@ export class ContratoComponent implements OnInit {
 
   ngOnInit() {}
 
+  crearFormulario() {
+    this.formActualizarContrato = this.fb.group({
+      codigo: [null, [Validators.required, Validators.pattern('^[0-9]*$')]],
+      cupos: [null, Validators.required],
+      regional: [null, Validators.required],
+      cz: [null, Validators.required],
+      eas: [null, Validators.required],
+      nit: [null, Validators.required],
+      activo: null
+    });
+  }
+
+  /**
+   * Observable que retorna params de la url, ya que este puede
+   * cambiar cada que se selecciona un contrato de la lista
+   */
   obtenerInfoRuta(): Observable<any> {
     return this.router.events.pipe(
-      filter(event => event instanceof ActivationEnd),
+      filter((event) => event instanceof ActivationEnd),
       filter((event: ActivationEnd) => event.snapshot.firstChild === null),
       map((event: ActivationEnd) => event.snapshot.params.contratoId)
     );
@@ -97,16 +92,35 @@ export class ContratoComponent implements OnInit {
     this.router.navigate(['/contratos']);
   }
 
-  obtenerContrato(id: string) {
-    return new Promise((resolve, reject) => {
-      this.contratos$.obtenerContrato(id).subscribe((resp: any) => {
-        if (resp.ok) {
-          resolve(resp.contrato);
-        } else {
-          reject(resp);
-        }
-      });
+  obtenerContrato() {
+    this.obtenerInfoRuta().subscribe((rutaId) => {
+      if (rutaId) {
+        this.contratos$.obtenerContrato(rutaId).subscribe((resp: any) => {
+          if (resp.ok) {
+            console.log(resp);
+            this.contrato = resp.contrato;
+            this.udsEnContrato = resp.contrato.uds;
+
+            this.obtenerIdUdsSeleccionadas(resp.contrato.uds);
+            this.actualizarForm(resp.contrato);
+            this.obtenerUdsDisponibles(resp.contrato._id);
+
+            this.editMode = false;
+          } else {
+            console.warn(resp);
+          }
+        });
+      }
     });
+  }
+
+  /**
+   * Guarda en IdUdsSeleccionadas todos los _id de las UDS del
+   * contrato actual
+   * @param uds unidades del contrato
+   */
+  obtenerIdUdsSeleccionadas(uds: Uds[]) {
+    uds.forEach((unidad) => this.IdUdsSeleccionadas.push(unidad._id));
   }
 
   actualizarForm(contrato: Contrato) {
@@ -121,36 +135,33 @@ export class ContratoComponent implements OnInit {
     });
   }
 
-  obtenerIdUdsSeleccionadas(uds: Uds[]) {
-    uds.forEach(unidad => {
-      this.IdUdsSeleccionadas.push(unidad._id);
-    });
-  }
-
+  /**
+   * Obtiene todas las UDS que no estén asiganas a otro contrato y
+   * asignadas a este contrato, recorre las UDS del contrato y si hay
+   * alguna dentro de las disponibles las elimina.
+   * @param contratoId id del contrato actual
+   */
   obtenerUdsDisponibles(contratoId: string) {
     this.cargandoUdsDisponibles = true;
-    this.uds$
-      .obtenerUds(`enContrato=null+${contratoId}`)
-      .subscribe((resp: any) => {
-        if (resp.ok) {
-          // Obtengo todas las UDS disponibles (las del contrato y null);
-          this.udsDisponibles = resp.uds;
-          // Para cada unidad que está en contrato ['_id']
-          this.IdUdsSeleccionadas.forEach(udsId => {
-            // obtengo index en disponibles
-            const i = this.udsDisponibles.findIndex(
-              unidad => unidad._id === udsId
-            );
-            if (i > -1) {
-              // Elimino uds ya en contrato de las disponibles
-              this.udsDisponibles.splice(i, 1);
-            }
-          });
-          this.cargandoUdsDisponibles = false;
-        } else {
-          this.cargandoUdsDisponibles = false;
-        }
-      });
+    const query = `enContrato=null+${contratoId}`;
+
+    this.uds$.obtenerUds(query).subscribe((resp: any) => {
+      if (resp.ok) {
+        this.udsDisponibles = resp.uds;
+        this.IdUdsSeleccionadas.forEach((udsId) => {
+          const i = this.udsDisponibles.findIndex(
+            (unidad) => unidad._id === udsId
+          );
+          if (i > -1) {
+            // Elimino UDS que ya estan en el contrato
+            this.udsDisponibles.splice(i, 1);
+          }
+        });
+        this.cargandoUdsDisponibles = false;
+      } else {
+        this.cargandoUdsDisponibles = false;
+      }
+    });
   }
 
   agregarUdsContrato(event: any) {
@@ -205,7 +216,7 @@ export class ContratoComponent implements OnInit {
     // Remove the input from the body
     document.body.removeChild(element);
     this.snackBar$.open('Copiado al portapapeles', 'Cerrar', {
-      duration: 4500,
+      duration: 2500,
       horizontalPosition: 'end',
       verticalPosition: 'bottom'
     });
@@ -251,7 +262,7 @@ export class ContratoComponent implements OnInit {
         html: `¿Estás seguro que deseas eliminar el contrato <b>${contrato.codigo}</b>?, esta acción no puede deshacerse`,
         confirmButtonText: 'Estoy seguro, eliminar'
       })
-      .then(result => {
+      .then((result) => {
         if (result.value) {
           this.contratos$.eliminarContrato(contrato).subscribe((resp: any) => {
             if (resp.ok) {
@@ -272,16 +283,7 @@ export class ContratoComponent implements OnInit {
 
   // permisos para crear
   comprobarPermisos() {
-    switch (this.usuario$.usuario.rol) {
-      case 'ADMIN':
-        this.puedeEditar = true;
-        break;
-      case 'GESTOR':
-        this.puedeEditar = true;
-        break;
-      default:
-        this.puedeEditar = false;
-        break;
-    }
+    const rolUsuario = this.usuario$.usuario.rol;
+    return rolUsuario === 'ADMIN' || rolUsuario === 'GESTOR' ? true : false;
   }
 }
