@@ -55,6 +55,10 @@ export class BeneficiariosService {
     );
   }
 
+  actualizarBeneficiarios(query: string, obj: any) {
+    return this.http.put(`${this.API_URL}?${query}&token=${this.token}`, obj);
+  }
+
   eliminarBeneficiario(beneficiario: Beneficiario) {
     return this.http.delete(
       `${this.API_URL}/${beneficiario._id}?token=${this.token}`

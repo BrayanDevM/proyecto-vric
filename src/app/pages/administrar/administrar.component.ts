@@ -5,6 +5,11 @@ import { CargarArchivosService } from 'src/app/services/cargar-archivos.service'
 import { FileItem } from 'src/app/models/fileItem.model';
 import Swal from 'sweetalert2';
 import { PageLoadingService } from 'src/app/services/page-loading.service';
+import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
+import { Config } from 'src/app/config/config';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { alertDanger } from 'src/app/helpers/swal2.config';
+declare const moment: any;
 
 @Component({
   selector: 'app-administrar',
@@ -26,16 +31,38 @@ export class AdministrarComponent implements OnInit {
   beneficiariosExistentes = 0;
   responsablesExistentes = 0;
 
-  @ViewChild('fileInput')
-  fileInput;
+  // variables para la inactivación de beneficiarios
+  formMasivo: FormGroup;
+  estadosBeneficiarios = Config.SELECTS.estadosBeneficiarios;
+  actualizandoMasivamente = false;
+  minFechaIngreso = new Date(new Date().getFullYear() - 2, 0, 1); // 3 años atrás enero 1
+  minNuevaFechaIngreso = new Date(new Date().getFullYear() - 2, 0, 1); // año actual enero 1
+  maxFechaIngreso = new Date(moment()); // Hoy
+  resultadoMasivo = [];
 
+  @ViewChild('fileInput') fileInput;
   file: File | null = null;
 
   constructor(
     private pageLoading$: PageLoadingService,
     private reporte$: ReportesService,
-    private cargarArchivo$: CargarArchivosService
-  ) {}
+    private cargarArchivo$: CargarArchivosService,
+    private beneficiarios$: BeneficiariosService,
+    private fb: FormBuilder
+  ) {
+    this.formMasivo = this.fb.group({
+      campo: [null, Validators.required],
+      filtro: [null, Validators.required],
+      nuevoValor: [null, Validators.required]
+    });
+  }
+
+  get fmv() {
+    return this.formMasivo.value;
+  }
+  get fmc() {
+    return this.formMasivo.controls;
+  }
 
   ngOnInit() {
     this.obtenerReportes();
@@ -101,5 +128,47 @@ export class AdministrarComponent implements OnInit {
       }
     });
     this.estaSubiendo = false;
+  }
+
+  actualizacionMasiva() {
+    if (this.formMasivo.invalid) {
+      return;
+    }
+
+    let query: any;
+    let nuevoValor: any;
+
+    if (this.formMasivo.value.campo === 'estado') {
+      query = `estado=${this.formMasivo.value.filtro}`;
+      nuevoValor = { estado: this.formMasivo.value.nuevoValor };
+    } else {
+      query = `ingreso=${moment(this.formMasivo.value.filtro).format(
+        'DD/MM/YYYY'
+      )}`;
+      nuevoValor = {
+        ingreso: moment(this.formMasivo.value.nuevoValor).format('DD/MM/YYYY')
+      };
+    }
+
+    alertDanger
+      .fire({
+        title: 'Actualización masiva',
+        html: `¿Deseas actualizar todos los beneficiarios del sistema con el criterio elegido?`
+      })
+      .then((res) => {
+        if (res.value) {
+          this.resultadoMasivo = [];
+          this.actualizandoMasivamente = true;
+          this.beneficiarios$
+            .actualizarBeneficiarios(query, nuevoValor)
+            .subscribe((resp: any) => {
+              this.actualizandoMasivamente = false;
+              this.resultadoMasivo = [resp.response.n, resp.response.nModified]; // [registros que coinciden con criterio, registros modificados]
+              console.log('query: ', query);
+              console.log('nuevo valor: ', nuevoValor);
+              console.log(resp);
+            });
+        }
+      });
   }
 }

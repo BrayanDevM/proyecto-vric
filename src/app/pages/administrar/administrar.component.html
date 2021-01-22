@@ -12,6 +12,7 @@
   </div>
   <!-- PAGE CONTENT -->
   <mat-tab-group dynamicHeight class="mat-tab-header">
+    <!-- REPORTES ENVIADOS A APP -->
     <mat-tab>
       <ng-template mat-tab-label>
         <mat-icon class="example-tab-icon">bug_report</mat-icon>
@@ -19,7 +20,7 @@
       </ng-template>
       <!-- TAB CONTENT -->
       <div class="page-content">
-        <div class="card-body">
+        <div class="card card-body">
           <div class="content-placeholder ml-0" *ngIf="cargando">
             <ngx-content-loading
               [speed]="'600ms'"
@@ -42,7 +43,7 @@
             >
               <div
                 class="form-check position-absolute"
-                style="top: 15px; right: 10px; z-index: 1;"
+                style="top: 15px; right: 10px; z-index: 1"
               >
                 <mat-checkbox
                   class="example-margin"
@@ -59,7 +60,7 @@
                   {{ reporte.asunto }}
                   <span
                     class="badge m-0 ml-2 p-1 alert"
-                    style="font-size: .7rem;"
+                    style="font-size: 0.7rem"
                     [ngClass]="{
                       'bg-danger': reporte.tipo === 'Fallo',
                       'bg-primary': reporte.tipo === 'Sugerencia',
@@ -83,7 +84,7 @@
         </div>
       </div>
     </mat-tab>
-
+    <!-- SUBIDA DE BENEFICIARIOS -->
     <mat-tab>
       <ng-template mat-tab-label>
         <mat-icon class="example-tab-icon mr-2">cloud_upload</mat-icon>
@@ -249,6 +250,217 @@
           </div>
         </div>
       </div> -->
+    </mat-tab>
+    <!-- INACTIVAR TODOS LOS BENEFICIARIOS -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon">engineering</mat-icon>
+        Actualización masiva
+      </ng-template>
+      <!-- TAB CONTENT -->
+      <div class="page-content">
+        <div class="card card-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <!-- INFORMACIÓN SOBRE ACTUALIZACIONES MASIVAS -->
+              <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">Importante!</h4>
+                <p>
+                  Este componente permite cambiar el estado de todos los
+                  beneficiarios existentes en la base de datos actual, es decir,
+                  que los mismos cambiarán de estado <b>Desvinculado</b> y en
+                  caso de requerir la reactivación de los mismos se debe hacer
+                  desde la Unidad de Servicio en la cual se encuentran
+                  registrados o realizar el proceso de vinculación a través del
+                  formulario de <b>Novedades > Reportar ingreso</b>.
+                </p>
+                <hr />
+                <p class="mb-0">
+                  Una vez realizado el proceso, no se puede revertir, sea
+                  cuidadoso/a.
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- FORMULARIO DE ACTUALIZACIÓN -->
+          <form [formGroup]="formMasivo" (ngSubmit)="actualizacionMasiva()">
+            <div class="row">
+              <!-- SELECCIONAR CAMPO A ACTUALIZAR -->
+              <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                <div class="form-group">
+                  <label for="campo">Campo a actualizar</label>
+                  <mat-form-field appearance="outline" class="bdm-select">
+                    <mat-select
+                      name="campo"
+                      formControlName="campo"
+                      placeholder="Seleccionar campo"
+                    >
+                      <mat-option value="estado">
+                        Estado de beneficiario
+                      </mat-option>
+                      <mat-option value="ingreso">
+                        Fecha de ingreso
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <!-- SI SELECCIONA ESTADO SE MUESTRA ESTE SELECT PARA FILTRAR /////////////// -->
+              <div
+                *ngIf="fmv.campo === 'estado'"
+                class="col-sm-12 col-md-6 col-lg-4 col-xl-2"
+              >
+                <div class="form-group">
+                  <label for="filtro">Estado de los beneficiarios</label>
+                  <mat-form-field appearance="outline" class="bdm-select">
+                    <mat-select
+                      name="filtro"
+                      formControlName="filtro"
+                      placeholder="Seleccionar filtro"
+                    >
+                      <mat-option
+                        *ngFor="let estado of estadosBeneficiarios"
+                        [value]="estado.value"
+                        ><mat-icon
+                          fontSet="fas"
+                          fontIcon="fa-circle"
+                          [class]="estado.iconColor"
+                        ></mat-icon>
+                        {{ estado.label }}</mat-option
+                      >
+                    </mat-select>
+                    <mat-icon matPrefix>filter_alt</mat-icon>
+                  </mat-form-field>
+                </div>
+              </div>
+              <!-- SI SELECCIONA INGRESO SE MUESTRA ESTE DATEPICKER PARA FILTRAR /////////////// -->
+              <div
+                *ngIf="fmv.campo === 'ingreso'"
+                class="col-sm-12 col-md-6 col-lg-4 col-xl-2"
+              >
+                <div class="form-group">
+                  <label for="filtro">Beneficiarios que ingresaron el</label>
+                  <mat-form-field appearance="outline" class="bdm-input">
+                    <input
+                      matInput
+                      [matDatepicker]="filtro"
+                      [min]="minFechaIngreso"
+                      [max]="maxFechaIngreso"
+                      name="filtro"
+                      formControlName="filtro"
+                      autocomplete="off"
+                      placeholder="Elige una fecha"
+                    />
+                    <mat-datepicker-toggle
+                      matSuffix
+                      [for]="filtro"
+                    ></mat-datepicker-toggle>
+                    <mat-datepicker #filtro></mat-datepicker>
+                    <mat-error *ngIf="fmc.filtro.errors?.required">
+                      Debes seleccionar una fecha de filtro
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+              <!-- FLECHA VERDE ///////////////////// -->
+              <div
+                *ngIf="fmv.campo && fmv.filtro"
+                class="col-1 d-flex align-items-center justify-content-center"
+              >
+                <mat-icon class="text-success icon-2x">arrow_forward</mat-icon>
+              </div>
+              <!-- SI SELECCIONA FILTRO DE ESTADO SE MUESTRA ESTE SELECT /////////////// -->
+              <div
+                *ngIf="fmv.campo === 'estado' && fmv.filtro"
+                class="col-sm-12 col-md-6 col-lg-4 col-xl-2"
+              >
+                <div class="form-group">
+                  <label for="nuevoValor">Actualizar a nuevo estado</label>
+                  <mat-form-field appearance="outline" class="bdm-select">
+                    <mat-select
+                      name="nuevoValor"
+                      formControlName="nuevoValor"
+                      placeholder="Selec. nuevo estado"
+                    >
+                      <mat-option
+                        *ngFor="let estado of estadosBeneficiarios"
+                        [value]="estado.value"
+                        ><mat-icon
+                          fontSet="fas"
+                          fontIcon="fa-circle"
+                          [class]="estado.iconColor"
+                        ></mat-icon>
+                        {{ estado.label }}</mat-option
+                      >
+                    </mat-select>
+                    <mat-icon matPrefix>filter_alt</mat-icon>
+                  </mat-form-field>
+                </div>
+              </div>
+              <!-- SI SELECCIONA FILTRO DE INGRESO SE MUESTRA DATEPICKER /////////////// -->
+              <div
+                *ngIf="fmv.campo === 'ingreso' && fmv.filtro"
+                class="col-sm-12 col-md-6 col-lg-4 col-xl-2"
+              >
+                <div class="form-group">
+                  <label for="nuevoValor">Nueva fecha de ingreso</label>
+                  <mat-form-field appearance="outline" class="bdm-input">
+                    <input
+                      matInput
+                      [matDatepicker]="nuevoValor"
+                      [min]="minNuevaFechaIngreso"
+                      [max]="maxFechaIngreso"
+                      name="nuevoValor"
+                      formControlName="nuevoValor"
+                      autocomplete="off"
+                      placeholder="Elige una fecha"
+                    />
+                    <mat-datepicker-toggle
+                      matSuffix
+                      [for]="nuevoValor"
+                    ></mat-datepicker-toggle>
+                    <mat-datepicker #nuevoValor></mat-datepicker>
+                    <mat-error *ngIf="fmc.nuevoValor.errors?.required">
+                      Debes seleccionar una fecha
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+            <button
+              type="submit"
+              [disabled]="actualizandoMasivamente || formMasivo.invalid"
+              mat-raised-button
+              color="primary"
+              class="mb-2"
+            >
+              Realizar actualización masiva
+            </button>
+          </form>
+          <!-- LISTA DE BENEFICIARIOS EN EL SISTEMA -->
+          <div
+            *ngIf="resultadoMasivo.length > 0"
+            class="beneficiarios-en-sistema"
+          >
+            <mat-divider></mat-divider>
+            <mat-list>
+              <div mat-subheader>Información actualizada</div>
+              <mat-list-item>
+                <mat-icon mat-list-icon>fact_check</mat-icon>
+                <div mat-line>
+                  Registros encontrados: {{ resultadoMasivo[0] }}
+                </div>
+              </mat-list-item>
+              <mat-list-item>
+                <mat-icon mat-list-icon>check_circle</mat-icon>
+                <div mat-line>
+                  Registros actualizados: {{ resultadoMasivo[1] }}
+                </div>
+              </mat-list-item>
+            </mat-list>
+          </div>
+        </div>
+      </div>
     </mat-tab>
   </mat-tab-group>
 </div>
