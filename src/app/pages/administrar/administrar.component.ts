@@ -9,6 +9,7 @@ import { BeneficiariosService } from 'src/app/services/beneficiarios.service';
 import { Config } from 'src/app/config/config';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { alertDanger } from 'src/app/helpers/swal2.config';
+import { SocketService } from 'src/app/services/socketIo/socket.service';
 declare const moment: any;
 
 @Component({
@@ -40,6 +41,9 @@ export class AdministrarComponent implements OnInit {
   maxFechaIngreso = new Date(moment()); // Hoy
   resultadoMasivo = [];
 
+  // variables para notificación general
+  formNotif: FormGroup;
+
   @ViewChild('fileInput') fileInput;
   file: File | null = null;
 
@@ -48,12 +52,18 @@ export class AdministrarComponent implements OnInit {
     private reporte$: ReportesService,
     private cargarArchivo$: CargarArchivosService,
     private beneficiarios$: BeneficiariosService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private socket: SocketService
   ) {
     this.formMasivo = this.fb.group({
       campo: [null, Validators.required],
       filtro: [null, Validators.required],
       nuevoValor: [null, Validators.required]
+    });
+
+    this.formNotif = this.fb.group({
+      titulo: [null, Validators.required],
+      descripcion: [null, [Validators.required, Validators.maxLength(150)]]
     });
   }
 
@@ -62,6 +72,13 @@ export class AdministrarComponent implements OnInit {
   }
   get fmc() {
     return this.formMasivo.controls;
+  }
+
+  get fnv() {
+    return this.formNotif.value;
+  }
+  get fnc() {
+    return this.formNotif.controls;
   }
 
   ngOnInit() {
@@ -171,4 +188,35 @@ export class AdministrarComponent implements OnInit {
         }
       });
   }
+
+  enviarNotificacion() {
+    if (this.formNotif.invalid) {
+      return;
+    }
+    const notificacion: any = {
+      titulo: this.fnv.titulo,
+      descripcion: this.fnv.descripcion,
+      general: true
+    };
+    this.socket.emit('crearNotificacionGeneral', notificacion);
+  }
+
+  /**
+   * Funciónes de prueba para notififaciones con Socket
+  crearNotificaciongGeneral() {
+    const notificacion: any = {
+      titulo: 'Beneficiarios',
+      descripcion: 'Se ha marcado al beneficiario x como dato sensible',
+      general: true
+    };
+    this.socket.emit('crearNotificacionGeneral', notificacion);
+  }
+  crearNotificaciongUsuario() {
+    const notificacion: any = {
+      titulo: 'Novedades',
+      descripcion: 'Brayan Devia ha sido vinculado',
+      paraUsuarios: ['5efb8aa1a134b929e8b7cfc8']
+    };
+    this.socket.emit('notificarUsuario', notificacion);
+  }*/
 }

@@ -15,7 +15,7 @@
     <!-- REPORTES ENVIADOS A APP -->
     <mat-tab>
       <ng-template mat-tab-label>
-        <mat-icon class="example-tab-icon">bug_report</mat-icon>
+        <mat-icon class="mr-1">bug_report</mat-icon>
         Debugging app
       </ng-template>
       <!-- TAB CONTENT -->
@@ -87,7 +87,7 @@
     <!-- SUBIDA DE BENEFICIARIOS -->
     <mat-tab>
       <ng-template mat-tab-label>
-        <mat-icon class="example-tab-icon mr-2">cloud_upload</mat-icon>
+        <mat-icon class="mr-1">cloud_upload</mat-icon>
         Importar registros
       </ng-template>
       <!-- TAB CONTENT -->
@@ -254,7 +254,7 @@
     <!-- INACTIVAR TODOS LOS BENEFICIARIOS -->
     <mat-tab>
       <ng-template mat-tab-label>
-        <mat-icon class="example-tab-icon">engineering</mat-icon>
+        <mat-icon class="mr-1">engineering</mat-icon>
         Actualización masiva
       </ng-template>
       <!-- TAB CONTENT -->
@@ -266,17 +266,9 @@
               <div class="alert alert-warning" role="alert">
                 <h4 class="alert-heading">Importante!</h4>
                 <p>
-                  Este componente permite cambiar el estado de todos los
-                  beneficiarios existentes en la base de datos actual, es decir,
-                  que los mismos cambiarán de estado <b>Desvinculado</b> y en
-                  caso de requerir la reactivación de los mismos se debe hacer
-                  desde la Unidad de Servicio en la cual se encuentran
-                  registrados o realizar el proceso de vinculación a través del
-                  formulario de <b>Novedades > Reportar ingreso</b>.
-                </p>
-                <hr />
-                <p class="mb-0">
-                  Una vez realizado el proceso, no se puede revertir, sea
+                  Este componente permite actualizar el campo elegido para todos
+                  los beneficiarios existentes en la base de datos actual. Una
+                  vez realizado el proceso, no se puede revertir, sea
                   cuidadoso/a.
                 </p>
               </div>
@@ -459,6 +451,71 @@
               </mat-list-item>
             </mat-list>
           </div>
+        </div>
+      </div>
+    </mat-tab>
+    <!-- ENVIAR NOTIFICACIÓN GENERAL -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="mr-1">announcement</mat-icon>
+        Notificacion general
+      </ng-template>
+      <!-- TAB CONTENT -->
+      <div class="page-content">
+        <div class="card card-body">
+          <!-- FORMULARIO DE ACTUALIZACIÓN -->
+          <form [formGroup]="formNotif" (ngSubmit)="enviarNotificacion()">
+            <div class="row">
+              <!--********************** CAMPO TITULO **********************-->
+              <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="form-group">
+                  <label for="titulo">Título</label>
+                  <mat-form-field appearance="outline" class="bdm-input">
+                    <input
+                      matInput
+                      formControlName="titulo"
+                      name="titulo"
+                      placeholder="ej. Aviso"
+                    />
+                    <mat-icon matPrefix>label</mat-icon>
+                    <mat-error *ngIf="fnc.titulo.errors?.required">
+                      El título es obligatorio
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+              <!--********************** CAMPO APELLIDO 1 **********************-->
+              <div class="col-sm-12 col-md-6 col-lg-8 col-xl-9">
+                <div class="form-group">
+                  <label for="descripcion">Descripción</label>
+                  <mat-form-field appearance="outline" class="bdm-input">
+                    <input
+                      matInput
+                      formControlName="descripcion"
+                      name="descripcion"
+                      placeholder="ej. La platforma se deshabilitará..."
+                    />
+                    <mat-icon matPrefix>chat</mat-icon>
+                    <mat-error *ngIf="fnc.descripcion.errors?.required">
+                      La descripción es obligatoria
+                    </mat-error>
+                    <mat-error *ngIf="fnc.descripcion.errors?.maxlength">
+                      Máximo 150 carácteres
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+            <button
+              type="submit"
+              [disabled]="formNotif.invalid"
+              mat-raised-button
+              color="primary"
+              class="mb-2"
+            >
+              Enviar notificación
+            </button>
+          </form>
         </div>
       </div>
     </mat-tab>
