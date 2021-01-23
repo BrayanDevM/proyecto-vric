@@ -66,7 +66,7 @@
         <img src="./assets/img/developer.png" width="100%" alt="" />
       </div>
       <!-- Muestra primera letra de nombre (mientras se puedan subir imagenes) -->
-      <div class="user-no-image m-0" style="width: 96px; height: 96px;">
+      <div class="user-no-image m-0" style="width: 96px; height: 96px">
         {{ usuario.nombre | primeraLetra }}
       </div>
 
@@ -92,12 +92,13 @@
       </a>
     </div>
   </div>
-  <div *ngIf="false" class="navigation-group group-bottom">
-    <div class="navigation-item" routerLinkActive="active">
+  <div class="navigation-group group-bottom">
+    <span>versión {{ versionApp }}</span>
+    <!-- <div class="navigation-item" routerLinkActive="active">
       <a href="#" class="navigation-link">
         <mat-icon>sms_failed</mat-icon>
         <div class="navigation-link-text">Fallo</div>
       </a>
-    </div>
+    </div> -->
   </div>
 </div>

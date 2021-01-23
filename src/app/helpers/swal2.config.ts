@@ -4,7 +4,7 @@ import Swal from 'sweetalert2/src/sweetalert2.js';
 const alertDanger = Swal.mixin({
   icon: 'warning',
   customClass: {
-    confirmButton: 'mat-flat-button mat-button-base mat-warn',
+    confirmButton: 'mat-flat-button mat-button-base mat-primary',
     cancelButton: 'mat-button mat-button-base'
   },
   backdrop: 'rgba(0, 0, 0, .048)',
