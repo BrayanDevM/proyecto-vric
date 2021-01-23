@@ -79,6 +79,12 @@ export class UsuarioService {
             text: err.error.mensaje
           });
         }
+        if (err.status === 0) {
+          alertError.fire({
+            title: 'Inicio de sesión',
+            text: `No se ha podido establecer conexión con el servidor`
+          });
+        }
         return throwError(err);
       })
     );

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { FileItem } from '../models/fileItem.model';
 import { Usuario } from '../models/usuario.model';
 import { UsuarioService } from './usuario.service';
 import { Config } from '../config/config';
@@ -21,8 +20,7 @@ export class CargarArchivosService {
   }
 
   importarExcelBeneficiarios(archivo: FormData) {
-    const URL =
-      Config.REST.PRINCIPAL.URL + `/importar-excel?token=${this.token}`;
+    const URL = `${Config.REST.PRINCIPAL.URL}/importar-excel?token=${this.token}`;
     return this.http$.post(URL, archivo).pipe(
       map((resp: any) => {
         if (resp.ok) {
@@ -34,7 +32,7 @@ export class CargarArchivosService {
         }
         return resp;
       }),
-      catchError(err => {
+      catchError((err) => {
         if (!err.ok) {
           Swal.fire({
             title: 'Importar beneficiarios',

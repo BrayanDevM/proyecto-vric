@@ -53,6 +53,8 @@ export class ContratosComponent implements OnInit, OnDestroy {
 
   obtenerContratos() {
     this.contratos$.obtenerContratos().subscribe((contratos: Contrato[]) => {
+      console.log(contratos);
+
       this.contratos = contratos;
       this.numRegistros = contratos.length;
       this.tablaData = new MatTableDataSource(this.contratos);
@@ -94,7 +96,7 @@ export class ContratosComponent implements OnInit, OnDestroy {
   subsContratoEliminado(): void {
     this.contratoEliminado = this.contratos$.contratoEliminado$.subscribe(
       (id: string) => {
-        const i = this.contratos.findIndex(contrato => contrato._id === id);
+        const i = this.contratos.findIndex((contrato) => contrato._id === id);
         this.contratos.splice(i, 1);
         this.tablaData = new MatTableDataSource(this.contratos);
         this.numRegistros--;
@@ -109,7 +111,7 @@ export class ContratosComponent implements OnInit, OnDestroy {
     this.contratoActualizado = this.contratos$.contratoActualizado$.subscribe(
       (contratoAct: Contrato) => {
         const i = this.contratos.findIndex(
-          contrato => contrato._id === contratoAct._id
+          (contrato) => contrato._id === contratoAct._id
         );
         this.contratos.splice(i, 1, contratoAct);
         this.tablaData = new MatTableDataSource(this.contratos);

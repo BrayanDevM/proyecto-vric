@@ -1,176 +1,310 @@
-import { Component, OnInit } from "@angular/core";
-import { Uds } from "src/app/models/uds.model";
-import { UdsService } from "src/app/services/uds.service";
-import { LoadingBarService } from "@ngx-loading-bar/core";
-import { Beneficiario } from "src/app/models/beneficiario.model";
-import { SocketService } from "src/app/services/socketIo/socket.service";
-import { PageLoadingService } from "src/app/services/page-loading.service";
+import { Component, OnInit } from '@angular/core';
+import { Uds } from 'src/app/models/uds.model';
+import { DashboardService } from 'src/app/services/dashboard.service';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { SocketService } from 'src/app/services/socketIo/socket.service';
+import { PageLoadingService } from 'src/app/services/page-loading.service';
 
-declare var moment: any;
+declare const moment: any;
 
 @Component({
-  selector: "app-dashboard",
-  templateUrl: "./dashboard.component.html",
-  styleUrls: ["./dashboard.component.css"],
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  // Datos de contrato
-  cuposCali = 1053;
-  cuposDagua = 635;
-  cuposTotal = 1688;
-
-  // Segregado por cupos
-  datosUds: any = [];
-
-  // Vinculados
-  totalCaliVinculados = 0;
-  totalDaguaVinculados = 0;
-  totalVinculados = 0;
-  // Datos sensibles
-  totalCaliDS = 0;
-  totalDaguaDS = 0;
-  totalDatosSensibles = 0;
-
-  // Segregado por población
-  totalLactantes = 0;
-  totalMayoresSeisMeses = 0;
-  totalMG = 0;
-
-  // Segregado por población vulnerable
-  totalDiscapacitados = 0;
-  totalEtnia = 0;
-  totalVictima = 0;
-  totalExtranjeros = 0;
-
-  // Segregado por sexo
-  totalSexoHombre = 0;
-  totalSexoMujer = 0;
-  totalSexoOtro = 0;
-
-  // Segregado por fecha
-  ingresosPorMes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-  egresosPorMes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-  meses = [
-    "Feb",
-    "Mar",
-    "Abr",
-    "May",
-    "Jun",
-    "Jul",
-    "Ago",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dic",
-  ];
-  mesesFull = [
-    "Febrero",
-    "Marzo",
-    "Abril",
-    "Mayo",
-    "Junio",
-    "Julio",
-    "Agosto",
-    "Septiembre",
-    "Octubre",
-    "Noviembre",
-    "Diciciembre",
-  ];
-
-  // Segregados específicos
-  enConcurrencia = 0;
-  mgAdolescente = 0;
-  caliMayoresDe2Anios = 0;
-  daguaMayoresDe2Anios = 0;
-  colombianosSinDoc = 0;
+  hoy = moment(moment().format('DD/MM/YYYY'), 'DD/MM/YYYY');
+  loader = this.ngxLoader.useRef('http');
+  cargandoDatos = false;
+  estadosActivos = ['Vinculado', 'Pendiente vincular', 'Dato sensible'];
 
   // Datos de UDS
-  udsCali: Uds[] = [];
-  udsDagua: Uds[] = [];
+  C_uds: Uds[] = [];
+  D_uds: Uds[] = [];
 
-  hoy = moment(moment().format("DD/MM/YYYY"), "DD/MM/YYYY");
-  cargandoDatos = false;
-  loader = this.ngxLoader.useRef("http");
+  // Contadores de Dagua: D
+  D_cupos = 635;
+  D_vinculados = 0;
+  D_datosSensibles = 0;
+  D_mayores_2anos = 0;
+
+  // Contadores de Cali: C
+  C_cupos = 1053;
+  C_vinculados = 0;
+  C_datosSensibles = 0;
+  C_mayores_2anos = 0;
+  vinculados = 0;
+
+  // Totales
+  cupos = 1688;
+  lactantes = 0;
+  datosSensibles = 0;
+  mayores_6meses = 0;
+  mujeresGest = 0;
+  discapacitados = 0;
+  etnicos = 0;
+  victimas = 0;
+  extranjeros = 0;
+  sexoHombre = 0;
+  sexoMujer = 0;
+  sexoOtro = 0;
+  enConcurrencia = 0;
+  mgAdolescente = 0;
+  colombianosSD = 0;
+
+  // Variables de gráficas
+  ingresosPorMes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  ingresos = [];
+  egresosPorMes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  egresos = [];
+  meses = [
+    'Feb',
+    'Mar',
+    'Abr',
+    'May',
+    'Jun',
+    'Jul',
+    'Ago',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dic'
+  ];
+  mesesFull = [
+    'Febrero',
+    'Marzo',
+    'Abril',
+    'Mayo',
+    'Junio',
+    'Julio',
+    'Agosto',
+    'Septiembre',
+    'Octubre',
+    'Noviembre',
+    'Diciciembre'
+  ];
 
   constructor(
     private pageLoading$: PageLoadingService,
-    private uds$: UdsService,
     private ngxLoader: LoadingBarService,
-    private socket: SocketService
-  ) {}
+    private dashboard$: DashboardService
+  ) {
+    this.traerInfoBeneficiarios();
+  }
 
   ngOnInit() {
-    const datosUdsLocal = localStorage.getItem("datosDashboard");
-    if (datosUdsLocal === null) {
-      this.obtenerDatos();
-    } else {
-      this.datosUds = JSON.parse(localStorage.getItem("datosDashboard"));
-      this.contarCupos(this.datosUds);
-      this.obtenerDatosDeBeneficiarios(this.datosUds);
-      this.separarUds_municipios(this.datosUds);
-      this.pageLoading$.loadingPages.emit(false);
-    }
+    // const datosUdsLocal = localStorage.getItem("datosDashboard");
+    // if (datosUdsLocal === null) {
+    //   this.traerInfoBeneficiarios();
+    // } else {
+    //   this.datosUds = JSON.parse(localStorage.getItem("datosDashboard"));
+    //   this.contarCupos(this.datosUds);
+    //   this.obtenerDatosDeBeneficiarios(this.datosUds);
+    //   this.separarUds_municipios(this.datosUds);
+    //   this.pageLoading$.loadingPages.emit(false);
+    // }
   }
 
-  // prueba SOCKET ****************************************************************************************
-  crearNotificaciongGeneral() {
-    const notificacion: any = {
-      titulo: "Beneficiarios",
-      descripcion: "Se ha marcado al beneficiario x como dato sensible",
-      general: true,
-    };
-    this.socket.emit("crearNotificacionGeneral", notificacion);
-  }
-  crearNotificaciongUsuario() {
-    const notificacion: any = {
-      titulo: "Novedades",
-      descripcion: "Brayan Devia ha sido vinculado",
-      paraUsuarios: ["5efb8aa1a134b929e8b7cfc8"],
-    };
-    this.socket.emit("notificarUsuario", notificacion);
-  }
-  // prueba SOCKET ****************************************************************************************
-
-  obtenerDatos() {
+  /**
+   * 1. Consulta en la BD la información de beneficiarios
+   * 2. Emite finalización de carga para ocultar loadingPage
+   * 3. Ejecuta método que realiza el conteo de todas las variables
+   * 4. Separa las UDS para supervisión individual
+   * + 30% más rapida la respuesta con una ruta específica para Dashboard
+   */
+  traerInfoBeneficiarios() {
     this.cargandoDatos = true;
-    this.udsCali = [];
-    this.udsDagua = [];
-    this.obtenerDatosUds_Beneficiarios().then(() => {
-      this.contarCupos(this.datosUds);
-      this.obtenerDatosDeBeneficiarios(this.datosUds);
-      this.separarUds_municipios(this.datosUds);
-      this.cargandoDatos = false;
-    });
-  }
+    this.dashboard$.obtenerDatos().subscribe((resp: any) => {
+      if (resp.ok) {
+        this.pageLoading$.loadingPages.emit(false);
+        localStorage.setItem('datosDashboard', JSON.stringify(resp.uds));
 
-  obtenerDatosUds_Beneficiarios(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      this.uds$.obtenerUds_beneficiarios().subscribe((resp: any) => {
-        if (resp.ok) {
-          // console.log(resp);
-          this.datosUds = resp.uds;
-          localStorage.setItem("datosDashboard", JSON.stringify(this.datosUds));
-          this.pageLoading$.loadingPages.emit(false);
-          resolve(true);
-        } else {
-          reject(false);
-        }
-      });
-    });
-  }
-
-  separarUds_municipios(uds: any): void {
-    uds.forEach((unidad: any) => {
-      if (unidad.ubicacion === "Cali") {
-        unidad.beneficiarios = this.filtrarNoActivosEnUds(unidad.beneficiarios);
-        this.udsCali.push(unidad);
-      } else {
-        unidad.beneficiarios = this.filtrarNoActivosEnUds(unidad.beneficiarios);
-        this.udsDagua.push(unidad);
+        // realiza conteos con info
+        this.realizarConteo(resp.uds);
+        this.separarUds_municipios(resp.uds);
+        this.cargandoDatos = false;
       }
     });
-    this.udsCali = this.ordenarUds(this.udsCali);
-    this.udsDagua = this.ordenarUds(this.udsDagua);
+  }
+
+  /**
+   * Realiza el conteo de todas las variables
+   * @param uds todas las uds con sus beneficiarios
+   */
+  realizarConteo(uds: any[]) {
+    uds.forEach((unidad: any) => {
+      unidad.beneficiarios.forEach(
+        ({
+          estado,
+          nacimiento,
+          autorreconocimiento,
+          discapacidad,
+          paisNacimiento,
+          sexo,
+          ingreso,
+          egreso,
+          tipoDoc
+        }) => {
+          if (this.estadosActivos.includes(estado)) {
+            // ignora inactivos
+            if (unidad.ubicacion === 'Cali') {
+              this.C_vinculados += this.estaVinculado(estado);
+              this.C_datosSensibles += this.esDatoSensible(estado);
+              this.C_mayores_2anos += this.esMayorDe2Anos(nacimiento);
+            } else {
+              this.D_vinculados += this.estaVinculado(estado);
+              this.D_datosSensibles += this.esDatoSensible(estado);
+              this.D_mayores_2anos += this.esMayorDe2Anos(nacimiento);
+            }
+            this.vinculados += this.estaVinculado(estado);
+            this.datosSensibles += this.esDatoSensible(estado);
+            this.etnicos += this.tieneEtnia(autorreconocimiento);
+            this.discapacitados += this.tieneDiscapacidad(discapacidad);
+            this.extranjeros += this.esExtranjero(paisNacimiento);
+            this.mgAdolescente += this.esMgAdolescente(nacimiento);
+            this.lactantes += this.esLactante(nacimiento);
+            this.mayores_6meses += this.esMayorDe_6meses(nacimiento);
+            this.mujeresGest += this.esMujerGestante(nacimiento);
+            this.sexoHombre += this.esSexoHombre(sexo);
+            this.sexoMujer += this.esSexoMujer(sexo);
+            this.sexoOtro += this.esSexoOtro(sexo);
+            this.enConcurrencia += this.estaEnConcurrencia(estado);
+            this.colombianosSD += this.esColombianoSD(paisNacimiento, tipoDoc);
+          }
+          // CONTADORES PARA GRÁFICAS LÍNEALES
+          this.contarIngresosPorMes(ingreso, egreso);
+        }
+      );
+    });
+    this.ingresos = this.ingresosPorMes;
+    this.egresos = this.egresosPorMes;
+    this.limpiarIngresosEgresos(); // revisar, no limpia meses?
+  }
+
+  // Métodos que realizan comprobaciones y retornan 1 o 0 para sumar a conteos /////////////////////////////////
+  estaVinculado(estado: string) {
+    return estado === 'Vinculado' || estado === 'Pendiente desvincular' ? 1 : 0;
+  }
+
+  esDatoSensible(estado: string) {
+    return estado === 'Dato sensible' ? 1 : 0;
+  }
+
+  tieneEtnia(autorreconocimiento: string) {
+    return autorreconocimiento !== 'Ninguno' ? 1 : 0;
+  }
+
+  tieneDiscapacidad(discapacidad: boolean) {
+    return discapacidad ? 1 : 0;
+  }
+
+  esExtranjero(paisNacimiento: string) {
+    return paisNacimiento !== 'Colombia' ? 1 : 0;
+  }
+
+  esLactante(fechaNacimiento: string) {
+    const nacimiento = moment(fechaNacimiento, 'DD/MM/YYYY');
+    const edadMeses = this.hoy.diff(nacimiento, 'months');
+
+    return edadMeses < 6 ? 1 : 0;
+  }
+
+  esMayorDe_6meses(fechaNacimiento: string) {
+    const nacimiento = moment(fechaNacimiento, 'DD/MM/YYYY');
+    const edadMeses = this.hoy.diff(nacimiento, 'months');
+
+    return edadMeses >= 6 && edadMeses <= 120 ? 1 : 0;
+  }
+
+  esMujerGestante(fechaNacimiento: string) {
+    const nacimiento = moment(fechaNacimiento, 'DD/MM/YYYY');
+    const edadMeses = this.hoy.diff(nacimiento, 'months');
+
+    return edadMeses > 120 ? 1 : 0;
+  }
+
+  esSexoHombre(sexo: string) {
+    return sexo === 'Hombre' ? 1 : 0;
+  }
+  esSexoMujer(sexo: string) {
+    return sexo === 'Mujer' ? 1 : 0;
+  }
+  esSexoOtro(sexo: string) {
+    return sexo === 'Otro' ? 1 : 0;
+  }
+
+  estaEnConcurrencia(estado: string) {
+    return estado === 'Concurrencia' ? 1 : 0;
+  }
+
+  esMgAdolescente(fechaNacimiento: string) {
+    const nacimiento = moment(fechaNacimiento, 'DD/MM/YYYY');
+    const edadAnios = this.hoy.diff(nacimiento, 'years');
+
+    return edadAnios >= 10 && edadAnios < 18 ? 1 : 0;
+  }
+
+  esMayorDe2Anos(fechaNacimiento: string) {
+    const nacimiento = moment(fechaNacimiento, 'DD/MM/YYYY');
+    const edadAnios = this.hoy.diff(nacimiento, 'years');
+
+    return edadAnios >= 2 && edadAnios <= 10 ? 1 : 0;
+  }
+
+  esColombianoSD(paisNacimiento: string, tipoDocumento: string) {
+    return paisNacimiento === 'Colombia' && tipoDocumento === 'SD' ? 1 : 0;
+  }
+
+  // Métodos para realizar conteo de Ingresos/Egresos en gráficas //////////////////////////////////////////////
+  contarIngresosPorMes(ingreso: string, egreso: string) {
+    // Formateo fechas
+    const mesIngreso = moment(ingreso, 'DD/MM/YYYY').format('MMM');
+    const mesEgreso = moment(egreso, 'DD/MM/YYYY').format('MMM');
+    // Asigno contador en cada mes
+    this.meses.forEach((item: string, i) => {
+      const mes = item.toLowerCase() + '.';
+      if (mesIngreso === mes) {
+        this.ingresosPorMes[i]++;
+      }
+      if (mesEgreso === mes) {
+        this.egresosPorMes[i]++;
+      }
+    });
+  }
+
+  limpiarIngresosEgresos() {
+    const mesActual = moment(this.hoy, 'DD/MM/YYYY').format('MMM');
+
+    this.meses.forEach((mes, i) => {
+      mes = mes.toLowerCase() + '.';
+      if (mes === mesActual) {
+        // remuevo datos de los meses que aún no llegan
+        // y el primer elemento (cuando se cargan todos los beneficiarios masivamente)
+        this.ingresos.splice(i + 1, 12);
+        this.ingresos.splice(0, 1);
+
+        this.egresos.splice(i + 1, 12);
+        this.egresos.splice(0, 1);
+
+        this.mesesFull.splice(0, 1);
+        return;
+      }
+    });
+  }
+
+  // Métodos para ordenar UDS //////////////////////////////////////////////////////////////////////////////////
+  separarUds_municipios(uds: any): void {
+    uds.forEach((unidad: any) => {
+      if (unidad.ubicacion === 'Cali') {
+        unidad.beneficiarios = this.filtrarNoActivosEnUds(unidad.beneficiarios);
+        this.C_uds.push(unidad);
+      } else {
+        unidad.beneficiarios = this.filtrarNoActivosEnUds(unidad.beneficiarios);
+        this.D_uds.push(unidad);
+      }
+    });
+    this.C_uds = this.ordenarUds(this.C_uds);
+    this.D_uds = this.ordenarUds(this.D_uds);
   }
 
   ordenarUds(uds: Uds[]) {
@@ -187,9 +321,9 @@ export class DashboardComponent implements OnInit {
   }
 
   filtrarNoActivosEnUds(beneficiarios: any) {
-    const filtroVinculado = { estado: "Vinculado" };
-    const filtroPendiente = { estado: "Pendiente desvincular" };
-    const filtroDS = { estado: "Dato sensible" };
+    const filtroVinculado = { estado: 'Vinculado' };
+    const filtroPendiente = { estado: 'Pendiente desvincular' };
+    const filtroDS = { estado: 'Dato sensible' };
     let arreglo = [];
     // Retorno nuevo arreglo con registros 'Vinculado'
     const vinculados = beneficiarios.filter((beneficiario: any) => {
@@ -222,272 +356,5 @@ export class DashboardComponent implements OnInit {
     arreglo = vinculados.concat(pendientes);
     arreglo = arreglo.concat(DS);
     return arreglo;
-  }
-
-  obtenerDatosDeBeneficiarios(uds: any) {
-    this.mgAdolescente = 0;
-    this.ingresosPorMes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    this.egresosPorMes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    this.totalSexoHombre = 0;
-    this.totalSexoHombre = 0;
-    this.totalSexoOtro = 0;
-    this.totalLactantes = 0;
-    this.totalMayoresSeisMeses = 0;
-    this.totalMG = 0;
-    this.totalDiscapacitados = 0;
-    this.totalEtnia = 0;
-    this.totalVictima = 0;
-    this.totalExtranjeros = 0;
-    this.enConcurrencia = 0;
-    this.colombianosSinDoc = 0;
-    uds.forEach((unidad: any, i) => {
-      unidad.beneficiarios.forEach((beneficiario: any) => {
-        this.contarPoblacion(beneficiario);
-        this.contarIngresosPorMes(beneficiario);
-        this.contarMgAdolescente(beneficiario);
-        this.contarTipoBeneficiario(beneficiario);
-        this.contarSexo(beneficiario);
-        this.contarEnConcurrencia(beneficiario);
-        this.contarColombianosSinDoc(beneficiario);
-      });
-    });
-    this.limpiarIngresosEgresos();
-  }
-
-  limpiarIngresosEgresos() {
-    const mesActual = moment(this.hoy, "DD/MM/YYYY").format("MMM");
-
-    this.meses.forEach((mes, i) => {
-      mes = mes.toLowerCase() + ".";
-      if (mes === mesActual) {
-        // remuevo datos de los meses que aún no llegan
-        // y el primer elemento (cuando se cargan todos los beneficiarios masivamente)
-        this.ingresosPorMes.splice(i + 1, 12);
-        this.ingresosPorMes.splice(0, 1);
-
-        this.egresosPorMes.splice(i + 1, 12);
-        this.egresosPorMes.splice(0, 1);
-
-        this.mesesFull.splice(0, 1);
-        return;
-      }
-    });
-  }
-
-  contarCupos(uds: any) {
-    this.totalCaliVinculados = 0;
-    this.totalCaliDS = 0;
-    this.totalDaguaVinculados = 0;
-    this.totalDaguaDS = 0;
-    let contador = 0;
-    uds.forEach((unidad: any) => {
-      if (unidad.ubicacion === "Cali") {
-        unidad.beneficiarios.forEach((beneficiario: any) => {
-          this.totalCaliVinculados += this.contarActivos(beneficiario);
-          this.totalCaliDS += this.contarDatosSensibles(beneficiario);
-          this.caliMayoresDe2Anios += this.contarMayoresDe2Anios(beneficiario);
-        });
-      } else {
-        unidad.beneficiarios.forEach((beneficiario: any) => {
-          this.totalDaguaVinculados += this.contarActivos(beneficiario);
-          this.totalDaguaDS += this.contarDatosSensibles(beneficiario);
-          this.daguaMayoresDe2Anios += this.contarMayoresDe2Anios(beneficiario);
-        });
-      }
-      contador++;
-      if (contador === uds.length) {
-        this.totalVinculados =
-          this.totalCaliVinculados + this.totalDaguaVinculados;
-        this.totalDatosSensibles = this.totalCaliDS + this.totalDaguaDS;
-      }
-    });
-  }
-
-  contarActivos(beneficiario: Beneficiario) {
-    const estado = beneficiario.estado;
-    if (estado === "Vinculado" || estado === "Pendiente desvincular") {
-      return 1;
-    } else {
-      return 0;
-    }
-  }
-
-  contarDatosSensibles(beneficiario: Beneficiario) {
-    const estado = beneficiario.estado;
-    if (estado === "Dato sensible") {
-      return 1;
-    } else {
-      return 0;
-    }
-  }
-
-  contarPoblacion(beneficiario: Beneficiario) {
-    // datos
-    const estado = beneficiario.estado;
-    const tipoDoc = beneficiario.tipoDoc;
-
-    if (
-      (beneficiario.autorreconocimiento !== "Ninguno" &&
-        estado === "Vinculado") ||
-      (beneficiario.autorreconocimiento !== "Ninguno" &&
-        estado === "Dato sensible") ||
-      (beneficiario.autorreconocimiento !== "Ninguno" &&
-        estado === "Pendiente desvincular")
-    ) {
-      this.totalEtnia += 1;
-      // console.log(beneficiario);
-    }
-    if (
-      (beneficiario.discapacidad && estado === "Vinculado") ||
-      (beneficiario.discapacidad && estado === "Dato sensible") ||
-      (beneficiario.discapacidad && estado === "Pendiente desvincular")
-    ) {
-      this.totalDiscapacitados += 1;
-      // console.log(beneficiario);
-    }
-    if (
-      (tipoDoc === "SD" && estado === "Vinculado") ||
-      (tipoDoc === "SD" && estado === "Dato sensible") ||
-      (tipoDoc === "SD" && estado === "Pendiente desvincular")
-    ) {
-      this.totalExtranjeros += 1;
-      // console.log(beneficiario);
-    }
-  }
-
-  contarTipoBeneficiario(beneficiario: Beneficiario) {
-    // datos
-    const nacimiento = moment(beneficiario.nacimiento, "DD/MM/YYYY");
-    const edadMeses = this.hoy.diff(nacimiento, "months");
-    const estado = beneficiario.estado;
-
-    if (
-      (edadMeses < 6 && estado === "Vinculado") ||
-      (edadMeses < 6 && estado === "Dato sensible") ||
-      (edadMeses < 6 && estado === "Pendiente desvincular")
-    ) {
-      this.totalLactantes += 1;
-      // console.log(beneficiario);
-    }
-    if (
-      (edadMeses >= 6 && edadMeses <= 120 && estado === "Vinculado") ||
-      (edadMeses >= 6 && edadMeses <= 120 && estado === "Dato sensible") ||
-      (edadMeses >= 6 && edadMeses <= 120 && estado === "Pendiente desvincular")
-    ) {
-      // 120 meses (10 años)
-      this.totalMayoresSeisMeses += 1;
-      // console.log(beneficiario);
-    }
-    if (
-      (edadMeses > 120 && estado === "Vinculado") ||
-      (edadMeses > 120 && estado === "Dato sensible") ||
-      (edadMeses > 120 && estado === "Pendiente desvincular")
-    ) {
-      this.totalMG += 1;
-    }
-  }
-
-  contarSexo(beneficiario: Beneficiario) {
-    // datos
-    const sexo = beneficiario.sexo;
-    const estado = beneficiario.estado;
-
-    if (
-      (sexo === "Hombre" && estado === "Vinculado") ||
-      (sexo === "Hombre" && estado === "Dato sensible") ||
-      (sexo === "Hombre" && estado === "Pendiente desvincular")
-    ) {
-      this.totalSexoHombre += 1;
-      // console.log(beneficiario);
-    }
-    if (
-      (sexo === "Mujer" && estado === "Vinculado") ||
-      (sexo === "Mujer" && estado === "Dato sensible") ||
-      (sexo === "Mujer" && estado === "Pendiente desvincular")
-    ) {
-      this.totalSexoMujer += 1;
-      // console.log(beneficiario);
-    }
-    if (
-      (sexo === "Otro" && estado === "Vinculado") ||
-      (sexo === "Otro" && estado === "Dato sensible") ||
-      (sexo === "Otro" && estado === "Pendiente desvincular")
-    ) {
-      this.totalSexoOtro += 1;
-      // console.log(beneficiario);
-    }
-  }
-
-  contarIngresosPorMes(beneficiario: Beneficiario) {
-    // Formateo fechas
-    const mesIngreso = moment(beneficiario.ingreso, "DD/MM/YYYY").format("MMM");
-    const mesEgreso = moment(beneficiario.egreso, "DD/MM/YYYY").format("MMM");
-    // Asigno contador en cada mes
-    this.meses.forEach((item: string, i) => {
-      const mes = item.toLowerCase() + ".";
-      if (mesIngreso === mes) {
-        this.ingresosPorMes[i] += 1;
-      }
-      if (mesEgreso === mes) {
-        this.egresosPorMes[i] += 1;
-      }
-    });
-  }
-
-  contarEnConcurrencia(beneficiario: Beneficiario) {
-    if (beneficiario.estado === "Concurrencia") {
-      this.enConcurrencia += 1;
-    }
-  }
-
-  contarMgAdolescente(beneficiario: Beneficiario) {
-    // Tomo fechas
-    const nacimiento = moment(beneficiario.nacimiento, "DD/MM/YYYY");
-    const edadAnios = this.hoy.diff(nacimiento, "years");
-
-    if (beneficiario.estado === "Vinculado") {
-      if (edadAnios >= 10 && edadAnios < 18) {
-        this.mgAdolescente += 1;
-      }
-    }
-    if (beneficiario.estado === "Dato sensible") {
-      if (edadAnios >= 10 && edadAnios < 18) {
-        this.mgAdolescente += 1;
-      }
-    }
-  }
-
-  contarMayoresDe2Anios(beneficiario: Beneficiario) {
-    // Tomo fechas
-    const nacimiento = moment(beneficiario.nacimiento, "DD/MM/YYYY");
-    const edadAnios = this.hoy.diff(nacimiento, "years");
-    const estado = beneficiario.estado;
-    const e = ["Vinculado", "Pendiente desvincular", "Dato sensible"];
-
-    if (
-      (estado === e[0] && edadAnios >= 2 && edadAnios <= 10) ||
-      (estado === e[1] && edadAnios >= 2 && edadAnios <= 10) ||
-      (estado === e[2] && edadAnios >= 2 && edadAnios <= 10)
-    ) {
-      return 1;
-    } else {
-      return 0;
-    }
-  }
-
-  contarColombianosSinDoc(beneficiario: Beneficiario) {
-    // Tomo fechas
-    const paisNacimiento = beneficiario.paisNacimiento;
-    const tipoDoc = beneficiario.tipoDoc;
-    const estado = beneficiario.estado;
-    const e = ["Vinculado", "Pendiente desvincular", "Dato sensible"];
-
-    if (
-      (estado === e[0] && paisNacimiento === "Colombia" && tipoDoc === "SD") ||
-      (estado === e[1] && paisNacimiento === "Colombia" && tipoDoc === "SD") ||
-      (estado === e[2] && paisNacimiento === "Colombia" && tipoDoc === "SD")
-    ) {
-      this.colombianosSinDoc++;
-    }
   }
 }

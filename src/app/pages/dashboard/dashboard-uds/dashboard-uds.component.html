@@ -6,7 +6,7 @@
         <h2 class="m-0">Dashboard</h2>
         <div class="text-muted">
           Métricas generales de la UDS
-          <b *ngIf="unidadDeServicio">{{ unidadDeServicio.nombre }}</b>
+          <b *ngIf="nombreUnidad">{{ nombreUnidad }}</b>
         </div>
       </div>
       <div class="page-actions col-xl-6 p-0">
@@ -28,7 +28,7 @@
             titulo="Ingresos"
             subtitulo="Registrados en CUÉNTAME"
             [seriesNombre]="'Ingresos'"
-            [series]="ingresosPorMes"
+            [series]="ingresos"
             [colors]="['#69c18e']"
             [categorias]="mesesFull"
           ></app-apex-line-chart-min>
@@ -40,7 +40,7 @@
             titulo="Egresos"
             subtitulo="Registrados en esta aplicación"
             [seriesNombre]="'Egresos'"
-            [series]="egresosPorMes"
+            [series]="egresos"
             [colors]="['#f05251']"
             [categorias]="mesesFull"
           ></app-apex-line-chart-min>
@@ -58,8 +58,8 @@
         <app-apex-pie-chart
           titulo="Cobertura"
           [series]="[
-            totalVinculados + totalDS,
-            unidadCupos - (totalVinculados + totalDS)
+            vinculados + datosSensibles,
+            cuposUnidad - (vinculados + datosSensibles)
           ]"
           [labels]="['Vinculados', 'Cupos disponibles']"
           [colors]="['#309794', '#4fd1c5']"
@@ -71,7 +71,7 @@
         <div class="mb-4">
           <app-apex-bar-chart-stacked
             titulo="Sexo"
-            [series]="[totalSexoMujer, totalSexoHombre, totalSexoOtro]"
+            [series]="[sexoMujer, sexoHombre, sexoOtro]"
             [seriesNombre]="['Mujeres', 'Hombres', 'Otro']"
             [categoria]="['Sexo']"
             [colores]="['#EC407A', '#F06292', '#F48FB1']"
@@ -82,7 +82,7 @@
         <div class="mb-4">
           <app-apex-bar-chart-stacked
             titulo="Tipo de beneficiario"
-            [series]="[totalMayoresSeisMeses, totalLactantes, totalMG]"
+            [series]="[mayores_6meses, lactantes, mujeresGest]"
             [seriesNombre]="[
               'Mayores de seis meses',
               'Menores de seis meses',
@@ -97,7 +97,7 @@
         <div class="mb-4">
           <app-apex-bar-chart-stacked
             titulo="Población vulnerable"
-            [series]="[totalDiscapacitados, totalEtnia, totalExtranjeros]"
+            [series]="[discapacitados, etnicos, extranjeros]"
             [seriesNombre]="[
               'Presentan discapacidad',
               'Se autorreconocen',
@@ -132,18 +132,14 @@
             </mat-list-option>
             <mat-list-option>
               <p class="d-flex justify-content-between align-items-center">
-                <span>
-                  Mayores de 2 años
-                </span>
-                <span class="badge bg-warning">{{ mayoresDe2Anios }}</span>
+                <span> Mayores de 2 años </span>
+                <span class="badge bg-warning">{{ mayores_2Anios }}</span>
               </p>
             </mat-list-option>
             <mat-list-option>
               <p class="d-flex justify-content-between align-items-center">
-                <span>
-                  Colombianos sin documento
-                </span>
-                <span class="badge bg-info">{{ colombianosSinDoc }}</span>
+                <span> Colombianos sin documento </span>
+                <span class="badge bg-info">{{ colombianosSD }}</span>
               </p>
             </mat-list-option>
             <mat-list-option>

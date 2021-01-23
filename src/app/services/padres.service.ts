@@ -18,12 +18,8 @@ export class PadresService {
     this.token = this.usuario$.token;
   }
 
-  obtenerPadres(query?: string) {
-    if (!query) {
-      return this.http.get(this.API_URL);
-    } else {
-      return this.http.get(this.API_URL + `?${query}`);
-    }
+  obtenerPadres(query = '') {
+    return this.http.get(this.API_URL + `?${query}`);
   }
 
   // No implementado

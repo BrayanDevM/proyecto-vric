@@ -69,18 +69,19 @@ export class LoginComponent implements OnInit {
   iniciarSesion() {
     if (this.formLogin.invalid) {
       return;
-    } else {
-      this.cargando = true;
-
-      this.usuario = {
-        correo: this.flv.correo,
-        password: this.flv.password
-      };
-
-      this.usuario$
-        .iniciarSesion(this.usuario, this.flv.recuerdame)
-        .subscribe((resp) => (this.cargando = false));
     }
+
+    this.cargando = true;
+
+    this.usuario = {
+      correo: this.flv.correo,
+      password: this.flv.password
+    };
+
+    this.usuario$.iniciarSesion(this.usuario, this.flv.recuerdame).subscribe(
+      (resp: any) => (this.cargando = false),
+      (err) => (this.cargando = false)
+    );
   }
 
   /**
