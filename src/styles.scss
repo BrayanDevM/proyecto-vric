@@ -122,8 +122,12 @@ button:focus {
   margin-top: 14px;
 }
 .sidebar .navigation-group.group-bottom {
-  margin-top: auto;
-  margin-bottom: 1rem;
+  font-size: 0.7rem;
+  color: #6a6b6f;
+  position: absolute;
+  bottom: 0;
+  left: 3px;
+  font-style: italic;
 }
 
 .sidebar .navigation-group .navigation-title-wrapper {

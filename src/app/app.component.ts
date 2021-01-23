@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NombreTabWebService } from './services/nombre-tab-web.service';
-declare var moment: any;
+import { VersionAppService } from './services/version-app.service';
+declare const moment: any;
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,13 @@ declare var moment: any;
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  constructor(private nombreTab: NombreTabWebService) {
+  versionActual = '1.1.0';
+
+  constructor(
+    private verisonApp$: VersionAppService,
+    private nombreTab: NombreTabWebService
+  ) {
     moment.locale('es');
+    this.verisonApp$.compararVersion();
   }
 }

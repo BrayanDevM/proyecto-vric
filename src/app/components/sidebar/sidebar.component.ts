@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SocketService } from 'src/app/services/socketIo/socket.service';
 import { CdkConnectedOverlay } from '@angular/cdk/overlay';
+import { VersionAppService } from 'src/app/services/version-app.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -17,6 +18,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   usuario: Usuario;
   usuarioRol: string;
   menuUsuario: any = [];
+  versionApp = '';
 
   abrirNotificaciones = false;
   notificaciones: any[] = [];
@@ -32,9 +34,11 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     private sidebar$: SidebarService,
     private notificaciones$: NotificacionesService,
     private socket: SocketService,
-    private router: Router
+    private router: Router,
+    private versionApp$: VersionAppService
   ) {
     this.audio = new Audio('assets/audio/notificaciones/cheerful.mp3');
+    this.versionApp = this.versionApp$.versionActual;
   }
 
   ngOnInit(): void {

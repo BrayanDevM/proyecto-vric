@@ -3,7 +3,7 @@
   <mat-toolbar>
     <div class="container">
       <img src="./assets/img/Logo.svg" class="logo" alt="" />
-      <span class="beta">Beta</span>
+      <!-- <span class="beta">Beta</span> -->
       <button mat-icon-button (click)="acercaDe()">
         <mat-icon>info_outline</mat-icon>
       </button>
@@ -64,7 +64,7 @@
               [attr.aria-pressed]="verPassword"
             >
               <mat-icon>{{
-                verPassword ? "visibility" : "visibility_off"
+                verPassword ? 'visibility' : 'visibility_off'
               }}</mat-icon>
             </button>
           </mat-form-field>
