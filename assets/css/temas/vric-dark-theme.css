@@ -1,0 +1,258 @@
+:root {
+  /* Colors */
+  --color-primary: #00796b;
+  --color-blanco: #fff;
+  /* text */
+  --texto-color-1: #f2ffff;
+  --texto-color-2: #fff;
+  --texto-color-3: #fff;
+  --texto-color-4: #fff;
+  --texto-gris: #969696;
+  --texto-sidebar: #cfd8e3;
+  --border-color: hsl(223 27% 25%);
+
+  /* backgrounds */
+  --bg-color-primary: hsl(222, 28%, 15%);
+  --bg-color-secondary: #27303f;
+  --bg-color-warn: #f44236;
+  --bg-color-sidebar: hsl(222, 28%, 15%);
+  --bg-color-sidebar-hover: hsl(222, 28%, 20%);
+  --bg-color-sidebar-active: hsl(222, 28%, 10%);
+}
+
+html,
+body {
+  background-color: var(--bg-color-primary) !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--texto-color-2);
+}
+
+.no-data {
+  color: var(--texto-gris);
+}
+
+.page-wrapper,
+.page-content {
+  background-color: var(--bg-color-primary);
+}
+
+.mat-drawer-container,
+.mat-drawer-container {
+  background-color: inherit !important;
+}
+
+.mat-dialog-container,
+.mat-menu-panel,
+.mat-expansion-panel {
+  background: var(--bg-color-secondary) !important;
+}
+
+.list-group {
+  background-color: inherit;
+}
+.list-group .list-group-item {
+  background-color: inherit;
+}
+
+.card {
+  background-color: var(--bg-color-secondary) !important;
+}
+.card-actions {
+  background-color: #364252;
+}
+
+.mat-tab-header .mat-tab-header {
+  background-color: var(--bg-color-primary);
+}
+
+.mat-select-panel {
+  background-color: var(--bg-color-primary) !important;
+}
+
+.mat-menu-item .mat-icon-no-color,
+.mat-menu-item-submenu-trigger::after {
+  color: rgba(255, 255, 255, 0.54) !important;
+}
+.vric-dark-theme .mat-menu-item {
+  color: inherit;
+}
+
+.mat-option {
+  color: inherit;
+}
+
+div.border-bottom,
+div.border-top,
+div.border-right,
+div.border-left,
+div.border {
+  border-color: var(--border-color) !important;
+}
+
+.table-page-header,
+.content-view-options {
+  background-color: var(--bg-color-primary);
+}
+
+.help-center .help-categories .category .title {
+  color: var(--texto-color-3);
+}
+
+/* Sidenav dashboard UDS */
+.drawer-uds-dashboard .mat-drawer-inner-container,
+.sidenav-uds-list {
+  background-color: var(--bg-color-primary);
+}
+
+/* SIDEBAR STYLES ******************************************************************/
+.sidebar {
+  background-color: var(--bg-color-sidebar);
+  color: var(--texto-sidebar);
+  border-right: 0.5px solid var(--border-color);
+}
+
+.sidebar .navigation-group .navigation-title-wrapper .navigation-group-title {
+  color: var(--color-primary);
+}
+
+.user-profile .email,
+.sidebar .navigation-group-subtitle {
+  color: #64748b;
+}
+
+.sidebar .navigation-group .navigation-item .navigation-link:hover {
+  background-color: var(--bg-color-sidebar-hover);
+}
+.sidebar .navigation-group .navigation-item.active .navigation-link {
+  background-color: var(--bg-color-sidebar-active);
+}
+.sidebar .navigation-group .navigation-item.active .navigation-link-text {
+  color: var(--color-blanco);
+}
+
+.sidebar .navigation-group .mat-icon {
+  color: var(--texto-sidebar);
+  transition: color 375ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.sidebar .navigation-group .navigation-link-text {
+  color: var(--texto-sidebar);
+}
+
+/* FIN SIDEBAR STYLES ***************************************************************/
+
+/* ApexCharts ***********************************************************************/
+.apexchart {
+  background-color: var(--bg-color-secondary);
+}
+
+.apexchart .chart-title {
+  color: #64748b;
+}
+.apexchart .chart-data {
+  color: var(--color-blanco);
+}
+.apexchart .percent,
+.apexchart .chart-actions {
+  color: #64748b;
+}
+.apexchart .list-group {
+  background-color: inherit;
+}
+
+.apexchart .apexcharts-tooltip.apexcharts-theme-light {
+  background-color: rgba(30, 30, 30, 0.8);
+  border: 0.5px solid rgba(30, 30, 30, 0.8);
+}
+.apexchart
+  .apexcharts-tooltip.apexcharts-theme-light
+  .apexcharts-tooltip-title {
+  background: rgba(0, 0, 0, 0.7);
+  border-bottom: 1px solid #333;
+  color: var(--texto-color-1);
+}
+/* Fin ApexCharts ********************************************************************/
+
+.page-wrapper .page-header {
+  background-color: inherit;
+}
+
+.mat-table tr.mat-header-row {
+  background-color: #181e2c;
+}
+.mat-table .mat-row {
+  background-color: var(--bg-color-primary) !important;
+}
+.mat-table tr.mat-header-row th {
+  border-bottom: 1px solid var(--border-color);
+}
+.mat-table tr.mat-row:hover,
+.mat-table tr.mat-row:active {
+  background-color: var(--bg-color-sidebar-hover);
+}
+
+/* ----------------------------- */
+.sidenav-detalle {
+  background-color: var(--bg-color-primary);
+}
+.sidenav-detalle .actions button:hover {
+  background-color: var(--bg-color-sidebar-hover);
+}
+.sidenav-detalle .mat-icon {
+  color: var(--texto-sidebar);
+}
+
+.drag-n-drop-zone {
+  border: 2.5px dashed var(--border-color);
+  background-color: var(--bg-color-secondary);
+  color: var(--texto-color-1);
+}
+
+.clipboard-btn:hover {
+  background-color: var(--bg-color-secondary);
+}
+
+.help-center .help-categories .category {
+  background-color: var(--bg-color-secondary);
+}
+
+/* disabled input y select */
+.bdm-input.mat-form-field-disabled .mat-form-field-outline-start,
+.bdm-input.mat-form-field-disabled .mat-form-field-outline-end,
+.bdm-select.mat-form-field-disabled .mat-form-field-outline-start,
+.bdm-select.mat-form-field-disabled .mat-form-field-outline-end {
+  background-color: #414956;
+}
+
+/* NOTIFICACTIONS PANEL -------------------------------------------- */
+.notificaciones-wrapper {
+  background-color: var(--bg-color-secondary);
+}
+.notificaciones-wrapper .header {
+  background: var(--bg-color-sidebar-hover);
+  border-top: 4px solid #e2e8f0;
+}
+.notificaciones-wrapper .notificacion-wrapper {
+  border-color: #e2e8f0;
+}
+
+.notificaciones .notificacion .titulo,
+.notificaciones .notificacion .descripcion .titulo + span {
+  color: var(--texto-color-1);
+}
+/* notificacion leída */
+.notificaciones-wrapper .acciones .mat-icon {
+  color: #3f4c63;
+}
+/* FIN NOTIFICACTIONS PANEL ----------------------------------------- */
+
+.loading-wrapper {
+  background-color: var(--bg-color-primary);
+}
